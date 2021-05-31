@@ -1,0 +1,61 @@
+name: Build, test and analyze
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11.0.7
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Build and run tests
+        run: |
+          mvn clean install
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TESTCONTAINERS_RYUK_DISABLED: true
+
+      - name: Analyze (sonar)
+        run: mvn sonar:sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Create Snapshot Release
+        uses: ncipollo/release-action@v1
+        if: github.ref == 'refs/heads/develop'
+        id: create_release
+        with:
+          name: Snapshot Release ${{ github.ref }}
+          tag: SNAPSHOT
+          artifacts: target/cc-management-service.jar
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: false
+          allowUpdates: true

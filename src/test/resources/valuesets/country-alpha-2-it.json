@@ -1,0 +1,30 @@
+{
+  "valueSetId": "country-alpha-2-it",
+  "valueSetDate": "2021-05-05",
+  "valueSetValues": [
+    {
+      "short": "TE",
+      "display": "Test",
+      "lang": "it",
+      "active": true,
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AT",
+      "display": "Austria",
+      "lang": "it",
+      "active": true,
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BE",
+      "display": "Belgio",
+      "lang": "it",
+      "active": true,
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "Id": "Covid 19 Tests",
+  "Date": "2021-05-07",
+  "Version": "1.0.0",
+  "entries": [
+    {
+      "name": "testName",
+      "type": "testType",
+      "type_code": "testTypeCode",
+      "manufacturer": "testManufacturer",
+      "swiss_test_kit": "testSwissTestKit",
+      "manufacturer_code_eu": "testManufacturerCodeEu",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "PCR",
+      "type": "Nucleic acid amplification with probe detection",
+      "type_code": "LP6464-4",
+      "manufacturer": "",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "Panbio COVID-19 Ag Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Abbott Rapid Diagnostics",
+      "swiss_test_kit": "2",
+      "manufacturer_code_eu": "1232",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "AMP Rapid Test SARS-CoV-2 Ag",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "AMEDA Labordiagnostik GmbH",
+      "swiss_test_kit": "19",
+      "manufacturer_code_eu": "1304",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "Veritor System Rapid Detection of SARS-CoV-2",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Becton Dickinson",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1065",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "SARS-CoV-2 Antigen Rapid Test Kit",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Beijing Lepu Medical Technology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1331",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Wantai SARS-CoV-2 Ag Rapid Test (FIA)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Beijing Wantai Biological Pharmacy Enterprise Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1484",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "NowCheck COVID-19 Ag Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Bionote, Inc",
+      "swiss_test_kit": "11",
+      "manufacturer_code_eu": "1242",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "BIOSYNEX COVID-19 Ag BSS",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "BIOSYNEX SWISS SA",
+      "swiss_test_kit": "17",
+      "manufacturer_code_eu": "1223",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "CerTest SARS-CoV-2 Card test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "CerTest Biotec, S.L.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1173",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Genbody COVID-19 Ag Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "GenBody, Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1244",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "mö-screen Corona Antigen Testr",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "möLab GmbH, Langenfeld (D)",
+      "swiss_test_kit": "-",
+      "manufacturer_code_eu": "1779",
+      "eu_accepted": false,
+      "ch_accepted": true,
+      "active": true
+    }
+  ]
+}

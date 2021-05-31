@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <springProperty scope="context" name="app" source="spring.application.name"/>
+    <springProperty scope="context" name="withBootAdmin" source="spring.boot.admin.client.enabled"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <Pattern>%d %highlight(%-5level) [${app},%X{X-B3-TraceId:-}] %cyan(%logger{35}) - %msg %marker%n</Pattern>
+        </encoder>
+    </appender>
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <context/>
+                <loggerName>
+                    <fieldName>logger</fieldName>
+                    <shortenedLoggerNameLength>20</shortenedLoggerNameLength>
+                </loggerName>
+                <logLevel/>
+                <tags/>
+                <threadName/>
+                <mdc/>
+                <arguments/>
+                <logstashMarkers/>
+                <stackHash>
+                    <fieldName>exception-hash</fieldName>
+                </stackHash>
+                <stackTrace>
+                    <fieldName>exception</fieldName>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxDepthPerThrowable>40</maxDepthPerThrowable>
+                        <maxLength>4096</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                        <rootCauseFirst>true</rootCauseFirst>
+                        <exclude>sun\.reflect\..*\.invoke.*</exclude>
+                    </throwableConverter>
+                </stackTrace>
+                <message/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <springProfile name="cloud">
+
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>log.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                <fileNamePattern>log.log.%i</fileNamePattern>
+                <minIndex>1</minIndex>
+                <maxIndex>3</maxIndex>
+            </rollingPolicy>
+            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <MaxFileSize>2MB</MaxFileSize>
+            </triggeringPolicy>
+            <encoder>
+                <charset>UTF-8</charset>
+                <Pattern>%d %highlight(%-5level) [${app},%X{X-B3-TraceId:-}] %cyan(%logger{35}) - %msg %marker%n</Pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="JSON"/>
+            <if condition='isDefined("withBootAdmin")'>
+                <then>
+                    <if condition='property("withBootAdmin").equalsIgnoreCase("true")'>
+                        <then>
+                            <appender-ref ref="FILE"/>
+                        </then>
+                    </if>
+                </then>
+            </if>
+        </root>
+    </springProfile>
+
+
+
+    <springProfile name="!cloud">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+</configuration>

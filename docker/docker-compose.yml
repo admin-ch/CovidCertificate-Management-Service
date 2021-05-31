@@ -1,0 +1,10 @@
+version: '3'
+services:
+  db-cc-management:
+    image: postgres
+    ports:
+      - "3120:5432"
+    environment:
+      - POSTGRES_USER=cc-management
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=cc-management

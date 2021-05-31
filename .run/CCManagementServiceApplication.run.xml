@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CCManagementServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <module name="cc-management-service" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="ch.admin.bag.covidcertificate.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ch.admin.bag.covidcertificate.CCManagementServiceApplication" />
+    <option name="ACTIVE_PROFILES" value="local,mock-signing-service" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

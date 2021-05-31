@@ -1,0 +1,117 @@
+info:
+    build:
+        artifact: '@project.artifactId@'
+        description: '@project.description@'
+        name: '@project.name@'
+        version: '@project.version@'
+logging:
+  level:
+    ch:
+      admin:
+        bit:
+          jeap: DEBUG
+        bag: DEBUG
+    io:
+      swagger:
+        models:
+          parameters:
+            AbstractSerializableParameter: ERROR
+    org:
+      hibernate: ERROR
+      springframework:
+        security:
+          authentication:
+            event:
+              LoggerListener: ERROR
+          oauth2:
+            server:
+              resource:
+                web:
+                  BearerTokenAuthenticationFilter: INFO
+        web:
+          servlet:
+            resource:
+              ResourceHttpRequestHandler: INFO
+          filter:
+            CommonsRequestLoggingFilter: INFO
+    springfox:
+      documentation:
+        spring:
+          web:
+            readers:
+              operation:
+                CachingOperationNameGenerator: ERROR
+  pattern:
+    level: '[%X{correlationId}] %5p'
+  config: classpath:logback-spring.xml
+  file:
+    name: log.log
+server:
+    port: 8120
+    servlet:
+        context-path: /
+spring:
+    application:
+        name: cc-management-service
+    datasource:
+        url: jdbc:postgresql://localhost:3120/cc-management
+        username: cc-management
+        password: secret
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        hikari:
+            maximum-pool-size: 10
+            pool-name: hikari-cp-${spring.application.name}
+    jpa:
+        hibernate:
+            ddl-auto: validate
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        show-sql: false
+        open-in-view: false
+    flyway:
+        enabled: true
+        clean-on-validation-error: true
+        locations: classpath:db/migration/common, classpath:db/migration/postgresql
+    jackson:
+      serialization:
+        write_dates_as_timestamps: false
+    messages:
+        basename: mail-messages,validation-messages
+        encoding: UTF-8
+        fallback-to-system-locale: false
+
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 10MB
+    session:
+        store-type: none
+    data:
+        rest:
+            base-path: /api
+            max-page-size: 100
+            default-page-size: 20
+    main:
+        banner-mode: off
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'info,health,prometheus,loggers'
+  endpoint:
+    health:
+      show-details: always
+    flyway:
+      enabled: true
+
+cc-management-service:
+  rest:
+    connectTimeoutSeconds: 5
+    readTimeoutSeconds: 5
+  monitor:
+    prometheus:
+      secure: false
+
