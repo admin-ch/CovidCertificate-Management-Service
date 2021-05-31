@@ -21,7 +21,7 @@ public class Constants {
     public static final String NONE_PCR_TYPE_CODE = "LP217198-3";
     public static final int MAX_STRING_LENGTH = 50;
     public static final int DAYS_UNTIL_RECOVERY_VALID = 10;
-    public static final int RECOVERY_CERTIFICATE_VALIDITY_IN_DAYS = 180;
+    public static final int RECOVERY_CERTIFICATE_VALIDITY_IN_DAYS = 179;
 
     // KPI Logs constants
     public static final String KPI_TYPE_VACCINATION = "v";
@@ -33,7 +33,6 @@ public class Constants {
     public static final String KPI_TYPE_KEY = "type";
     public static final String KPI_CREATE_CERTIFICATE_SYSTEM_KEY = "cc";
     public static final String KPI_SYSTEM_UI = "ui";
-    public static final String KPI_SYSTEM_API = "api";
     public static final String KPI_REVOKE_CERTIFICATE_SYSTEM_KEY = "re";
     public static final String KPI_OTP_SYSTEM_KEY = "otp";
 
