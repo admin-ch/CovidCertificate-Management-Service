@@ -1,2 +1,1 @@
-# cc-management-service
-
+# CovidCertificate-Management-Service
