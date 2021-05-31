@@ -1,2 +1,1 @@
-# cc-management-service
-TODO
+# CovidCertificate-Management-Service

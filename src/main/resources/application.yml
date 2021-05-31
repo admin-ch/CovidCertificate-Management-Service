@@ -55,6 +55,7 @@ spring:
         name: cc-management-service
     datasource:
         url: jdbc:postgresql://localhost:3120/cc-management
+        # Only for local development
         username: cc-management
         password: secret
         type: com.zaxxer.hikari.HikariDataSource
