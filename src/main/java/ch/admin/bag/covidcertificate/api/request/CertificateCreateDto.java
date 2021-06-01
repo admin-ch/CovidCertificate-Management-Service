@@ -11,12 +11,15 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 @AllArgsConstructor
 public abstract class CertificateCreateDto {
-
     @JsonUnwrapped
+    @NonNull
     private CovidCertificatePersonDto personData;
+    @NonNull
     private String language;
+    private CovidCertificateAddressDto address;
 
     public void validate() {
         if (personData == null) {
@@ -26,6 +29,9 @@ public abstract class CertificateCreateDto {
         }
         if (!AcceptedLanguages.isAcceptedLanguage(language)) {
             throw new CreateCertificateException(INVALID_LANGUAGE);
+        }
+        if (address != null) {
+            address.validate();
         }
     }
 }
