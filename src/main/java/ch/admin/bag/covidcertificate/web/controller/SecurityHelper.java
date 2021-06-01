@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class SecurityHelper {
 
-    private static final String HOME_NAME = "homeName";
     private final ServletJeapAuthorization jeapAuthorization;
 
     public boolean authorizeUser(HttpServletRequest request) {
@@ -32,13 +31,18 @@ public class SecurityHelper {
             displayName = jeapAuthenticationToken.getTokenName();
         }
 
-        if (jeapAuthenticationToken.getToken().getClaimAsString(HOME_NAME) != null &&
-                jeapAuthenticationToken.getToken().getClaimAsString(HOME_NAME).startsWith("HIN-") &&
+        if (jeapAuthenticationToken.getUserRoles().contains("bag-cc-superuser") &&
+                !jeapAuthenticationToken.getUserRoles().contains("bag-cc-strongauth")) {
+            log.warn("Superuser not allowed to use the application without strongauth...");
+            log.warn("userroles: {}", jeapAuthenticationToken.getUserRoles());
+            throw new AccessDeniedException("Access denied for Superuser without strongauth");
+        }
+
+        if (jeapAuthenticationToken.getUserRoles().contains("bag-cc-hin-epr") &&
                 !jeapAuthenticationToken.getUserRoles().contains("bag-cc-hincode") &&
                 !jeapAuthenticationToken.getUserRoles().contains("bag-cc-personal")) {
 
             log.warn("HIN-User not allowed to use the application...");
-            log.warn("homeName: {}", jeapAuthenticationToken.getToken().getClaimAsString(HOME_NAME));
             log.warn("userroles: {}", jeapAuthenticationToken.getUserRoles());
             throw new AccessDeniedException("Access denied for HIN with CH-Login");
         }

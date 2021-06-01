@@ -45,8 +45,7 @@ class SecurityHelperTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         Jwt jwt = mock(Jwt.class);
         when(jwt.getClaimAsString(anyString())).thenReturn("test");
-        when(jwt.getClaimAsString("homeName")).thenReturn("HIN-LOGIN");
-        JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).withUserRoles("bag-cc-hincode", "bac-cc-personal").build();
+        JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).withUserRoles("bag-cc-hin-epr", "bag-cc-hincode", "bac-cc-personal").build();
         when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
         boolean authorizeUser = securityHelper.authorizeUser(request);
         assertTrue(authorizeUser);
@@ -57,8 +56,31 @@ class SecurityHelperTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         Jwt jwt = mock(Jwt.class);
         when(jwt.getClaimAsString(anyString())).thenReturn("test");
-        when(jwt.getClaimAsString("homeName")).thenReturn("HIN-LOGIN");
-        JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).build();
+        JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).withUserRoles("bag-cc-hin-epr").build();
+        when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
+
+        assertThrows(AccessDeniedException.class, () -> {
+            securityHelper.authorizeUser(request);
+        });
+    }
+
+    @Test
+    void authorizeUser_superuserAuthorized() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        Jwt jwt = mock(Jwt.class);
+        when(jwt.getClaimAsString(anyString())).thenReturn("test");
+        JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).withUserRoles("bag-cc-superuser", "bag-cc-strongauth").build();
+        when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
+        boolean authorizeUser = securityHelper.authorizeUser(request);
+        assertTrue(authorizeUser);
+    }
+
+    @Test
+    void authorizeUser_superuserNotAuthorized() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        Jwt jwt = mock(Jwt.class);
+        when(jwt.getClaimAsString(anyString())).thenReturn("test");
+        JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).withUserRoles("bag-cc-superuser").build();
         when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
 
         assertThrows(AccessDeniedException.class, () -> {
