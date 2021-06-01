@@ -5,7 +5,9 @@ import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
+import ch.admin.bag.covidcertificate.domain.KpiData;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.KpiDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -34,6 +36,7 @@ public class CovidCertificateGenerationController {
     private final SecurityHelper securityHelper;
     private final CovidCertificateGenerationService covidCertificateGenerationService;
     private final ServletJeapAuthorization jeapAuthorization;
+    private final KpiDataService kpiLogService;
 
     @PostMapping("/vaccination")
     @PreAuthorize("hasRole('bag-cc-certificatecreator')")
@@ -74,7 +77,9 @@ public class CovidCertificateGenerationController {
     private void logKpi(String type) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
-            log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, ZonedDateTime.now(SWISS_TIMEZONE).format(LOG_FORMAT)), kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_TYPE_KEY, type), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
+            LocalDateTime kpiTimestamp = LocalDateTime.now();
+            log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_TYPE_KEY, type), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
+            kpiLogService.log(new KpiData(kpiTimestamp, type, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
         }
     }
 }
