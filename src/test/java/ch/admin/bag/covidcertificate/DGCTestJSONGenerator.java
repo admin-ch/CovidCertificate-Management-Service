@@ -37,7 +37,7 @@ public class DGCTestJSONGenerator {
     private static final String PNG = ".png";
     private static final String JSON = ".json";
     private static final Integer VERSION = 1;
-    private static final String JSON_SCHEMA = "1.0.0";
+    private static final String JSON_SCHEMA = "1.2.1";
     private static final String CERTIFICATE = "TODO: Replace with public key.";
     private static final String ZONE_ID = "Europe/Zurich";
     private static final String DESCRIPTION = "VALID ";
