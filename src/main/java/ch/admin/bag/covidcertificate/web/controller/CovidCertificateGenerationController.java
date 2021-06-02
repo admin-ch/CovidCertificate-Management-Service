@@ -39,7 +39,7 @@ public class CovidCertificateGenerationController {
     private final KpiDataService kpiLogService;
 
     @PostMapping("/vaccination")
-    @PreAuthorize("hasRole('bag-cc-certificatecreator')")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createVaccinationCertificate(@Valid @RequestBody VaccinationCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
         log.info("Call of Create for vaccination certificate");
         securityHelper.authorizeUser(request);
@@ -51,7 +51,7 @@ public class CovidCertificateGenerationController {
     }
 
     @PostMapping("/test")
-    @PreAuthorize("hasRole('bag-cc-certificatecreator')")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createTestCertificate(@Valid @RequestBody TestCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
         log.info("Call of Create for test certificate");
         securityHelper.authorizeUser(request);
@@ -63,7 +63,7 @@ public class CovidCertificateGenerationController {
     }
 
     @PostMapping("/recovery")
-    @PreAuthorize("hasRole('bag-cc-certificatecreator')")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createRecoveryCertificate(@Valid @RequestBody RecoveryCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
         log.info("Call of Create for recovery certificate");
         securityHelper.authorizeUser(request);

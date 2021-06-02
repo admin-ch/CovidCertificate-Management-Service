@@ -35,7 +35,7 @@ public class RevocationController {
     private final KpiDataService kpiLogService;
 
     @PostMapping
-    @PreAuthorize("hasRole('bag-cc-certificatecreator')")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "201", description = "CREATED")
     public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto, HttpServletRequest request) {
         log.info("Call of create revocation.");
@@ -51,7 +51,7 @@ public class RevocationController {
         if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
             LocalDateTime kpiTimestamp = LocalDateTime.now();
             log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
-            kpiLogService.log(new KpiData(kpiTimestamp, KPI_SYSTEM_UI, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
+            kpiLogService.log(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
         }
     }
 }
