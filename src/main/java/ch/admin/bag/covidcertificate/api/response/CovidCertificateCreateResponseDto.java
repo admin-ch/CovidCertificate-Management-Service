@@ -16,7 +16,6 @@ public class CovidCertificateCreateResponseDto {
     private byte[] qrCode;
     @NonNull
     private String uvci;
-    @JsonInclude(Include.NON_NULL)
     @Setter(AccessLevel.PUBLIC)
-    private Boolean printJobSent; // use Boolean instead of boolean for null status
+    private boolean printJobSent;
 }

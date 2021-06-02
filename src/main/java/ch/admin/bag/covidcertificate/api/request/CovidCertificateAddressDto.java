@@ -1,26 +1,25 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ADDRESS;
 
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CovidCertificateAddressDto {
     private String line1;
     private String line2;
-    private String npa;
+    private String zipCode;
     private String city;
 
     public void validate() {
-        if (line1 == null || npa == null || city == null) {
+        if (line1 == null || zipCode == null || city == null) {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
-        if (npa.length() != 4 || !npa.matches("[0-9]+")) {
+        if (zipCode.length() != 4 || !zipCode.matches("[0-9]+")) {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
     }
