@@ -5,7 +5,6 @@ import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
@@ -31,7 +30,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
 
-@Ignore
+@Ignore("Util for automated JSON file generation for EU tests.")
 @ExtendWith(MockitoExtension.class)
 public class DGCTestJSONGenerator {
     private static final String PATH = "target/dgc-testdata/";
@@ -100,7 +99,8 @@ public class DGCTestJSONGenerator {
         CBORObject hCertCBORObject = CBORObject.DecodeFromBytes(hCertCBORBytes);
         String hCert = hCertCBORObject.ToJSONString();
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.findAndRegisterModules();
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         Object hCertObject = null;
         String certificateType = null;
         if (hCert.contains(IDENTIFIER_VACCINATION)) {
