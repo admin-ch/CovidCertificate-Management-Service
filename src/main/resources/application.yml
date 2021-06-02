@@ -73,7 +73,7 @@ spring:
         open-in-view: false
     flyway:
         enabled: true
-        clean-on-validation-error: true
+        clean-on-validation-error: false
         locations: classpath:db/migration/common, classpath:db/migration/postgresql
     jackson:
       serialization:
