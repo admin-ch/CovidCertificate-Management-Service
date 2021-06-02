@@ -24,6 +24,7 @@
                 <threadName/>
                 <mdc/>
                 <arguments/>
+                <sequence/>
                 <logstashMarkers/>
                 <stackHash>
                     <fieldName>exception-hash</fieldName>
