@@ -2,11 +2,11 @@ package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import org.junit.Test;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_LANGUAGE;
-import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
@@ -21,6 +21,14 @@ public class CertificateCreateDtoTest {
                 String language
         ) {
             super(personData, language);
+        }
+
+        public CertificateCreateDtoIml(
+                CovidCertificatePersonDto personData,
+                String language,
+                CovidCertificateAddressDto address
+        ) {
+            super(personData, language, address);
         }
     }
 
@@ -59,6 +67,50 @@ public class CertificateCreateDtoTest {
         testee = new CertificateCreateDtoIml(
                 personDto,
                 language
+        );
+        assertDoesNotThrow(testee::validate);
+    }
+
+    @Test
+    public void testInvalidAddress() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto(null, null, "1000", "test")
+        );
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("test", null, null, "test")
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("test", null, "1000", null)
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+    }
+
+    @Test
+    public void testValidAddress() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("test", null, "1000", "test")
+        );
+        assertDoesNotThrow(testee::validate);
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("test", "test", "1000", "test")
         );
         assertDoesNotThrow(testee::validate);
     }
