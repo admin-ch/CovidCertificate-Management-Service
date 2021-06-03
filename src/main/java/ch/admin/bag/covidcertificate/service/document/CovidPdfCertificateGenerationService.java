@@ -322,6 +322,7 @@ public class CovidPdfCertificateGenerationService {
         PdfPCell titleCell = new PdfPCell(new Phrase(messageSource.getMessage(key, null, locale), fontRow));
         titleCell.setBorder(Rectangle.NO_BORDER);
         titleCell.setPaddingTop(15);
+        titleCell.setPaddingLeft(0);
         table.addCell(titleCell);
 
         PdfPCell valueCell = new PdfPCell(new Phrase(value, fontRow));
@@ -333,6 +334,7 @@ public class CovidPdfCertificateGenerationService {
         titleEnglishCell.setBorder(Rectangle.NO_BORDER);
         titleEnglishCell.setPaddingTop(0);
         titleEnglishCell.setHorizontalAlignment(Rectangle.LEFT);
+        titleEnglishCell.setPaddingLeft(0);
         table.addCell(titleEnglishCell);
 
         PdfPCell valueEnglishCell = new PdfPCell(new Phrase(valueEn, fontEnglish));
