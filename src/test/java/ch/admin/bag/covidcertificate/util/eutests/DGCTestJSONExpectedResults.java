@@ -1,4 +1,4 @@
-package ch.admin.bag.covidcertificate;
+package ch.admin.bag.covidcertificate.util.eutests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NoArgsConstructor;

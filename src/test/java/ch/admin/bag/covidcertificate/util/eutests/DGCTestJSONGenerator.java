@@ -1,4 +1,4 @@
-package ch.admin.bag.covidcertificate;
+package ch.admin.bag.covidcertificate.util.eutests;
 
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
