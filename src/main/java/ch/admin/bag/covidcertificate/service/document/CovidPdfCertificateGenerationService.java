@@ -97,7 +97,7 @@ public class CovidPdfCertificateGenerationService {
 
         messageSource = messageSource();
 
-        logoBund = getLogo("bund.png", 60);
+        logoBund = getLogo("bund.png", 15);
         logoApple = getLogo("appstore.png", 49);
         logoGoogle = getLogo("googleplay.png", 50);
         logoApp = getLogo("appicon.png", 100);
@@ -271,8 +271,8 @@ public class CovidPdfCertificateGenerationService {
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setColspan(2);
-        cell.setPaddingTop(30);
-        cell.setPaddingLeft(20);
+        cell.setPaddingTop(32);
+        cell.setPaddingLeft(22);
         table.addCell(cell);
 
         PdfPCell cell2 = new PdfPCell(new Phrase(data.getIdentifier(), fontRow));
