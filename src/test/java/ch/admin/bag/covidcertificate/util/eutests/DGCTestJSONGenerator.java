@@ -5,10 +5,7 @@ import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.Result;
+import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.upokecenter.cbor.CBORObject;
@@ -24,11 +21,13 @@ import se.digg.dgc.encoding.Zlib;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
+import java.util.zip.ZipException;
 
 @Ignore("Util for automated JSON file generation for EU tests.")
 @ExtendWith(MockitoExtension.class)
@@ -55,52 +54,100 @@ public class DGCTestJSONGenerator {
         }
     }
 
-    private void createJSONFile(String qrCodeFilename) throws Exception {
-        DGCTestJSON dgcTestJSON = new DGCTestJSON();
-
-        // Getting the image as base64 string.
+    private static void createJSONFile(String qrCodeFilename) throws Exception {
         File qrCodeFile = new File(PATH + qrCodeFilename);
+        DGCTestJSON dgcTestJSON = new DGCTestJSON();
+        add2dCodeToJSON(dgcTestJSON, qrCodeFile);
+        String qrCodeContent = addPrefixToJSON(dgcTestJSON, qrCodeFile);
+        String qrCodeContentWithoutPrefix = addBase45ToJSON(dgcTestJSON, qrCodeContent);
+        byte[] qrCodeContentBase45DecodedBytes = addCompreddedToJSON(dgcTestJSON, qrCodeContentWithoutPrefix);
+        byte[] qrCodeContentDecompressedBytes = addCoseToJSON(dgcTestJSON, qrCodeContentBase45DecodedBytes);
+        byte[] hCertCBORBytes = addCborToJSON(dgcTestJSON, qrCodeContentDecompressedBytes);
+        ObjectMapper objectMapper = getObjectMapper();
+        String certificateType = addJsonToJSON(objectMapper, dgcTestJSON, hCertCBORBytes);
+        addTestContextToJSON(dgcTestJSON, certificateType);
+        addExpectedRulesToJSON(dgcTestJSON);
+        writeJSONFile(qrCodeFilename, objectMapper, dgcTestJSON);
+    }
+
+    private static ObjectMapper getObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return objectMapper;
+    }
+
+    /**
+     * Gets and adds the image as base64 string.
+     */
+    private static void add2dCodeToJSON(DGCTestJSON dgcTestJSON, File qrCodeFile) throws IOException {
         byte[] qrCodeBytes = Files.readAllBytes(qrCodeFile.toPath());
         byte[] qrCodeBase64Bytes = Base64Utils.encode(qrCodeBytes);
         String qrCodeBase64String = new String(qrCodeBase64Bytes);
         dgcTestJSON.setCode2d(qrCodeBase64String);
+    }
 
-        // Getting the content of the QR code.
+    /**
+     * Gets and adds the content of the QR code.
+     */
+    private static String addPrefixToJSON(DGCTestJSON dgcTestJSON, File qrCodeFile) throws IOException, NotFoundException {
         BufferedImage qrCodeBufferedImage = ImageIO.read(qrCodeFile);
         LuminanceSource qrCodeSource = new BufferedImageLuminanceSource(qrCodeBufferedImage);
         BinaryBitmap qrCodeBitmap = new BinaryBitmap(new HybridBinarizer(qrCodeSource));
         Result qrCodeResult = new MultiFormatReader().decode(qrCodeBitmap);
         String qrCodeContent = qrCodeResult.getText();
         dgcTestJSON.setPrefix(qrCodeContent);
+        return qrCodeContent;
+    }
 
-        // Getting the content of the QR code without prefix.
+    /**
+     * Gets and adds the content of the QR code without prefix.
+     */
+    private static String addBase45ToJSON(DGCTestJSON dgcTestJSON, String qrCodeContent) {
         String qrCodeContentWithoutPrefix = qrCodeContent.replaceFirst(PREFIX, "");
         dgcTestJSON.setBase45(qrCodeContentWithoutPrefix);
+        return qrCodeContentWithoutPrefix;
+    }
 
-        // Getting the content of the QR code base45 decoded.
+    /**
+     * Gets and adds the base45 decoded content of the QR code.
+     */
+    private static byte[] addCompreddedToJSON(DGCTestJSON dgcTestJSON, String qrCodeContentWithoutPrefix) {
         byte[] qrCodeContentBase45DecodedBytes = Base45.getDecoder().decode(qrCodeContentWithoutPrefix);
         String qrCodeContentBase45DecodedHexString = Hex.encodeHexString(qrCodeContentBase45DecodedBytes);
         dgcTestJSON.setCompressed(qrCodeContentBase45DecodedHexString);
+        return qrCodeContentBase45DecodedBytes;
+    }
 
-        // Getting the content of the QR code ZLib decompressed.
+    /**
+     * Gets and adds the ZLib decompressed content of the QR code.
+     */
+    private static byte[] addCoseToJSON(DGCTestJSON dgcTestJSON, byte[] qrCodeContentBase45DecodedBytes) throws ZipException {
         byte[] qrCodeContentDecompressedBytes = Zlib.decompress(qrCodeContentBase45DecodedBytes, true);
         String qrCodeContentDecompressedHexString = Hex.encodeHexString(qrCodeContentDecompressedBytes);
         dgcTestJSON.setCose(qrCodeContentDecompressedHexString);
+        return qrCodeContentDecompressedBytes;
+    }
 
-        // Getting the certificate JSON as CBOR encoded.
+    /**
+     * Gets and adds the CBOR encoded certificate JSON.
+     */
+    private static byte[] addCborToJSON(DGCTestJSON dgcTestJSON, byte[] qrCodeContentDecompressedBytes) {
         CBORObject coseCBORObject = CBORObject.DecodeFromBytes(qrCodeContentDecompressedBytes);
         byte[] cosePayloadBytes = coseCBORObject.get(2).GetByteString();
         CBORObject cosePayloadCBORObject = CBORObject.DecodeFromBytes(cosePayloadBytes);
         byte[] hCertCBORBytes = cosePayloadCBORObject.get(-260).get(1).EncodeToBytes();
         String hCertHexString = Hex.encodeHexString(hCertCBORBytes);
         dgcTestJSON.setCbor(hCertHexString);
+        return hCertCBORBytes;
+    }
 
-        // Getting the certificate JSON as string.
+    /**
+     * Gets and adds the certificate JSON as string.
+     */
+    private static String addJsonToJSON(ObjectMapper objectMapper, DGCTestJSON dgcTestJSON, byte[] hCertCBORBytes) throws com.fasterxml.jackson.core.JsonProcessingException {
         CBORObject hCertCBORObject = CBORObject.DecodeFromBytes(hCertCBORBytes);
         String hCert = hCertCBORObject.ToJSONString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         Object hCertObject = null;
         String certificateType = null;
         if (hCert.contains(IDENTIFIER_VACCINATION)) {
@@ -114,8 +161,10 @@ public class DGCTestJSONGenerator {
             certificateType = "Recovery";
         }
         dgcTestJSON.setJson(hCertObject);
+        return certificateType;
+    }
 
-        // Setting the test context.
+    private static void addTestContextToJSON(DGCTestJSON dgcTestJSON, String certificateType) {
         DGCTestJSONTestContext dgcTestJSONTestContext = new DGCTestJSONTestContext();
         dgcTestJSONTestContext.setVersion(VERSION);
         dgcTestJSONTestContext.setJsonSchema(JSON_SCHEMA);
@@ -123,8 +172,9 @@ public class DGCTestJSONGenerator {
         dgcTestJSONTestContext.setValidationClock(OffsetDateTime.now(Clock.system(ZoneId.of(ZONE_ID))).withNano(0).toString());
         dgcTestJSONTestContext.setDescription(DESCRIPTION + certificateType);
         dgcTestJSON.setTestContext(dgcTestJSONTestContext);
+    }
 
-        // Setting the expected results.
+    private static void addExpectedRulesToJSON(DGCTestJSON dgcTestJSON) {
         DGCTestJSONExpectedResults dgcTestJSONExpectedResults = new DGCTestJSONExpectedResults();
         dgcTestJSONExpectedResults.setExpectedValidObject(true);
         dgcTestJSONExpectedResults.setExpectedSchemaValidation(true);
@@ -139,8 +189,9 @@ public class DGCTestJSONGenerator {
         dgcTestJSONExpectedResults.setExpectedPictureDecode(true);
         dgcTestJSONExpectedResults.setExpectedExpirationCheck(true);
         dgcTestJSON.setExpectedResults(dgcTestJSONExpectedResults);
+    }
 
-        // Creating the JSON file.
+    private static void writeJSONFile(String qrCodeFilename, ObjectMapper objectMapper, DGCTestJSON dgcTestJSON) throws IOException {
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         objectMapper.writeValue(new File(PATH + qrCodeFilename.replace(PNG, JSON)), dgcTestJSON);
     }
