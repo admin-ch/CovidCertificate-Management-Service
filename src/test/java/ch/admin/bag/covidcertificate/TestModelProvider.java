@@ -74,7 +74,7 @@ public class TestModelProvider {
         return new TestCertificateDataDto(
                 manufacturerCode,
                 typeCode,
-                ZonedDateTime.of(LocalDateTime.of(2021, Month.APRIL, 4, 16, 25), SWISS_TIMEZONE),
+                ZonedDateTime.of(LocalDateTime.of(2021, Month.APRIL, 4, 16, 25, 12, 354), SWISS_TIMEZONE),
                 "Test Center",
                 "CH"
         );
