@@ -11,6 +11,7 @@ import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public class TestCertificateQrCodeMapper {
                 testValueSet.getTypeCode(),
                 testValueSet.getName(),
                 testValueSet.getManufacturerCodeEu(),
-                testCertificateDataDto.getSampleDateTime(),
+                testCertificateDataDto.getSampleDateTime().truncatedTo(ChronoUnit.SECONDS),
                 NegativeTestResult.CODE,
                 testCertificateDataDto.getTestingCentreOrFacility(),
                 testCertificateDataDto.getMemberStateOfTest(),
