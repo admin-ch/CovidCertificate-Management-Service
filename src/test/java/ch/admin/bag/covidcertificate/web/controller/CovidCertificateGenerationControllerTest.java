@@ -130,7 +130,7 @@ class CovidCertificateGenerationControllerTest {
         @Test
         void returns400StatusCode_ifInvalidZipCode() throws Exception {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
-            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", null);
+            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 0);
 
             mockMvc.perform(post(URL)
                     .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -140,7 +140,7 @@ class CovidCertificateGenerationControllerTest {
                     .andExpect(status().isBadRequest())
                     .andReturn();
 
-            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", "100");
+            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 999);
 
             mockMvc.perform(post(URL)
                     .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -150,7 +150,7 @@ class CovidCertificateGenerationControllerTest {
                     .andExpect(status().isBadRequest())
                     .andReturn();
 
-            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", "10000");
+            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 10000);
 
             mockMvc.perform(post(URL)
                     .accept(MediaType.APPLICATION_JSON_VALUE)

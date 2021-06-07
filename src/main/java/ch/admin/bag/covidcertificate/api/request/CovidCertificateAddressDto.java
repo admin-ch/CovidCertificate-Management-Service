@@ -12,14 +12,14 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ADDRESS;
 public class CovidCertificateAddressDto {
     private String line1;
     private String line2;
-    private String zipCode;
+    private int zipCode;
     private String city;
 
     public void validate() {
-        if (line1 == null || zipCode == null || city == null) {
+        if (line1 == null || city == null) {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
-        if (zipCode.length() != 4 || !zipCode.matches("[0-9]+")) {
+        if (zipCode < 1000 || zipCode > 9999) {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
     }

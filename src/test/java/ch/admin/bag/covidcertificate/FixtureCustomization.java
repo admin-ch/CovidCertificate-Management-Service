@@ -66,7 +66,7 @@ public class FixtureCustomization {
         });
     }
 
-    public static void customizeCovidCertificateAddressDto(JFixture fixture, CertificateCreateDto createDto, String field, String value){
+    public static void customizeCovidCertificateAddressDto(JFixture fixture, CertificateCreateDto createDto, String field, Object value){
         fixture.customise().lazyInstance(CovidCertificateAddressDto.class, () -> {
             var covidCertificateAddressDto = new JFixture().create(CovidCertificateAddressDto.class);
             ReflectionTestUtils.setField(covidCertificateAddressDto, field, value);
