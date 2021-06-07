@@ -5,6 +5,7 @@ import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
+import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.service.document.CovidPdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,7 +22,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CovidCertificateGenerationService {
     private final BarcodeService barcodeService;
-    private final PrintQueueService printQueueService;
+    private final PrintQueueClient printQueueClient;
     private final ObjectMapper objectMapper;
     private final CovidPdfCertificateGenerationService covidPdfCertificateGenerationService;
     private final CovidCertificateDtoMapperService covidCertificateDtoMapperService;
@@ -53,7 +54,7 @@ public class CovidCertificateGenerationService {
 
         CovidCertificateCreateResponseDto responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         if (createDto.getAddress() != null) {
-            boolean printJobSent = printQueueService.sendPrintJob(createDto.getAddress());
+            boolean printJobSent = printQueueClient.sendPrintJob(createDto.getAddress());
             responseDto.setPrintJobSent(printJobSent);
         }
         return responseDto;
