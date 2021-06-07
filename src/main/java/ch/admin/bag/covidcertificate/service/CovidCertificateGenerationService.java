@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
@@ -54,7 +55,8 @@ public class CovidCertificateGenerationService {
 
         CovidCertificateCreateResponseDto responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         if (createDto.getAddress() != null) {
-            boolean printJobSent = printQueueClient.sendPrintJob(createDto.getAddress());
+            boolean printJobSent = printQueueClient.sendPrintJob(
+                    CertificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
             responseDto.setPrintJobSent(printJobSent);
         }
         return responseDto;
