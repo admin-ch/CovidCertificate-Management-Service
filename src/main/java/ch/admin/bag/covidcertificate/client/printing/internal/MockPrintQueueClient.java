@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-@Profile(ProfileRegistry.PRINTING_QUEUE_MOCK)
+@Profile(ProfileRegistry.PRINTING_SERVICE_MOCK)
 public class MockPrintQueueClient implements PrintQueueClient {
     @Override
     public boolean sendPrintJob(CertificatePrintRequestDto printRequestDto) {
