@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
         "spring.flyway.clean-on-validation-error=true"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@ActiveProfiles("local")
+@ActiveProfiles({"local","mock-signing-service","mock-printing-service"})
+@Disabled
 public class RevocationRepositoryIntegrationTest {
     @Autowired
     private RevocationRepository revocationRepository;
