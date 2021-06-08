@@ -35,7 +35,6 @@ cc-management-service:
       password: "{noop}secret"
   allowed-origin: "*"
 
-
 cc-signing-service:
   url: "https://localhost:8443/cc-signing/sign"
 
