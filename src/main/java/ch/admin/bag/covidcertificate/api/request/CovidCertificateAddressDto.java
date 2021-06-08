@@ -11,12 +11,12 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ADDRESS;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CovidCertificateAddressDto {
-    private String street;
+    private String streetAndNr;
     private int zipCode;
     private String city;
 
     public void validate() {
-        if (!StringUtils.hasText(street) || !StringUtils.hasText(city)) {
+        if (!StringUtils.hasText(streetAndNr) || !StringUtils.hasText(city)) {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
         if (zipCode < 1000 || zipCode > 9999) {
