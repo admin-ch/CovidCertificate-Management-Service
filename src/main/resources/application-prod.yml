@@ -37,6 +37,9 @@ cc-management-service:
 cc-signing-service:
   url: "https://covidcertificate-signing.bag.admin.ch/bag-vaccinecer-webapp/sign"
 
+cc-printing-service:
+  url: "https://cc-printing-service.app.cfap02.atlantica.admin.ch/api/v1/print"
+
 ## Mutual-SSL configuration
 app:
   conn:

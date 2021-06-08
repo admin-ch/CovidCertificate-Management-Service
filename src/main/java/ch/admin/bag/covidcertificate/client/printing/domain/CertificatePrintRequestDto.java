@@ -20,4 +20,5 @@ public class CertificatePrintRequestDto {
     private int zipCode;
     private String city;
     private String language;
+    private String cantonCodeSender;
 }

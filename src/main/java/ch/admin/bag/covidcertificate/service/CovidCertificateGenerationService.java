@@ -55,8 +55,7 @@ public class CovidCertificateGenerationService {
 
         CovidCertificateCreateResponseDto responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         if (createDto.getAddress() != null) {
-            boolean printJobSent = printQueueClient.sendPrintJob(
-                    CertificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
+            boolean printJobSent = printQueueClient.sendPrintJob(CertificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
             responseDto.setPrintJobSent(printJobSent);
         }
         return responseDto;

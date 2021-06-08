@@ -12,6 +12,6 @@ public class CertificatePrintRequestDtoMapper {
         CovidCertificateAddressDto addressDto = createDto.getAddress();
         String addressLine1 = createDto.getPersonData().getName().getGivenName() + " " + createDto.getPersonData().getName().getFamilyName();
         return new CertificatePrintRequestDto(pdf, uvci, addressLine1, addressDto.getStreetAndNr(),
-                addressDto.getZipCode(), addressDto.getCity(), createDto.getLanguage());
+                addressDto.getZipCode(), addressDto.getCity(), createDto.getLanguage(), createDto.getAddress().getCantonCodeSender());
     }
 }

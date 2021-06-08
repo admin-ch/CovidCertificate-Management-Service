@@ -14,8 +14,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +30,7 @@ public class DefaultPrintQueueClient implements PrintQueueClient {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUri);
 
         String uri = builder.toUriString();
-        log.debug("Call the PrintingService");
+        log.debug("Call the PrintingService with url {}", serviceUri);
         try {
             ResponseEntity<Void> response = defaultWebClient.post()
                     .uri(uri)

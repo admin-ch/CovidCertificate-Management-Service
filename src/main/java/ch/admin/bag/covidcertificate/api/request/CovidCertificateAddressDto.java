@@ -14,9 +14,10 @@ public class CovidCertificateAddressDto {
     private String streetAndNr;
     private int zipCode;
     private String city;
+    private String cantonCodeSender;
 
     public void validate() {
-        if (!StringUtils.hasText(streetAndNr) || !StringUtils.hasText(city)) {
+        if (!StringUtils.hasText(streetAndNr) || !StringUtils.hasText(city) || !StringUtils.hasText(cantonCodeSender)) {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
         if (zipCode < 1000 || zipCode > 9999) {
