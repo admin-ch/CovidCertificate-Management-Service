@@ -6,9 +6,14 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CovidCertificateCreateResponseDto {
+    @NonNull
     private byte[] pdf;
+    @NonNull
     private byte[] qrCode;
+    @NonNull
     private String uvci;
+    @Setter(AccessLevel.PUBLIC)
+    private boolean printJobSent;
 }

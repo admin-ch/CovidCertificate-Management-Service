@@ -1,6 +1,6 @@
-package ch.admin.bag.covidcertificate.client.internal;
+package ch.admin.bag.covidcertificate.client.signing.internal;
 
-import ch.admin.bag.covidcertificate.client.SigningClient;
+import ch.admin.bag.covidcertificate.client.signing.SigningClient;
 import ch.admin.bag.covidcertificate.config.ProfileRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

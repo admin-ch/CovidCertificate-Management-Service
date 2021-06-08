@@ -8,7 +8,7 @@
       </pattern>
     </extension>
     <option name="SPRING_BOOT_MAIN_CLASS" value="ch.admin.bag.covidcertificate.CCManagementServiceApplication" />
-    <option name="ACTIVE_PROFILES" value="local,mock-signing-service" />
+    <option name="ACTIVE_PROFILES" value="local,mock-signing-service,mock-printing-service" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <option name="SHORTEN_COMMAND_LINE" value="NONE" />
     <method v="2">

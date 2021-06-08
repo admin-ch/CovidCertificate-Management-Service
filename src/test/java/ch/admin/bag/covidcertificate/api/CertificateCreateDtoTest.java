@@ -2,11 +2,11 @@ package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import org.junit.Test;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_LANGUAGE;
-import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
@@ -21,6 +21,14 @@ public class CertificateCreateDtoTest {
                 String language
         ) {
             super(personData, language);
+        }
+
+        public CertificateCreateDtoIml(
+                CovidCertificatePersonDto personData,
+                String language,
+                CovidCertificateAddressDto address
+        ) {
+            super(personData, language, address);
         }
     }
 
@@ -59,6 +67,112 @@ public class CertificateCreateDtoTest {
         testee = new CertificateCreateDtoIml(
                 personDto,
                 language
+        );
+        assertDoesNotThrow(testee::validate);
+    }
+
+    @Test
+    public void testInvalidAddressStreet() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto(null, 1000, "city", "BE")
+        );
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("", 0, "city", "BE")
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("   ", 0, "city", "BE")
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+    }
+
+    @Test
+    public void testInvalidAddressCity() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("street", 1000, null, "BE")
+        );
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("street", 0, "", "BE")
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("street", 0, "   ", "BE")
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+    }
+
+    @Test
+    public void testAddressZipCode() {
+        // test low
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("street", 999, "city", "BE")
+        );
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("street", 1000, "city", "BE")
+        );
+        assertDoesNotThrow(testee::validate);
+
+        // test high
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("street", 10000, "city", "BE")
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("street", 9999, "city", "BE")
+        );
+        assertDoesNotThrow(testee::validate);
+    }
+
+    @Test
+    public void testValidAddress() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("street", 1000, "city", "BE")
+        );
+        assertDoesNotThrow(testee::validate);
+
+        testee = new CertificateCreateDtoIml(
+                personDto,
+                "de",
+                new CovidCertificateAddressDto("street", 1000, "city", "BE")
         );
         assertDoesNotThrow(testee::validate);
     }
