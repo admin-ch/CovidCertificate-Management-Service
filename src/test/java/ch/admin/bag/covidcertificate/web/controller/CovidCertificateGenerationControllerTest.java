@@ -178,7 +178,7 @@ class CovidCertificateGenerationControllerTest {
         @Test
         void returns400StatusCode_ifInvalidLine1() throws Exception {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
-            customizeCovidCertificateAddressDto(fixture, createDto, "street", null);
+            customizeCovidCertificateAddressDto(fixture, createDto, "streetAndNr", null);
 
             mockMvc.perform(post(URL)
                     .accept(MediaType.APPLICATION_JSON_VALUE)
