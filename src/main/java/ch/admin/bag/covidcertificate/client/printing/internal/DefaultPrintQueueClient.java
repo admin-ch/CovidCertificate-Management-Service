@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.client.printing.internal;
 
+import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequestDto;
 import ch.admin.bag.covidcertificate.config.ProfileRegistry;
@@ -13,6 +14,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
+
+import static ch.admin.bag.covidcertificate.api.Constants.PRINTING_FAILED;
 
 @Service
 @Slf4j
@@ -43,9 +46,8 @@ public class DefaultPrintQueueClient implements PrintQueueClient {
             return response != null && response.getStatusCodeValue() == 201;
 
         } catch (WebClientResponseException e) {
-            log.warn("Received error message: {}", e.getResponseBodyAsString());
+            log.error("Received error message", e);
+            throw new CreateCertificateException(PRINTING_FAILED);
         }
-
-        return false;
     }
 }
