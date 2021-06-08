@@ -7,8 +7,12 @@ import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
 
-import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
-import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZonedDateTime;
+
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -56,8 +60,9 @@ public class TestCertificateQrCodeMapperTest {
 
     @Test
     public void mapsSampleDateTime() {
-        TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
-        assertEquals(incoming.getTestInfo().get(0).getSampleDateTime(), actual.getTestInfo().get(0).getSampleDateTime());
+        ZonedDateTime sampleDateTime = ZonedDateTime.of(LocalDateTime.of(2021, Month.APRIL, 4, 16, 25, 12), SWISS_TIMEZONE);
+        TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(getTestCertificateCreateDto("", ""), testValueSet);
+        assertEquals(sampleDateTime, actual.getTestInfo().get(0).getSampleDateTime());
     }
 
     @Test

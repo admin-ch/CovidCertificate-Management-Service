@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
+import ch.admin.bag.covidcertificate.service.KpiDataService;
 import ch.admin.bag.covidcertificate.service.RevocationService;
 import ch.admin.bag.covidcertificate.testutil.JwtTestUtil;
 import ch.admin.bag.covidcertificate.testutil.KeyPairTestUtil;
@@ -46,6 +47,8 @@ class RevocationControllerSecurityTest {
     private SecurityHelper securityHelper;
     @MockBean
     private RevocationService revocationService;
+    @MockBean
+    private KpiDataService kpiDataService;
     @MockBean
     private ServletJeapAuthorization jeapAuthorization;
     @Autowired

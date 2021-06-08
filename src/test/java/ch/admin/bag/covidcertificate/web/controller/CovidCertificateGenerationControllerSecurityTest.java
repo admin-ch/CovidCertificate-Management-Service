@@ -8,6 +8,7 @@ import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfigurati
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.KpiDataService;
 import ch.admin.bag.covidcertificate.testutil.JwtTestUtil;
 import ch.admin.bag.covidcertificate.testutil.KeyPairTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +50,8 @@ class CovidCertificateGenerationControllerSecurityTest {
     private CovidCertificateGenerationService covidCertificateGenerationService;
     @MockBean
     private ServletJeapAuthorization jeapAuthorization;
+    @MockBean
+    private KpiDataService kpiDataService;
     @Autowired
     private MockMvc mockMvc;
 
@@ -57,6 +60,7 @@ class CovidCertificateGenerationControllerSecurityTest {
 
     private static final String BASE_URL = "/api/v1/covidcertificate/";
     private static final String VALID_USER_ROLE = "bag-cc-certificatecreator";
+    private static final String VALID_SUPERUSER_ROLE = "bag-cc-superuser";
     private static final String INVALID_USER_ROLE = "invalid-role";
     // Avoid port 8180, which is likely used by the local KeyCloak:
     private static final int MOCK_SERVER_PORT = 8182;
@@ -100,7 +104,8 @@ class CovidCertificateGenerationControllerSecurityTest {
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificateGenerationService, times(1)).generateCovidCertificate(any(VaccinationCertificateCreateDto.class));
+            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
+            Mockito.verify(covidCertificateGenerationService, times(2)).generateCovidCertificate(any(VaccinationCertificateCreateDto.class));
         }
 
         @Test

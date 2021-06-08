@@ -20,7 +20,7 @@ public class ValueSetsController {
     private final ValueSetsService valueSetsService;
 
     @GetMapping()
-    @PreAuthorize("hasRole('bag-cc-certificatecreator')")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public ValueSetsDto get(HttpServletRequest request) {
         log.info("Call to get value sets.");
         securityHelper.authorizeUser(request);
