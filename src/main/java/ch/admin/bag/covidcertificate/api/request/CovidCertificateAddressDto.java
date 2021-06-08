@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ADDRESS;
 
@@ -16,7 +17,7 @@ public class CovidCertificateAddressDto {
     private String city;
 
     public void validate() {
-        if (line1 == null || city == null) {
+        if (StringUtils.hasText(line1) || StringUtils.hasText(city)) {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
         if (zipCode < 1000 || zipCode > 9999) {
