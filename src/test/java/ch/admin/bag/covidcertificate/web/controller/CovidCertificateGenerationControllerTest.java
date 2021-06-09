@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
@@ -23,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -119,6 +121,72 @@ class CovidCertificateGenerationControllerTest {
                     .header("Authorization", fixture.create(String.class))
                     .content(mapper.writeValueAsString(createDto)))
                     .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+        }
+    }
+
+    @Nested
+    class CertificateCreateAddress {
+        private static final String URL = BASE_URL+"vaccination";
+        @Test
+        void returns400StatusCode_ifInvalidZipCode() throws Exception {
+            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 0);
+
+            mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+
+            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 999);
+
+            mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+
+            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 10000);
+
+            mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+        }
+
+        @Test
+        void returns400StatusCode_ifInvalidCity() throws Exception {
+            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            customizeCovidCertificateAddressDto(fixture, createDto, "city", null);
+
+            mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+        }
+
+        @Test
+        void returns400StatusCode_ifInvalidLine1() throws Exception {
+            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            customizeCovidCertificateAddressDto(fixture, createDto, "streetAndNr", null);
+
+            mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
         }
     }
 

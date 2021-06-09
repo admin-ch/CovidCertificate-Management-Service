@@ -1,4 +1,4 @@
-package ch.admin.bag.covidcertificate.client;
+package ch.admin.bag.covidcertificate.client.signing;
 
 public interface SigningClient {
 

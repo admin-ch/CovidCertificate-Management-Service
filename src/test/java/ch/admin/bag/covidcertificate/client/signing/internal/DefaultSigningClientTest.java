@@ -1,4 +1,4 @@
-package ch.admin.bag.covidcertificate.client.internal;
+package ch.admin.bag.covidcertificate.client.signing.internal;
 
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;

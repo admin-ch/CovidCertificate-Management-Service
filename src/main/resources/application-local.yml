@@ -1,6 +1,19 @@
 spring:
   flyway:
     locations: classpath:db/migration/common
+  security:
+    oauth2:
+      client:
+        registration:
+          cc-management-service:
+            client-id: "cc-management-service"
+            client-secret: "secret"
+            authorization-grant-type: "client_credentials"
+            provider: "default-provider"
+        provider:
+          default-provider:
+            issuer-uri: "http://localhost:8180"
+
 jeap:
   security:
     oauth2:
@@ -22,9 +35,11 @@ cc-management-service:
       password: "{noop}secret"
   allowed-origin: "*"
 
-
 cc-signing-service:
   url: "https://localhost:8443/cc-signing/sign"
+
+cc-printing-service:
+  url: "http://localhost:8124/api/v1/print"
 
 ## Mutual-SSL configuration
 app:
