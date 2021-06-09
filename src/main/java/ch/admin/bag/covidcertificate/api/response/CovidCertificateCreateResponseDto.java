@@ -14,6 +14,4 @@ public class CovidCertificateCreateResponseDto {
     private byte[] qrCode;
     @NonNull
     private String uvci;
-    @Setter(AccessLevel.PUBLIC)
-    private boolean printJobSent;
 }
