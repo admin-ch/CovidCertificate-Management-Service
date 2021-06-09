@@ -23,7 +23,7 @@ public class CBORService {
     private static final Integer EXP_CLAIM_KEY = 4;
     private static final Integer HCERT_CLAIM_KEY = -260;
     private static final Integer HCERT_INNER_CLAIM_KEY = 1;
-    private static final String ISSUER = "CH BAG";
+    private static final String ISSUER = "CH";
     // Signature Data (Sig_structure)
     private static final String CONTEXT = "Signature1";
     private static final byte[] EXTERNAL_AAD = new byte[0];

@@ -62,7 +62,7 @@ class CBORServiceTest {
         // then
         assertNotNull(result);
         CBORObject resultCBORObject = CBORObject.DecodeFromBytes(result);
-        assertEquals("CH BAG", resultCBORObject.get(1).AsString());
+        assertEquals("CH", resultCBORObject.get(1).AsString());
         assertEquals(issuedAt, instantConverter.FromCBORObject(resultCBORObject.get(6)));
         assertEquals(expiration, instantConverter.FromCBORObject(resultCBORObject.get(4)));
         assertArrayEquals(hcert, resultCBORObject.get(-260).get(1).EncodeToBytes());
