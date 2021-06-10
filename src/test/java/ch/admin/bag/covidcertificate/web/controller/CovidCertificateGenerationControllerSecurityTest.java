@@ -40,9 +40,8 @@ import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = {CovidCertificateGenerationController.class, OAuth2SecuredWebConfiguration.class},
-            properties="jeap.security.oauth2.resourceserver.authorization-server.jwk-set-uri=http://localhost:8182/.well-known/jwks.json")  // Avoid port 8180, see below
-@ActiveProfiles("local")
+@WebMvcTest(value = {CovidCertificateGenerationController.class, OAuth2SecuredWebConfiguration.class})
+@ActiveProfiles("test")
 class CovidCertificateGenerationControllerSecurityTest {
     @MockBean
     private SecurityHelper securityHelper;
@@ -199,6 +198,7 @@ class CovidCertificateGenerationControllerSecurityTest {
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
         lenient().when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(fixture.create(JeapAuthenticationToken.class));
     }
+
     @AfterAll
     static void teardown() {
         wireMockServer.stop();
@@ -207,7 +207,8 @@ class CovidCertificateGenerationControllerSecurityTest {
 
     @Nested
     class CreateVaccinationCertificate {
-        private static final String URL = BASE_URL+"vaccination";
+        private static final String URL = BASE_URL + "vaccination";
+
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
@@ -235,7 +236,8 @@ class CovidCertificateGenerationControllerSecurityTest {
 
     @Nested
     class CreateTestCertificate {
-        private static final String URL = BASE_URL+"test";
+        private static final String URL = BASE_URL + "test";
+
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             callCreateTestCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
@@ -262,7 +264,8 @@ class CovidCertificateGenerationControllerSecurityTest {
 
     @Nested
     class CreateRecoveryCertificate {
-        private static final String URL = BASE_URL+"recovery";
+        private static final String URL = BASE_URL + "recovery";
+
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             callCreateRecoveryCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
@@ -296,8 +299,9 @@ class CovidCertificateGenerationControllerSecurityTest {
                 .content(requestBody))
                 .andExpect(getResultMatcher(status));
     }
+
     private ResultMatcher getResultMatcher(HttpStatus status) {
-        switch(status) {
+        switch (status) {
             case OK:
                 return status().isOk();
             case FORBIDDEN:
