@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.6.RELEASE</version>
+		<version>2.4.6</version>
 		<relativePath/>
 	</parent>
 	<groupId>ch.admin.bag.covidcertificate</groupId>
@@ -17,17 +17,17 @@
 	<properties>
 		<java.version>11</java.version>
 
-		<spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
-		<logstash.version>5.2</logstash.version>
-		<janino.version>2.6.1</janino.version>
-		<guava.version>24.1-jre</guava.version>
+		<spring-cloud.version>2020.0.3</spring-cloud.version>
+		<logstash.version>6.6</logstash.version>
+		<janino.version>3.1.4</janino.version>
+		<guava.version>30.1.1-jre</guava.version>
 		<itextpdf.version>5.5.13.2</itextpdf.version>
 		<springdoc.version>1.5.8</springdoc.version>
 		<jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
 		<dgc-java.version>0.9.4</dgc-java.version>
-		<spring-cloud-starter-sleuth.version>2.2.0.RELEASE</spring-cloud-starter-sleuth.version>
+		<spring-cloud-starter-sleuth.version>3.0.3</spring-cloud-starter-sleuth.version>
 		<httpclient.version>4.5.13</httpclient.version>
-		<jjwt.version>0.11.1</jjwt.version>
+		<jjwt.version>0.11.2</jjwt.version>
 		<google-zxing.version>3.3.0</google-zxing.version>
 
 		<maven.javadoc.skip>true</maven.javadoc.skip>
