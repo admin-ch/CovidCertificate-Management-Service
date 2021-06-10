@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class ValueSetsLoader {
             valueSetsDto = new ValueSetsDto(
                     getCountryCodes(),
                     getVaccinationValueSet(),
-                    getTestValueSet()
+                    getChAcceptedTestValueSet()
             );
         }
     }
@@ -49,8 +50,12 @@ public class ValueSetsLoader {
         return getVaccinationJson().getEntries();
     }
 
-    private List<TestValueSet> getTestValueSet() throws IOException {
-        return getTestSetJson().getEntries();
+    private List<TestValueSet> getChAcceptedTestValueSet() throws IOException {
+        return getTestSetJson()
+                .getEntries()
+                .stream()
+                .filter(TestValueSet::isChAccepted)
+                .collect(Collectors.toList());
     }
 
     private InputStream getInputStream(String fileName) {

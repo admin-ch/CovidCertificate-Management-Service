@@ -119,7 +119,7 @@ class ValueSetsLoaderTest {
         @Test
         void allTestValueSetsAreLoaded() {
             var dto = valueSetsLoader.getValueSets();
-            assertEquals(12, dto.getTestSets().size());
+            assertEquals(8, dto.getTestSets().size());
         }
 
         @Test
