@@ -18,7 +18,7 @@ public abstract class CertificateCreateDto {
     private String language;
     private CovidCertificateAddressDto address;
 
-    public CertificateCreateDto(CovidCertificatePersonDto personData, String language) {
+    protected CertificateCreateDto(CovidCertificatePersonDto personData, String language) {
         this.personData = personData;
         this.language = language;
     }
