@@ -1,11 +1,11 @@
 {
   "Id": "Covid 19 Tests",
-  "Date": "2021-05-07",
-  "Version": "1.0.0",
+  "Date": "2021-06-09",
+  "Version": "1.0.1",
   "entries": [
     {
       "name": "PCR",
-      "type": "Nucleic acid amplification with probe detection",
+      "type": "Nucleic acid amplification with probe detection (PCR)",
       "type_code": "LP6464-4",
       "manufacturer": "",
       "swiss_test_kit": "",
@@ -13,27 +13,173 @@
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
-      "name": "Panbio COVID-19 Ag Test",
+    },
+    {
+      "name": "COVID-VIRO",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "AAZ-LMB",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1833",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "Panbio COVID-19 Ag Rapid Test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "Abbott Rapid Diagnostics",
-      "swiss_test_kit": "2",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1232",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
+      "name": "Flowflex SARS-CoV-2 Antigen rapid test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "ACON Laboratories, Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1468",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "AESKU.RAPID SARS-CoV-2",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "AESKU.DIAGNOSTICS GmbH & Co. KG",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2108",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "TestNOW® - COVID-19 Antigen Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Affimedix, Inc.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2130",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "AMP Rapid Test SARS-CoV-2 Ag",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "AMEDA Labordiagnostik GmbH",
-      "swiss_test_kit": "19",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1304",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
+      "name": "Rapid COVID-19 Antigen Test(Colloidal Gold)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Anbio (Xiamen) Biotechnology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1822",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "COVID-19 (SARS-CoV-2) Antigen Test Kit (Colloidal Gold) - Nasal Swab",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Anhui Deep Blue Medical Technology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1815",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "COVID-19 (SARS-CoV-2) Antigen Test Kit(Colloidal Gold)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Anhui Deep Blue Medical Technology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1736",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "mariPOC SARS-CoV-2",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "ArcDia International Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "768",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Asan Easy Test COVID-19 Ag",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Asan Pharmaceutical CO., LTD",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1654",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "NOVA Test® SARS-CoV-2 Antigen Rapid Test Kit (Colloidal Gold Immunochromatography)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Atlas Link Technology Co., Ltd.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2010",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "COVID-19 Antigen Rapid Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "AXIOM Gesellschaft für Diagnostica und Biochemica mbH",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2101",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "COVID-19 Antigen Rapid Test Device",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Azure Biotech Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1906",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Novel Coronavirus 2019-nCoV Antigen Test (Colloidal Gold)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Beijing Hotgen Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1870",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "SARS-CoV-2 Antigen Rapid Test Kit",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
@@ -43,7 +189,8 @@
       "eu_accepted": true,
       "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
       "name": "Wantai SARS-CoV-2 Ag Rapid Test (FIA)",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
@@ -53,27 +200,74 @@
       "eu_accepted": true,
       "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
       "name": "BIOSYNEX COVID-19 Ag BSS",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
-      "manufacturer": "BIOSYNEX SWISS SA",
-      "swiss_test_kit": "17",
+      "manufacturer": "BIOSYNEX S.A.",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1223",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
+      "name": "Rapid Response COVID-19 Antigen Rapid Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "BTNX Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1236",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "CerTest SARS-CoV-2 Card test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
-      "manufacturer": "CerTest Biotec, S.L.",
+      "manufacturer": "CerTest Biotec",
       "swiss_test_kit": "",
       "manufacturer_code_eu": "1173",
       "eu_accepted": true,
       "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
+      "name": "Coretests COVID-19 Ag Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Core Technology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1919",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Test Rapid Covid-19 Antigen (tampon nazofaringian)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "DDS DIAGNOSTIC",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1225",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "DIAQUICK COVID-19 Ag Cassette",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "DIALAB GmbH",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1375",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "Genbody COVID-19 Ag Test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
@@ -83,7 +277,41 @@
       "eu_accepted": true,
       "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
+      "name": "GenSure COVID-19 Antigen Rapid Kit (REF: P2004)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "GenSure Biotech Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1253",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "GENEDIA W COVID-19 Ag",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Green Cross Medical Science Corp.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1144",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "2019-nCoV Antigen Test Kit (colloidal gold method)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Guangdong Hecin Scientific, Inc.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1747",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "COVID-19 Ag Test Kit",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
@@ -93,27 +321,118 @@
       "eu_accepted": true,
       "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
+      "name": "Wondfo 2019-nCoV Antigen Test (Lateral Flow Method)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Guangzhou Wondfo Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1437",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "COVID-19 Antigen Rapid Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Hangzhou AllTest Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1257",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "Covid-19 Antigen Rapid Test Kit",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "Hangzhou Clongene Biotech Co., Ltd",
-      "swiss_test_kit": "20",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1363",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
+      "name": "COVID-19/Influenza A+B Antigen Combo Rapid Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Hangzhou Clongene Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1365",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Immunobio SARS-CoV-2 Antigen ANTERIOR NASAL Rapid Test Kit (minimal invasive)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Hangzhou Immuno Biotech Co.,Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1844",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "LYHER Novel Coronavirus (COVID-19) Antigen Test Kit(Colloidal Gold)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Hangzhou Laihe Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1215",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "COVID-19 Antigen Rapid Test Device（Colloidal Gold）",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "HANGZHOU LYSUN BIOTECHNOLOGY CO., LTD.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2139",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "COVID-19 Antigen Test Cassette",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Hangzhou Testsea Biotechnology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1392",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "Coronavirus Ag Rapid Test Cassette",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
-      "manufacturer": "Healgen Scientific Limited Liability Company",
+      "manufacturer": "Healgen Scientific",
       "swiss_test_kit": "",
       "manufacturer_code_eu": "1767",
       "eu_accepted": true,
-      "ch_accepted": true,
+      "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
+      "name": "Humasis COVID-19 Ag Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Humasis",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1263",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "COVID-19 Rapid Antigen Test (Colloidal Gold)",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
@@ -123,58 +442,174 @@
       "eu_accepted": true,
       "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
+      "name": "SARS-CoV-2 Antigen Rapid Test Kit (Colloidal Gold)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "JOYSBIO (Tianjin) Biotechnology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1764",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "SARS-CoV-2 Antigen Rapid Test Kit",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Labnovation Technologies Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1266",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "PocRoc®SARS-CoV-2 Antigen Rapid Test Kit (Colloidal Gold)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Lumigenex (Suzhou) Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2128",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "QuickProfile COVID-19 Antigen Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "LumiQuick Diagnostics Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1267",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "LumiraDx SARS-CoV-2 Ag Test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
-      "manufacturer": "LumiraDX UK Ltd",
-      "swiss_test_kit": "9",
+      "manufacturer": "LumiraDX",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1268",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
-      "name": "",
+    },
+    {
+      "name": "MEDsan SARS-CoV-2 Antigen Rapid Test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "MEDsan GmbH",
-      "swiss_test_kit": "6",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1180",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
+      "name": "COVID-19 Rapid Antigen Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "möLab",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1190",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
       "name": "Rapid SARS-CoV-2 Antigen Test Card",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
-      "manufacturer": "MP Biomedicals Germany GmbH",
-      "swiss_test_kit": "15",
+      "manufacturer": "MP Biomedicals",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1481",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
+      "name": "NADAL COVID -19 Ag +Influenza A/B Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Nal von minden GmbH",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2104",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "NADAL COVID-19 Ag Test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "Nal von minden GmbH",
-      "swiss_test_kit": "33",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1162",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
-      "name": "ExDia COVID-19 Ag",
+    },
+    {
+      "name": "FREND COVID-19 Ag",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "NanoEntek",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1420",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
+      "name": "CAT",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Oncosem Onkolojik Sistemler San. ve Tic. A.S.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1199",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "PCL COVID19 Ag Rapid FIA",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "PCL Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "308",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "SARS-CoV-2 Antigen Detection Kit (Colloidal Gold Immunochromatographic Assay)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "PerGrande BioTech Development Co., Ltd.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2116",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Exdia COVID-19 Ag",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "Precision Biosensor, Inc",
-      "swiss_test_kit": "13",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1271",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
-      "name": "SARS-CoV-2 Antigen Rapid Test",
+    },
+    {
+      "name": "SARS-CoV-2 Antigen Rapid Test (Immunochromatography)",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "Qingdao Hightop Biotech Co., Ltd",
@@ -183,17 +618,41 @@
       "eu_accepted": true,
       "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
       "name": "Sofia SARS Antigen FIA",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "Quidel Corporation",
-      "swiss_test_kit": "21",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1097",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
+      "name": "BIOCREDIT COVID-19 Ag - SARS-CoV 2 Antigen test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "RapiGEN Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1606",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "SARS-CoV-2 Antigen Rapid Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Roche (SD BIOSENSOR)",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1604",
+      "eu_accepted": true,
+      "ch_accepted": true,
+      "active": true
+    },
+    {
       "name": "COVID-19 Antigen Rapid Test Kit (Swab)",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
@@ -203,17 +662,30 @@
       "eu_accepted": true,
       "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
+      "name": "Multi-Respiratory Virus Antigen Test Kit(Swab)  (Influenza A+B/ COVID-19)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Safecare Biotech (Hangzhou) Co. Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1490",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "STANDARD F COVID-19 Ag FIA",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "SD BIOSENSOR Inc",
-      "swiss_test_kit": "24",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "344",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
       "name": "STANDARD Q COVID-19 Ag Test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
@@ -223,93 +695,212 @@
       "eu_accepted": true,
       "ch_accepted": false,
       "active": true
-    }, {
+    },
+    {
+      "name": "V-Chek SARS-CoV-2 Ag Rapid Test Kit (Colloidal Gold)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "SGA Medikal",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1319",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Green Spring SARS-CoV-2 Antigen-Rapid test-Set",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Shenzhen Lvshiyuan Biotechnology Co., Ltd.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2109",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "SARS-CoV-2 Antigen Test Kit",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Shenzhen Ultra-Diagnostics Biotec.Co.,Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2017",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "SARS-CoV-2 Ag Diagnostic Test Kit (Colloidal Gold)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Shenzhen Watmind Medical Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1769",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Zhenrui ®COVID-19 Antigen Test Cassette",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Shenzhen Zhenrui Biotechnology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1574",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "CLINITEST Rapid Covid-19 Antigen Test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "Siemens Healthineers",
-      "swiss_test_kit": "31",
+      "swiss_test_kit": "",
       "manufacturer_code_eu": "1218",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
+      "name": "SGTi-flex COVID-19 Ag",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Sugentech, Inc",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1114",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "TODA CORONADIAG Ag",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "TODA PHARMA",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1466",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Coronavirus (SARS-CoV 2) Antigen - Oral Fluid",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Tody Laboratories Int.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1934",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "RapidFor SARS-CoV-2 Rapid Ag Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Vitrosens Biotechnology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1443",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "VivaDiag Pro SARS-CoV-2 Ag Rapid Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "VivaChek Biotech (Hangzhou) Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2103",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "COVID-19 (SARS-CoV-2) Antigen Test Kit",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Wuhan EasyDiagnosis Biomedicine Co., Ltd.",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "2098",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "COVID-19 Antigen Rapid Test Kit (Colloidal Gold)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Xiamen AmonMed Biotechnology Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1763",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
       "name": "Rapid SARS-CoV-2 Antigen Test Card",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "Xiamen Boson Biotech Co. Ltd",
-      "swiss_test_kit": "28",
-      "manufacturer_code_eu": "1278",
-      "eu_accepted": true,
-      "ch_accepted": true,
-      "active": true
-    }, {
-      "name": "Coronavirus Ag Rapid Test Cassette (Swab)",
-      "type": "Rapid immunoassay",
-      "type_code": "LP217198-3",
-      "manufacturer": "Zhejiang Orient Gene Biotech",
-      "swiss_test_kit": "29",
-      "manufacturer_code_eu": "1343",
-      "eu_accepted": true,
-      "ch_accepted": true,
-      "active": true
-    }, {
-      "name": "",
-      "type": "",
-      "type_code": "LP217198-3",
-      "manufacturer": "",
       "swiss_test_kit": "",
-      "manufacturer_code_eu": "",
-      "eu_accepted": "",
-      "ch_accepted": "",
-      "active": true
-    }, {
-      "name": "COVID-VIRO",
-      "type": "Rapid immunoassay",
-      "type_code": "LP217198-3",
-      "manufacturer": "AAZ-LMB",
-      "swiss_test_kit": "26",
-      "manufacturer_code_eu": "1833",
-      "eu_accepted": true,
-      "ch_accepted": true,
-      "active": true
-    }, {
-      "name": "NOVA Test SARS-CoV-2 Antigen Rapid Test Kit (Colloidal Gold Immunochromatography)",
-      "type": "Rapid immunoassay",
-      "type_code": "LP217198-3",
-      "manufacturer": "Atlas Link Technology Co., Ltd., China",
-      "swiss_test_kit": "22",
-      "manufacturer_code_eu": "2010",
-      "eu_accepted": true,
-      "ch_accepted": true,
-      "active": true
-    }, {
-      "name": "Rapid SARS-CoV-2 Antigen Test Card",
-      "type": "Rapid immunoassay",
-      "type_code": "LP217198-3",
-      "manufacturer": "Xiamen Boson Biotech Co., Ltd., China",
-      "swiss_test_kit": "16",
       "manufacturer_code_eu": "1278",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
-    }, {
+    },
+    {
       "name": "SARS-CoV-2 Antigen Rapid Test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
-      "manufacturer": "SD Biosensor, Inc.,Republic of Korea",
-      "swiss_test_kit": "1",
-      "manufacturer_code_eu": "1604",
+      "manufacturer": "Xiamen Wiz Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1456",
       "eu_accepted": true,
-      "ch_accepted": true,
+      "ch_accepted": false,
       "active": true
-    }, {
-      "name": "Panbio COVID-19 Ag Test",
+    },
+    {
+      "name": "SARS-CoV-2 Antigen Rapid Test (Colloidal Gold)",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
-      "manufacturer": "Abbott Rapid Diagnostic GmbH, Jena (D)",
-      "swiss_test_kit": "2",
-      "manufacturer_code_eu": "1232",
+      "manufacturer": "Xiamen Wiz Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1884",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "AndLucky COVID-19 Antigen Rapid Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Zhejiang Anji Saianfu Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1296",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "reOpenTest COVID-19 Antigen Rapid Test",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Zhejiang Anji Saianfu Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1295",
+      "eu_accepted": true,
+      "ch_accepted": false,
+      "active": true
+    },
+    {
+      "name": "Coronavirus Ag Rapid Test Cassette (Swab)",
+      "type": "Rapid immunoassay",
+      "type_code": "LP217198-3",
+      "manufacturer": "Zhezhiang Orient Gene Biotech Co., Ltd",
+      "swiss_test_kit": "",
+      "manufacturer_code_eu": "1343",
       "eu_accepted": true,
       "ch_accepted": true,
       "active": true
