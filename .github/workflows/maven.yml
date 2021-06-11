@@ -48,7 +48,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Create Snapshot Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@880be3d0a71bc0fa98db60201d2cbdc27324f547
         if: github.ref == 'refs/heads/develop'
         id: create_release
         with:
