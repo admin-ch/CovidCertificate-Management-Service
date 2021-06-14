@@ -33,7 +33,7 @@ public class CertificateCreateDtoTest {
     }
 
     @Test
-    public void testNoPersonData() {
+    public void throwsCertificateCreateException__onNoPersonData() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 null,
                 language
@@ -49,7 +49,7 @@ public class CertificateCreateDtoTest {
     }
 
     @Test
-    public void testInvalidLanguage() {
+    public void throwsCertificateCreateException__onInvalidLanguage() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 null
@@ -72,7 +72,7 @@ public class CertificateCreateDtoTest {
     }
 
     @Test
-    public void testInvalidAddressStreet() {
+    public void throwsCertificateCreateException__onInvalidStreet() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 "de",
@@ -99,7 +99,7 @@ public class CertificateCreateDtoTest {
     }
 
     @Test
-    public void testInvalidAddressCity() {
+    public void throwsCertificateCreateException__onInvalidCity() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 "de",
@@ -126,7 +126,7 @@ public class CertificateCreateDtoTest {
     }
 
     @Test
-    public void testAddressZipCode() {
+    public void throwsCertificateCreateException__onInvalidZipCode() {
         // test low
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
@@ -161,15 +161,19 @@ public class CertificateCreateDtoTest {
     }
 
     @Test
-    public void testValidAddress() {
+    public void throwsCertificateCreateException__onInvalidCantonCode() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 "de",
-                new CovidCertificateAddressDto("street", 1000, "city", "BE")
+                new CovidCertificateAddressDto("street", 3000, "city", "invalid")
         );
-        assertDoesNotThrow(testee::validate);
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_ADDRESS, exception.getError());
+    }
 
-        testee = new CertificateCreateDtoIml(
+    @Test
+    public void doesValidateSuccessfully() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 "de",
                 new CovidCertificateAddressDto("street", 1000, "city", "BE")
