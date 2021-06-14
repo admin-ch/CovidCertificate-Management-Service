@@ -29,20 +29,22 @@ public abstract class CertificateCsvBean {
     private String dateOfBirth;
     @CsvBindByName(column = "language")
     private String language;
-    @CsvBindByName(column = "addressLine1")
-    private String addressLine1;
-    @CsvBindByName(column = "addressLine2")
-    private String addressLine2;
+    @CsvBindByName(column = "streetAndNr")
+    private String streetAndNr;
     @CsvBindByName(column = "zipCode")
     private String zipCode;
     @CsvBindByName(column = "city")
     private String city;
-    @CsvBindByName(column = "cantonCode")
-    private String cantonCode;
-    @CsvBindByName(column = "isGeneratePDF")
-    private String isGeneratePDF;
+    @CsvBindByName(column = "cantonCodeSender")
+    private String cantonCodeSender;
+    @CsvBindByName(column = "error")
+    private String error;
 
     public abstract CertificateCreateDto mapToCreateDto();
+
+    public void setError(String error) {
+        this.error = error;
+    }
 
     protected VaccinationCertificateCreateDto mapToCreateDto(VaccinationCertificateDataDto dataDto) {
         return new VaccinationCertificateCreateDto(
@@ -95,10 +97,10 @@ public abstract class CertificateCsvBean {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
         return new CovidCertificateAddressDto(
-                addressLine2,
+                streetAndNr,
                 zipCode,
                 city,
-                cantonCode
+                cantonCodeSender
         );
     }
 }
