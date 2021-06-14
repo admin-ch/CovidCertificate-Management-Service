@@ -20,9 +20,10 @@ public class RecoveryCertificateCreateDto extends CertificateCreateDto {
     public RecoveryCertificateCreateDto(
             CovidCertificatePersonDto personData,
             List<RecoveryCertificateDataDto> recoveryInfo,
-            String language
+            String language,
+            CovidCertificateAddressDto address
     ) {
-        super(personData, language);
+        super(personData, language, address);
         this.recoveryInfo = recoveryInfo;
     }
 

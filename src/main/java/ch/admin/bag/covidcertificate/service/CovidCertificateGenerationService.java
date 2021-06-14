@@ -16,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import se.digg.dgc.encoding.Barcode;
 
-import java.io.IOException;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,13 +26,13 @@ public class CovidCertificateGenerationService {
     private final CovidPdfCertificateGenerationService covidPdfCertificateGenerationService;
     private final CovidCertificateDtoMapperService covidCertificateDtoMapperService;
 
-    public CovidCertificateCreateResponseDto generateCovidCertificate(VaccinationCertificateCreateDto createDto) throws IOException {
+    public CovidCertificateCreateResponseDto generateCovidCertificate(VaccinationCertificateCreateDto createDto) throws JsonProcessingException {
         VaccinationCertificateQrCode qrCodeData = covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto);
         VaccinationCertificatePdf pdfData = covidCertificateDtoMapperService.toVaccinationCertificatePdf(createDto, qrCodeData);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationInfo().get(0).getIdentifier(), createDto);
     }
 
-    public CovidCertificateCreateResponseDto generateCovidCertificate(TestCertificateCreateDto createDto) throws IOException {
+    public CovidCertificateCreateResponseDto generateCovidCertificate(TestCertificateCreateDto createDto) throws JsonProcessingException {
         TestCertificateQrCode qrCodeData = covidCertificateDtoMapperService.toTestCertificateQrCode(createDto);
         TestCertificatePdf pdfData = covidCertificateDtoMapperService.toTestCertificatePdf(createDto, qrCodeData);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getTestInfo().get(0).getIdentifier(), createDto);

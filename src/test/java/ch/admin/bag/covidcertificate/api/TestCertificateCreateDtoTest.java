@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static ch.admin.bag.covidcertificate.TestModelProvider.getCovidCertificateAddressDto;
 import static ch.admin.bag.covidcertificate.api.Constants.NO_TEST_DATA;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -23,7 +24,8 @@ public class TestCertificateCreateDtoTest {
         TestCertificateCreateDto testee = new TestCertificateCreateDto(
                 personDto,
                 null,
-                language
+                language,
+                getCovidCertificateAddressDto()
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_TEST_DATA, exception.getError());
@@ -31,7 +33,8 @@ public class TestCertificateCreateDtoTest {
         testee = new TestCertificateCreateDto(
                 personDto,
                 List.of(),
-                language
+                language,
+                getCovidCertificateAddressDto()
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_TEST_DATA, exception.getError());
@@ -39,7 +42,8 @@ public class TestCertificateCreateDtoTest {
         testee = new TestCertificateCreateDto(
                 personDto,
                 List.of(dataDto),
-                language
+                language,
+                getCovidCertificateAddressDto()
         );
         assertDoesNotThrow(testee::validate);
     }

@@ -65,6 +65,10 @@ public class Constants {
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
+    public static final CreateCertificateError INVALID_CSV = new CreateCertificateError(481, "The CSV can not be read!", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_CSV_SIZE = new CreateCertificateError(482, "The CSV has an ivalid size! Must contain 1 to 100 entries.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError NOT_A_CSV = new CreateCertificateError(483, "The sent file is not a CSV file.", HttpStatus.BAD_REQUEST);
+
     public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550, "Creating COSE protected header failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_COSE_PAYLOAD_FAILED = new CreateCertificateError(551, "Creating COSE payload failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_COSE_SIGNATURE_DATA_FAILED = new CreateCertificateError(552, "Creating COSE signature data failed.", HttpStatus.INTERNAL_SERVER_ERROR);

@@ -14,14 +14,9 @@ public class CertificateCreateDtoTest {
 
     private final CovidCertificatePersonDto personDto = mock(CovidCertificatePersonDto.class);
     private final String language = "de";
+    private final CovidCertificateAddressDto addressDto = new CovidCertificateAddressDto("street", 1000, "city", "BE");
 
     private static class CertificateCreateDtoIml extends CertificateCreateDto {
-        public CertificateCreateDtoIml(
-                CovidCertificatePersonDto personData,
-                String language
-        ) {
-            super(personData, language);
-        }
 
         public CertificateCreateDtoIml(
                 CovidCertificatePersonDto personData,
@@ -36,14 +31,16 @@ public class CertificateCreateDtoTest {
     public void testNoPersonData() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 null,
-                language
+                language,
+                addressDto
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_PERSON_DATA, exception.getError());
 
         testee = new CertificateCreateDtoIml(
                 personDto,
-                language
+                language,
+                addressDto
         );
         assertDoesNotThrow(testee::validate);
     }
@@ -52,21 +49,24 @@ public class CertificateCreateDtoTest {
     public void testInvalidLanguage() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
-                null
+                null,
+                addressDto
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_LANGUAGE, exception.getError());
 
         testee = new CertificateCreateDtoIml(
                 personDto,
-                "en"
+                "en",
+                addressDto
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_LANGUAGE, exception.getError());
 
         testee = new CertificateCreateDtoIml(
                 personDto,
-                language
+                language,
+                addressDto
         );
         assertDoesNotThrow(testee::validate);
     }

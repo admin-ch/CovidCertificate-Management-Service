@@ -1,7 +1,6 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
@@ -24,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -32,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.*;
+import static ch.admin.bag.covidcertificate.TestModelProvider.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -60,12 +59,13 @@ class CovidCertificateGenerationControllerTest {
     private static final JFixture fixture = new JFixture();
 
     @BeforeAll
-    static void setup(){
+    static void setup() {
         customizeVaccinationCertificateCreateDto(fixture);
         customizeTestCertificateCreateDto(fixture);
         customizeRecoveryCertificateCreateDto(fixture);
         customizeCreateCertificateException(fixture);
     }
+
     @BeforeEach
     void setupMocks() throws IOException {
         this.mockMvc = standaloneSetup(controller, new ResponseStatusExceptionHandler()).build();
@@ -77,10 +77,11 @@ class CovidCertificateGenerationControllerTest {
 
     @Nested
     class CreateVaccinationCertificate {
-        private static final String URL = BASE_URL+"vaccination";
+        private static final String URL = BASE_URL + "vaccination";
+
         @Test
         void returnsCertificateWithOkStatus() throws Exception {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(VaccinationCertificateCreateDto.class))).thenReturn(responseDto);
 
@@ -98,7 +99,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returnsStatusCodeOfCreateCertificateException_ifOneWasThrown() throws Exception {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507");
             var exception = fixture.create(CreateCertificateException.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(VaccinationCertificateCreateDto.class))).thenThrow(exception);
 
@@ -126,10 +127,11 @@ class CovidCertificateGenerationControllerTest {
 
     @Nested
     class CertificateCreateAddress {
-        private static final String URL = BASE_URL+"vaccination";
+        private static final String URL = BASE_URL + "vaccination";
+
         @Test
         void returns400StatusCode_ifInvalidZipCode() throws Exception {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507");
             customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 0);
 
             mockMvc.perform(post(URL)
@@ -192,10 +194,11 @@ class CovidCertificateGenerationControllerTest {
 
     @Nested
     class CreateTestCertificate {
-        private static final String URL = BASE_URL+"test";
+        private static final String URL = BASE_URL + "test";
+
         @Test
         void returnsCertificateWithOkStatus() throws Exception {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
             lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(TestCertificateCreateDto.class))).thenReturn(responseDto);
 
@@ -213,7 +216,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returnsStatusCodeOfCreateCertificateException_ifOneWasThrown() throws Exception {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833");
             var exception = fixture.create(CreateCertificateException.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(TestCertificateCreateDto.class))).thenThrow(exception);
 
@@ -227,7 +230,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returns403StatusCode_ifAccessDeniedExceptionWasThrown() throws Exception {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833");
             when(securityHelper.authorizeUser(any(HttpServletRequest.class))).thenThrow(fixture.create(AccessDeniedException.class));
 
             mockMvc.perform(post(URL)
@@ -241,10 +244,11 @@ class CovidCertificateGenerationControllerTest {
 
     @Nested
     class CreateRecoveryCertificate {
-        private static final String URL = BASE_URL+"recovery";
+        private static final String URL = BASE_URL + "recovery";
+
         @Test
         void returnsCertificateWithOkStatus() throws Exception {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto();
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenReturn(responseDto);
 
@@ -262,7 +266,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returnsStatusCodeOfCreateCertificateException_ifOneWasThrown() throws Exception {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto();
             var exception = fixture.create(CreateCertificateException.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenThrow(exception);
 

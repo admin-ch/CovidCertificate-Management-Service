@@ -2,7 +2,10 @@ package ch.admin.bag.covidcertificate;
 
 import ch.admin.bag.covidcertificate.api.request.*;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
@@ -13,7 +16,8 @@ public class TestModelProvider {
         return new VaccinationCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
-                "de"
+                "de",
+                getCovidCertificateAddressDto()
         );
     }
 
@@ -24,7 +28,8 @@ public class TestModelProvider {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
-                "de"
+                "de",
+                getCovidCertificateAddressDto()
         );
     }
 
@@ -32,7 +37,8 @@ public class TestModelProvider {
         return new RecoveryCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getRecoveryCertificateDataDto()),
-                "de"
+                "de",
+                getCovidCertificateAddressDto()
         );
     }
 
@@ -78,5 +84,9 @@ public class TestModelProvider {
                 "Test Center",
                 "CH"
         );
+    }
+
+    public static CovidCertificateAddressDto getCovidCertificateAddressDto() {
+        return new CovidCertificateAddressDto("street 12", 2500, "Bern", "BE");
     }
 }
