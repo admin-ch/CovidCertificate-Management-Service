@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.valueset.AcceptedCantons;
 import lombok.*;
 import org.springframework.util.StringUtils;
 
@@ -21,6 +22,9 @@ public class CovidCertificateAddressDto {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
         if (zipCode < 1000 || zipCode > 9999) {
+            throw new CreateCertificateException(INVALID_ADDRESS);
+        }
+        if (!AcceptedCantons.isAccepted(this.cantonCodeSender)) {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
     }

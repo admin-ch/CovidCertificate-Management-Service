@@ -29,6 +29,8 @@ import java.time.ZoneId;
 import java.util.Objects;
 import java.util.zip.ZipException;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 @Ignore("Util for automated JSON file generation for EU tests.")
 @ExtendWith(MockitoExtension.class)
 public class DGCTestJSONGenerator {
@@ -46,12 +48,14 @@ public class DGCTestJSONGenerator {
     private static final String IDENTIFIER_RECOVERY = "\"r\":";
 
     @Test
-    public void createJSONFiles() throws Exception {
-        for (String qrCodeFilename : Objects.requireNonNull(new File(PATH).list())) {
-            if (qrCodeFilename.endsWith(PNG)) {
-                createJSONFile(qrCodeFilename);
+    public void createJSONFiles() {
+        assertDoesNotThrow(() -> {
+            for (String qrCodeFilename : Objects.requireNonNull(new File(PATH).list())) {
+                if (qrCodeFilename.endsWith(PNG)) {
+                    createJSONFile(qrCodeFilename);
+                }
             }
-        }
+        });
     }
 
     private static void createJSONFile(String qrCodeFilename) throws Exception {
