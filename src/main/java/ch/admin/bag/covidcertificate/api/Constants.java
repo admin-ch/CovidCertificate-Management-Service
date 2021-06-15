@@ -68,6 +68,10 @@ public class Constants {
     public static final CreateCertificateError INVALID_CSV = new CreateCertificateError(481, "The CSV can not be read!", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_CSV_SIZE = new CreateCertificateError(482, "The CSV has an ivalid size! Must contain 1 to 100 entries.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NOT_A_CSV = new CreateCertificateError(483, "The sent file is not a CSV file.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_CERTIFICATE_TYPE = new CreateCertificateError(484, "Invalid certificate type! 'vaccination', 'test', and 'recovery' are allowed", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_CREATE_REQUESTS = new CreateCertificateError(485, "One or more of the requests in the CSV contain invalid data. For more detailed error messages check the returned CSV", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_TEST_DATA = new CreateCertificateError(486, "This test data is an invalid attribute combination", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_VACCINATION_DATA = new CreateCertificateError(487, "This vaccination data is an invalid attribute combination", HttpStatus.BAD_REQUEST);
 
     public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550, "Creating COSE protected header failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_COSE_PAYLOAD_FAILED = new CreateCertificateError(551, "Creating COSE payload failed.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,4 +80,5 @@ public class Constants {
     public static final CreateCertificateError CREATE_COSE_SIGN1_FAILED = new CreateCertificateError(554, "Creating COSE_Sign1 failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555, "Creating barcode failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556, "Printing failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557, "Write CSV failed", HttpStatus.INTERNAL_SERVER_ERROR);
 }

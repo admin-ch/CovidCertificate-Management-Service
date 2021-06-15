@@ -43,6 +43,6 @@ public class TestCertificateCsvBean extends CertificateCsvBean {
                 testingCentreOrFacility,
                 memberStateOfTest
         );
-        return mapToCreateDto(dataDto);
+        return super.mapToCreateDto(dataDto);
     }
 }

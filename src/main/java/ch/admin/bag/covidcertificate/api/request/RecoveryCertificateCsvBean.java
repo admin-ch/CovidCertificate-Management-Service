@@ -34,6 +34,6 @@ public class RecoveryCertificateCsvBean extends CertificateCsvBean {
                 dateOfFirstPositiveTestResult,
                 countryOfTest
         );
-        return mapToCreateDto(dataDto);
+        return super.mapToCreateDto(dataDto);
     }
 }

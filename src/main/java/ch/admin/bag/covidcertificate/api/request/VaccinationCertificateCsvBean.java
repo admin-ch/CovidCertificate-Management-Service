@@ -52,6 +52,6 @@ public class VaccinationCertificateCsvBean extends CertificateCsvBean {
                 vaccinationDate,
                 countryOfVaccination
         );
-        return mapToCreateDto(dataDto);
+        return super.mapToCreateDto(dataDto);
     }
 }
