@@ -38,11 +38,13 @@ public class ValueSetsLoader {
         CountryJson frJson = getCountryJson("country-alpha-2-fr");
         CountryJson itJson = getCountryJson("country-alpha-2-it");
         CountryJson enJson = getCountryJson("country-alpha-2-en");
+        CountryJson rmJson = getCountryJson("country-alpha-2-rm");
         return new CountryCodes(
                 deJson.getValueSetValues(),
                 enJson.getValueSetValues(),
                 frJson.getValueSetValues(),
-                itJson.getValueSetValues()
+                itJson.getValueSetValues(),
+                rmJson.getValueSetValues()
         );
     }
 

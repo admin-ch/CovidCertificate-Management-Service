@@ -12,4 +12,5 @@ public class CountryCodes {
     private final List<CountryCode> en;
     private final List<CountryCode> fr;
     private final List<CountryCode> it;
+    private final List<CountryCode> rm;
 }

@@ -52,8 +52,8 @@ public class TestModelProvider {
 
     public static CovidCertificatePersonNameDto getCovidCertificatePersonNameDto() {
         return new CovidCertificatePersonNameDto(
-                "familyName",
-                "givenName"
+                "Mon long nom de 80 caractères pour l'EU blablablablablablablablablablablabbtttt",
+                "Mon long prénom de 80 caractères pour l'EU blablablablablablablablablablablabb"
         );
     }
 

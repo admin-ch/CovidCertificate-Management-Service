@@ -48,11 +48,15 @@ public class CovidPdfCertificateGenerationService {
 
     private final Font font8Row;
 
+    private final Font font7Row;
+
     private final Font fontRowBold;
 
     private final Font fontEnglish;
 
     private final Font font8English;
+
+    private final Font font7English;
 
     private final Font fontHeaderRed;
 
@@ -86,9 +90,11 @@ public class CovidPdfCertificateGenerationService {
 
 
         fontRow = new Font(baseFont, 10, Font.NORMAL, BaseColor.BLACK);
+        font7Row = new Font(baseFont, 8, Font.NORMAL, BaseColor.BLACK);
         font8Row = new Font(baseFont, 8, Font.NORMAL, BaseColor.BLACK);
         fontRowBold = new Font(baseFontBold, 10, Font.NORMAL, BaseColor.BLACK);
         fontEnglish = new Font(baseFontItalic, 9, Font.NORMAL, BaseColor.BLACK);
+        font7English = new Font(baseFontItalic, 8, Font.NORMAL, BaseColor.BLACK);
         font8English = new Font(baseFontItalic, 8, Font.NORMAL, BaseColor.BLACK);
         fontHeaderRed = new Font(baseFont, 26, Font.NORMAL, new BaseColor(220, 0, 24));
         fontHeaderBlack = new Font(baseFontItalic, 16, Font.NORMAL, BaseColor.BLACK);
@@ -186,7 +192,7 @@ public class CovidPdfCertificateGenerationService {
         cell.setPaddingLeft(-5);
         cell.setPaddingTop(30);
         cell.setBorder(Rectangle.NO_BORDER);
-        cell.setFixedHeight(90);
+        cell.setFixedHeight(70);
         cell.setRowspan(2);
         cell.setVerticalAlignment(Rectangle.TOP);
         table.addCell(cell);
@@ -215,7 +221,7 @@ public class CovidPdfCertificateGenerationService {
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setRowspan(30);
-        cell.setFixedHeight(430);
+        cell.setFixedHeight(440);
         table.addCell(cell);
 
         if (data instanceof VaccinationCertificatePdf) {
@@ -271,7 +277,7 @@ public class CovidPdfCertificateGenerationService {
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setColspan(2);
-        cell.setPaddingTop(32);
+        cell.setPaddingTop(5);
         cell.setPaddingLeft(22);
         table.addCell(cell);
 
@@ -280,7 +286,7 @@ public class CovidPdfCertificateGenerationService {
         cell2.setBorder(Rectangle.NO_BORDER);
         cell2.setColspan(2);
         cell2.setPaddingLeft(PADDING_LEFT);
-        cell2.setPaddingTop(15);
+        cell2.setPaddingTop(5);
         table.addCell(cell2);
 
         addQrLabelCell(table, locale, LocalDateTime.now());
@@ -367,18 +373,25 @@ public class CovidPdfCertificateGenerationService {
     private void addQrLabelCell(PdfPTable table, Locale locale, LocalDateTime dateTime) {
         String date = dateTime.format(LOCAL_DATE_FORMAT);
         String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-        PdfPCell titleCell = new PdfPCell(new Phrase(messageSource.getMessage("qrCode.label", new String[]{date, time}, locale), font8Row));
-        titleCell.setBorder(Rectangle.NO_BORDER);
-        titleCell.setColspan(2);
-        titleCell.setPaddingLeft(PADDING_LEFT);
-        table.addCell(titleCell);
+        PdfPCell first = new PdfPCell(new Phrase(messageSource.getMessage("qrCode.label", new String[]{date, time}, locale), font8Row));
+        first.setBorder(Rectangle.NO_BORDER);
+        first.setColspan(2);
+        first.setPaddingLeft(PADDING_LEFT);
+        table.addCell(first);
 
-        PdfPCell issuerCell = new PdfPCell(new Phrase(messageSource.getMessage("qrCode.label", new String[]{date, time}, Locale.ENGLISH), font8English));
-        issuerCell.setBorder(Rectangle.NO_BORDER);
-        issuerCell.setPaddingTop(0);
-        issuerCell.setColspan(2);
-        issuerCell.setPaddingLeft(PADDING_LEFT);
-        table.addCell(issuerCell);
+        PdfPCell second = new PdfPCell(new Phrase(messageSource.getMessage("qrCode.label", new String[]{date, time}, Locale.ENGLISH), font8English));
+        second.setBorder(Rectangle.NO_BORDER);
+        second.setPaddingTop(0);
+        second.setColspan(2);
+        second.setPaddingLeft(PADDING_LEFT);
+        table.addCell(second);
+
+        PdfPCell third = new PdfPCell(new Phrase(messageSource.getMessage("qrCode.date.label", null, Locale.ENGLISH), font8English));
+        third.setBorder(Rectangle.NO_BORDER);
+        third.setPaddingTop(0);
+        third.setColspan(2);
+        third.setPaddingLeft(PADDING_LEFT);
+        table.addCell(third);
     }
 
 
@@ -399,7 +412,6 @@ public class CovidPdfCertificateGenerationService {
     private PdfPTable issuerTable(Locale locale) {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100);
-        table.setSpacingBefore((float) 10);
 
         addIssuerRow(table, locale);
         addIssuerRow(table, locale, "issuer.issuer", 5, true, PADDING_LEFT);
@@ -411,13 +423,13 @@ public class CovidPdfCertificateGenerationService {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(95);
         table.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        table.setSpacingBefore((float) 20);
+        table.setSpacingBefore((float) 5);
 
         PdfPCell cell = new PdfPCell();
-        addInfoCell(cell, messageSource.getMessage("info.info1", null, locale), fontRow, 0);
-        addInfoCell(cell, messageSource.getMessage("info.info1", null, Locale.ENGLISH), fontEnglish, 0);
-        addInfoCell(cell, messageSource.getMessage("info.info2", null, locale), fontRow, 10);
-        addInfoCell(cell, messageSource.getMessage("info.info2", null, Locale.ENGLISH), fontEnglish, 0);
+        addInfoCell(cell, messageSource.getMessage("info.info1", null, locale), font7Row, 0);
+        addInfoCell(cell, messageSource.getMessage("info.info2", null, locale), font7Row, 0);
+        addInfoCell(cell, messageSource.getMessage("info.info1", null, Locale.ENGLISH), font7English, 5);
+        addInfoCell(cell, messageSource.getMessage("info.info2", null, Locale.ENGLISH), font7English, 0);
         cell.setBackgroundColor(new BaseColor(252, 231, 232));
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setBorder(Rectangle.NO_BORDER);
@@ -439,7 +451,7 @@ public class CovidPdfCertificateGenerationService {
         float[] pointColumnWidths = {60F, 30F, 10F};
         PdfPTable table = new PdfPTable(pointColumnWidths);
         table.setWidthPercentage(100);
-        table.setSpacingBefore((float) 15);
+        table.setSpacingBefore((float) 5);
 
         PdfPCell cell = new PdfPCell();
         cell.addElement(new Paragraph(new Phrase(messageSource.getMessage("footer.app", null, locale), fontRow)));
