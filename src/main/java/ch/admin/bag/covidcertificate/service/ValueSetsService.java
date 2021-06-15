@@ -70,7 +70,7 @@ public class ValueSetsService {
     }
 
     public CountryCode getCountryCodeEn(String countryShort) {
-        return getCountryCode(countryShort, RM);
+        return getCountryCode(countryShort, EN);
     }
 
     public CountryCode getCountryCode(String countryShort, String language) {
@@ -95,6 +95,9 @@ public class ValueSetsService {
                 result = countryCodes.getFr();
                 break;
             case RM:
+                result = countryCodes.getRm();
+                break;
+            case EN:
                 result = countryCodes.getEn();
                 break;
             default:
