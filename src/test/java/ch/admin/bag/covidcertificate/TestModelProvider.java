@@ -9,30 +9,28 @@ import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 
 public class TestModelProvider {
 
-    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(String medicalProductCode) {
+    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(String medicalProductCode, String language) {
         return new VaccinationCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
-                "de"
+                language
         );
     }
 
-    public static TestCertificateCreateDto getTestCertificateCreateDto(
-            String typeCode,
-            String manufacturerCode
+    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language
     ) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
-                "de"
+                language
         );
     }
 
-    public static RecoveryCertificateCreateDto getRecoveryCertificateCreateDto() {
+    public static RecoveryCertificateCreateDto getRecoveryCertificateCreateDto(String language) {
         return new RecoveryCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getRecoveryCertificateDataDto()),
-                "de"
+                language
         );
     }
 
