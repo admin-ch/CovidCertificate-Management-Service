@@ -218,7 +218,7 @@ public class CovidPdfCertificateGenerationService {
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setRowspan(30);
-        cell.setFixedHeight(390);
+        cell.setFixedHeight(410);
         table.addCell(cell);
 
         if (data instanceof VaccinationCertificatePdf) {
@@ -274,7 +274,7 @@ public class CovidPdfCertificateGenerationService {
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setColspan(2);
-        cell.setPaddingTop(22);
+        cell.setPaddingTop(0);
         cell.setPaddingLeft(22);
         table.addCell(cell);
 
@@ -409,7 +409,6 @@ public class CovidPdfCertificateGenerationService {
     private PdfPTable issuerTable(Locale locale) {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100);
-        table.setSpacingBefore((float) 5);
 
         addIssuerRow(table, locale);
         addIssuerRow(table, locale, "issuer.issuer", 5, true, PADDING_LEFT);
@@ -421,7 +420,7 @@ public class CovidPdfCertificateGenerationService {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(94.5f);
         table.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        table.setSpacingBefore((float) 15);
+        table.setSpacingBefore((float) 5);
 
         PdfPCell cell = new PdfPCell();
         addInfoCell(cell, messageSource.getMessage("info.info1", null, locale), font8Row, 0);
@@ -488,7 +487,7 @@ public class CovidPdfCertificateGenerationService {
         PdfPCell infoCell = new PdfPCell(new Phrase(messageSource.getMessage("footer.infoline", null, locale), fontRowBold));
         infoCell.setBorder(Rectangle.NO_BORDER);
         infoCell.setPaddingLeft(PADDING_LEFT);
-        infoCell.setPaddingTop(10);
+        infoCell.setPaddingTop(5);
         table.addCell(infoCell);
 
         return table;
