@@ -2,6 +2,10 @@ package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
 import ch.admin.bag.covidcertificate.service.CsvService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +35,7 @@ public class CsvController {
 
     @PostMapping("/csv")
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public byte[] createWithCsv(@RequestParam("file") MultipartFile file, @RequestParam("certificateType") CertificateType certificateType, HttpServletRequest request) throws IOException {
+    public CsvResponseDto createWithCsv(@RequestParam("file") MultipartFile file, @RequestParam("certificateType") CertificateType certificateType, HttpServletRequest request) throws IOException {
         securityHelper.authorizeUser(request);
         if (!CSV_CONTENT_TYPE.equals(file.getContentType())) {
             throw new CreateCertificateException(NOT_A_CSV);
@@ -39,11 +43,11 @@ public class CsvController {
 
         switch (certificateType) {
             case recovery:
-                return csvService.handleRecoveryRequest(file);
+                return new CsvResponseDto(csvService.handleCsvRequest(file, RecoveryCertificateCsvBean.class));
             case test:
-                return csvService.handleTestRequest(file);
+                return new CsvResponseDto(csvService.handleCsvRequest(file, TestCertificateCsvBean.class));
             case vaccination:
-                return csvService.handleVaccinationRequest(file);
+                return new CsvResponseDto(csvService.handleCsvRequest(file, VaccinationCertificateCsvBean.class));
             default:
                 throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
         }

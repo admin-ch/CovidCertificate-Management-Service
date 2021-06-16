@@ -50,52 +50,42 @@ public class CsvService {
     private final KpiDataService kpiLogService;
     private final ValueSetsService valueSetsService;
 
-    public byte[] handleRecoveryRequest(MultipartFile file) throws IOException {
-        List<CertificateCsvBean> csvBeans = mapToBean(file, RecoveryCertificateCsvBean.class);
+    public byte[] handleCsvRequest(MultipartFile file, Class<?> csvBeanClass) throws IOException {
+        List<CertificateCsvBean> csvBeans = mapToBean(file, csvBeanClass);
         checkSize(csvBeans);
         List<CertificateCreateDto> createDtos = mapToCreateDtos(csvBeans);
         if (areCreateCertificateRequestsValid(createDtos, csvBeans)) {
-            List<CovidCertificateCreateResponseDto> responseDtos = createRecoveryCertificates(createDtos.stream().map(createDto -> (RecoveryCertificateCreateDto) createDto).collect(Collectors.toList()));
+            List<CovidCertificateCreateResponseDto> responseDtos = createCertificates(createDtos, csvBeanClass);
             return zipGeneratedCertificates(getPdfMap(responseDtos, createDtos));
         } else {
-            File returnFile = writeRecoveryCsv(csvBeans.stream().map(csvBean -> (RecoveryCertificateCsvBean) csvBean).collect(Collectors.toList()));
-            throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, Files.readAllBytes(returnFile.toPath())));
+            return createCsvException(csvBeans);
         }
     }
 
-    public byte[] handleTestRequest(MultipartFile file) throws IOException {
-        List<CertificateCsvBean> csvBeans = mapToBean(file, TestCertificateCsvBean.class);
-        checkSize(csvBeans);
-        List<CertificateCreateDto> createDtos = mapToCreateDtos(csvBeans);
-        if (areCreateCertificateRequestsValid(createDtos, csvBeans)) {
-            List<CovidCertificateCreateResponseDto> responseDtos = createTestCertificates(createDtos.stream().map(createDto -> (TestCertificateCreateDto) createDto).collect(Collectors.toList()));
-            return zipGeneratedCertificates(getPdfMap(responseDtos, createDtos));
+    private List<CovidCertificateCreateResponseDto> createCertificates(List<CertificateCreateDto> createDtos, Class<?> csvBeanClass) throws JsonProcessingException {
+        if (csvBeanClass == RecoveryCertificateCsvBean.class) {
+            return createRecoveryCertificates(createDtos.stream().map(createDto -> (RecoveryCertificateCreateDto) createDto).collect(Collectors.toList()));
+        } else if (csvBeanClass == TestCertificateCsvBean.class) {
+            return createTestCertificates(createDtos.stream().map(createDto -> (TestCertificateCreateDto) createDto).collect(Collectors.toList()));
+        } else if (csvBeanClass == VaccinationCertificateCsvBean.class) {
+            return createVaccinationCertificates(createDtos.stream().map(createDto -> (VaccinationCertificateCreateDto) createDto).collect(Collectors.toList()));
         } else {
-            File returnFile = writeTestCsv(csvBeans.stream().map(csvBean -> (TestCertificateCsvBean) csvBean).collect(Collectors.toList()));
-            throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, Files.readAllBytes(returnFile.toPath())));
+            throw new CreateCertificateException(INVALID_CSV);
         }
     }
 
-    public byte[] handleVaccinationRequest(MultipartFile file) throws IOException {
-        List<CertificateCsvBean> csvBeans = mapToBean(file, VaccinationCertificateCsvBean.class);
-        checkSize(csvBeans);
-        List<CertificateCreateDto> createDtos = mapToCreateDtos(csvBeans);
-        if (areCreateCertificateRequestsValid(createDtos, csvBeans)) {
-            List<CovidCertificateCreateResponseDto> responseDtos = createVaccinationCertificates(createDtos.stream().map(createDto -> (VaccinationCertificateCreateDto) createDto).collect(Collectors.toList()));
-            return zipGeneratedCertificates(getPdfMap(responseDtos, createDtos));
-        } else {
-            File returnFile = writeVaccinationCsv(csvBeans.stream().map(csvBean -> (VaccinationCertificateCsvBean) csvBean).collect(Collectors.toList()));
-            throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, Files.readAllBytes(returnFile.toPath())));
-        }
+    private byte[] createCsvException(List<CertificateCsvBean> csvBeans) throws IOException {
+        File returnFile = writeCsv(csvBeans);
+        throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, Files.readAllBytes(returnFile.toPath())));
     }
 
     private List<CovidCertificateCreateResponseDto> createRecoveryCertificates(List<RecoveryCertificateCreateDto> createDtos) throws JsonProcessingException {
         List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
-        log.info("Call of Create for recovery certificate");
         for (RecoveryCertificateCreateDto createDto : createDtos) {
+            log.info("Call of Create for recovery certificate");
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
-            log.debug("Certificate created with: {}", responseDto.getUvci());
+            logUvci(responseDto.getUvci());
             logKpi(KPI_TYPE_RECOVERY);
         }
         return responseDtos;
@@ -103,11 +93,11 @@ public class CsvService {
 
     private List<CovidCertificateCreateResponseDto> createTestCertificates(List<TestCertificateCreateDto> createDtos) throws JsonProcessingException {
         List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
-        log.info("Call of Create for test certificate");
         for (TestCertificateCreateDto createDto : createDtos) {
+            log.info("Call of Create for test certificate");
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
-            log.debug("Certificate created with: {}", responseDto.getUvci());
+            logUvci(responseDto.getUvci());
             logKpi(KPI_TYPE_TEST);
         }
         return responseDtos;
@@ -119,7 +109,7 @@ public class CsvService {
             log.info("Call of Create for vaccination certificate");
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
-            log.debug("Certificate created with: {}", responseDto.getUvci());
+            logUvci(responseDto.getUvci());
             logKpi(KPI_TYPE_VACCINATION);
         }
         return responseDtos;
@@ -136,7 +126,6 @@ public class CsvService {
             return csvToBean.parse();
 
         } catch (Exception ex) {
-            log.error("CSV parsing was not successful", ex);
             throw new CreateCertificateException(INVALID_CSV);
         }
     }
@@ -198,38 +187,10 @@ public class CsvService {
         }
     }
 
-    private File writeRecoveryCsv(List<RecoveryCertificateCsvBean> certificateCsvBeans) {
-        File file = new File("temp_recovery.csv");
+    private File writeCsv(List<CertificateCsvBean> certificateCsvBeans) {
+        File file = new File("temp.csv");
         try (CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
-            StatefulBeanToCsv<RecoveryCertificateCsvBean> beanToCsv =
-                    new StatefulBeanToCsvBuilder<RecoveryCertificateCsvBean>(csvWriter).build();
-
-            beanToCsv.write(certificateCsvBeans);
-            return file;
-        } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            throw new CreateCertificateException(WRITING_RETURN_CSV_FAILED);
-        }
-    }
-
-    private File writeTestCsv(List<TestCertificateCsvBean> certificateCsvBeans) {
-        File file = new File("temp_test.csv");
-        try (CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
-            StatefulBeanToCsv<TestCertificateCsvBean> beanToCsv =
-                    new StatefulBeanToCsvBuilder<TestCertificateCsvBean>(csvWriter).build();
-
-            beanToCsv.write(certificateCsvBeans);
-            return file;
-        } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            throw new CreateCertificateException(WRITING_RETURN_CSV_FAILED);
-        }
-    }
-
-    private File writeVaccinationCsv(List<VaccinationCertificateCsvBean> certificateCsvBeans) {
-        File file = new File("temp_vaccination.csv");
-        try (CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
-            StatefulBeanToCsv<VaccinationCertificateCsvBean> beanToCsv =
-                    new StatefulBeanToCsvBuilder<VaccinationCertificateCsvBean>(csvWriter).build();
-
+            StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(csvWriter).build();
             beanToCsv.write(certificateCsvBeans);
             return file;
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
@@ -269,6 +230,10 @@ public class CsvService {
         zos.closeEntry();
         zos.close();
         return baos.toByteArray();
+    }
+
+    private void logUvci(String uvci) {
+        log.debug("Certificate created with: {}", uvci);
     }
 
     private void logKpi(String type) {
