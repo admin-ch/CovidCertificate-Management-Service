@@ -216,7 +216,7 @@ public class ValueSetsServiceTest {
             var expected = fixture.create(CountryCode.class);
             ReflectionTestUtils.setField(expected, "shortName", countryShort);
             var valueSetsDto = fixture.create(ValueSetsDto.class);
-            valueSetsDto.getCountryCodes().getEn().add(expected);
+            valueSetsDto.getCountryCodes().getRm().add(expected);
             when(valueSetsLoader.getValueSets()).thenReturn(valueSetsDto);
 
             var actual = service.getCountryCode(countryShort, RM);

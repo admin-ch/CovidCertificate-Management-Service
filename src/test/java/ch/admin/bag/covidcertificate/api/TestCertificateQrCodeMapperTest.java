@@ -61,7 +61,7 @@ public class TestCertificateQrCodeMapperTest {
     @Test
     public void mapsSampleDateTime() {
         ZonedDateTime sampleDateTime = ZonedDateTime.of(LocalDateTime.of(2021, Month.APRIL, 4, 16, 25, 12), SWISS_TIMEZONE);
-        TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(getTestCertificateCreateDto("", ""), testValueSet);
+        TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(getTestCertificateCreateDto("", "", "de"), testValueSet);
         assertEquals(sampleDateTime, actual.getTestInfo().get(0).getSampleDateTime());
     }
 
