@@ -35,6 +35,15 @@ class CovidPdfCertificateGenerationServiceTest {
 
     private final String countryEn = "Switzerland";
 
+    private final String familyNameBig = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
+    private final String givenNameBig = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
+
+    private final String familyNameMiddle = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
+    private final String givenNameMiddle = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
+
+    private final String familyNameSmall = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
+    private final String givenNameSmall = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
+
     @BeforeEach
     void setup() throws Exception {
         when(environment.getActiveProfiles()).thenReturn(new String[]{"unittest"});
@@ -42,12 +51,14 @@ class CovidPdfCertificateGenerationServiceTest {
     }
 
 
-    private void generateDocument_vaccine(String language) throws Exception {
+    private void generateDocument_vaccine(String language, String familyName, String givenName) throws Exception {
         VaccinationCertificateCreateDto createDto = getVaccinationCertificateCreateDto("1119349007", language);
         VaccinationValueSet vaccinationValueSet = new VaccinationValueSet();
         ReflectionTestUtils.setField(vaccinationValueSet, "prophylaxis", "SARS-CoV-2 mRNA vaccine");
         ReflectionTestUtils.setField(vaccinationValueSet, "medicinalProduct", "COVID-19 Vaccine Moderna");
         ReflectionTestUtils.setField(vaccinationValueSet, "authHolder", "Moderna Switzerland GmbH, Basel");
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
         String country = "Schweiz";
 
         VaccinationCertificateQrCode qrCodeData = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccinationValueSet);
@@ -57,12 +68,14 @@ class CovidPdfCertificateGenerationServiceTest {
 
     }
 
-    private void generateDocument_test(String language) throws Exception {
+    private void generateDocument_test(String language, String familyName, String givenName) throws Exception {
         TestCertificateCreateDto createDto = getTestCertificateCreateDto("test", "test", language);
         TestValueSet testValueSet = new TestValueSet();
         ReflectionTestUtils.setField(testValueSet, "name", "Name 1");
         ReflectionTestUtils.setField(testValueSet, "type", "Rapid immunoassay");
         ReflectionTestUtils.setField(testValueSet, "manufacturer", "XXXXX, Basel");
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
         String country = "Schweiz";
 
         TestCertificateQrCode qrCodeData = TestCertificateQrCodeMapper.toTestCertificateQrCode(createDto, testValueSet);
@@ -72,10 +85,11 @@ class CovidPdfCertificateGenerationServiceTest {
 
     }
 
-    private void generateDocument_recovery(String language) throws Exception {
+    private void generateDocument_recovery(String language, String familyName, String givenName) throws Exception {
         RecoveryCertificateCreateDto createDto = getRecoveryCertificateCreateDto(language);
         String country = "Schweiz";
-
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
 
         RecoveryCertificateQrCode qrCodeData = RecoveryCertificateQrCodeMapper.toRecoveryCertificateQrCode(createDto);
         RecoveryCertificatePdf pdfData = RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(createDto, qrCodeData, country, countryEn);
@@ -86,20 +100,27 @@ class CovidPdfCertificateGenerationServiceTest {
 
     @Test
     void generateAllDocuments() throws Exception {
-        generateDocument_recovery("de");
-        generateDocument_recovery("fr");
-        generateDocument_recovery("it");
-        generateDocument_recovery("rm");
+        generateAllDocuments(familyNameSmall, givenNameSmall);
+        generateAllDocuments(familyNameMiddle, givenNameMiddle);
+        generateAllDocuments(familyNameBig, givenNameBig);
 
-        generateDocument_vaccine("de");
-        generateDocument_vaccine("fr");
-        generateDocument_vaccine("it");
-        generateDocument_vaccine("rm");
+    }
 
-        generateDocument_test("de");
-        generateDocument_test("fr");
-        generateDocument_test("it");
-        generateDocument_test("rm");
+    private void generateAllDocuments(String familyName, String givenName) throws Exception {
+        generateDocument_recovery("de", familyName, givenName);
+        generateDocument_recovery("fr", familyName, givenName);
+        generateDocument_recovery("it", familyName, givenName);
+        generateDocument_recovery("rm", familyName, givenName);
+
+        generateDocument_vaccine("de", familyName, givenName);
+        generateDocument_vaccine("fr", familyName, givenName);
+        generateDocument_vaccine("it", familyName, givenName);
+        generateDocument_vaccine("rm", familyName, givenName);
+
+        generateDocument_test("de", familyName, givenName);
+        generateDocument_test("fr", familyName, givenName);
+        generateDocument_test("it", familyName, givenName);
+        generateDocument_test("rm", familyName, givenName);
 
     }
 
