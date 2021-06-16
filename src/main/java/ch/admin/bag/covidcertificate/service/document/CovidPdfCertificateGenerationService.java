@@ -277,7 +277,7 @@ public class CovidPdfCertificateGenerationService {
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setColspan(2);
-        cell.setPaddingTop(25);
+        cell.setPaddingTop(-7);
         cell.setPaddingLeft(22);
         table.addCell(cell);
 
@@ -451,7 +451,7 @@ public class CovidPdfCertificateGenerationService {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(95);
         table.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        table.setSpacingBefore((float) 5);
+        table.setSpacingBefore((float) 10);
 
         PdfPCell cell = new PdfPCell();
         addInfoCell(cell, messageSource.getMessage("info.info1", null, locale), font7Row, 0);
