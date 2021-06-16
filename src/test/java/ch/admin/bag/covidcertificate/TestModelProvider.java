@@ -21,8 +21,7 @@ public class TestModelProvider {
         );
     }
 
-    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language
-    ) {
+    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
@@ -56,8 +55,8 @@ public class TestModelProvider {
 
     public static CovidCertificatePersonNameDto getCovidCertificatePersonNameDto() {
         return new CovidCertificatePersonNameDto(
-                "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-                "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
+                "faimlyName",
+                "givenName"
         );
     }
 

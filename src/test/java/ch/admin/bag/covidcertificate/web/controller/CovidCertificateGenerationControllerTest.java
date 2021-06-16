@@ -81,7 +81,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returnsCertificateWithOkStatus() throws Exception {
-            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507");
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(VaccinationCertificateCreateDto.class))).thenReturn(responseDto);
 
@@ -99,7 +99,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returnsStatusCodeOfCreateCertificateException_ifOneWasThrown() throws Exception {
-            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507");
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var exception = fixture.create(CreateCertificateException.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(VaccinationCertificateCreateDto.class))).thenThrow(exception);
 
@@ -131,7 +131,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returns400StatusCode_ifInvalidZipCode() throws Exception {
-            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507");
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 0);
 
             mockMvc.perform(post(URL)
@@ -198,7 +198,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returnsCertificateWithOkStatus() throws Exception {
-            var createDto = getTestCertificateCreateDto(null, "1833");
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
             lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(TestCertificateCreateDto.class))).thenReturn(responseDto);
 
@@ -216,7 +216,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returnsStatusCodeOfCreateCertificateException_ifOneWasThrown() throws Exception {
-            var createDto = getTestCertificateCreateDto(null, "1833");
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var exception = fixture.create(CreateCertificateException.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(TestCertificateCreateDto.class))).thenThrow(exception);
 
@@ -230,7 +230,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returns403StatusCode_ifAccessDeniedExceptionWasThrown() throws Exception {
-            var createDto = getTestCertificateCreateDto(null, "1833");
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             when(securityHelper.authorizeUser(any(HttpServletRequest.class))).thenThrow(fixture.create(AccessDeniedException.class));
 
             mockMvc.perform(post(URL)
@@ -248,7 +248,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returnsCertificateWithOkStatus() throws Exception {
-            var createDto = getRecoveryCertificateCreateDto();
+            var createDto = getRecoveryCertificateCreateDto("de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenReturn(responseDto);
 
@@ -266,7 +266,7 @@ class CovidCertificateGenerationControllerTest {
 
         @Test
         void returnsStatusCodeOfCreateCertificateException_ifOneWasThrown() throws Exception {
-            var createDto = getRecoveryCertificateCreateDto();
+            var createDto = getRecoveryCertificateCreateDto("de");
             var exception = fixture.create(CreateCertificateException.class);
             when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenThrow(exception);
 

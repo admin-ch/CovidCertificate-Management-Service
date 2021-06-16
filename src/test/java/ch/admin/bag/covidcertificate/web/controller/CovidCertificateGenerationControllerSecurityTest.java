@@ -229,7 +229,7 @@ class CovidCertificateGenerationControllerSecurityTest {
         }
 
         private void callCreateVaccinationCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
-            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507");
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole, status);
         }
     }
@@ -257,7 +257,7 @@ class CovidCertificateGenerationControllerSecurityTest {
         }
 
         private void callCreateTestCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
-            var createDto = getTestCertificateCreateDto(null, "1833");
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole, status);
         }
     }
@@ -285,7 +285,7 @@ class CovidCertificateGenerationControllerSecurityTest {
         }
 
         private void callCreateRecoveryCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
-            var createDto = getRecoveryCertificateCreateDto();
+            var createDto = getRecoveryCertificateCreateDto("de");
             callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole, status);
         }
     }
