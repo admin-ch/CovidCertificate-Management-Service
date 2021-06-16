@@ -90,11 +90,11 @@ public class CovidPdfCertificateGenerationService {
 
 
         fontRow = new Font(baseFont, 10, Font.NORMAL, BaseColor.BLACK);
-        font7Row = new Font(baseFont, 8, Font.NORMAL, BaseColor.BLACK);
+        font7Row = new Font(baseFont, 7, Font.NORMAL, BaseColor.BLACK);
         font8Row = new Font(baseFont, 8, Font.NORMAL, BaseColor.BLACK);
         fontRowBold = new Font(baseFontBold, 10, Font.NORMAL, BaseColor.BLACK);
         fontEnglish = new Font(baseFontItalic, 9, Font.NORMAL, BaseColor.BLACK);
-        font7English = new Font(baseFontItalic, 8, Font.NORMAL, BaseColor.BLACK);
+        font7English = new Font(baseFontItalic, 7, Font.NORMAL, BaseColor.BLACK);
         font8English = new Font(baseFontItalic, 8, Font.NORMAL, BaseColor.BLACK);
         fontHeaderRed = new Font(baseFont, 26, Font.NORMAL, new BaseColor(220, 0, 24));
         fontHeaderBlack = new Font(baseFontItalic, 16, Font.NORMAL, BaseColor.BLACK);
@@ -221,7 +221,7 @@ public class CovidPdfCertificateGenerationService {
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setRowspan(30);
-        cell.setFixedHeight(440);
+        cell.setFixedHeight(450);
         table.addCell(cell);
 
         if (data instanceof VaccinationCertificatePdf) {
@@ -277,7 +277,7 @@ public class CovidPdfCertificateGenerationService {
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setColspan(2);
-        cell.setPaddingTop(5);
+        cell.setPaddingTop(25);
         cell.setPaddingLeft(22);
         table.addCell(cell);
 
@@ -292,7 +292,7 @@ public class CovidPdfCertificateGenerationService {
         addQrLabelCell(table, locale, LocalDateTime.now());
 
         addIssuerRow(table, locale, "personalData.title", 20, true, PADDING_LEFT);
-        addRow(table, locale, "personalData.name.label", data.getFamilyName() + " " + data.getGivenName(), PADDING_LEFT);
+        addNameRow(table, locale, "personalData.name.label", data.getFamilyName() + " " + data.getGivenName(), PADDING_LEFT);
         addRow(table, locale, "personalData.date.label", data.getDateOfBirth().format(LOCAL_DATE_FORMAT), PADDING_LEFT);
 
         return table;
@@ -310,6 +310,34 @@ public class CovidPdfCertificateGenerationService {
         table.addCell(titleCell);
 
         PdfPCell valueCell = new PdfPCell(new Phrase(value, fontRow));
+        valueCell.setBorder(Rectangle.NO_BORDER);
+        valueCell.setPaddingTop(15);
+        valueCell.setRowspan(2);
+        table.addCell(valueCell);
+
+        PdfPCell titleEnglishCell = new PdfPCell(new Phrase(messageSource.getMessage(key, null, Locale.ENGLISH), fontEnglish));
+        titleEnglishCell.setBorder(Rectangle.NO_BORDER);
+        titleEnglishCell.setPaddingTop(0);
+        titleEnglishCell.setHorizontalAlignment(Rectangle.LEFT);
+        titleEnglishCell.setPaddingLeft(paddingLeft);
+        table.addCell(titleEnglishCell);
+
+    }
+
+    private void addNameRow(PdfPTable table, Locale locale, String key, String value, float paddingLeft) {
+        PdfPCell titleCell = new PdfPCell(new Phrase(messageSource.getMessage(key, null, locale), fontRow));
+        titleCell.setBorder(Rectangle.NO_BORDER);
+        titleCell.setPaddingTop(15);
+        titleCell.setPaddingLeft(paddingLeft);
+        table.addCell(titleCell);
+
+        Font font = fontRow;
+
+        if (value.length() > 80) {
+            font = font7Row;
+        }
+
+        PdfPCell valueCell = new PdfPCell(new Phrase(value, font));
         valueCell.setBorder(Rectangle.NO_BORDER);
         valueCell.setPaddingTop(15);
         valueCell.setRowspan(2);
