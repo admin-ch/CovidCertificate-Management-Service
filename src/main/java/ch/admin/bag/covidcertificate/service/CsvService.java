@@ -167,6 +167,8 @@ public class CsvService {
                     hasError = true;
                     csvBean.setError(e.getError().toString());
                 }
+            } else {
+                hasError = true;
             }
         }
         return !hasError;
