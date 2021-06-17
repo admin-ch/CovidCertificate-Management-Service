@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,12 @@ public class ResponseStatusExceptionHandler {
             log.warn("Create certificate exception, errorCode: {}", ex.getError().getErrorCode(), ex);
             return new ResponseEntity<>(ex.getError(), ex.getError().getHttpStatus());
         }
+    }
+
+    @ExceptionHandler(value = {CsvException.class})
+    protected ResponseEntity<Object> handleCsvException(CsvException ex) {
+        log.warn("CSV create certificate request invalid", ex);
+        return new ResponseEntity<>(ex.getError(), ex.getError().getHttpStatus());
     }
 
     @ExceptionHandler(value = {RevocationException.class})

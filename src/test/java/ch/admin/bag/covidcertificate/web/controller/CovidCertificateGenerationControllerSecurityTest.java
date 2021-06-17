@@ -30,8 +30,8 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-
 import static ch.admin.bag.covidcertificate.FixtureCustomization.*;
+import static ch.admin.bag.covidcertificate.TestModelProvider.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.mockito.ArgumentMatchers.any;
@@ -229,7 +229,7 @@ class CovidCertificateGenerationControllerSecurityTest {
         }
 
         private void callCreateVaccinationCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole, status);
         }
     }
@@ -257,7 +257,7 @@ class CovidCertificateGenerationControllerSecurityTest {
         }
 
         private void callCreateTestCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole, status);
         }
     }
@@ -285,7 +285,7 @@ class CovidCertificateGenerationControllerSecurityTest {
         }
 
         private void callCreateRecoveryCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
             callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole, status);
         }
     }
