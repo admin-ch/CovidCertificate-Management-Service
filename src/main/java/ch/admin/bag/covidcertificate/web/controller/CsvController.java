@@ -1,7 +1,6 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
 import ch.admin.bag.covidcertificate.service.CsvService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +24,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.NOT_A_CSV;
 public class CsvController {
 
     private static final String CSV_CONTENT_TYPE = "text/csv";
+    private static final String EXCEL_CONTENT_TYPE = "application/vnd.ms-excel";
 
     private final SecurityHelper securityHelper;
     private final CsvService csvService;
@@ -34,9 +34,9 @@ public class CsvController {
     public CsvResponseDto createWithCsv(@RequestParam("file") MultipartFile file, @RequestParam("certificateType") String certificateType, HttpServletRequest request) throws IOException {
         securityHelper.authorizeUser(request);
         log.info(file.getContentType());
-//        if (!CSV_CONTENT_TYPE.equals(file.getContentType())) {
-//            throw new CreateCertificateException(NOT_A_CSV);
-//        }
+        if (!CSV_CONTENT_TYPE.equals(file.getContentType()) && !EXCEL_CONTENT_TYPE.equals(file.getContentType())) {
+            throw new CreateCertificateException(NOT_A_CSV);
+        }
         return csvService.handleCsvRequest(file, certificateType);
     }
 }
