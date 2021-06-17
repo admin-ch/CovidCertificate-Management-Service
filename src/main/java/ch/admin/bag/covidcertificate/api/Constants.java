@@ -13,13 +13,13 @@ import java.time.format.DateTimeFormatter;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Constants {
-    public static final String VERSION = "1.2.1";
+    public static final String VERSION = "1.3.0";
     public static final String DEFAULT_DISEASE_OR_AGENT_TARGETED = "840539006";
     public static final String DEFAULT_DISEASE_OR_AGENT_SYSTEM = "2.16.840.1.113883.6.96";
     public static final String ISSUER = "Bundesamt für Gesundheit (BAG)";
     public static final String PCR_TYPE_CODE = "LP6464-4";
     public static final String NONE_PCR_TYPE_CODE = "LP217198-3";
-    public static final int MAX_STRING_LENGTH = 50;
+    public static final int MAX_STRING_LENGTH = 80;
     public static final int DAYS_UNTIL_RECOVERY_VALID = 10;
     public static final int RECOVERY_CERTIFICATE_VALIDITY_IN_DAYS = 179;
 
@@ -49,8 +49,8 @@ public class Constants {
     public static final CreateCertificateError INVALID_DOSES = new CreateCertificateError(455, "Invalid number of doses", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_VACCINATION_DATE = new CreateCertificateError(456, "Invalid vaccination date! Date cannot be in the future", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_COUNTRY_OF_VACCINATION = new CreateCertificateError(457, "Invalid country of vaccination", HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_GIVEN_NAME = new CreateCertificateError(458, "Invalid given name! Must not exceed 50 chars", HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_FAMILY_NAME = new CreateCertificateError(459, "Invalid family name! Must not exceed 50 chars", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_GIVEN_NAME = new CreateCertificateError(458, "Invalid given name! Must not exceed 80 chars", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_FAMILY_NAME = new CreateCertificateError(459, "Invalid family name! Must not exceed 80 chars", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_TEST_DATA = new CreateCertificateError(460, "No test data was specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_MEMBER_STATE_OF_TEST = new CreateCertificateError(461, "Invalid member state of test", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_TYP_OF_TEST = new CreateCertificateError(462, "Invalid type of test and manufacturer code combination! Must either be a PCR Test type and no manufacturer code or give a manufacturer code and the antigen test type code.", HttpStatus.BAD_REQUEST);
