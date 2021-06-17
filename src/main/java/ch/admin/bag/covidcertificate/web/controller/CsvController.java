@@ -33,6 +33,7 @@ public class CsvController {
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CsvResponseDto createWithCsv(@RequestParam("file") MultipartFile file, @RequestParam("certificateType") String certificateType, HttpServletRequest request) throws IOException {
         securityHelper.authorizeUser(request);
+        log.info(file.getContentType());
         if (!CSV_CONTENT_TYPE.equals(file.getContentType())) {
             throw new CreateCertificateException(NOT_A_CSV);
         }
