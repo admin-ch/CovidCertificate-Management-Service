@@ -15,8 +15,6 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -48,8 +46,14 @@ public class CsvService {
     private final KpiDataService kpiLogService;
     private final ValueSetsService valueSetsService;
 
-    public CsvResponseDto handleCsvRequest(MultipartFile file, CertificateType certificateType) throws IOException {
-        switch (certificateType) {
+    public CsvResponseDto handleCsvRequest(MultipartFile file, String certificateType) throws IOException {
+        CertificateType validCertificateType;
+        try {
+            validCertificateType = CertificateType.valueOf(certificateType);
+        } catch (IllegalArgumentException e) {
+            throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
+        }
+        switch (validCertificateType) {
             case recovery:
                 return new CsvResponseDto(handleCsvRequest(file, RecoveryCertificateCsvBean.class));
             case test:
@@ -177,6 +181,7 @@ public class CsvService {
     }
 
     private void validate(CertificateCreateDto createDto, int index) {
+        createDto.validate();
         if (createDto instanceof RecoveryCertificateCreateDto) {
             RecoveryCertificateDataDto dataDto = ((RecoveryCertificateCreateDto) createDto).getRecoveryInfo().get(index);
             CountryCode countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfTest(), createDto.getLanguage());
@@ -207,7 +212,7 @@ public class CsvService {
             StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(csvWriter).build();
             beanToCsv.write(certificateCsvBeans);
             return file;
-        } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
+        } catch (Exception e) {
             file.delete();
             throw new CreateCertificateException(WRITING_RETURN_CSV_FAILED);
         }
