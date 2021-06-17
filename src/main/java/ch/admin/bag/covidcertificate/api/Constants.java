@@ -62,6 +62,8 @@ public class Constants {
     public static final CreateCertificateError INVALID_LANGUAGE = new CreateCertificateError(469, "The given language does not match any of the supported languages: de, it, fr, rm!", HttpStatus.BAD_REQUEST);
     public static final RevocationError INVALID_UVCI = new RevocationError(470, "Invalid UVCI format.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ADDRESS = new CreateCertificateError(474, "Paper-based delivery requires a valid address.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_STANDARDISED_GIVEN_NAME = new CreateCertificateError(475, "Invalid given name! The standardised given name exceeds 80 chars", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_STANDARDISED_FAMILY_NAME = new CreateCertificateError(476, "Invalid family name! The standardised family name exceeds 80 chars", HttpStatus.BAD_REQUEST);
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
