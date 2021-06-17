@@ -2,9 +2,6 @@ package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCsvBean;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateCsvBean;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
 import ch.admin.bag.covidcertificate.service.CsvService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CERTIFICATE_TYPE;
 import static ch.admin.bag.covidcertificate.api.Constants.NOT_A_CSV;
 
 @RestController
@@ -40,16 +36,6 @@ public class CsvController {
         if (!CSV_CONTENT_TYPE.equals(file.getContentType())) {
             throw new CreateCertificateException(NOT_A_CSV);
         }
-
-        switch (certificateType) {
-            case recovery:
-                return new CsvResponseDto(csvService.handleCsvRequest(file, RecoveryCertificateCsvBean.class));
-            case test:
-                return new CsvResponseDto(csvService.handleCsvRequest(file, TestCertificateCsvBean.class));
-            case vaccination:
-                return new CsvResponseDto(csvService.handleCsvRequest(file, VaccinationCertificateCsvBean.class));
-            default:
-                throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
-        }
+        return csvService.handleCsvRequest(file, certificateType);
     }
 }

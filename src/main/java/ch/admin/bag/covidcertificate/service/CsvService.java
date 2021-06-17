@@ -5,6 +5,7 @@ import ch.admin.bag.covidcertificate.api.exception.CsvError;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
+import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
@@ -25,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -50,7 +48,20 @@ public class CsvService {
     private final KpiDataService kpiLogService;
     private final ValueSetsService valueSetsService;
 
-    public byte[] handleCsvRequest(MultipartFile file, Class<?> csvBeanClass) throws IOException {
+    public CsvResponseDto handleCsvRequest(MultipartFile file, CertificateType certificateType) throws IOException {
+        switch (certificateType) {
+            case recovery:
+                return new CsvResponseDto(handleCsvRequest(file, RecoveryCertificateCsvBean.class));
+            case test:
+                return new CsvResponseDto(handleCsvRequest(file, TestCertificateCsvBean.class));
+            case vaccination:
+                return new CsvResponseDto(handleCsvRequest(file, VaccinationCertificateCsvBean.class));
+            default:
+                throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
+        }
+    }
+
+    private byte[] handleCsvRequest(MultipartFile file, Class<?> csvBeanClass) throws IOException {
         List<CertificateCsvBean> csvBeans = mapToBean(file, csvBeanClass);
         checkSize(csvBeans);
         List<CertificateCreateDto> createDtos = mapToCreateDtos(csvBeans);
@@ -76,7 +87,9 @@ public class CsvService {
 
     private byte[] createCsvException(List<CertificateCsvBean> csvBeans) throws IOException {
         File returnFile = writeCsv(csvBeans);
-        throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, Files.readAllBytes(returnFile.toPath())));
+        byte[] errorCsv = Files.readAllBytes(returnFile.toPath());
+        returnFile.delete();
+        throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, errorCsv));
     }
 
     private List<CovidCertificateCreateResponseDto> createRecoveryCertificates(List<RecoveryCertificateCreateDto> createDtos) throws JsonProcessingException {
@@ -188,12 +201,14 @@ public class CsvService {
     }
 
     private File writeCsv(List<CertificateCsvBean> certificateCsvBeans) {
-        File file = new File("temp.csv");
+        UUID tempId = UUID.randomUUID();
+        File file = new File("temp" + tempId + ".csv");
         try (CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
             StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(csvWriter).build();
             beanToCsv.write(certificateCsvBeans);
             return file;
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
+            file.delete();
             throw new CreateCertificateException(WRITING_RETURN_CSV_FAILED);
         }
     }
