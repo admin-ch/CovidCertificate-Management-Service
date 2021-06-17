@@ -34,9 +34,9 @@ public class CsvController {
     public CsvResponseDto createWithCsv(@RequestParam("file") MultipartFile file, @RequestParam("certificateType") String certificateType, HttpServletRequest request) throws IOException {
         securityHelper.authorizeUser(request);
         log.info(file.getContentType());
-        if (!CSV_CONTENT_TYPE.equals(file.getContentType())) {
-            throw new CreateCertificateException(NOT_A_CSV);
-        }
+//        if (!CSV_CONTENT_TYPE.equals(file.getContentType())) {
+//            throw new CreateCertificateException(NOT_A_CSV);
+//        }
         return csvService.handleCsvRequest(file, certificateType);
     }
 }
