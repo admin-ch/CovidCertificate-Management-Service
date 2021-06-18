@@ -6,6 +6,8 @@ import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
+import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
+import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.service.document.CovidPdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.*;
@@ -16,12 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import se.digg.dgc.encoding.Barcode;
 
+import java.util.Base64;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class CovidCertificateGenerationService {
     private final BarcodeService barcodeService;
     private final PrintQueueClient printQueueClient;
+    private final InAppDeliveryClient inAppDeliveryClient;
     private final ObjectMapper objectMapper;
     private final CovidPdfCertificateGenerationService covidPdfCertificateGenerationService;
     private final CovidCertificateDtoMapperService covidCertificateDtoMapperService;
@@ -52,8 +57,11 @@ public class CovidCertificateGenerationService {
         byte[] pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code);
 
         CovidCertificateCreateResponseDto responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
-        if (createDto.getAddress() != null) {
+        if (createDto.sendWithMail()) {
             printQueueClient.sendPrintJob(CertificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
+        } else if (createDto.sendToApp()) {
+            var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getInAppDeliveryCode(), code.getPayload(), Base64.getEncoder().encodeToString(pdf));
+            this.inAppDeliveryClient.deliverToApp(inAppDeliveryDto);
         }
         return responseDto;
     }

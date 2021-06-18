@@ -25,6 +25,14 @@ public abstract class CertificateCreateDto {
         this.inAppDeliveryCode = inAppDeliveryCode != null ? inAppDeliveryCode.toUpperCase() : null;
     }
 
+    public boolean sendWithMail() {
+        return this.address != null;
+    }
+
+    public boolean sendToApp() {
+        return this.inAppDeliveryCode != null;
+    }
+
     public void validate() {
         if (personData == null) {
             throw new CreateCertificateException(NO_PERSON_DATA);

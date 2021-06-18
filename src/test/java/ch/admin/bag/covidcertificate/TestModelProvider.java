@@ -22,6 +22,17 @@ public class TestModelProvider {
         );
     }
 
+    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(String medicalProductCode, String language, String inAppCode) {
+        return new VaccinationCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getVaccinationCertificateDataDto(medicalProductCode)),
+                language,
+                null,
+                inAppCode
+        );
+    }
+
+
     public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
@@ -32,6 +43,16 @@ public class TestModelProvider {
         );
     }
 
+    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language, String inAppCode) {
+        return new TestCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
+                language,
+                null,
+                inAppCode
+        );
+    }
+
     public static RecoveryCertificateCreateDto getRecoveryCertificateCreateDto(String language) {
         return new RecoveryCertificateCreateDto(
                 getCovidCertificatePersonDto(),
@@ -39,6 +60,16 @@ public class TestModelProvider {
                 language,
                 getCovidCertificateAddressDto(),
                 null
+        );
+    }
+
+    public static RecoveryCertificateCreateDto getRecoveryCertificateCreateDto(String language, String inAppCode) {
+        return new RecoveryCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getRecoveryCertificateDataDto()),
+                language,
+                null,
+                inAppCode
         );
     }
 

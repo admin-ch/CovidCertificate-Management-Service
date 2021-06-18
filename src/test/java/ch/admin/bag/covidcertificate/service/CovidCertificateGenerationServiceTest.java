@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.service.document.CovidPdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.*;
@@ -41,6 +42,8 @@ class CovidCertificateGenerationServiceTest {
     private ObjectMapper objectMapper;
     @Mock
     private PrintQueueClient printQueueClient;
+    @Mock
+    private InAppDeliveryClient inAppDeliveryClient;
 
     private final JFixture fixture = new JFixture();
 
@@ -159,6 +162,22 @@ class CovidCertificateGenerationServiceTest {
 
             assertNotNull(actual.getUvci());
         }
+
+        @Test
+        void shouldSendInAppDelivery__whenCodeIsPassed() {
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(inAppDeliveryClient, times(1)).deliverToApp(any());
+        }
+
+        @Test
+        void shouldCallPrintingService__whenAddressPassed() {
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(printQueueClient, times(1)).sendPrintJob(any());
+        }
     }
 
     @Nested
@@ -259,6 +278,22 @@ class CovidCertificateGenerationServiceTest {
 
             assertNotNull(actual.getUvci());
         }
+
+        @Test
+        void shouldSendInAppDelivery__whenCodeIsPassed() {
+            var createDto = getTestCertificateCreateDto(null, "1833", "de", "BITBITBIT");
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(inAppDeliveryClient, times(1)).deliverToApp(any());
+        }
+
+        @Test
+        void shouldCallPrintingService__whenAddressPassed() {
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(printQueueClient, times(1)).sendPrintJob(any());
+        }
     }
 
     @Nested
@@ -358,6 +393,22 @@ class CovidCertificateGenerationServiceTest {
             var actual = service.generateCovidCertificate(createDto);
 
             assertNotNull(actual.getUvci());
+        }
+
+        @Test
+        void shouldSendInAppDelivery__whenCodeIsPassed() {
+            var createDto = getRecoveryCertificateCreateDto("de", "BITBITBIT");
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(inAppDeliveryClient, times(1)).deliverToApp(any());
+        }
+
+        @Test
+        void shouldCallPrintingService__whenAddressPassed() {
+            var createDto = getRecoveryCertificateCreateDto("de");
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(printQueueClient, times(1)).sendPrintJob(any());
         }
     }
 }
