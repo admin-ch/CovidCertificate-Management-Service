@@ -225,7 +225,7 @@ public class CsvService {
     }
 
     private String getCertificateFileName(String givenName, String familyName, String uvci) {
-        return PDF_FILE_NAME_PREFIX + givenName + "-" + familyName + "-" + uvci;
+        return PDF_FILE_NAME_PREFIX + uvci.replace(":", "_");
     }
 
     private Map<String, byte[]> getPdfMap(List<CovidCertificateCreateResponseDto> responseDtos, List<CertificateCreateDto> createDtos) {
