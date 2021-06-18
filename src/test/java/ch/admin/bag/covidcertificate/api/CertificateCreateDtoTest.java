@@ -15,14 +15,11 @@ import static org.mockito.Mockito.mock;
 
 public class CertificateCreateDtoTest {
 
-    private static final JFixture fixture = new JFixture();
-
     private final CovidCertificatePersonDto personDto = mock(CovidCertificatePersonDto.class);
     private final String language = "de";
     private final CovidCertificateAddressDto addressDto = new CovidCertificateAddressDto("street", 1000, "city", "BE");
 
     private static class CertificateCreateDtoIml extends CertificateCreateDto {
-
         public CertificateCreateDtoIml(
                 CovidCertificatePersonDto personData,
                 String language

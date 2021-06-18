@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 public class ProfileRegistry {
     public static final String SIGNING_SERVICE_MOCK = "mock-signing-service";
     public static final String PRINTING_SERVICE_MOCK = "mock-printing-service";
+    public static final String INAPP_DELIVERY_SERVICE_MOCK = "mock-inapp-delivery-service";
 }

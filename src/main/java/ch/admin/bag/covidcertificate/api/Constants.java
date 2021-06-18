@@ -81,4 +81,5 @@ public class Constants {
     public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555, "Creating barcode failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556, "Printing failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557, "Write CSV failed", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError INAPP_DELIVERY_FAILED = new CreateCertificateError(558, "InApp delivery failed.", HttpStatus.INTERNAL_SERVER_ERROR);
 }
