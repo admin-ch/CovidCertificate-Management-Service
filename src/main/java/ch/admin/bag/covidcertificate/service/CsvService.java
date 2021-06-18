@@ -168,7 +168,7 @@ public class CsvService {
             CertificateCsvBean csvBean = csvBeans.get(i);
             if (createDto != null && csvBean.getError() == null) {
                 try {
-                    validate(createDto, i);
+                    validate(createDto);
                 } catch (CreateCertificateException e) {
                     hasError = true;
                     csvBean.setError(e.getError().toString());
@@ -180,23 +180,23 @@ public class CsvService {
         return !hasError;
     }
 
-    private void validate(CertificateCreateDto createDto, int index) {
+    private void validate(CertificateCreateDto createDto) {
         createDto.validate();
         if (createDto instanceof RecoveryCertificateCreateDto) {
-            RecoveryCertificateDataDto dataDto = ((RecoveryCertificateCreateDto) createDto).getRecoveryInfo().get(index);
+            RecoveryCertificateDataDto dataDto = ((RecoveryCertificateCreateDto) createDto).getRecoveryInfo().get(0);
             CountryCode countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfTest(), createDto.getLanguage());
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
             }
         } else if (createDto instanceof TestCertificateCreateDto) {
-            TestCertificateDataDto dataDto = ((TestCertificateCreateDto) createDto).getTestInfo().get(index);
+            TestCertificateDataDto dataDto = ((TestCertificateCreateDto) createDto).getTestInfo().get(0);
             CountryCode countryCode = valueSetsService.getCountryCode(dataDto.getMemberStateOfTest(), createDto.getLanguage());
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
             }
             valueSetsService.getTestValueSet(dataDto);
         } else if (createDto instanceof VaccinationCertificateCreateDto) {
-            VaccinationCertificateDataDto dataDto = ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(index);
+            VaccinationCertificateDataDto dataDto = ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(0);
             CountryCode countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(), createDto.getLanguage());
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
