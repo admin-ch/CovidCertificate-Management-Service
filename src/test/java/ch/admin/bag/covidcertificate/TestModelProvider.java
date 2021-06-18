@@ -17,7 +17,8 @@ public class TestModelProvider {
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
                 language,
-                getCovidCertificateAddressDto()
+                getCovidCertificateAddressDto(),
+                null
         );
     }
 
@@ -26,7 +27,8 @@ public class TestModelProvider {
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
                 language,
-                getCovidCertificateAddressDto()
+                getCovidCertificateAddressDto(),
+                null
         );
     }
 
@@ -35,7 +37,8 @@ public class TestModelProvider {
                 getCovidCertificatePersonDto(),
                 List.of(getRecoveryCertificateDataDto()),
                 language,
-                getCovidCertificateAddressDto()
+                getCovidCertificateAddressDto(),
+                null
         );
     }
 

@@ -39,6 +39,8 @@ public abstract class CertificateCsvBean {
     private String cantonCodeSender;
     @CsvBindByName(column = "error")
     private String error;
+    @CsvBindByName(column = "inAppDeliveryCode")
+    private String inAppDeliveryCode;
 
     public abstract CertificateCreateDto mapToCreateDto();
 
@@ -51,7 +53,8 @@ public abstract class CertificateCsvBean {
                 mapToPersonDto(),
                 List.of(dataDto),
                 getLanguage(),
-                mapToAddressDto()
+                mapToAddressDto(),
+                getInAppDeliveryCode()
         );
     }
 
@@ -60,7 +63,8 @@ public abstract class CertificateCsvBean {
                 mapToPersonDto(),
                 List.of(dataDto),
                 getLanguage(),
-                mapToAddressDto()
+                mapToAddressDto(),
+                getInAppDeliveryCode()
         );
     }
 
@@ -69,7 +73,8 @@ public abstract class CertificateCsvBean {
                 mapToPersonDto(),
                 List.of(dataDto),
                 getLanguage(),
-                mapToAddressDto()
+                mapToAddressDto(),
+                getInAppDeliveryCode()
         );
     }
 

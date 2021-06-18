@@ -62,6 +62,8 @@ public class Constants {
     public static final CreateCertificateError INVALID_LANGUAGE = new CreateCertificateError(469, "The given language does not match any of the supported languages: de, it, fr, rm!", HttpStatus.BAD_REQUEST);
     public static final RevocationError INVALID_UVCI = new RevocationError(470, "Invalid UVCI format.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ADDRESS = new CreateCertificateError(474, "Paper-based delivery requires a valid address.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError DUPLICATE_DELIVERY_METHOD = new CreateCertificateError(475, "Delivery method can either be InApp or Mail, but not both.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_IN_APP_CODE = new CreateCertificateError(476, "InApp-Code is invalid.", HttpStatus.NOT_FOUND);
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
