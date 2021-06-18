@@ -224,16 +224,15 @@ public class CsvService {
         }
     }
 
-    private String getCertificateFileName(String givenName, String familyName, String uvci) {
-        return PDF_FILE_NAME_PREFIX + givenName + "-" + familyName + "-" + uvci;
+    private String getCertificateFileName(String uvci) {
+        return PDF_FILE_NAME_PREFIX + uvci.replace(":", "_");
     }
 
     private Map<String, byte[]> getPdfMap(List<CovidCertificateCreateResponseDto> responseDtos, List<CertificateCreateDto> createDtos) {
         Map<String, byte[]> responseMap = new HashMap<>();
-        for (int i = 0; i < responseDtos.size(); i++) {
-            CovidCertificatePersonNameDto nameDto = createDtos.get(i).getPersonData().getName();
-            String certificateFileName = getCertificateFileName(nameDto.getGivenName(), nameDto.getFamilyName(), responseDtos.get(i).getUvci());
-            responseMap.put(certificateFileName, responseDtos.get(i).getPdf());
+        for (CovidCertificateCreateResponseDto responseDto : responseDtos) {
+            String certificateFileName = getCertificateFileName(responseDto.getUvci());
+            responseMap.put(certificateFileName, responseDto.getPdf());
         }
         return responseMap;
     }

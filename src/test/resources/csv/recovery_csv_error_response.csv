@@ -1,2 +1,0 @@
-"CANTONCODESENDER","CITY","COUNTRYOFTEST","DATEOFBIRTH","DATEOFFIRSTPOSITIVETESTRESULT","ERROR","FAMILYNAME","GIVENNAME","ID","LANGUAGE","STREETANDNR","ZIPCODE"
-"BE","Bern","CH","1985-09-20","2020-12-20","{""errorCode"":474,""errorMessage"":""Paper-based delivery requires a valid address."",""httpStatus"":""BAD_REQUEST""}","Muster","Max","1","de","MusterStrasse 1","998"

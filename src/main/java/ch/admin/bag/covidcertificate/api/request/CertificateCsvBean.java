@@ -19,8 +19,6 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_BIRTH;
 @AllArgsConstructor
 public abstract class CertificateCsvBean {
 
-    @CsvBindByName(column = "id")
-    private String id;
     @CsvBindByName(column = "givenName")
     private String givenName;
     @CsvBindByName(column = "familyName")
