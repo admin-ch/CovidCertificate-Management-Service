@@ -1,9 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.service.document.CovidPdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +20,7 @@ import se.digg.dgc.encoding.Barcode;
 
 import java.io.IOException;
 
+import static ch.admin.bag.covidcertificate.TestModelProvider.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -40,6 +39,8 @@ class CovidCertificateGenerationServiceTest {
     private CovidCertificateDtoMapperService covidCertificateDtoMapperService;
     @Mock
     private ObjectMapper objectMapper;
+    @Mock
+    private PrintQueueClient printQueueClient;
 
     private final JFixture fixture = new JFixture();
 
@@ -64,14 +65,14 @@ class CovidCertificateGenerationServiceTest {
     class GenerateVaccinationCovidCertificate {
         @Test
         void shouldMapDtoToVaccinationCertificateQrCode() throws IOException {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toVaccinationCertificateQrCode(createDto);
         }
 
         @Test
         void shouldMapDtoToVaccinationCertificatePdf() throws IOException {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var qrCodeData = fixture.create(VaccinationCertificateQrCode.class);
             when(covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto)).thenReturn(qrCodeData);
             service.generateCovidCertificate(createDto);
@@ -80,7 +81,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void throwsCreateCertificateException_ifMapDtoToVaccinationCertificateQrCodeThrowsCreateCertificateException() {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var expected = fixture.create(CreateCertificateException.class);
             when(covidCertificateDtoMapperService.toVaccinationCertificateQrCode(any())).thenThrow(expected);
 
@@ -91,7 +92,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void throwsInvalidCountryOfVaccination_ifMapDtoToVaccinationCertificatePdfThrowsCreateCertificateException() {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var expected = fixture.create(CreateCertificateException.class);
             when(covidCertificateDtoMapperService.toVaccinationCertificatePdf(any(), any())).thenThrow(expected);
 
@@ -102,7 +103,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldCreateBarcode() throws IOException {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var qrCodeData = fixture.create(VaccinationCertificateQrCode.class);
             when(covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto)).thenReturn(qrCodeData);
             var contents = fixture.create(String.class);
@@ -111,13 +112,13 @@ class CovidCertificateGenerationServiceTest {
             when(objectWriter.writeValueAsString(qrCodeData)).thenReturn(contents);
 
             service.generateCovidCertificate(createDto);
-            
+
             verify(barcodeService).createBarcode(contents);
         }
 
         @Test
         void shouldCreatePdf() throws IOException {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var vaccinationPdf = fixture.create(VaccinationCertificatePdf.class);
             var barcode = fixture.create(Barcode.class);
             when(covidCertificateDtoMapperService.toVaccinationCertificatePdf(any(), any())).thenReturn(vaccinationPdf);
@@ -130,7 +131,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldReturnBarcode() throws IOException {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var barcode = fixture.create(Barcode.class);
             when(barcodeService.createBarcode(any())).thenReturn(barcode);
 
@@ -141,7 +142,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldReturnPdf() throws IOException {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var pdf = fixture.create(byte[].class);
             when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any())).thenReturn(pdf);
 
@@ -152,7 +153,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldUVCI() throws IOException {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -164,14 +165,14 @@ class CovidCertificateGenerationServiceTest {
     class GenerateTestCovidCertificate {
         @Test
         void shouldMapDtoToTestCertificateQrCode() throws IOException {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toTestCertificateQrCode(createDto);
         }
 
         @Test
         void shouldMapDtoToTestCertificatePdf() throws IOException {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             when(covidCertificateDtoMapperService.toTestCertificateQrCode(createDto)).thenReturn(qrCodeData);
             service.generateCovidCertificate(createDto);
@@ -180,7 +181,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void throwsCreateCertificateException_ifMapDtoToTestCertificateQrCodeThrowsCreateCertificateException() {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var expected = fixture.create(CreateCertificateException.class);
             when(covidCertificateDtoMapperService.toTestCertificateQrCode(any())).thenThrow(expected);
 
@@ -191,7 +192,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void throwsInvalidCountryOfTest_ifMapDtoToTestCertificatePdfThrowsCreateCertificateException() {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var expected = fixture.create(CreateCertificateException.class);
             when(covidCertificateDtoMapperService.toTestCertificatePdf(any(), any())).thenThrow(expected);
 
@@ -202,7 +203,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldCreateBarcode() throws IOException {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             when(covidCertificateDtoMapperService.toTestCertificateQrCode(createDto)).thenReturn(qrCodeData);
             var contents = fixture.create(String.class);
@@ -217,7 +218,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldCreatePdf() throws IOException {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var TestPdf = fixture.create(TestCertificatePdf.class);
             var barcode = fixture.create(Barcode.class);
             when(covidCertificateDtoMapperService.toTestCertificatePdf(any(), any())).thenReturn(TestPdf);
@@ -230,7 +231,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldReturnBarcode() throws IOException {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var barcode = fixture.create(Barcode.class);
             when(barcodeService.createBarcode(any())).thenReturn(barcode);
 
@@ -241,7 +242,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldReturnPdf() throws IOException {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var pdf = fixture.create(byte[].class);
             when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any())).thenReturn(pdf);
 
@@ -252,7 +253,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldUVCI() throws IOException {
-            var createDto = fixture.create(TestCertificateCreateDto.class);
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -264,14 +265,14 @@ class CovidCertificateGenerationServiceTest {
     class GenerateRecoveryCovidCertificate {
         @Test
         void shouldMapDtoToRecoveryCertificateQrCode() throws IOException {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toRecoveryCertificateQrCode(createDto);
         }
 
         @Test
         void shouldMapDtoToRecoveryCertificatePdf() throws IOException {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
             var qrCodeData = fixture.create(RecoveryCertificateQrCode.class);
             when(covidCertificateDtoMapperService.toRecoveryCertificateQrCode(createDto)).thenReturn(qrCodeData);
             service.generateCovidCertificate(createDto);
@@ -280,7 +281,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void throwsCreateCertificateException_ifMapDtoToRecoveryCertificateQrCodeThrowsCreateCertificateException() {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
             var expected = fixture.create(CreateCertificateException.class);
             when(covidCertificateDtoMapperService.toRecoveryCertificateQrCode(any())).thenThrow(expected);
 
@@ -291,7 +292,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void throwsInvalidCountryOfRecovery_ifMapDtoToRecoveryCertificatePdfThrowsCreateCertificateException() {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
             var expected = fixture.create(CreateCertificateException.class);
             when(covidCertificateDtoMapperService.toRecoveryCertificatePdf(any(), any())).thenThrow(expected);
 
@@ -302,7 +303,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldCreateBarcode() throws IOException {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
             var qrCodeData = fixture.create(RecoveryCertificateQrCode.class);
             when(covidCertificateDtoMapperService.toRecoveryCertificateQrCode(createDto)).thenReturn(qrCodeData);
             var contents = fixture.create(String.class);
@@ -317,7 +318,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldCreatePdf() throws IOException {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
             var RecoveryPdf = fixture.create(RecoveryCertificatePdf.class);
             var barcode = fixture.create(Barcode.class);
             when(covidCertificateDtoMapperService.toRecoveryCertificatePdf(any(), any())).thenReturn(RecoveryPdf);
@@ -330,7 +331,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldReturnBarcode() throws IOException {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
             var barcode = fixture.create(Barcode.class);
             when(barcodeService.createBarcode(any())).thenReturn(barcode);
 
@@ -341,7 +342,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldReturnPdf() throws IOException {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
             var pdf = fixture.create(byte[].class);
             when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any())).thenReturn(pdf);
 
@@ -352,7 +353,7 @@ class CovidCertificateGenerationServiceTest {
 
         @Test
         void shouldUVCI() throws IOException {
-            var createDto = fixture.create(RecoveryCertificateCreateDto.class);
+            var createDto = getRecoveryCertificateCreateDto("de");
 
             var actual = service.generateCovidCertificate(createDto);
 

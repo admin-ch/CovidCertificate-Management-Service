@@ -18,11 +18,6 @@ public abstract class CertificateCreateDto {
     private String language;
     private CovidCertificateAddressDto address;
 
-    public CertificateCreateDto(CovidCertificatePersonDto personData, String language) {
-        this.personData = personData;
-        this.language = language;
-    }
-
     public void validate() {
         if (personData == null) {
             throw new CreateCertificateException(NO_PERSON_DATA);

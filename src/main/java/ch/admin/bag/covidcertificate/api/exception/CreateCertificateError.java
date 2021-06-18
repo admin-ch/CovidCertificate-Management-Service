@@ -12,4 +12,11 @@ public class CreateCertificateError implements Serializable {
     private final int errorCode;
     private final String errorMessage;
     private final HttpStatus httpStatus;
+
+    @Override
+    public String toString() {
+        return "{\"errorCode\":" + errorCode + "," +
+                "\"errorMessage\":\"" + errorMessage + "\"," +
+                "\"httpStatus\":\"" + httpStatus.name() + "\"}";
+    }
 }

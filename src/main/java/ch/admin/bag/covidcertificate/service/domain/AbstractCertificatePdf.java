@@ -15,7 +15,7 @@ public abstract class AbstractCertificatePdf {
     protected String identifier;
     protected String language;
 
-    public AbstractCertificatePdf(String familyName, String givenName, LocalDate dateOfBirth, String identifier, String language) {
+    protected AbstractCertificatePdf(String familyName, String givenName, LocalDate dateOfBirth, String identifier, String language) {
         this.familyName = familyName;
         this.givenName = givenName;
         this.dateOfBirth = dateOfBirth;
