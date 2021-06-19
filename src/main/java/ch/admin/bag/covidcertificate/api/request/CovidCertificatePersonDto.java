@@ -23,7 +23,7 @@ public class CovidCertificatePersonDto {
         } else {
             name.validate();
         }
-        if (dateOfBirth == null || dateOfBirth.isBefore(MIN_DATE_OF_BIRTH) || dateOfBirth.isAfter(MAX_DATE_OF_BIRTH)) {
+        if (dateOfBirth == null || dateOfBirth.isAfter(LocalDate.now()) || dateOfBirth.isBefore(MIN_DATE_OF_BIRTH) || dateOfBirth.isAfter(MAX_DATE_OF_BIRTH)) {
             throw new CreateCertificateException(INVALID_DATE_OF_BIRTH);
         }
     }
