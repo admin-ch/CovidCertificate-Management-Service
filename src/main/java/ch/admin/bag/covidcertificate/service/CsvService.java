@@ -135,7 +135,7 @@ public class CsvService {
     }
 
     private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<?> csvBeanClass) throws IOException {
-        String encoding = getEncoding(file);
+        String encoding = UniversalDetector.detectCharset(file.getInputStream());
         try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), Charset.forName(encoding)))) {
 
             CsvToBean<CertificateCsvBean> csvToBean = new CsvToBeanBuilder(reader)
@@ -149,20 +149,6 @@ public class CsvService {
         } catch (Exception ex) {
             throw new CreateCertificateException(INVALID_CSV);
         }
-    }
-
-    private String getEncoding(MultipartFile file) throws IOException {
-        byte[] buf = new byte[4096];
-        InputStream fis = file.getInputStream();
-        UniversalDetector detector = new UniversalDetector();
-        int nread;
-        while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
-            detector.handleData(buf, 0, nread);
-        }
-        detector.dataEnd();
-        String encoding = detector.getDetectedCharset();
-        detector.reset();
-        return encoding;
     }
 
     private List<CertificateCreateDto> mapToCreateDtos(List<CertificateCsvBean> csvBeans) {

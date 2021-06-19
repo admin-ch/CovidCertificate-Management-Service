@@ -87,7 +87,8 @@ public class CsvServiceTest {
     public void testEmptyCsv() throws Exception {
         var file = Mockito.mock(MultipartFile.class);
         var inputStream = new FileInputStream(emptyCsv);
-        when(file.getInputStream()).thenReturn(inputStream);
+        var inputStream2 = new FileInputStream(emptyCsv);
+        when(file.getInputStream()).thenReturn(inputStream, inputStream2);
         var exception = assertThrows(CreateCertificateException.class,
                 () -> service.handleCsvRequest(file, CertificateType.recovery.name()));
         assertEquals(INVALID_CSV_SIZE, exception.getError());
@@ -97,7 +98,8 @@ public class CsvServiceTest {
     public void testInvalidCsv() throws Exception {
         var file = Mockito.mock(MultipartFile.class);
         var inputStream = new FileInputStream(invalidCsv);
-        when(file.getInputStream()).thenReturn(inputStream);
+        var inputStream2 = new FileInputStream(invalidCsv);
+        when(file.getInputStream()).thenReturn(inputStream, inputStream2);
         var exception = assertThrows(CsvException.class,
                 () -> service.handleCsvRequest(file, CertificateType.recovery.name()));
         assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
@@ -107,7 +109,8 @@ public class CsvServiceTest {
     public void testMultipleInvalidCsv() throws Exception {
         var file = Mockito.mock(MultipartFile.class);
         var inputStream = new FileInputStream(invalidMultipleCsv);
-        when(file.getInputStream()).thenReturn(inputStream);
+        var inputStream2 = new FileInputStream(invalidMultipleCsv);
+        when(file.getInputStream()).thenReturn(inputStream, inputStream2);
         var exception = assertThrows(CsvException.class,
                 () -> service.handleCsvRequest(file, CertificateType.vaccination.name()));
         assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
@@ -119,7 +122,8 @@ public class CsvServiceTest {
         void successful() throws IOException {
             var file = Mockito.mock(MultipartFile.class);
             var inputStream = new FileInputStream(validRecoveryFile);
-            when(file.getInputStream()).thenReturn(inputStream);
+            var inputStream2 = new FileInputStream(validRecoveryFile);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2);
 
             CsvResponseDto response = service.handleCsvRequest(file, CertificateType.recovery.name());
             assertNotNull(response.getZip());
@@ -134,7 +138,8 @@ public class CsvServiceTest {
         void successful() throws IOException {
             var file = Mockito.mock(MultipartFile.class);
             var inputStream = new FileInputStream(validTestFile);
-            when(file.getInputStream()).thenReturn(inputStream);
+            var inputStream2 = new FileInputStream(validTestFile);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2);
 
             CsvResponseDto response = service.handleCsvRequest(file, CertificateType.test.name());
             assertNotNull(response.getZip());
@@ -149,7 +154,8 @@ public class CsvServiceTest {
         void successful() throws IOException {
             var file = Mockito.mock(MultipartFile.class);
             var inputStream = new FileInputStream(validVaccinationFile);
-            when(file.getInputStream()).thenReturn(inputStream);
+            var inputStream2 = new FileInputStream(validVaccinationFile);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2);
 
             CsvResponseDto response = service.handleCsvRequest(file, CertificateType.vaccination.name());
             assertNotNull(response.getZip());
@@ -160,7 +166,8 @@ public class CsvServiceTest {
         void successfulMultiple() throws IOException {
             var file = Mockito.mock(MultipartFile.class);
             var inputStream = new FileInputStream(validMultipleCsv);
-            when(file.getInputStream()).thenReturn(inputStream);
+            var inputStream2 = new FileInputStream(validMultipleCsv);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2);
 
             CsvResponseDto response = service.handleCsvRequest(file, CertificateType.vaccination.name());
             assertNotNull(response.getZip());
