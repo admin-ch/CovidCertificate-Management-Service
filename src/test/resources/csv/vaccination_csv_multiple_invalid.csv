@@ -1,5 +1,5 @@
-givenName,familyName,dateOfBirth,language,streetAndNr,zipCode,city,cantonCodeSender,medicinalProductCode,numberOfDoses,totalNumberOfDoses,vaccinationDate,countryOfVaccination
-Max,Muster,1985-09-20,de,MusterStrasse 1,1234,Bern,BE,EU/1/20/1507,2,2,2021-05-28,CH
-Max,TooLongdklsfjsodfjlksdjflkdsjflksjflkdsjflksdjlfkjd,1985-09-20,de,MusterStrasse 1,1234,Bern,BE,EU/1/20/1507,2,2,2021-05-28,CH
-TooLongdklsfjsodfjlksdjflkdsjflksjflkdsjflksdjlfkjd,Muster,1985-09-20,de,MusterStrasse 1,1234,Bern,BE,EU/1/20/1507,2,2,2021-05-28,CH
-Max,Muster,2085-09-20,de,MusterStrasse 1,1234,Bern,BE,EU/1/20/1507,2,2,2021-05-28,CH
+givenName;familyName;dateOfBirth;language;streetAndNr;zipCode;city;cantonCodeSender;medicinalProductCode;numberOfDoses;totalNumberOfDoses;vaccinationDate;countryOfVaccination
+Max;Muster;1985-09-20;de;MusterStrasse 1;1234;Bern;BE;EU/1/20/1507;2;2;2021-05-28;CH
+Max;TooLongdklsfjsodfjlksdjflkdsjflksjflkdsjflksdjlfkjd;1985-09-20;de;MusterStrasse 1;1234;Bern;BE;EU/1/20/1507;2;2;2021-05-28;CH
+TooLongdklsfjsodfjlksdjflkdsjflksjflkdsjflksdjlfkjd;Muster;1985-09-20;de;MusterStrasse 1;1234;Bern;BE;EU/1/20/1507;2;2;2021-05-28;CH
+Max;Muster;2085-09-20;de;MusterStrasse 1;1234;Bern;BE;EU/1/20/1507;2;2;2021-05-28;CH

@@ -17,11 +17,13 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mozilla.universalchardet.UniversalDetector;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -71,7 +73,7 @@ public class CsvService {
         List<CertificateCreateDto> createDtos = mapToCreateDtos(csvBeans);
         if (areCreateCertificateRequestsValid(createDtos, csvBeans)) {
             List<CovidCertificateCreateResponseDto> responseDtos = createCertificates(createDtos, csvBeanClass);
-            return zipGeneratedCertificates(getPdfMap(responseDtos, createDtos));
+            return zipGeneratedCertificates(getPdfMap(responseDtos));
         } else {
             return createCsvException(csvBeans);
         }
@@ -132,10 +134,12 @@ public class CsvService {
         return responseDtos;
     }
 
-    private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<?> csvBeanClass) {
-        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+    private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<?> csvBeanClass) throws IOException {
+        String encoding = getEncoding(file);
+        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), Charset.forName(encoding)))) {
 
             CsvToBean<CertificateCsvBean> csvToBean = new CsvToBeanBuilder(reader)
+                    .withSeparator(';')
                     .withType(csvBeanClass)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
@@ -145,6 +149,20 @@ public class CsvService {
         } catch (Exception ex) {
             throw new CreateCertificateException(INVALID_CSV);
         }
+    }
+
+    private String getEncoding(MultipartFile file) throws IOException {
+        byte[] buf = new byte[4096];
+        InputStream fis = file.getInputStream();
+        UniversalDetector detector = new UniversalDetector();
+        int nread;
+        while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
+            detector.handleData(buf, 0, nread);
+        }
+        detector.dataEnd();
+        String encoding = detector.getDetectedCharset();
+        detector.reset();
+        return encoding;
     }
 
     private List<CertificateCreateDto> mapToCreateDtos(List<CertificateCsvBean> csvBeans) {
@@ -192,14 +210,14 @@ public class CsvService {
             TestCertificateDataDto dataDto = ((TestCertificateCreateDto) createDto).getTestInfo().get(0);
             CountryCode countryCode = valueSetsService.getCountryCode(dataDto.getMemberStateOfTest(), createDto.getLanguage());
             if (countryCode == null) {
-                throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
+                throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
             }
             valueSetsService.getTestValueSet(dataDto);
         } else if (createDto instanceof VaccinationCertificateCreateDto) {
             VaccinationCertificateDataDto dataDto = ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(0);
             CountryCode countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(), createDto.getLanguage());
             if (countryCode == null) {
-                throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
+                throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
             valueSetsService.getVaccinationValueSet(dataDto.getMedicinalProductCode());
         }
@@ -209,7 +227,10 @@ public class CsvService {
         UUID tempId = UUID.randomUUID();
         File file = new File("temp" + tempId + ".csv");
         try (CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
-            StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(csvWriter).build();
+            StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(csvWriter)
+                    .withSeparator(';')
+                    .withApplyQuotesToAll(false)
+                    .build();
             beanToCsv.write(certificateCsvBeans);
             return file;
         } catch (Exception e) {
@@ -228,7 +249,7 @@ public class CsvService {
         return PDF_FILE_NAME_PREFIX + uvci.replace(":", "_");
     }
 
-    private Map<String, byte[]> getPdfMap(List<CovidCertificateCreateResponseDto> responseDtos, List<CertificateCreateDto> createDtos) {
+    private Map<String, byte[]> getPdfMap(List<CovidCertificateCreateResponseDto> responseDtos) {
         Map<String, byte[]> responseMap = new HashMap<>();
         for (CovidCertificateCreateResponseDto responseDto : responseDtos) {
             String certificateFileName = getCertificateFileName(responseDto.getUvci());
