@@ -2,10 +2,7 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
-import ch.admin.bag.covidcertificate.api.request.CertificateType;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
@@ -18,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -32,8 +30,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CsvServiceTest {
@@ -116,6 +113,43 @@ public class CsvServiceTest {
         var exception = assertThrows(CsvException.class,
                 () -> service.handleCsvRequest(file, CertificateType.vaccination.name()));
         assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
+    }
+
+    private class CertificateCreateDtoFamilyNameMatcher<T extends CertificateCreateDto> implements ArgumentMatcher<T> {
+        private final String familyName;
+
+        private CertificateCreateDtoFamilyNameMatcher(String familyName) {
+            this.familyName = familyName;
+        }
+
+        @Override
+        public boolean matches(T t) {
+            if(t == null) return false;
+            var actual = t.getPersonData().getName().getFamilyName();
+            return familyName.equals(actual);
+        }
+
+        public String toString() {
+            return String.format("with familyName=%s", familyName);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"src/test/resources/csv/recovery_ansi.csv",
+            "src/test/resources/csv/recovery_utf8.csv"})
+    void testEncoding(String path) throws IOException {
+        var expectedFamilyName = "MüllerTest";
+        var file = Mockito.mock(MultipartFile.class);
+        var inputStream = new FileInputStream(path);
+        var inputStream2 = new FileInputStream(path);
+        when(file.getInputStream()).thenReturn(inputStream, inputStream2);
+
+        service.handleCsvRequest(file, CertificateType.recovery.name());
+
+        verify(covidCertificateGenerationService).generateCovidCertificate(argThat(new CertificateCreateDtoFamilyNameMatcher<RecoveryCertificateCreateDto>(expectedFamilyName)));
+
+        inputStream.close();
+        inputStream2.close();
     }
 
     @Nested
