@@ -16,6 +16,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -130,6 +132,21 @@ public class CsvServiceTest {
             inputStream.close();
         }
 
+        @ParameterizedTest
+        @ValueSource(strings = {"src/test/resources/csv/recovery_ansi.csv",
+                "src/test/resources/csv/recovery_print_ansi.csv",
+                "src/test/resources/csv/recovery_print_utf8.csv",
+                "src/test/resources/csv/recovery_utf8.csv"})
+        void massTest(String path) throws IOException {
+            var file = Mockito.mock(MultipartFile.class);
+            var inputStream = new FileInputStream(path);
+            var inputStream2 = new FileInputStream(path);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2);
+
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.recovery.name());
+            assertNotNull(response.getZip());
+            inputStream.close();
+        }
     }
 
     @Nested
@@ -146,6 +163,19 @@ public class CsvServiceTest {
             inputStream.close();
         }
 
+        @ParameterizedTest
+        @ValueSource(strings = {"src/test/resources/csv/test_ansi.csv",
+                "src/test/resources/csv/test_utf8.csv"})
+        void massTest(String path) throws IOException {
+            var file = Mockito.mock(MultipartFile.class);
+            var inputStream = new FileInputStream(path);
+            var inputStream2 = new FileInputStream(path);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2);
+
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.test.name());
+            assertNotNull(response.getZip());
+            inputStream.close();
+        }
     }
 
     @Nested
@@ -167,6 +197,22 @@ public class CsvServiceTest {
             var file = Mockito.mock(MultipartFile.class);
             var inputStream = new FileInputStream(validMultipleCsv);
             var inputStream2 = new FileInputStream(validMultipleCsv);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2);
+
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.vaccination.name());
+            assertNotNull(response.getZip());
+            inputStream.close();
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"src/test/resources/csv/vaccination_ansi.csv",
+                "src/test/resources/csv/vaccination_print_ansi.csv",
+                "src/test/resources/csv/vaccination_print_utf8.csv",
+                "src/test/resources/csv/vaccination_utf8.csv"})
+        void massTest(String path) throws IOException {
+            var file = Mockito.mock(MultipartFile.class);
+            var inputStream = new FileInputStream(path);
+            var inputStream2 = new FileInputStream(path);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2);
 
             CsvResponseDto response = service.handleCsvRequest(file, CertificateType.vaccination.name());
