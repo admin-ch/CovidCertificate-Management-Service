@@ -30,6 +30,7 @@
 		<jjwt.version>0.11.2</jjwt.version>
 		<google-zxing.version>3.3.0</google-zxing.version>
 		<opencsv.version>5.4</opencsv.version>
+		<juniversalchardet.version>2.4.0</juniversalchardet.version>
 
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 
@@ -234,7 +235,7 @@
 		<dependency>
 			<groupId>com.github.albfernandez</groupId>
 			<artifactId>juniversalchardet</artifactId>
-			<version>2.4.0</version>
+			<version>${juniversalchardet.version}</version>
 		</dependency>
 
 		<!-- test Dependencies -->
