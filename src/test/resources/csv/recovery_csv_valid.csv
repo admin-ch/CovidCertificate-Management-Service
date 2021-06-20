@@ -1,2 +1,2 @@
-givenName,familyName,dateOfBirth,language,streetAndNr,zipCode,city,cantonCodeSender,dateOfFirstPositiveTestResult,countryOfTest
-Max,Muster,1985-09-20,de,MusterStrasse 1,1234,Bern,BE,2020-12-20,CH
+givenName;familyName;dateOfBirth;language;streetAndNr;zipCode;city;cantonCodeSender;dateOfFirstPositiveTestResult;countryOfTest
+Max;Muster;1985-09-20;de;MusterStrasse 1;1234;Bern;BE;2020-12-20;CH

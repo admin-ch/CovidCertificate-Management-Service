@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -88,17 +89,21 @@ public abstract class CertificateCsvBean {
     }
 
     private CovidCertificateAddressDto mapToAddressDto() {
-        int zipCode;
-        try {
-            zipCode = Integer.parseInt(this.zipCode);
-        } catch (NumberFormatException e) {
-            throw new CreateCertificateException(INVALID_ADDRESS);
+        if (StringUtils.hasText(streetAndNr) || StringUtils.hasText(zipCode) || StringUtils.hasText(city) || StringUtils.hasText(cantonCodeSender)) {
+            int zipCodeTemp;
+            try {
+                zipCodeTemp = Integer.parseInt(this.zipCode);
+            } catch (NumberFormatException e) {
+                throw new CreateCertificateException(INVALID_ADDRESS);
+            }
+            return new CovidCertificateAddressDto(
+                    streetAndNr,
+                    zipCodeTemp,
+                    city,
+                    cantonCodeSender
+            );
+        } else {
+            return null;
         }
-        return new CovidCertificateAddressDto(
-                streetAndNr,
-                zipCode,
-                city,
-                cantonCodeSender
-        );
     }
 }
