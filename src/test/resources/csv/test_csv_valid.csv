@@ -1,2 +1,2 @@
-givenName,familyName,dateOfBirth,language,streetAndNr,zipCode,city,cantonCodeSender,manufacturerCode,typeCode,sampleDateTime,testingCentreOrFacility,memberStateOfTest
-Max,Muster,1985-09-20,de,MusterStrasse 1,1234,Bern,BE,1304,LP217198-3,2021-06-01T11:34Z,test,CH
+givenName;familyName;dateOfBirth;language;streetAndNr;zipCode;city;cantonCodeSender;manufacturerCode;typeCode;sampleDateTime;testingCentreOrFacility;memberStateOfTest
+Max;Muster;1985-09-20;de;MusterStrasse 1;1234;Bern;BE;1304;LP217198-3;2021-06-01T11:34Z;test;CH
