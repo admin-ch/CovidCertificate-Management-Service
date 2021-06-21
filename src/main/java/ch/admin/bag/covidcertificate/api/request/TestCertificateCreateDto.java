@@ -21,9 +21,10 @@ public class TestCertificateCreateDto extends CertificateCreateDto {
             CovidCertificatePersonDto personData,
             List<TestCertificateDataDto> testInfo,
             String language,
-            CovidCertificateAddressDto address
+            CovidCertificateAddressDto address,
+            String inAppDeliveryCode
     ) {
-        super(personData, language, address);
+        super(personData, language, address, inAppDeliveryCode);
         this.testInfo = testInfo;
     }
 

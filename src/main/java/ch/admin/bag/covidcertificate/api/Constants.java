@@ -27,6 +27,7 @@ public class Constants {
     public static final String KPI_TYPE_VACCINATION = "v";
     public static final String KPI_TYPE_TEST = "t";
     public static final String KPI_TYPE_RECOVERY = "r";
+    public static final String KPI_TYPE_INAPP_DELIVERY = "ad";
     public static final String USER_EXT_ID_CLAIM_KEY = "userExtId";
     public static final String KPI_UUID_KEY = "uuid";
     public static final String KPI_TIMESTAMP_KEY = "ts";
@@ -62,6 +63,8 @@ public class Constants {
     public static final CreateCertificateError INVALID_LANGUAGE = new CreateCertificateError(469, "The given language does not match any of the supported languages: de, it, fr, rm!", HttpStatus.BAD_REQUEST);
     public static final RevocationError INVALID_UVCI = new RevocationError(470, "Invalid UVCI format.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ADDRESS = new CreateCertificateError(474, "Paper-based delivery requires a valid address.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError DUPLICATE_DELIVERY_METHOD = new CreateCertificateError(475, "Delivery method can either be InApp or Mail, but not both.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_IN_APP_CODE = new CreateCertificateError(476, "InApp-Code is invalid.", HttpStatus.NOT_FOUND);
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
@@ -79,4 +82,5 @@ public class Constants {
     public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555, "Creating barcode failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556, "Printing failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557, "Write CSV failed", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError INAPP_DELIVERY_FAILED = new CreateCertificateError(558, "InApp delivery failed.", HttpStatus.INTERNAL_SERVER_ERROR);
 }

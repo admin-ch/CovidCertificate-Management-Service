@@ -4,6 +4,9 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
+import com.flextrade.jfixture.JFixture;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
@@ -17,13 +20,36 @@ public class CertificateCreateDtoTest {
     private final CovidCertificateAddressDto addressDto = new CovidCertificateAddressDto("street", 1000, "city", "BE");
 
     private static class CertificateCreateDtoIml extends CertificateCreateDto {
+        public CertificateCreateDtoIml(
+                CovidCertificatePersonDto personData,
+                String language
+        ) {
+            super(personData, language, null, null);
+        }
 
         public CertificateCreateDtoIml(
                 CovidCertificatePersonDto personData,
                 String language,
                 CovidCertificateAddressDto address
         ) {
-            super(personData, language, address);
+            super(personData, language, address, null);
+        }
+
+        public CertificateCreateDtoIml(
+                CovidCertificatePersonDto personData,
+                String language,
+                String inAppDeliveryCode
+        ) {
+            super(personData, language, null, inAppDeliveryCode);
+        }
+
+        public CertificateCreateDtoIml(
+                CovidCertificatePersonDto personData,
+                String language,
+                CovidCertificateAddressDto address,
+                String inAppDeliveryCode
+        ) {
+            super(personData, language, address, inAppDeliveryCode);
         }
     }
 
@@ -76,8 +102,52 @@ public class CertificateCreateDtoTest {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 "de",
-                new CovidCertificateAddressDto("street", 1000, "city", "BE")
+                addressDto
         );
+        assertDoesNotThrow(testee::validate);
+    }
+
+    @Test
+    public void throwsException__ifAddressAndInAppDeliveryCodeArePassed() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", addressDto, RandomStringUtils.randomAlphanumeric(9));
+
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(DUPLICATE_DELIVERY_METHOD, exception.getError());
+    }
+
+    @Test
+    public void throwsException__ifInvalidInAppDeliveryCode() {
+        // test too long
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.randomAlphanumeric(10));
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_IN_APP_CODE, exception.getError());
+
+        // test too short
+        testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.randomAlphanumeric(8));
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_IN_APP_CODE, exception.getError());
+
+        // test not alphanumeric
+        testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.random(9));
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_IN_APP_CODE, exception.getError());
+    }
+
+    @Test
+    public void validatesSuccessfully__ifAddressOnlyIsPassed() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", addressDto);
+        assertDoesNotThrow(testee::validate);
+    }
+
+    @Test
+    public void validatesSuccessfully__ifInAppDeliveryCodeOnlyIsPassed() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.randomAlphanumeric(9));
+        assertDoesNotThrow(testee::validate);
+    }
+
+    @Test
+    public void validatesSuccessfully__ifNoDeliveryIsPassed() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de");
         assertDoesNotThrow(testee::validate);
     }
 }
