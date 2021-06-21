@@ -57,7 +57,7 @@ public class CovidCertificateGenerationService {
         byte[] pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code);
 
         CovidCertificateCreateResponseDto responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
-        if (createDto.sendWithMail()) {
+        if (createDto.sendToPrint()) {
             printQueueClient.sendPrintJob(CertificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
         } else if (createDto.sendToApp()) {
             var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getInAppDeliveryCode(), code.getPayload(), Base64.getEncoder().encodeToString(pdf));

@@ -40,6 +40,9 @@ cc-signing-service:
 cc-printing-service:
   url: "https://cc-printing-service.abn.app.cfap02.atlantica.admin.ch/api/v1/print"
 
+cc-inapp-delivery-service:
+  url: "https://ch-covidcertificate-backend-delivery-ws.abn.app.cfap02.atlantica.admin.ch/cgs/delivery/v1/covidcert"
+
 ## Mutual-SSL configuration
 app:
   conn:

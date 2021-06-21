@@ -25,7 +25,7 @@ public abstract class CertificateCreateDto {
         this.inAppDeliveryCode = inAppDeliveryCode != null ? inAppDeliveryCode.toUpperCase() : null;
     }
 
-    public boolean sendWithMail() {
+    public boolean sendToPrint() {
         return this.address != null;
     }
 
