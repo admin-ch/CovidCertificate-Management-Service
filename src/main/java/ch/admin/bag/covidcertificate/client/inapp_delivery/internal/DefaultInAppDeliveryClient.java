@@ -52,23 +52,20 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                     .toBodilessEntity()
                     .block();
             log.trace("InApp Delivery Backend Response: {}", response);
-            this.checkResponse(response);
             logKpi();
         } catch (WebClientResponseException e) {
             log.error("Received error message", e);
-            throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
+            this.checkResponse(e);
         } catch (WebClientRequestException e) {
             log.error("Request to {} failed", serviceUri, e);
             throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
         }
     }
 
-    private void checkResponse(ResponseEntity<Void> response) {
-        if (response != null) {
-            var statusCode = response.getStatusCodeValue();
-            if (statusCode == HttpStatus.OK.value()) {
-                return;
-            } else if (statusCode == HttpStatus.BAD_REQUEST.value() || statusCode == HttpStatus.NOT_FOUND.value()) {
+    private void checkResponse(WebClientResponseException exception) {
+        if (exception != null) {
+            var statusCode = exception.getStatusCode();
+            if (statusCode == HttpStatus.BAD_REQUEST || statusCode == HttpStatus.NOT_FOUND) {
                 throw new CreateCertificateException(INVALID_IN_APP_CODE);
             } else {
                 throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
