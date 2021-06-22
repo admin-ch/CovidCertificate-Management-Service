@@ -18,7 +18,12 @@ public class ResponseStatusExceptionHandler {
     protected ResponseEntity<Object> handleCreateCertificateException(CreateCertificateException ex) {
         if (ex.getError().getHttpStatus() == HttpStatus.INTERNAL_SERVER_ERROR) {
             log.error(ex.getError().getErrorMessage(), ex);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            var error = ex.getError();
+            if (error != null) {
+                return new ResponseEntity<>(ex.getError(), ex.getError().getHttpStatus());
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
             log.warn("Create certificate exception, errorCode: {}", ex.getError().getErrorCode(), ex);
             return new ResponseEntity<>(ex.getError(), ex.getError().getHttpStatus());

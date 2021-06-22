@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
@@ -22,7 +23,6 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static ch.admin.bag.covidcertificate.api.Constants.USER_EXT_ID_CLAIM_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
@@ -51,17 +51,29 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                     .retrieve()
                     .toBodilessEntity()
                     .block();
-
             log.trace("InApp Delivery Backend Response: {}", response);
-            if (response == null || response.getStatusCodeValue() != 200) {
-                throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
-            }
+            this.checkResponse(response);
             logKpi();
         } catch (WebClientResponseException e) {
             log.error("Received error message", e);
             throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
         } catch (WebClientRequestException e) {
             log.error("Request to {} failed", serviceUri, e);
+            throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
+        }
+    }
+
+    private void checkResponse(ResponseEntity<Void> response) {
+        if (response != null) {
+            var statusCode = response.getStatusCodeValue();
+            if (statusCode == HttpStatus.OK.value()) {
+                return;
+            } else if (statusCode == HttpStatus.BAD_REQUEST.value() || statusCode == HttpStatus.NOT_FOUND.value()) {
+                throw new CreateCertificateException(INVALID_IN_APP_CODE);
+            } else {
+                throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
+            }
+        } else {
             throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
         }
     }
