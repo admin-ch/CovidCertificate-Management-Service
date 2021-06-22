@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
@@ -52,17 +51,21 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                     .toBodilessEntity()
                     .block();
             log.trace("InApp Delivery Backend Response: {}", response);
-            logKpi();
+            if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                logKpi();
+            } else {
+                throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
+            }
         } catch (WebClientResponseException e) {
             log.error("Received error message", e);
-            this.checkResponse(e);
+            this.handleErrorResponse(e);
         } catch (WebClientRequestException e) {
             log.error("Request to {} failed", serviceUri, e);
             throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
         }
     }
 
-    private void checkResponse(WebClientResponseException exception) {
+    private void handleErrorResponse(WebClientResponseException exception) {
         if (exception != null) {
             var statusCode = exception.getStatusCode();
             if (statusCode == HttpStatus.BAD_REQUEST || statusCode == HttpStatus.NOT_FOUND) {

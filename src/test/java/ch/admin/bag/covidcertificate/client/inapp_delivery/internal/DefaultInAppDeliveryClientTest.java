@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.IOException;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INAPP_DELIVERY_FAILED;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_IN_APP_CODE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -64,7 +65,7 @@ class DefaultInAppDeliveryClientTest {
         mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(404));
 
         var exception = assertThrows(CreateCertificateException.class, () -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
-        assertEquals(INAPP_DELIVERY_FAILED, exception.getError());
+        assertEquals(INVALID_IN_APP_CODE, exception.getError());
     }
 
     @Test
@@ -78,14 +79,6 @@ class DefaultInAppDeliveryClientTest {
     @Test
     void throwsException__ifServiceUnreachable() {
         ReflectionTestUtils.setField(this.inAppDeliveryClient, "serviceUri", "http://127.0.0.1");
-
-        var exception = assertThrows(CreateCertificateException.class, () -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
-        assertEquals(INAPP_DELIVERY_FAILED, exception.getError());
-    }
-
-    @Test
-    void throwsException__ifResponseIsNull() {
-        mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(0));
 
         var exception = assertThrows(CreateCertificateException.class, () -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
         assertEquals(INAPP_DELIVERY_FAILED, exception.getError());
