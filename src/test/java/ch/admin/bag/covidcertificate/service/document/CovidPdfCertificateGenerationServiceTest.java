@@ -147,7 +147,7 @@ class CovidPdfCertificateGenerationServiceTest {
 
         byte[] document = service.generateCovidCertificate(pdfData, barcode);
 
-        boolean storeDocument = true;
+        boolean storeDocument = false;
 
         if (storeDocument) {
             OutputStream out = new FileOutputStream("/home/dev/Downloads/certificate-" + filename + "-" + language + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss")) + ".pdf");
