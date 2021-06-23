@@ -17,16 +17,39 @@ public class TestModelProvider {
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
                 language,
-                getCovidCertificateAddressDto()
+                getCovidCertificateAddressDto(),
+                null
         );
     }
+
+    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(String medicalProductCode, String language, String inAppCode) {
+        return new VaccinationCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getVaccinationCertificateDataDto(medicalProductCode)),
+                language,
+                null,
+                inAppCode
+        );
+    }
+
 
     public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
                 language,
-                getCovidCertificateAddressDto()
+                getCovidCertificateAddressDto(),
+                null
+        );
+    }
+
+    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language, String inAppCode) {
+        return new TestCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
+                language,
+                null,
+                inAppCode
         );
     }
 
@@ -35,7 +58,18 @@ public class TestModelProvider {
                 getCovidCertificatePersonDto(),
                 List.of(getRecoveryCertificateDataDto()),
                 language,
-                getCovidCertificateAddressDto()
+                getCovidCertificateAddressDto(),
+                null
+        );
+    }
+
+    public static RecoveryCertificateCreateDto getRecoveryCertificateCreateDto(String language, String inAppCode) {
+        return new RecoveryCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getRecoveryCertificateDataDto()),
+                language,
+                null,
+                inAppCode
         );
     }
 

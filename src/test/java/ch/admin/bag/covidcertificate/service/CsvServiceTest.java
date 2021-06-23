@@ -124,7 +124,7 @@ public class CsvServiceTest {
 
         @Override
         public boolean matches(T t) {
-            if(t == null) return false;
+            if (t == null) return false;
             var actual = t.getPersonData().getName().getFamilyName();
             return familyName.equals(actual);
         }
@@ -253,5 +253,6 @@ public class CsvServiceTest {
             assertNotNull(response.getZip());
             inputStream.close();
         }
+
     }
 }

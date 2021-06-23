@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestValueSet;
 import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,6 +41,7 @@ class CovidCertificateDtoMapperServiceTest {
 
     @BeforeEach
     public void setUp() {
+        customizeTestValueSet(fixture);
         lenient().when(valueSetsService.getVaccinationValueSet(any())).thenReturn(fixture.create(VaccinationValueSet.class));
         lenient().when(valueSetsService.getTestValueSet(any())).thenReturn(fixture.create(TestValueSet.class));
         lenient().when(valueSetsService.getCountryCode(any(), any())).thenReturn(fixture.create(CountryCode.class));

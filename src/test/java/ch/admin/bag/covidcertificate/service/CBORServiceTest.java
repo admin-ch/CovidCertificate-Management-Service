@@ -53,7 +53,7 @@ class CBORServiceTest {
         CBORInstantConverter instantConverter = new CBORInstantConverter();
         // given
         Instant issuedAt = Instant.parse("2021-01-01T00:00:00Z");
-        Instant expiration = Instant.parse("2022-01-01T00:00:00Z");
+        Instant expiration = Instant.parse("2023-01-01T00:00:00Z");
         when(coseTime.getIssuedAt()).thenReturn(issuedAt);
         when(coseTime.getExpiration()).thenReturn(expiration);
         byte[] hcert = CBORObject.FromJSONString("{\"hello\": \"world\"}").EncodeToBytes();

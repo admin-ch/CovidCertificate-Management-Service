@@ -21,9 +21,10 @@ public class VaccinationCertificateCreateDto extends CertificateCreateDto {
             CovidCertificatePersonDto personData,
             List<VaccinationCertificateDataDto> vaccinationInfo,
             String language,
-            CovidCertificateAddressDto address
+            CovidCertificateAddressDto address,
+            String inAppDeliveryCode
     ) {
-        super(personData, language, address);
+        super(personData, language, address, inAppDeliveryCode);
         this.vaccinationInfo = vaccinationInfo;
     }
 

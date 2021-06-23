@@ -62,26 +62,6 @@ public class VaccinationCertificateDataDtoTest {
 
         testee = new VaccinationCertificateDataDto(
                 medicinalProduct,
-                10,
-                8,
-                vaccinationDate,
-                countryOfVaccination
-        );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_DOSES, exception.getError());
-
-        testee = new VaccinationCertificateDataDto(
-                medicinalProduct,
-                9,
-                10,
-                vaccinationDate,
-                countryOfVaccination
-        );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_DOSES, exception.getError());
-
-        testee = new VaccinationCertificateDataDto(
-                medicinalProduct,
                 numberOfDoses,
                 totalNumberOfDoses,
                 vaccinationDate,

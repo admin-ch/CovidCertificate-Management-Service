@@ -54,4 +54,8 @@ public class VaccinationCertificatePdf extends AbstractCertificatePdf {
         this.issuer = issuer;
     }
 
+    public boolean isPartialVaccination() {
+        return this.numberOfDoses < this.totalNumberOfDoses;
+    }
+
 }

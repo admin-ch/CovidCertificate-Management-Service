@@ -26,9 +26,7 @@ public class VaccinationCertificateDataDto {
     public void validate() {
         if (numberOfDoses == null ||
                 numberOfDoses < 1 ||
-                numberOfDoses > 9 ||
                 totalNumberOfDoses == null ||
-                totalNumberOfDoses > 9 ||
                 numberOfDoses > totalNumberOfDoses) {
             throw new CreateCertificateException(INVALID_DOSES);
         }

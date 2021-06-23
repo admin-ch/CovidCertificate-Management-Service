@@ -25,7 +25,8 @@ public class TestCertificateCreateDtoTest {
                 personDto,
                 null,
                 language,
-                getCovidCertificateAddressDto()
+                getCovidCertificateAddressDto(),
+                null
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_TEST_DATA, exception.getError());
@@ -34,7 +35,8 @@ public class TestCertificateCreateDtoTest {
                 personDto,
                 List.of(),
                 language,
-                getCovidCertificateAddressDto()
+                getCovidCertificateAddressDto(),
+                null
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_TEST_DATA, exception.getError());
@@ -43,7 +45,8 @@ public class TestCertificateCreateDtoTest {
                 personDto,
                 List.of(dataDto),
                 language,
-                getCovidCertificateAddressDto()
+                getCovidCertificateAddressDto(),
+                null
         );
         assertDoesNotThrow(testee::validate);
     }
