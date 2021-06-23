@@ -77,16 +77,16 @@ public class CovidPdfCertificateGenerationService {
     public CovidPdfCertificateGenerationService(ConfigurableEnvironment env) throws URISyntaxException, IOException, DocumentException {
 
         final BaseFont baseFont = BaseFont.createFont("arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true,
-                    Files.readAllBytes(Path.of(Objects.requireNonNull(this.getClass().getClassLoader().getResource("templates/fonts/arial.ttf")).toURI())),
-                    null);
+                Files.readAllBytes(Path.of(Objects.requireNonNull(this.getClass().getClassLoader().getResource("templates/fonts/arial.ttf")).toURI())),
+                null);
 
         final BaseFont baseFontBold = BaseFont.createFont("arialbd.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true,
-                    Files.readAllBytes(Path.of(Objects.requireNonNull(this.getClass().getClassLoader().getResource("templates/fonts/arialbd.ttf")).toURI())),
-                    null);
+                Files.readAllBytes(Path.of(Objects.requireNonNull(this.getClass().getClassLoader().getResource("templates/fonts/arialbd.ttf")).toURI())),
+                null);
 
         final BaseFont baseFontItalic = BaseFont.createFont("ariali.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true,
-                    Files.readAllBytes(Path.of(Objects.requireNonNull(this.getClass().getClassLoader().getResource("templates/fonts/ariali.ttf")).toURI())),
-                    null);
+                Files.readAllBytes(Path.of(Objects.requireNonNull(this.getClass().getClassLoader().getResource("templates/fonts/ariali.ttf")).toURI())),
+                null);
 
 
         fontRow = new Font(baseFont, 10, Font.NORMAL, BaseColor.BLACK);
@@ -109,7 +109,6 @@ public class CovidPdfCertificateGenerationService {
         logoApp = getLogo("appicon.png", 100);
 
         addDraftWatermark = Arrays.stream(env.getActiveProfiles()).noneMatch("prod"::equals);
-
     }
 
     private ResourceBundleMessageSource messageSource() {
@@ -129,6 +128,8 @@ public class CovidPdfCertificateGenerationService {
 
             final Locale locale = getLocale(data.getLanguage());
 
+            boolean isPartialVaccination = data instanceof VaccinationCertificatePdf && ((VaccinationCertificatePdf) data).isPartialVaccination();
+
             PdfWriter writer = PdfWriter.getInstance(document, stream);
 
             document.open();
@@ -137,13 +138,13 @@ public class CovidPdfCertificateGenerationService {
 
             document.setMargins(MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTOM);
 
-            document.add(headerTable(locale));
+            document.add(headerTable(locale, isPartialVaccination));
 
             Image qrCode = renderQRCode(writer, barcode.getPayload());
 
-            document.add(mainTable(locale, data, qrCode));
+            document.add(mainTable(locale, data, qrCode, isPartialVaccination));
 
-            document.add(issuerTable(locale));
+            document.add(issuerTable(locale, isPartialVaccination));
 
             document.add(infoTable(locale));
 
@@ -182,7 +183,7 @@ public class CovidPdfCertificateGenerationService {
         document.addCreator(METADATA);
     }
 
-    private PdfPTable headerTable(Locale locale) {
+    private PdfPTable headerTable(Locale locale, boolean isPartialVaccination) {
         PdfPTable table = new PdfPTable(2);
         table.setWidthPercentage(100);
         table.setPaddingTop(0);
@@ -197,27 +198,31 @@ public class CovidPdfCertificateGenerationService {
         cell.setVerticalAlignment(Rectangle.TOP);
         table.addCell(cell);
 
-        PdfPCell valueCell = new PdfPCell(new Phrase(messageSource.getMessage("document.title", null, locale), fontHeaderRed));
+        String headerKey = isPartialVaccination ? "evidence.document.title" : "document.title";
+
+        PdfPCell valueCell = new PdfPCell(new Phrase(messageSource.getMessage(headerKey, null, locale), fontHeaderRed));
         valueCell.setBorder(Rectangle.NO_BORDER);
         valueCell.setVerticalAlignment(Rectangle.TOP);
         valueCell.setPaddingTop(0);
+        valueCell.setPaddingLeft(0);
         table.addCell(valueCell);
 
-        PdfPCell valueCell2 = new PdfPCell(new Phrase(messageSource.getMessage("document.title", null, Locale.ENGLISH), fontHeaderBlack));
+        PdfPCell valueCell2 = new PdfPCell(new Phrase(messageSource.getMessage(headerKey, null, Locale.ENGLISH), fontHeaderBlack));
         valueCell2.setBorder(Rectangle.NO_BORDER);
         valueCell2.setVerticalAlignment(Rectangle.TOP);
         valueCell2.setPaddingTop(0);
+        valueCell2.setPaddingLeft(0);
         table.addCell(valueCell2);
 
         return table;
     }
 
-    private PdfPTable mainTable(Locale locale, AbstractCertificatePdf data, Image qrCode) {
+    private PdfPTable mainTable(Locale locale, AbstractCertificatePdf data, Image qrCode, boolean isPartialVaccination) {
         float[] pointColumnWidths = {50F, 20F, 30F};
         PdfPTable table = new PdfPTable(pointColumnWidths);
         table.setWidthPercentage(100);
 
-        PdfPCell cell = new PdfPCell(addLeftColumn(locale, qrCode, data));
+        PdfPCell cell = new PdfPCell(addLeftColumn(locale, qrCode, data, isPartialVaccination));
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setRowspan(30);
@@ -225,7 +230,7 @@ public class CovidPdfCertificateGenerationService {
         table.addCell(cell);
 
         if (data instanceof VaccinationCertificatePdf) {
-            addVaccineData(locale, (VaccinationCertificatePdf) data, table);
+            addVaccineData(locale, (VaccinationCertificatePdf) data, table, isPartialVaccination);
         } else if (data instanceof RecoveryCertificatePdf) {
             addRecoveryData(locale, (RecoveryCertificatePdf) data, table);
         } else {
@@ -234,8 +239,10 @@ public class CovidPdfCertificateGenerationService {
         return table;
     }
 
-    private void addVaccineData(Locale locale, VaccinationCertificatePdf data, PdfPTable table) {
-        addIssuerRow(table, locale, "vaccination.title", 0, true, 0);
+    private void addVaccineData(Locale locale, VaccinationCertificatePdf data, PdfPTable table, boolean isPartialVaccination) {
+        String titleKey = isPartialVaccination ? "evidence.title" : "vaccination.title";
+
+        addIssuerRow(table, locale, titleKey, 0, true, 0);
         addRow(table, locale, VACCINATION_DISEASE_LABEL_KEY, messageSource.getMessage(VACCINATION_DISEASE_MESSAGE_CODE, null, locale));
         addRow(table, locale, "vaccination.dosis.label", data.getNumberOfDoses() + "/" + data.getTotalNumberOfDoses());
         addRow(table, locale, "vaccination.type.label", data.getVaccineProphylaxis());
@@ -268,7 +275,7 @@ public class CovidPdfCertificateGenerationService {
         addLocaleAndEnglishRow(table, locale, "test.country.label", data.getMemberStateOfTest(), data.getMemberStateOfTestEn());
     }
 
-    private PdfPTable addLeftColumn(Locale locale, Image qrCode, AbstractCertificatePdf data) {
+    private PdfPTable addLeftColumn(Locale locale, Image qrCode, AbstractCertificatePdf data, boolean isPartialVaccination) {
         float[] pointColumnWidths = {50F, 50F};
         PdfPTable table = new PdfPTable(pointColumnWidths);
 
@@ -289,7 +296,7 @@ public class CovidPdfCertificateGenerationService {
         cell2.setPaddingTop(5);
         table.addCell(cell2);
 
-        addQrLabelCell(table, locale, LocalDateTime.now());
+        addQrLabelCell(table, locale, LocalDateTime.now(), isPartialVaccination);
 
         addIssuerRow(table, locale, "personalData.title", 20, true, PADDING_LEFT);
         addNameRow(table, locale, "personalData.name.label", data.getFamilyName() + " " + data.getGivenName(), PADDING_LEFT);
@@ -377,8 +384,9 @@ public class CovidPdfCertificateGenerationService {
         table.addCell(valueEnglishCell);
     }
 
-    private void addIssuerRow(PdfPTable table, Locale locale) {
-        addIssuerRow(table, locale, "issuer.title", 15, false, (float) CovidPdfCertificateGenerationService.PADDING_LEFT);
+    private void addIssuerRow(PdfPTable table, Locale locale, boolean isPartialVaccination) {
+        String issuerLabel = isPartialVaccination ? "evidence.issuer" : "issuer.title";
+        addIssuerRow(table, locale, issuerLabel, 15, false, (float) CovidPdfCertificateGenerationService.PADDING_LEFT);
     }
 
     private void addIssuerRow(PdfPTable table, Locale locale, String key, int padding, boolean title, float paddingLeft) {
@@ -398,16 +406,17 @@ public class CovidPdfCertificateGenerationService {
         table.addCell(issuerCell);
     }
 
-    private void addQrLabelCell(PdfPTable table, Locale locale, LocalDateTime dateTime) {
+    private void addQrLabelCell(PdfPTable table, Locale locale, LocalDateTime dateTime, boolean isPartialVaccination) {
+        String labelKey = isPartialVaccination ? "evidence.qrCode.label" : "qrCode.label";
         String date = dateTime.format(LOCAL_DATE_FORMAT);
         String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-        PdfPCell first = new PdfPCell(new Phrase(messageSource.getMessage("qrCode.label", new String[]{date, time}, locale), font8Row));
+        PdfPCell first = new PdfPCell(new Phrase(messageSource.getMessage(labelKey, new String[]{date, time}, locale), font8Row));
         first.setBorder(Rectangle.NO_BORDER);
         first.setColspan(2);
         first.setPaddingLeft(PADDING_LEFT);
         table.addCell(first);
 
-        PdfPCell second = new PdfPCell(new Phrase(messageSource.getMessage("qrCode.label", new String[]{date, time}, Locale.ENGLISH), font8English));
+        PdfPCell second = new PdfPCell(new Phrase(messageSource.getMessage(labelKey, new String[]{date, time}, Locale.ENGLISH), font8English));
         second.setBorder(Rectangle.NO_BORDER);
         second.setPaddingTop(0);
         second.setColspan(2);
@@ -437,11 +446,11 @@ public class CovidPdfCertificateGenerationService {
         return new Chunk(logo, 0, 0);
     }
 
-    private PdfPTable issuerTable(Locale locale) {
+    private PdfPTable issuerTable(Locale locale, boolean isPartialVaccination) {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100);
 
-        addIssuerRow(table, locale);
+        addIssuerRow(table, locale, isPartialVaccination);
         addIssuerRow(table, locale, "issuer.issuer", 5, true, PADDING_LEFT);
 
         return table;
