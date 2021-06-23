@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class COSETime {
-    private static final Integer EXPIRATION_PERIOD = 12;
+    private static final Integer EXPIRATION_PERIOD = 24;
 
     private final Clock clock;
 
