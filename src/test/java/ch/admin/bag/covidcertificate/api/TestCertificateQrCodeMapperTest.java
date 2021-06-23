@@ -5,12 +5,14 @@ import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
 
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestValueSet;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,9 +20,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestCertificateQrCodeMapperTest {
 
-    private final JFixture jFixture = new JFixture();
-    private final TestCertificateCreateDto incoming = jFixture.create(TestCertificateCreateDto.class);
-    private final TestValueSet testValueSet = jFixture.create(TestValueSet.class);
+    private final JFixture fixture = new JFixture();
+    private TestCertificateCreateDto incoming;
+    private TestValueSet testValueSet;
+
+    @BeforeEach
+    public void setUp() {
+        customizeTestValueSet(fixture);
+        incoming = fixture.create(TestCertificateCreateDto.class);
+        testValueSet = fixture.create(TestValueSet.class);
+    }
 
     @Test
     public void mapsFamilyName() {

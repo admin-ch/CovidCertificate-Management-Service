@@ -115,7 +115,7 @@ public class CsvServiceTest {
         assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
     }
 
-    private class CertificateCreateDtoFamilyNameMatcher<T extends CertificateCreateDto> implements ArgumentMatcher<T> {
+    private static class CertificateCreateDtoFamilyNameMatcher<T extends CertificateCreateDto> implements ArgumentMatcher<T> {
         private final String familyName;
 
         private CertificateCreateDtoFamilyNameMatcher(String familyName) {
@@ -124,7 +124,7 @@ public class CsvServiceTest {
 
         @Override
         public boolean matches(T t) {
-            if(t == null) return false;
+            if (t == null) return false;
             var actual = t.getPersonData().getName().getFamilyName();
             return familyName.equals(actual);
         }
