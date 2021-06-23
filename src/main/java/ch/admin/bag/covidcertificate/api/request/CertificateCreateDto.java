@@ -16,13 +16,13 @@ public abstract class CertificateCreateDto {
     private CovidCertificatePersonDto personData;
     private String language;
     private CovidCertificateAddressDto address;
-    private String inAppDeliveryCode;
+    private String appCode;
 
-    public CertificateCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String inAppDeliveryCode) {
+    public CertificateCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String appCode) {
         this.personData = personData;
         this.language = language;
         this.address = address;
-        this.inAppDeliveryCode = inAppDeliveryCode != null ? inAppDeliveryCode.toUpperCase() : null;
+        this.appCode = appCode != null ? appCode.toUpperCase() : null;
     }
 
     public boolean sendToPrint() {
@@ -30,7 +30,7 @@ public abstract class CertificateCreateDto {
     }
 
     public boolean sendToApp() {
-        return this.inAppDeliveryCode != null;
+        return this.appCode != null;
     }
 
     public void validate() {
@@ -46,15 +46,15 @@ public abstract class CertificateCreateDto {
     }
 
     private void validateDeliveryMethod() {
-        if (this.address != null && StringUtils.hasText(this.inAppDeliveryCode)) {
+        if (this.address != null && StringUtils.hasText(this.appCode)) {
             throw new CreateCertificateException(DUPLICATE_DELIVERY_METHOD);
         } else {
             if (this.address != null) {
                 this.address.validate();
             }
-            if (StringUtils.hasText(this.inAppDeliveryCode)) {
-                var isAlphaNumeric = org.apache.commons.lang3.StringUtils.isAlphanumeric(this.inAppDeliveryCode);
-                var isNineCharsLong = this.inAppDeliveryCode.length() == 9;
+            if (StringUtils.hasText(this.appCode)) {
+                var isAlphaNumeric = org.apache.commons.lang3.StringUtils.isAlphanumeric(this.appCode);
+                var isNineCharsLong = this.appCode.length() == 9;
                 if (!isAlphaNumeric || !isNineCharsLong) {
                     throw new CreateCertificateException(INVALID_IN_APP_CODE);
                 }
