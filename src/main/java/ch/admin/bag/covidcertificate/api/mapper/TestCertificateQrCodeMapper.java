@@ -15,8 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
-import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestCertificateQrCodeMapper {
@@ -50,7 +49,7 @@ public class TestCertificateQrCodeMapper {
         return new TestCertificateData(
                 CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
                 testValueSet.getTypeCode(),
-                testValueSet.getName(),
+                getTrimmedTestName(testValueSet.getName()),
                 testValueSet.getManufacturerCodeEu(),
                 testCertificateDataDto.getSampleDateTime().truncatedTo(ChronoUnit.SECONDS),
                 NegativeTestResult.CODE,
@@ -59,5 +58,9 @@ public class TestCertificateQrCodeMapper {
                 ISSUER,
                 UVCI.generateUVCI(testCertificateDataDto.toString())
         );
+    }
+
+    private static String getTrimmedTestName(String testName) {
+        return testName.substring(0, Math.min(testName.length(), MAX_STRING_LENGTH));
     }
 }
