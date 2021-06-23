@@ -51,8 +51,7 @@ class CovidPdfCertificateGenerationServiceTest {
     }
 
 
-    private void generateDocument_vaccine(String language, String familyName, String givenName) throws Exception {
-        VaccinationCertificateCreateDto createDto = getVaccinationCertificateCreateDto("1119349007", language);
+    private void generateDocument_vaccine(VaccinationCertificateCreateDto createDto, String language, String familyName, String givenName, String fileName) throws Exception {
         VaccinationValueSet vaccinationValueSet = new VaccinationValueSet();
         ReflectionTestUtils.setField(vaccinationValueSet, "prophylaxis", "SARS-CoV-2 mRNA vaccine");
         ReflectionTestUtils.setField(vaccinationValueSet, "medicinalProduct", "COVID-19 Vaccine Moderna");
@@ -64,8 +63,19 @@ class CovidPdfCertificateGenerationServiceTest {
         VaccinationCertificateQrCode qrCodeData = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccinationValueSet);
         VaccinationCertificatePdf pdfData = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(createDto, vaccinationValueSet, qrCodeData, country, countryEn);
 
-        doTest(pdfData, "vaccine", language);
+        doTest(pdfData, fileName, language);
 
+    }
+
+    private void generateDocument_vaccine(String language, String familyName, String givenName) throws Exception {
+        VaccinationCertificateCreateDto createDto = getVaccinationCertificateCreateDto("1119349007", language);
+        this.generateDocument_vaccine(createDto, language, familyName, givenName, "vaccine");
+    }
+
+    private void generateDocument_partialVaccination(String language, String familyName, String givenName) throws Exception {
+        VaccinationCertificateCreateDto createDto = getVaccinationCertificateCreateDto("1119349007", language);
+        ReflectionTestUtils.setField(createDto.getVaccinationInfo().get(0), "numberOfDoses", 1);
+        this.generateDocument_vaccine(createDto, language, familyName, givenName, "partial-vaccine");
     }
 
     private void generateDocument_test(String language, String familyName, String givenName) throws Exception {
@@ -122,6 +132,10 @@ class CovidPdfCertificateGenerationServiceTest {
         generateDocument_test("it", familyName, givenName);
         generateDocument_test("rm", familyName, givenName);
 
+        generateDocument_partialVaccination("de", familyName, givenName);
+        generateDocument_partialVaccination("fr", familyName, givenName);
+        generateDocument_partialVaccination("it", familyName, givenName);
+        generateDocument_partialVaccination("rm", familyName, givenName);
     }
 
 
@@ -133,7 +147,7 @@ class CovidPdfCertificateGenerationServiceTest {
 
         byte[] document = service.generateCovidCertificate(pdfData, barcode);
 
-        boolean storeDocument = false;
+        boolean storeDocument = true;
 
         if (storeDocument) {
             OutputStream out = new FileOutputStream("/home/dev/Downloads/certificate-" + filename + "-" + language + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss")) + ".pdf");
