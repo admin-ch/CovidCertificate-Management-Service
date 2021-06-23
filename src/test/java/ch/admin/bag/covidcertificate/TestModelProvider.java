@@ -2,7 +2,10 @@ package ch.admin.bag.covidcertificate;
 
 import ch.admin.bag.covidcertificate.api.request.*;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
@@ -13,16 +16,40 @@ public class TestModelProvider {
         return new VaccinationCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
-                language
+                language,
+                getCovidCertificateAddressDto(),
+                null
         );
     }
 
-    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language
-    ) {
+    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(String medicalProductCode, String language, String inAppCode) {
+        return new VaccinationCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getVaccinationCertificateDataDto(medicalProductCode)),
+                language,
+                null,
+                inAppCode
+        );
+    }
+
+
+    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
-                language
+                language,
+                getCovidCertificateAddressDto(),
+                null
+        );
+    }
+
+    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language, String inAppCode) {
+        return new TestCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
+                language,
+                null,
+                inAppCode
         );
     }
 
@@ -30,7 +57,19 @@ public class TestModelProvider {
         return new RecoveryCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getRecoveryCertificateDataDto()),
-                language
+                language,
+                getCovidCertificateAddressDto(),
+                null
+        );
+    }
+
+    public static RecoveryCertificateCreateDto getRecoveryCertificateCreateDto(String language, String inAppCode) {
+        return new RecoveryCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getRecoveryCertificateDataDto()),
+                language,
+                null,
+                inAppCode
         );
     }
 
@@ -50,8 +89,8 @@ public class TestModelProvider {
 
     public static CovidCertificatePersonNameDto getCovidCertificatePersonNameDto() {
         return new CovidCertificatePersonNameDto(
-                "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-                "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
+                "faimlyName",
+                "givenName"
         );
     }
 
@@ -76,5 +115,9 @@ public class TestModelProvider {
                 "Test Center",
                 "CH"
         );
+    }
+
+    public static CovidCertificateAddressDto getCovidCertificateAddressDto() {
+        return new CovidCertificateAddressDto("street 12", 2500, "Bern", "BE");
     }
 }

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ch.admin.bag.covidcertificate</groupId>
 	<artifactId>cc-management-service</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<name>cc-management-service</name>
 	<description>Service for generating Covid Certificates</description>
 
@@ -29,6 +29,8 @@
 		<httpclient.version>4.5.13</httpclient.version>
 		<jjwt.version>0.11.2</jjwt.version>
 		<google-zxing.version>3.3.0</google-zxing.version>
+		<opencsv.version>5.4</opencsv.version>
+		<juniversalchardet.version>2.4.0</juniversalchardet.version>
 
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 
@@ -224,6 +226,18 @@
 			<version>${guava.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>${opencsv.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.albfernandez</groupId>
+			<artifactId>juniversalchardet</artifactId>
+			<version>${juniversalchardet.version}</version>
+		</dependency>
+
 		<!-- test Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -257,6 +271,19 @@
 			<groupId>com.github.tomakehurst</groupId>
 			<artifactId>wiremock-standalone</artifactId>
 			<version>2.16.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>4.0.1</version>
 			<scope>test</scope>
 		</dependency>
     </dependencies>

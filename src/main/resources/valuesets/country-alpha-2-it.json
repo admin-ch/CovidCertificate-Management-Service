@@ -1,12 +1,204 @@
 {
   "valueSetId": "country-alpha-2-it",
-  "valueSetDate": "2021-05-05",
+  "valueSetDate": "2021-06-17",
   "valueSetValues": [
     {
-      "short": "AT",
-      "display": "Austria",
+      "short": "CH",
+      "display": "Svizzera",
       "lang": "it",
-      "active": true,
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AF",
+      "display": "Afghanistan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "EG",
+      "display": "Egitto",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AX",
+      "display": "Isole Åland",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AL",
+      "display": "Albania",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "DZ",
+      "display": "Algeria",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AS",
+      "display": "Samoa Americane",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "VI",
+      "display": "Isole Vergini americane",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AD",
+      "display": "Andorra",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AO",
+      "display": "Angola",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AI",
+      "display": "Anguilla",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AQ",
+      "display": "Antartide",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AG",
+      "display": "Antigua e Barbuda",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GQ",
+      "display": "Guinea Equatoriale",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AR",
+      "display": "Argentina",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AM",
+      "display": "Armenia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AW",
+      "display": "Aruba",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AZ",
+      "display": "Azerbaigian",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ET",
+      "display": "Etiopia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AU",
+      "display": "Australia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BS",
+      "display": "Bahamas",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BH",
+      "display": "Bahrein",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BD",
+      "display": "Bangladesh",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BB",
+      "display": "Barbados",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BY",
+      "display": "Bielorussia",
+      "lang": "it",
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
@@ -14,7 +206,111 @@
       "short": "BE",
       "display": "Belgio",
       "lang": "it",
-      "active": true,
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BZ",
+      "display": "Belize",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BJ",
+      "display": "Benin",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BM",
+      "display": "Bermuda",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BT",
+      "display": "Bhutan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BO",
+      "display": "Bolivia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BQ",
+      "display": "Isole BES",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BA",
+      "display": "Bosnia ed Erzegovina",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BW",
+      "display": "Botswana",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BV",
+      "display": "Isola Bouvet",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BR",
+      "display": "Brasile",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "VG",
+      "display": "Isole Vergini britanniche",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "IO",
+      "display": "Territorio britannico dell'Oceano Indiano",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BN",
+      "display": "Brunei",
+      "lang": "it",
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
@@ -22,31 +318,63 @@
       "short": "BG",
       "display": "Bulgaria",
       "lang": "it",
-      "active": true,
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
     {
-      "short": "HR",
-      "display": "Croazia",
+      "short": "BF",
+      "display": "Burkina Faso",
       "lang": "it",
-      "active": true,
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
     {
-      "short": "CY",
-      "display": "Cipro",
+      "short": "BI",
+      "display": "Burundi",
       "lang": "it",
-      "active": true,
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
     {
-      "short": "CZ",
-      "display": "Tchéquie",
+      "short": "CL",
+      "display": "Cile",
       "lang": "it",
-      "active": true,
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CN",
+      "display": "Cina",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CK",
+      "display": "Isole Cook",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CR",
+      "display": "Costa Rica",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CW",
+      "display": "Curaçao",
+      "lang": "it",
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
@@ -54,31 +382,7 @@
       "short": "DK",
       "display": "Danimarca",
       "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "EE",
-      "display": "Estonia",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "FI",
-      "display": "Finlandia",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "FR",
-      "display": "Francia",
-      "lang": "it",
-      "active": true,
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
@@ -86,7 +390,191 @@
       "short": "DE",
       "display": "Germania",
       "lang": "it",
-      "active": true,
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "DM",
+      "display": "Dominica",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "DO",
+      "display": "Rep. Dominicana",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "DJ",
+      "display": "Gibuti",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "EC",
+      "display": "Ecuador",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CI",
+      "display": "Costa d'Avorio",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SV",
+      "display": "El Salvador",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ER",
+      "display": "Eritrea",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "EE",
+      "display": "Estonia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SZ",
+      "display": "Swaziland",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "FK",
+      "display": "Isole Falkland",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "FO",
+      "display": "Fær Øer",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "FJ",
+      "display": "Figi",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "FI",
+      "display": "Finlandia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "FR",
+      "display": "Francia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GF",
+      "display": "Guyana francese",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PF",
+      "display": "Polinesia francese",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TF",
+      "display": "Terre australi e antartiche francesi",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GA",
+      "display": "Gabon",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GM",
+      "display": "Gambia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GE",
+      "display": "Georgia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GH",
+      "display": "Ghana",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GI",
+      "display": "Gibilterra",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GD",
+      "display": "Grenada",
+      "lang": "it",
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
@@ -94,15 +582,143 @@
       "short": "GR",
       "display": "Grecia",
       "lang": "it",
-      "active": true,
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
     {
-      "short": "HU",
-      "display": "Ungheria",
+      "short": "GL",
+      "display": "Groenlandia",
       "lang": "it",
-      "active": true,
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GP",
+      "display": "Guadalupa",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GU",
+      "display": "Guam",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GT",
+      "display": "Guatemala",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GG",
+      "display": "Guernsey",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GN",
+      "display": "Guinea",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GW",
+      "display": "Guinea-Bissau",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GY",
+      "display": "Guyana",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "HT",
+      "display": "Haiti",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "HM",
+      "display": "Isole Heard e McDonald",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "HN",
+      "display": "Honduras",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "HK",
+      "display": "Hong Kong",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "IN",
+      "display": "India",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ID",
+      "display": "Indonesia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "IM",
+      "display": "Isola di Man",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "IQ",
+      "display": "Iraq",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "IR",
+      "display": "Iran",
+      "lang": "it",
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
@@ -110,127 +726,7 @@
       "short": "IE",
       "display": "Irlanda",
       "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "IT",
-      "display": "Italia",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "LV",
-      "display": "Lettonia",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "LT",
-      "display": "Lituania",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "LU",
-      "display": "Lussemburgo",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "MT",
-      "display": "Malta",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "NL",
-      "display": "Paesi Bassi",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "PL",
-      "display": "Polonia",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "PT",
-      "display": "Portogallo",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "RO",
-      "display": "Romania",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "SK",
-      "display": "Slovacchia",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "SI",
-      "display": "Slovenia",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "ES",
-      "display": "Spagna",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "SE",
-      "display": "Svezia",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "CH",
-      "display": "Svizzera",
-      "lang": "it",
-      "active": true,
-      "version": "http://iso-3166-1_alpha-2/1",
-      "system": "http://iso-3166-1_alpha-2"
-    },
-    {
-      "short": "NO",
-      "display": "Norvegia",
-      "lang": "it",
-      "active": true,
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
@@ -238,7 +734,271 @@
       "short": "IS",
       "display": "Islanda",
       "lang": "it",
-      "active": true,
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "IL",
+      "display": "Israele",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "IT",
+      "display": "Italia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "JM",
+      "display": "Giamaica",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "JP",
+      "display": "Giappone",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "YE",
+      "display": "Yemen",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "JE",
+      "display": "Jersey",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "JO",
+      "display": "Giordania",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KY",
+      "display": "Isole Cayman",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KH",
+      "display": "Cambogia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CM",
+      "display": "Camerun",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CA",
+      "display": "Canada",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CV",
+      "display": "Capo Verde",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KZ",
+      "display": "Kazakistan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "QA",
+      "display": "Qatar",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KE",
+      "display": "Kenya",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KG",
+      "display": "Kirghizistan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KI",
+      "display": "Kiribati",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CC",
+      "display": "Isole Cocos",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CO",
+      "display": "Colombia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KM",
+      "display": "Comore",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CD",
+      "display": "RD del Congo",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CG",
+      "display": "Rep. del Congo",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KP",
+      "display": "Corea del Nord",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KR",
+      "display": "Corea del Sud",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "HR",
+      "display": "Croazia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CU",
+      "display": "Cuba",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KW",
+      "display": "Kuwait",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LA",
+      "display": "Laos",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LS",
+      "display": "Lesotho",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LV",
+      "display": "Lettonia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LB",
+      "display": "Libano",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LR",
+      "display": "Liberia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LY",
+      "display": "Libia",
+      "lang": "it",
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     },
@@ -246,7 +1006,991 @@
       "short": "LI",
       "display": "Liechtenstein",
       "lang": "it",
-      "active": true,
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LT",
+      "display": "Lituania",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LU",
+      "display": "Lussemburgo",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MO",
+      "display": "Macao",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MG",
+      "display": "Madagascar",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MW",
+      "display": "Malawi",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MY",
+      "display": "Malaysia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MV",
+      "display": "Maldive",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ML",
+      "display": "Mali",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MT",
+      "display": "Malta",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MA",
+      "display": "Marocco",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MH",
+      "display": "Isole Marshall",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MQ",
+      "display": "Martinica",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MR",
+      "display": "Mauritania",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MU",
+      "display": "Mauritius",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "YT",
+      "display": "Mayotte",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MX",
+      "display": "Messico",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "FM",
+      "display": "Micronesia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MD",
+      "display": "Moldavia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MC",
+      "display": "Monaco",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MN",
+      "display": "Mongolia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ME",
+      "display": "Montenegro",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MS",
+      "display": "Montserrat",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MZ",
+      "display": "Mozambico",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MM",
+      "display": "Birmania",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NA",
+      "display": "Namibia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NR",
+      "display": "Nauru",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NP",
+      "display": "Nepal",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NC",
+      "display": "Nuova Caledonia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NZ",
+      "display": "Nuova Zelanda",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NI",
+      "display": "Nicaragua",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NL",
+      "display": "Paesi Bassi",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NE",
+      "display": "Niger",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NG",
+      "display": "Nigeria",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NU",
+      "display": "Niue",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MP",
+      "display": "Isole Marianne Settentrionali",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MK",
+      "display": "Macedonia del Nord",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NF",
+      "display": "Isola Norfolk",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "NO",
+      "display": "Norvegia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "OM",
+      "display": "Oman",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AT",
+      "display": "Austria",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TL",
+      "display": "Timor Est",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PK",
+      "display": "Pakistan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PS",
+      "display": "Palestina",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PW",
+      "display": "Palau",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PA",
+      "display": "Panama",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PG",
+      "display": "Papua Nuova Guinea",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PY",
+      "display": "Paraguay",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PE",
+      "display": "Perù",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PH",
+      "display": "Filippine",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PN",
+      "display": "Isole Pitcairn",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PL",
+      "display": "Polonia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PT",
+      "display": "Portogallo",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PR",
+      "display": "Porto Rico",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "RE",
+      "display": "Riunione",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "RW",
+      "display": "Ruanda",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "RO",
+      "display": "Romania",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "RU",
+      "display": "Russia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SB",
+      "display": "Isole Salomone",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "BL",
+      "display": "Saint-Barthélemy",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "MF",
+      "display": "Saint-Martin",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ZM",
+      "display": "Zambia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "WS",
+      "display": "Samoa",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SM",
+      "display": "San Marino",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ST",
+      "display": "São Tomé e Príncipe",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SA",
+      "display": "Arabia Saudita",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SE",
+      "display": "Svezia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SN",
+      "display": "Senegal",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "RS",
+      "display": "Serbia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SC",
+      "display": "Seychelles",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SL",
+      "display": "Sierra Leone",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ZW",
+      "display": "Zimbabwe",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SG",
+      "display": "Singapore",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SX",
+      "display": "Sint Maarten",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SK",
+      "display": "Slovacchia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SI",
+      "display": "Slovenia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SO",
+      "display": "Somalia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ES",
+      "display": "Spagna",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LK",
+      "display": "Sri Lanka",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SH",
+      "display": "Sant'Elena Ascensione e Tristan da Cunha",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "KN",
+      "display": "Saint Kitts e Nevis",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "LC",
+      "display": "Saint Lucia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "PM",
+      "display": "Saint-Pierre e Miquelon",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "VC",
+      "display": "Saint Vincent e Grenadine",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "ZA",
+      "display": "Sudafrica",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SD",
+      "display": "Sudan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GS",
+      "display": "Georgia del Sud e Isole Sandwich Australi",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SS",
+      "display": "Sudan del Sud",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SR",
+      "display": "Suriname",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SJ",
+      "display": "Svalbard e Jan Mayen",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "SY",
+      "display": "Siria",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TJ",
+      "display": "Tagikistan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TW",
+      "display": "Taiwan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TZ",
+      "display": "Tanzania",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TH",
+      "display": "Thailandia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TG",
+      "display": "Togo",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TK",
+      "display": "Tokelau",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TO",
+      "display": "Tonga",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TT",
+      "display": "Trinidad e Tobago",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TD",
+      "display": "Ciad",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CZ",
+      "display": "Rep. Ceca",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TN",
+      "display": "Tunisia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TR",
+      "display": "Turchia",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TM",
+      "display": "Turkmenistan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TC",
+      "display": "Turks e Caicos",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "TV",
+      "display": "Tuvalu",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "UG",
+      "display": "Uganda",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "UA",
+      "display": "Ucraina",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "HU",
+      "display": "Ungheria",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "UM",
+      "display": "Isole minori esterne degli Stati Uniti",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "UY",
+      "display": "Uruguay",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "UZ",
+      "display": "Uzbekistan",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "VU",
+      "display": "Vanuatu",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "VA",
+      "display": "Città del Vaticano",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "VE",
+      "display": "Venezuela",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "AE",
+      "display": "Emirati Arabi Uniti",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "US",
+      "display": "Stati Uniti",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "GB",
+      "display": "Regno Unito",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "VN",
+      "display": "Vietnam",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "WF",
+      "display": "Wallis e Futuna",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CX",
+      "display": "Isola di Natale",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "EH",
+      "display": "Sahara Occidentale",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CF",
+      "display": "Rep. Centrafricana",
+      "lang": "it",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "CY",
+      "display": "Cipro",
+      "lang": "it",
+      "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
       "system": "http://iso-3166-1_alpha-2"
     }
