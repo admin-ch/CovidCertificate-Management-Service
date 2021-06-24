@@ -146,9 +146,9 @@ public class CovidPdfCertificateGenerationService {
 
             document.add(issuerTable(locale, isPartialVaccination));
 
-            document.add(infoTable(locale));
+            document.add(infoTable(locale, isPartialVaccination));
 
-            document.add(footerTable(locale));
+            document.add(footerTable(locale, isPartialVaccination));
 
             document.close();
 
@@ -456,17 +456,22 @@ public class CovidPdfCertificateGenerationService {
         return table;
     }
 
-    private PdfPTable infoTable(Locale locale) {
+    private PdfPTable infoTable(Locale locale, boolean isPartialVaccination) {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(95);
         table.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.setSpacingBefore((float) 10);
 
         PdfPCell cell = new PdfPCell();
-        addInfoCell(cell, messageSource.getMessage("info.info1", null, locale), font7Row, 0);
-        addInfoCell(cell, messageSource.getMessage("info.info2", null, locale), font7Row, 0);
-        addInfoCell(cell, messageSource.getMessage("info.info1", null, Locale.ENGLISH), font7English, 5);
-        addInfoCell(cell, messageSource.getMessage("info.info2", null, Locale.ENGLISH), font7English, 0);
+        if (isPartialVaccination) {
+            addInfoCell(cell, messageSource.getMessage("evidence.info", null, locale), font7Row, 0);
+            addInfoCell(cell, messageSource.getMessage("evidence.info", null, Locale.ENGLISH), font7English, 0);
+        } else {
+            addInfoCell(cell, messageSource.getMessage("info.info1", null, locale), font7Row, 0);
+            addInfoCell(cell, messageSource.getMessage("info.info2", null, locale), font7Row, 0);
+            addInfoCell(cell, messageSource.getMessage("info.info1", null, Locale.ENGLISH), font7English, 5);
+            addInfoCell(cell, messageSource.getMessage("info.info2", null, Locale.ENGLISH), font7English, 0);
+        }
         cell.setBackgroundColor(new BaseColor(252, 231, 232));
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setBorder(Rectangle.NO_BORDER);
@@ -484,15 +489,17 @@ public class CovidPdfCertificateGenerationService {
 
     }
 
-    private PdfPTable footerTable(Locale locale) {
+    private PdfPTable footerTable(Locale locale, boolean isPartialVaccination) {
         float[] pointColumnWidths = {60F, 30F, 10F};
         PdfPTable table = new PdfPTable(pointColumnWidths);
         table.setWidthPercentage(100);
         table.setSpacingBefore((float) 5);
 
+        String footerAppKey = isPartialVaccination ? "footer.evidence.app" : "footer.app";
+
         PdfPCell cell = new PdfPCell();
-        cell.addElement(new Paragraph(new Phrase(messageSource.getMessage("footer.app", null, locale), fontRow)));
-        cell.addElement(new Phrase(messageSource.getMessage("footer.app", null, Locale.ENGLISH), fontEnglish));
+        cell.addElement(new Paragraph(new Phrase(messageSource.getMessage(footerAppKey, null, locale), fontRow)));
+        cell.addElement(new Phrase(messageSource.getMessage(footerAppKey, null, Locale.ENGLISH), fontEnglish));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setPaddingLeft(PADDING_LEFT);
         table.addCell(cell);
