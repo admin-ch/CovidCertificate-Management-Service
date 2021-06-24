@@ -56,7 +56,7 @@ public abstract class CertificateCreateDto {
                 var isAlphaNumeric = org.apache.commons.lang3.StringUtils.isAlphanumeric(this.appCode);
                 var isNineCharsLong = this.appCode.length() == 9;
                 if (!isAlphaNumeric || !isNineCharsLong) {
-                    throw new CreateCertificateException(UNKNOWN_APP_CODE);
+                    throw new CreateCertificateException(INVALID_APP_CODE);
                 }
             }
         }

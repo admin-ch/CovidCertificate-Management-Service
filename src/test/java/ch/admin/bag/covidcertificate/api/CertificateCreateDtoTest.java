@@ -118,17 +118,17 @@ public class CertificateCreateDtoTest {
         // test too long
         CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.randomAlphanumeric(10));
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(UNKNOWN_APP_CODE, exception.getError());
+        assertEquals(INVALID_APP_CODE, exception.getError());
 
         // test too short
         testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.randomAlphanumeric(8));
         exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(UNKNOWN_APP_CODE, exception.getError());
+        assertEquals(INVALID_APP_CODE, exception.getError());
 
         // test not alphanumeric
         testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.random(9));
         exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(UNKNOWN_APP_CODE, exception.getError());
+        assertEquals(INVALID_APP_CODE, exception.getError());
     }
 
     @Test

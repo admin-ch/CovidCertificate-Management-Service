@@ -64,9 +64,10 @@ public class Constants {
     public static final RevocationError INVALID_UVCI = new RevocationError(470, "Invalid UVCI format.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ADDRESS = new CreateCertificateError(474, "Paper-based delivery requires a valid address.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError DUPLICATE_DELIVERY_METHOD = new CreateCertificateError(475, "Delivery method can either be InApp or print, but not both.", HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError UNKNOWN_APP_CODE = new CreateCertificateError(476, "Unknown or invalid app code.", HttpStatus.NOT_FOUND);
+    public static final CreateCertificateError UNKNOWN_APP_CODE = new CreateCertificateError(476, "Unknown app code.", HttpStatus.NOT_FOUND);
     public static final CreateCertificateError INVALID_STANDARDISED_GIVEN_NAME = new CreateCertificateError(477, "Invalid given name! The standardised given name exceeds 80 chars", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_STANDARDISED_FAMILY_NAME = new CreateCertificateError(478, "Invalid family name! The standardised family name exceeds 80 chars", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_APP_CODE = new CreateCertificateError(479, "App code is in an invalid format.", HttpStatus.BAD_REQUEST);
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
