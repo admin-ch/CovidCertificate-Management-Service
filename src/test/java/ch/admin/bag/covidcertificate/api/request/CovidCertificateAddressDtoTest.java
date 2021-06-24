@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.valueset.AcceptedCantons;
+import ch.admin.bag.covidcertificate.api.valueset.AllowedSenders;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -106,12 +106,12 @@ class CovidCertificateAddressDtoTest {
 
     @Test
     public void throwsCertificateCreateException__onInvalidCantonCode() {
-        try (MockedStatic<AcceptedCantons> allowedCantonsMock = Mockito.mockStatic(AcceptedCantons.class)) {
+        try (MockedStatic<AllowedSenders> allowedCantonsMock = Mockito.mockStatic(AllowedSenders.class)) {
             var addressDto = new CovidCertificateAddressDto("streetAndNr", 1000, "city", "TT");
-            allowedCantonsMock.when(() -> AcceptedCantons.isAccepted(any())).thenReturn(false);
+            allowedCantonsMock.when(() -> AllowedSenders.isAccepted(any())).thenReturn(false);
             CreateCertificateException exception = assertThrows(CreateCertificateException.class, addressDto::validate);
             assertEquals(INVALID_ADDRESS, exception.getError());
-            allowedCantonsMock.verify(times(1), () -> AcceptedCantons.isAccepted(any()));
+            allowedCantonsMock.verify(times(1), () -> AllowedSenders.isAccepted(any()));
         }
     }
 }

@@ -15,16 +15,16 @@ class AcceptedCantonsTest {
 
     @Test
     void returnsTrue__ifAcceptedCantonUppercase() {
-        acceptedCantons.forEach(canton -> assertTrue(AcceptedCantons.isAccepted(canton.toUpperCase())));
+        acceptedCantons.forEach(canton -> assertTrue(AllowedSenders.isAccepted(canton.toUpperCase())));
     }
 
     @Test
     void returnsTrue__ifAcceptedCantonLowercase() {
-        acceptedCantons.forEach(canton -> assertTrue(AcceptedCantons.isAccepted(canton.toLowerCase())));
+        acceptedCantons.forEach(canton -> assertTrue(AllowedSenders.isAccepted(canton.toLowerCase())));
     }
 
     @Test
     void returnsFalse__ifNotCanton() {
-        assertFalse(AcceptedCantons.isAccepted("test"));
+        assertFalse(AllowedSenders.isAccepted("test"));
     }
 }
