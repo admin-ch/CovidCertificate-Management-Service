@@ -64,6 +64,7 @@ class CovidCertificateGenerationControllerTest {
         customizeTestCertificateCreateDto(fixture);
         customizeRecoveryCertificateCreateDto(fixture);
         customizeCreateCertificateException(fixture);
+        customizeCovidCertificateCreateResponseDto(fixture);
     }
 
     @BeforeEach

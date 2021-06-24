@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INAPP_DELIVERY_FAILED;
+import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(properties = {
@@ -36,7 +36,7 @@ class DefaultInAppDeliveryClientITTest {
         CreateCertificateException exception = assertThrows(CreateCertificateException.class,
                 () -> client.deliverToApp(requestDto));
 
-        assertEquals(INAPP_DELIVERY_FAILED,exception.getError());
+        assertEquals(APP_DELIVERY_FAILED,exception.getError());
     }
 
     @Test
