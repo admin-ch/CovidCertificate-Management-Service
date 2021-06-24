@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.client.inapp_delivery.internal;
 
+import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Service;
 @Profile(ProfileRegistry.INAPP_DELIVERY_SERVICE_MOCK)
 public class MockInAppDeliveryClient implements InAppDeliveryClient {
     @Override
-    public void deliverToApp(InAppDeliveryRequestDto requestDto) throws CreateCertificateException {
+    public CreateCertificateError deliverToApp(InAppDeliveryRequestDto requestDto) throws CreateCertificateException {
         log.info("Call the mock InApp delivery service");
+        return null;
     }
 }

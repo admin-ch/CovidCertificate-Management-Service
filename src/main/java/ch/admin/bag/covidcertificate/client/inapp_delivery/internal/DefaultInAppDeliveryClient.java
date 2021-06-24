@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.client.inapp_delivery.internal;
 
+import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
@@ -38,7 +39,7 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
     private final KpiDataService kpiLogService;
 
     @Override
-    public void deliverToApp(InAppDeliveryRequestDto requestDto) {
+    public CreateCertificateError deliverToApp(InAppDeliveryRequestDto requestDto) {
         var builder = UriComponentsBuilder.fromHttpUrl(serviceUri);
 
         var uri = builder.toUriString();
@@ -51,31 +52,26 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                     .toBodilessEntity()
                     .block();
             log.trace("InApp Delivery Backend Response: {}", response);
-            if (response != null && response.getStatusCode().is2xxSuccessful()) {
+            if (response != null && response.getStatusCode().value() == 200) {
                 logKpi();
+                return null;
             } else {
-                throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
+                throw new CreateCertificateException(APP_DELIVERY_FAILED);
             }
         } catch (WebClientResponseException e) {
             log.error("Received error message", e);
-            this.handleErrorResponse(e);
+            return this.handleErrorResponse(e);
         } catch (WebClientRequestException e) {
             log.error("Request to {} failed", serviceUri, e);
-            throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
+            return APP_DELIVERY_FAILED;
         }
     }
 
-    private void handleErrorResponse(WebClientResponseException exception) {
-        if (exception != null) {
-            var statusCode = exception.getStatusCode();
-            if (statusCode == HttpStatus.BAD_REQUEST || statusCode == HttpStatus.NOT_FOUND) {
-                throw new CreateCertificateException(INVALID_IN_APP_CODE);
-            } else {
-                throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
-            }
-        } else {
-            throw new CreateCertificateException(INAPP_DELIVERY_FAILED);
+    private CreateCertificateError handleErrorResponse(WebClientResponseException exception) {
+        if (exception != null && exception.getStatusCode() == HttpStatus.NOT_FOUND) {
+            return UNKNOWN_APP_CODE;
         }
+        return APP_DELIVERY_FAILED;
     }
 
     private void logKpi() {
