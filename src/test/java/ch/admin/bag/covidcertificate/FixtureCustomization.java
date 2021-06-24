@@ -3,6 +3,7 @@ package ch.admin.bag.covidcertificate;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
 import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
@@ -117,5 +118,14 @@ public class FixtureCustomization {
 
     private static String createUVCI(){
         return "urn:uvci:01:CH:"+RandomStringUtils.randomAlphanumeric(24).toUpperCase();
+    }
+
+    public static void customizeCovidCertificateCreateResponseDto(JFixture fixture){
+        fixture.customise().lazyInstance(CovidCertificateCreateResponseDto.class, () -> {
+            var helperFixture = new JFixture();
+            var covidCertificateCreateResponseDto = helperFixture.create(CovidCertificateCreateResponseDto.class);
+            ReflectionTestUtils.setField(covidCertificateCreateResponseDto, "appDeliveryError", null);
+            return covidCertificateCreateResponseDto;
+        });
     }
 }
