@@ -82,7 +82,7 @@ public class Constants {
     public static final CreateCertificateError CREATE_SIGNATURE_FAILED = new CreateCertificateError(553, "Creating signature failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_COSE_SIGN1_FAILED = new CreateCertificateError(554, "Creating COSE_Sign1 failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555, "Creating barcode failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556, "Printing failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557, "Write CSV failed", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558, "App delivery failed due to a technical issue.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556, "Printing failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557, "Writing CSV failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558, "App delivery failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
 }
