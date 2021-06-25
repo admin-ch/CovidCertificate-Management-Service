@@ -61,7 +61,8 @@ public class CovidCertificateGenerationService {
             printQueueClient.sendPrintJob(CertificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
         } else if (createDto.sendToApp()) {
             var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getAppCode(), code.getPayload(), Base64.getEncoder().encodeToString(pdf));
-            this.inAppDeliveryClient.deliverToApp(inAppDeliveryDto);
+            var createError = this.inAppDeliveryClient.deliverToApp(inAppDeliveryDto); // null if no error
+            responseDto.setAppDeliveryError(createError);
         }
         return responseDto;
     }
