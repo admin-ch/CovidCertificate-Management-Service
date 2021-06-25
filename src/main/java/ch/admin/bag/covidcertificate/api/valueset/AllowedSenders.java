@@ -2,10 +2,11 @@ package ch.admin.bag.covidcertificate.api.valueset;
 
 import java.util.Arrays;
 
-public class AcceptedCantons {
+public class AllowedSenders {
 
     private enum cantons {
-        AG, AI, AR, BE, BL, BS, FR, GE, GL, GR, JU, LU, NE, NW, OW, SG, SH, SO, SZ, TG, TI, UR, VD, VS, ZG, ZH
+        // MI is mapped to the address of the swiss military
+        AG, AI, AR, BE, BL, BS, FR, GE, GL, GR, JU, LU, NE, NW, OW, SG, SH, SO, SZ, TG, TI, UR, VD, VS, ZG, ZH, MI
     }
 
     public static boolean isAccepted(String canton) {

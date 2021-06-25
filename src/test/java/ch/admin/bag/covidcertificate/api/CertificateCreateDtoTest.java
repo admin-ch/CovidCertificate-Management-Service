@@ -4,9 +4,7 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
-import com.flextrade.jfixture.JFixture;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
@@ -120,17 +118,17 @@ public class CertificateCreateDtoTest {
         // test too long
         CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.randomAlphanumeric(10));
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_IN_APP_CODE, exception.getError());
+        assertEquals(INVALID_APP_CODE, exception.getError());
 
         // test too short
         testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.randomAlphanumeric(8));
         exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_IN_APP_CODE, exception.getError());
+        assertEquals(INVALID_APP_CODE, exception.getError());
 
         // test not alphanumeric
         testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.random(9));
         exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_IN_APP_CODE, exception.getError());
+        assertEquals(INVALID_APP_CODE, exception.getError());
     }
 
     @Test
