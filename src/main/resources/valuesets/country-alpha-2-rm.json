@@ -1,6 +1,6 @@
 {
-  "valueSetId": "country-alpha-2-de",
-  "valueSetDate": "2021-06-17",
+  "valueSetId": "country-alpha-2-rm",
+  "valueSetDate": "2021-06-24",
   "valueSetValues": [
     {
       "short": "CH",
@@ -12,7 +12,7 @@
     },
     {
       "short": "AF",
-      "display": "Afghanistan",
+      "display": "Afganistan",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -20,7 +20,7 @@
     },
     {
       "short": "EG",
-      "display": "Ägypten",
+      "display": "Egipta",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -28,7 +28,7 @@
     },
     {
       "short": "AX",
-      "display": "Åland",
+      "display": "Inslas Aland",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -36,7 +36,7 @@
     },
     {
       "short": "AL",
-      "display": "Albanien",
+      "display": "Albania",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -44,7 +44,7 @@
     },
     {
       "short": "DZ",
-      "display": "Algerien",
+      "display": "Algeria",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -52,7 +52,7 @@
     },
     {
       "short": "AS",
-      "display": "Amerikanisch-Samoa",
+      "display": "Samoa Americana",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -60,7 +60,7 @@
     },
     {
       "short": "VI",
-      "display": "Amerikanische Jungferninseln",
+      "display": "Inslas Virginas Americanas",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -92,7 +92,7 @@
     },
     {
       "short": "AQ",
-      "display": "Antarktis",
+      "display": "Antarctica",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -100,7 +100,7 @@
     },
     {
       "short": "AG",
-      "display": "Antigua und Barbuda",
+      "display": "Antigua e Barbuda",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -108,7 +108,7 @@
     },
     {
       "short": "GQ",
-      "display": "Äquatorialguinea",
+      "display": "Guinea Equatoriala",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -116,7 +116,7 @@
     },
     {
       "short": "AR",
-      "display": "Argentinien",
+      "display": "Argentina",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -124,7 +124,7 @@
     },
     {
       "short": "AM",
-      "display": "Armenien",
+      "display": "Armenia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -148,7 +148,7 @@
     },
     {
       "short": "ET",
-      "display": "Äthiopien",
+      "display": "Etiopia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -156,7 +156,7 @@
     },
     {
       "short": "AU",
-      "display": "Australien",
+      "display": "Australia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -204,7 +204,7 @@
     },
     {
       "short": "BE",
-      "display": "Belgien",
+      "display": "Belgia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -228,7 +228,7 @@
     },
     {
       "short": "BM",
-      "display": "Bermuda",
+      "display": "Bermudas",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -244,7 +244,7 @@
     },
     {
       "short": "BO",
-      "display": "Bolivien",
+      "display": "Bolivia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -252,7 +252,7 @@
     },
     {
       "short": "BQ",
-      "display": "Bonaire Saba Sint Eustatius",
+      "display": "Bonaire Saint Eustatius e Saba",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -260,7 +260,7 @@
     },
     {
       "short": "BA",
-      "display": "Bosnien und Herzegowina",
+      "display": "Bosnia ed Erzegovina",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -268,7 +268,7 @@
     },
     {
       "short": "BW",
-      "display": "Botswana",
+      "display": "Botsuana",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -276,7 +276,7 @@
     },
     {
       "short": "BV",
-      "display": "Bouvetinsel",
+      "display": "Insla Bouvet",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -284,7 +284,7 @@
     },
     {
       "short": "BR",
-      "display": "Brasilien",
+      "display": "Brasilia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -292,7 +292,7 @@
     },
     {
       "short": "VG",
-      "display": "Britische Jungferninseln",
+      "display": "Inslas Virginas Britannicas",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -300,7 +300,7 @@
     },
     {
       "short": "IO",
-      "display": "Britisches Territorium im Indischen Ozean",
+      "display": "Territori Britannic en l'Ocean Indic",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -316,7 +316,7 @@
     },
     {
       "short": "BG",
-      "display": "Bulgarien",
+      "display": "Bulgaria",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -348,7 +348,7 @@
     },
     {
       "short": "CN",
-      "display": "Volksrepublik China",
+      "display": "China",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -356,7 +356,7 @@
     },
     {
       "short": "CK",
-      "display": "Cookinseln",
+      "display": "Inslas Cook",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -380,7 +380,7 @@
     },
     {
       "short": "DK",
-      "display": "Dänemark",
+      "display": "Danemarc",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -388,7 +388,7 @@
     },
     {
       "short": "DE",
-      "display": "Deutschland",
+      "display": "Germania",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -404,7 +404,7 @@
     },
     {
       "short": "DO",
-      "display": "Dominikanische Republik",
+      "display": "Republica Dominicana",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -428,7 +428,7 @@
     },
     {
       "short": "CI",
-      "display": "Elfenbeinküste",
+      "display": "Costa d'Ivur",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -452,7 +452,7 @@
     },
     {
       "short": "EE",
-      "display": "Estland",
+      "display": "Estonia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -468,7 +468,7 @@
     },
     {
       "short": "FK",
-      "display": "Falklandinseln",
+      "display": "Inslas Falkland",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -476,7 +476,7 @@
     },
     {
       "short": "FO",
-      "display": "Färöer",
+      "display": "Inslas Feroe",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -492,7 +492,7 @@
     },
     {
       "short": "FI",
-      "display": "Finnland",
+      "display": "Finlanda",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -500,7 +500,7 @@
     },
     {
       "short": "FR",
-      "display": "Frankreich",
+      "display": "Frantscha",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -508,7 +508,7 @@
     },
     {
       "short": "GF",
-      "display": "Französisch-Guayana",
+      "display": "Guyana Franzosa",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -516,7 +516,7 @@
     },
     {
       "short": "PF",
-      "display": "Französisch-Polynesien",
+      "display": "Polinesia Franzosa",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -524,7 +524,7 @@
     },
     {
       "short": "TF",
-      "display": "Französische Süd- und Antarktisgebiete",
+      "display": "Territoris Franzos Meridiunals ed Antarctics",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -548,7 +548,7 @@
     },
     {
       "short": "GE",
-      "display": "Georgien",
+      "display": "Georgia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -580,7 +580,7 @@
     },
     {
       "short": "GR",
-      "display": "Griechenland",
+      "display": "Grezia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -588,7 +588,7 @@
     },
     {
       "short": "GL",
-      "display": "Grönland",
+      "display": "Grönlanda",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -596,7 +596,7 @@
     },
     {
       "short": "GP",
-      "display": "Guadeloupe",
+      "display": "Guadalupa",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -620,7 +620,7 @@
     },
     {
       "short": "GG",
-      "display": "Guernsey (Kanalinsel)",
+      "display": "Guernsey",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -660,7 +660,7 @@
     },
     {
       "short": "HM",
-      "display": "Heard und McDonaldinseln",
+      "display": "Inslas da Heard e McDonald",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -676,7 +676,7 @@
     },
     {
       "short": "HK",
-      "display": "Hongkong",
+      "display": "Hong Kong",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -684,7 +684,7 @@
     },
     {
       "short": "IN",
-      "display": "Indien",
+      "display": "India",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -692,7 +692,7 @@
     },
     {
       "short": "ID",
-      "display": "Indonesien",
+      "display": "Indonesia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -700,7 +700,7 @@
     },
     {
       "short": "IM",
-      "display": "Insel Man",
+      "display": "Insla da Man",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -708,7 +708,7 @@
     },
     {
       "short": "IQ",
-      "display": "Irak",
+      "display": "Irac",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -724,7 +724,7 @@
     },
     {
       "short": "IE",
-      "display": "Irland",
+      "display": "Irlanda",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -732,7 +732,7 @@
     },
     {
       "short": "IS",
-      "display": "Island",
+      "display": "Islanda",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -748,7 +748,7 @@
     },
     {
       "short": "IT",
-      "display": "Italien",
+      "display": "Italia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -756,7 +756,7 @@
     },
     {
       "short": "JM",
-      "display": "Jamaika",
+      "display": "Giamaica",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -764,7 +764,7 @@
     },
     {
       "short": "JP",
-      "display": "Japan",
+      "display": "Giapun",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -780,7 +780,7 @@
     },
     {
       "short": "JE",
-      "display": "Jersey (Kanalinsel)",
+      "display": "Jersey",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -788,7 +788,7 @@
     },
     {
       "short": "JO",
-      "display": "Jordanien",
+      "display": "Jordania",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -796,7 +796,7 @@
     },
     {
       "short": "KY",
-      "display": "Kaimaninseln",
+      "display": "Inslas Cayman",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -804,7 +804,7 @@
     },
     {
       "short": "KH",
-      "display": "Kambodscha",
+      "display": "Cambodscha",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -812,7 +812,7 @@
     },
     {
       "short": "CM",
-      "display": "Kamerun",
+      "display": "Camerun",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -820,7 +820,7 @@
     },
     {
       "short": "CA",
-      "display": "Kanada",
+      "display": "Canada",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -828,7 +828,7 @@
     },
     {
       "short": "CV",
-      "display": "Kap Verde",
+      "display": "Cap Verd",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -876,7 +876,7 @@
     },
     {
       "short": "CC",
-      "display": "Kokosinseln",
+      "display": "Inslas Cocos",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -884,7 +884,7 @@
     },
     {
       "short": "CO",
-      "display": "Kolumbien",
+      "display": "Columbia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -892,7 +892,7 @@
     },
     {
       "short": "KM",
-      "display": "Komoren",
+      "display": "Comoras",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -900,7 +900,7 @@
     },
     {
       "short": "CD",
-      "display": "Kongo Demokratische Republik",
+      "display": "Republica Democratica dal Congo",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -908,7 +908,7 @@
     },
     {
       "short": "CG",
-      "display": "Kongo Republik",
+      "display": "Republica dal Congo",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -916,7 +916,7 @@
     },
     {
       "short": "KP",
-      "display": "Korea Nord",
+      "display": "Corea dal Nord",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -924,7 +924,7 @@
     },
     {
       "short": "KR",
-      "display": "Korea Süd",
+      "display": "Corea dal Sid",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -932,7 +932,7 @@
     },
     {
       "short": "HR",
-      "display": "Kroatien",
+      "display": "Croazia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -940,7 +940,7 @@
     },
     {
       "short": "CU",
-      "display": "Kuba",
+      "display": "Cuba",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -972,7 +972,7 @@
     },
     {
       "short": "LV",
-      "display": "Lettland",
+      "display": "Lettonia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -996,7 +996,7 @@
     },
     {
       "short": "LY",
-      "display": "Libyen",
+      "display": "Libia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1012,7 +1012,7 @@
     },
     {
       "short": "LT",
-      "display": "Litauen",
+      "display": "Lituania",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1028,7 +1028,7 @@
     },
     {
       "short": "MO",
-      "display": "Macau",
+      "display": "Macao",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1036,7 +1036,7 @@
     },
     {
       "short": "MG",
-      "display": "Madagaskar",
+      "display": "Madagascar",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1052,7 +1052,7 @@
     },
     {
       "short": "MY",
-      "display": "Malaysia",
+      "display": "Malaisia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1060,7 +1060,7 @@
     },
     {
       "short": "MV",
-      "display": "Malediven",
+      "display": "Maledivas",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1084,7 +1084,7 @@
     },
     {
       "short": "MA",
-      "display": "Marokko",
+      "display": "Maroc",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1092,7 +1092,7 @@
     },
     {
       "short": "MH",
-      "display": "Marshallinseln",
+      "display": "Inslas da Marshall",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1100,7 +1100,7 @@
     },
     {
       "short": "MQ",
-      "display": "Martinique",
+      "display": "Martinica",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1108,7 +1108,7 @@
     },
     {
       "short": "MR",
-      "display": "Mauretanien",
+      "display": "Mauretania",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1132,7 +1132,7 @@
     },
     {
       "short": "MX",
-      "display": "Mexiko",
+      "display": "Mexico",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1140,7 +1140,7 @@
     },
     {
       "short": "FM",
-      "display": "Mikronesien",
+      "display": "Micronesia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1148,7 +1148,7 @@
     },
     {
       "short": "MD",
-      "display": "Moldau",
+      "display": "Moldavia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1164,7 +1164,7 @@
     },
     {
       "short": "MN",
-      "display": "Mongolei",
+      "display": "Mongolia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1188,7 +1188,7 @@
     },
     {
       "short": "MZ",
-      "display": "Mosambik",
+      "display": "Mosambic",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1228,7 +1228,7 @@
     },
     {
       "short": "NC",
-      "display": "Neukaledonien",
+      "display": "Nova Caledonia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1236,7 +1236,7 @@
     },
     {
       "short": "NZ",
-      "display": "Neuseeland",
+      "display": "Nova Zelanda",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1252,7 +1252,7 @@
     },
     {
       "short": "NL",
-      "display": "Niederlande",
+      "display": "Pajais Bass",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1284,7 +1284,7 @@
     },
     {
       "short": "MP",
-      "display": "Nördliche Marianen",
+      "display": "Inslas Mariannas dal Nord",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1292,7 +1292,7 @@
     },
     {
       "short": "MK",
-      "display": "Nordmazedonien",
+      "display": "Macedonia dal Nord",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1300,7 +1300,7 @@
     },
     {
       "short": "NF",
-      "display": "Norfolkinsel",
+      "display": "Insla Norfolk",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1308,7 +1308,7 @@
     },
     {
       "short": "NO",
-      "display": "Norwegen",
+      "display": "Norvegia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1324,7 +1324,7 @@
     },
     {
       "short": "AT",
-      "display": "Österreich",
+      "display": "Austria",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1332,7 +1332,7 @@
     },
     {
       "short": "TL",
-      "display": "Osttimor",
+      "display": "Timor da l'Ost",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1348,7 +1348,7 @@
     },
     {
       "short": "PS",
-      "display": "Palästina",
+      "display": "Palestina",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1372,7 +1372,7 @@
     },
     {
       "short": "PG",
-      "display": "Papua-Neuguinea",
+      "display": "Papua Nova Guinea",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1380,7 +1380,7 @@
     },
     {
       "short": "PY",
-      "display": "Paraguay",
+      "display": "Paraguai",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1396,7 +1396,7 @@
     },
     {
       "short": "PH",
-      "display": "Philippinen",
+      "display": "Filippinas",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1404,7 +1404,7 @@
     },
     {
       "short": "PN",
-      "display": "Pitcairninseln",
+      "display": "Inslas Pitcairn",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1412,7 +1412,7 @@
     },
     {
       "short": "PL",
-      "display": "Polen",
+      "display": "Pologna",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1452,7 +1452,7 @@
     },
     {
       "short": "RO",
-      "display": "Rumänien",
+      "display": "Rumenia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1460,7 +1460,7 @@
     },
     {
       "short": "RU",
-      "display": "Russland",
+      "display": "Russia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1468,7 +1468,7 @@
     },
     {
       "short": "SB",
-      "display": "Salomonen",
+      "display": "Inslas Salomonas",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1484,7 +1484,7 @@
     },
     {
       "short": "MF",
-      "display": "Saint-Martin (französischer Teil)",
+      "display": "Saint-Martin",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1516,7 +1516,7 @@
     },
     {
       "short": "ST",
-      "display": "São Tomé und Príncipe",
+      "display": "Sao Tomé et Principe ",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1524,7 +1524,7 @@
     },
     {
       "short": "SA",
-      "display": "Saudi-Arabien",
+      "display": "Arabia Saudita",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1532,7 +1532,7 @@
     },
     {
       "short": "SE",
-      "display": "Schweden",
+      "display": "Svezia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1548,7 +1548,7 @@
     },
     {
       "short": "RS",
-      "display": "Serbien",
+      "display": "Serbia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1556,7 +1556,7 @@
     },
     {
       "short": "SC",
-      "display": "Seychellen",
+      "display": "Seychellas",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1596,7 +1596,7 @@
     },
     {
       "short": "SK",
-      "display": "Slowakei",
+      "display": "Slovachia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1604,7 +1604,7 @@
     },
     {
       "short": "SI",
-      "display": "Slowenien",
+      "display": "Slovenia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1620,7 +1620,7 @@
     },
     {
       "short": "ES",
-      "display": "Spanien",
+      "display": "Spagna",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1636,7 +1636,7 @@
     },
     {
       "short": "SH",
-      "display": "St. Helena Ascension und Tristan da Cunha",
+      "display": "Sontg'Elena Ascensiun e Tristan da Cunha",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1644,7 +1644,7 @@
     },
     {
       "short": "KN",
-      "display": "St. Kitts und Nevis",
+      "display": "Son Cristof e Nevis",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1652,7 +1652,7 @@
     },
     {
       "short": "LC",
-      "display": "St. Lucia",
+      "display": "Sontga Lucia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1660,7 +1660,7 @@
     },
     {
       "short": "PM",
-      "display": "Saint-Pierre und Miquelon",
+      "display": "Saint Pierre e Miquelon",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1668,7 +1668,7 @@
     },
     {
       "short": "VC",
-      "display": "St. Vincent und die Grenadinen",
+      "display": "Son Vincenz e las Grenadinas",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1676,7 +1676,7 @@
     },
     {
       "short": "ZA",
-      "display": "Südafrika",
+      "display": "Africa dal Sid",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1692,7 +1692,7 @@
     },
     {
       "short": "GS",
-      "display": "Südgeorgien und die Südlichen Sandwichinseln",
+      "display": "Georgia dal Sid ed Inslas Sandwich dal Sid",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1700,7 +1700,7 @@
     },
     {
       "short": "SS",
-      "display": "Südsudan",
+      "display": "Sudan dal Sid",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1708,7 +1708,7 @@
     },
     {
       "short": "SR",
-      "display": "Suriname",
+      "display": "Surinam",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1716,7 +1716,7 @@
     },
     {
       "short": "SJ",
-      "display": "Spitzbergen und Jan Mayen",
+      "display": "Svalbard e Jan Mayen",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1724,7 +1724,7 @@
     },
     {
       "short": "SY",
-      "display": "Syrien",
+      "display": "Siria",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1740,7 +1740,7 @@
     },
     {
       "short": "TW",
-      "display": "Republik China",
+      "display": "Taiwan",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1756,7 +1756,7 @@
     },
     {
       "short": "TH",
-      "display": "Thailand",
+      "display": "Tailanda",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1788,7 +1788,7 @@
     },
     {
       "short": "TT",
-      "display": "Trinidad und Tobago",
+      "display": "Trinidad e Tobago",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1804,7 +1804,7 @@
     },
     {
       "short": "CZ",
-      "display": "Tschechien",
+      "display": "Tschechia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1812,7 +1812,7 @@
     },
     {
       "short": "TN",
-      "display": "Tunesien",
+      "display": "Tunesia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1820,7 +1820,7 @@
     },
     {
       "short": "TR",
-      "display": "Türkei",
+      "display": "Tirchia",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1836,7 +1836,7 @@
     },
     {
       "short": "TC",
-      "display": "Turks- und Caicosinseln",
+      "display": "Inslas Turks e Caicos",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1860,7 +1860,7 @@
     },
     {
       "short": "UA",
-      "display": "Ukraine",
+      "display": "Ucraina",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1868,7 +1868,7 @@
     },
     {
       "short": "HU",
-      "display": "Ungarn",
+      "display": "Ungaria",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1884,7 +1884,7 @@
     },
     {
       "short": "UY",
-      "display": "Uruguay",
+      "display": "Uruguai",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1908,7 +1908,7 @@
     },
     {
       "short": "VA",
-      "display": "Vatikanstadt",
+      "display": "Citad dal Vatican",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1924,7 +1924,7 @@
     },
     {
       "short": "AE",
-      "display": "Vereinigte Arabische Emirate",
+      "display": "Emirats Arabs Unids",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1932,7 +1932,7 @@
     },
     {
       "short": "US",
-      "display": "Vereinigte Staaten",
+      "display": "Stadis Unids da l'America",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1940,7 +1940,7 @@
     },
     {
       "short": "GB",
-      "display": "Vereinigtes Königreich",
+      "display": "Reginavel Unì",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1956,7 +1956,7 @@
     },
     {
       "short": "WF",
-      "display": "Wallis und Futuna",
+      "display": "Wallis e Futuna",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1964,7 +1964,7 @@
     },
     {
       "short": "CX",
-      "display": "Weihnachtsinsel",
+      "display": "Insla da Nadal",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1972,7 +1972,7 @@
     },
     {
       "short": "EH",
-      "display": "Westsahara",
+      "display": "Sahara Occidentala",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1980,7 +1980,7 @@
     },
     {
       "short": "CF",
-      "display": "Zentral­afrikanische Republik",
+      "display": "Republica Centralafricana",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
@@ -1988,7 +1988,7 @@
     },
     {
       "short": "CY",
-      "display": "Zypern",
+      "display": "Cipra",
       "lang": "rm",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
