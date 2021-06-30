@@ -3,7 +3,10 @@ package ch.admin.bag.covidcertificate.api.request;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.util.StringUtils;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
@@ -30,7 +33,7 @@ public abstract class CertificateCreateDto {
     }
 
     public boolean sendToApp() {
-        return this.appCode != null;
+        return StringUtils.hasText(this.appCode);
     }
 
     public void validate() {
