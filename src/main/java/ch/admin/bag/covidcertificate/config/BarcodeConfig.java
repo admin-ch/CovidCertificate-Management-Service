@@ -12,7 +12,7 @@ public class BarcodeConfig {
 
     @Bean
     public DGCBarcodeEncoder getDGCBarcodeEncoder(DGCSigner dgcSigner) {
-        DefaultBarcodeCreator defaultBarcodeCreator = new DefaultBarcodeCreator();
+        var defaultBarcodeCreator = new DefaultBarcodeCreator();
         return new DefaultDGCBarcodeEncoder(dgcSigner, defaultBarcodeCreator);
     }
 }
