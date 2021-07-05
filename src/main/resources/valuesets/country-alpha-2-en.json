@@ -1,6 +1,6 @@
 {
   "valueSetId": "country-alpha-2-en",
-  "valueSetDate": "2021-06-24",
+  "valueSetDate": "2021-06-30",
   "valueSetValues": [
     {
       "short": "CH",
@@ -941,6 +941,14 @@
     {
       "short": "CU",
       "display": "Cuba",
+      "lang": "en",
+      "active": "true",
+      "version": "http://iso-3166-1_alpha-2/1",
+      "system": "http://iso-3166-1_alpha-2"
+    },
+    {
+      "short": "XK",
+      "display": "Kosovo",
       "lang": "en",
       "active": "true",
       "version": "http://iso-3166-1_alpha-2/1",
