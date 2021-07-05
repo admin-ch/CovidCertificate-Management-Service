@@ -25,7 +25,7 @@ public abstract class CertificateCreateDto {
         this.personData = personData;
         this.language = language;
         this.address = address;
-        this.appCode = appCode != null ? appCode.toUpperCase() : null;
+        this.appCode = StringUtils.hasText(appCode) ? appCode.toUpperCase() : null;
     }
 
     public boolean sendToPrint() {
@@ -33,7 +33,7 @@ public abstract class CertificateCreateDto {
     }
 
     public boolean sendToApp() {
-        return StringUtils.hasText(this.appCode);
+        return this.appCode != null;
     }
 
     public void validate() {
@@ -55,12 +55,8 @@ public abstract class CertificateCreateDto {
             if (this.address != null) {
                 this.address.validate();
             }
-            if (StringUtils.hasText(this.appCode)) {
-                var isAlphaNumeric = org.apache.commons.lang3.StringUtils.isAlphanumeric(this.appCode);
-                var isNineCharsLong = this.appCode.length() == 9;
-                if (!isAlphaNumeric || !isNineCharsLong) {
-                    throw new CreateCertificateException(INVALID_APP_CODE);
-                }
+            if (this.appCode != null && !org.apache.commons.lang3.StringUtils.isAlphanumeric(this.appCode)) {
+                throw new CreateCertificateException(INVALID_APP_CODE);
             }
         }
     }
