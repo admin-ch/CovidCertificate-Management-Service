@@ -158,10 +158,15 @@ public class CsvService {
         BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
         String line = reader.readLine();
         reader.close();
-        if (line.contains(",")) {
+        if (line.contains(",") && !line.contains("\t") && !line.contains(";")) {
             return ',';
+        } else if (line.contains("\t") && !line.contains(",") && !line.contains(";")) {
+            return '\t';
+        } else if (line.contains(";") && !line.contains(",") && !line.contains("\t")){
+            return ';';
+        } else {
+            throw new CreateCertificateException(INVALID_CSV);
         }
-        return ';';
     }
 
     private List<CertificateCreateDto> mapToCreateDtos(List<CertificateCsvBean> csvBeans) {
