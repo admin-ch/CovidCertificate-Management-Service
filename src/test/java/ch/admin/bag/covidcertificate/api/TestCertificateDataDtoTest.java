@@ -34,12 +34,21 @@ public class TestCertificateDataDtoTest {
         testee = new TestCertificateDataDto(
                 manufacturerCode,
                 typeCode,
-                ZonedDateTime.now().plusMinutes(5),
+                ZonedDateTime.now().plusDays(1),
                 testingCentreOrFacility,
                 memberStateOfTest
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_SAMPLE_OR_RESULT_DATE_TIME, exception.getError());
+
+        testee = new TestCertificateDataDto(
+                manufacturerCode,
+                typeCode,
+                ZonedDateTime.now().plusMinutes(5),
+                testingCentreOrFacility,
+                memberStateOfTest
+        );
+        assertDoesNotThrow(testee::validate);
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
