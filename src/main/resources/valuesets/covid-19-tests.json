@@ -1,7 +1,7 @@
 {
   "Id": "Covid 19 Tests",
-  "Date": "2021-06-30",
-  "Version": "1.0.5",
+  "Date": "2021-07-05",
+  "Version": "1.0.6",
   "entries": [
     {
       "name": "PCR",
@@ -675,7 +675,7 @@
       "active": true
     },
     {
-      "name": "SARS-CoV-2 Antigen Rapid Test",
+      "name": "SARS-CoV-2 Rapid Antigen Test",
       "type": "Rapid immunoassay",
       "type_code": "LP217198-3",
       "manufacturer": "Roche (SD BIOSENSOR)",
@@ -737,7 +737,7 @@
       "swiss_test_kit": "",
       "manufacturer_code_eu": "345",
       "eu_accepted": true,
-      "ch_accepted": true,
+      "ch_accepted": false,
       "active": true
     },
     {
