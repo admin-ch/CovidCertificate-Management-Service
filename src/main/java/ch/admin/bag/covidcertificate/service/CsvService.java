@@ -67,7 +67,7 @@ public class CsvService {
         }
     }
 
-    private byte[] handleCsvRequest(MultipartFile file, Class<?> csvBeanClass) throws IOException {
+    private byte[] handleCsvRequest(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass) throws IOException {
         List<CertificateCsvBean> csvBeans = mapToBean(file, csvBeanClass);
         checkSize(csvBeans);
         List<CertificateCreateDto> createDtos = mapToCreateDtos(csvBeans);
@@ -134,19 +134,37 @@ public class CsvService {
         return responseDtos;
     }
 
-    private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<?> csvBeanClass) throws IOException {
+    private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass) throws IOException {
+        char separator = getSeparator(file);
         String encoding = UniversalDetector.detectCharset(file.getInputStream());
         try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), Charset.forName(encoding)))) {
 
-            CsvToBean<CertificateCsvBean> csvToBean = new CsvToBeanBuilder(reader)
-                    .withSeparator(';')
+            CsvToBean<CertificateCsvBean> csvToBean = new CsvToBeanBuilder<CertificateCsvBean>(reader)
+                    .withSeparator(separator)
                     .withType(csvBeanClass)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
 
-            return csvToBean.parse();
+            List<CertificateCsvBean> beans = csvToBean.parse();
+            reader.close();
+            return beans;
 
         } catch (Exception ex) {
+            throw new CreateCertificateException(INVALID_CSV);
+        }
+    }
+
+    private char getSeparator(MultipartFile file) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+        String line = reader.readLine();
+        reader.close();
+        if (line.contains(",") && !line.contains("\t") && !line.contains(";")) {
+            return ',';
+        } else if (line.contains("\t") && !line.contains(",") && !line.contains(";")) {
+            return '\t';
+        } else if (line.contains(";") && !line.contains(",") && !line.contains("\t")){
+            return ';';
+        } else {
             throw new CreateCertificateException(INVALID_CSV);
         }
     }

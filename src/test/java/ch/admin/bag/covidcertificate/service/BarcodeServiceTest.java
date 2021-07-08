@@ -7,10 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.digg.dgc.encoding.Barcode;
+import se.digg.dgc.encoding.BarcodeException;
+import se.digg.dgc.encoding.impl.DefaultBarcodeCreator;
 import se.digg.dgc.service.DGCBarcodeEncoder;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
 import static ch.admin.bag.covidcertificate.api.Constants.CREATE_BARCODE_FAILED;
@@ -62,12 +63,8 @@ class BarcodeServiceTest {
         assertEquals(CREATE_BARCODE_FAILED, exception.getError());
     }
 
-    private Barcode getBarcode() {
-        return new Barcode(Barcode.BarcodeType.AZTEC,
-                "Hello world.".getBytes(StandardCharsets.UTF_8),
-                Barcode.ImageFormat.PNG,
-                300,
-                300,
-                "Hello world.");
+    private Barcode getBarcode() throws BarcodeException {
+        var barcodeCreator = new DefaultBarcodeCreator();
+        return barcodeCreator.create("Hello world");
     }
 }

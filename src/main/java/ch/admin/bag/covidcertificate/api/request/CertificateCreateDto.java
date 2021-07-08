@@ -3,7 +3,10 @@ package ch.admin.bag.covidcertificate.api.request;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.util.StringUtils;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
@@ -22,7 +25,7 @@ public abstract class CertificateCreateDto {
         this.personData = personData;
         this.language = language;
         this.address = address;
-        this.appCode = appCode != null ? appCode.toUpperCase() : null;
+        this.appCode = StringUtils.hasText(appCode) ? appCode.toUpperCase() : null;
     }
 
     public boolean sendToPrint() {
@@ -52,12 +55,8 @@ public abstract class CertificateCreateDto {
             if (this.address != null) {
                 this.address.validate();
             }
-            if (StringUtils.hasText(this.appCode)) {
-                var isAlphaNumeric = org.apache.commons.lang3.StringUtils.isAlphanumeric(this.appCode);
-                var isNineCharsLong = this.appCode.length() == 9;
-                if (!isAlphaNumeric || !isNineCharsLong) {
-                    throw new CreateCertificateException(INVALID_APP_CODE);
-                }
+            if (this.appCode != null && !org.apache.commons.lang3.StringUtils.isAlphanumeric(this.appCode)) {
+                throw new CreateCertificateException(INVALID_APP_CODE);
             }
         }
     }

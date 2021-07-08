@@ -19,11 +19,11 @@ public class SecurityHelper {
     public boolean authorizeUser(HttpServletRequest request) {
         // A request to the OAuth2 protected resource includes the access token in the 'Authorization' header.
         // This token is the base of the Spring Security Authentication associated with the authenticated request.
-        log.debug("Access token: {}.", request.getHeader("Authorization"));
+        log.trace("Access token: {}.", request.getHeader("Authorization"));
 
         // Access the Spring Security Authentication as JeapAuthenticationToken
         JeapAuthenticationToken jeapAuthenticationToken = jeapAuthorization.getJeapAuthenticationToken();
-        log.debug(jeapAuthenticationToken.toString());
+        log.trace(jeapAuthenticationToken.toString());
 
         String displayName = jeapAuthenticationToken.getToken().getClaimAsString("displayName");
 
