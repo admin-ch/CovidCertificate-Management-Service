@@ -42,6 +42,30 @@ public class CovidCertificateGenerationService {
     private final CovidCertificateDtoMapperService covidCertificateDtoMapperService;
     private final CovidCertificatePdfGenerateRequestDtoMapperService covidCertificatePdfGenerateRequestDtoMapperService;
 
+    public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto) throws BarcodeException {
+        VaccinationCertificatePdf pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationCertificatePdf(pdfGenerateRequestDto);
+        var issuedAtInstant = Instant.ofEpochMilli(pdfGenerateRequestDto.getIssuedAt());
+        var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
+        var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, pdfGenerateRequestDto.getHcert(), ZonedDateTime.from(issuedAtInstant.atZone(ZoneOffset.systemDefault())).toLocalDateTime());
+        return new CovidCertificateCreateResponseDto(pdf, barcode.getImage(), pdfGenerateRequestDto.getDecodedCert().getVaccinationInfo().get(0).getIdentifier());
+    }
+
+    public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) throws BarcodeException {
+        TestCertificatePdf pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toTestCertificatePdf(pdfGenerateRequestDto);
+        var issuedAtInstant = Instant.ofEpochMilli(pdfGenerateRequestDto.getIssuedAt());
+        var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
+        var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, pdfGenerateRequestDto.getHcert(), ZonedDateTime.from(issuedAtInstant.atZone(ZoneOffset.systemDefault())).toLocalDateTime());
+        return new CovidCertificateCreateResponseDto(pdf, barcode.getImage(), pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getIdentifier());
+    }
+
+    public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(RecoveryCertificatePdfGenerateRequestDto pdfGenerateRequestDto) throws BarcodeException {
+        RecoveryCertificatePdf pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toRecoveryCertificatePdf(pdfGenerateRequestDto);
+        var issuedAtInstant = Instant.ofEpochMilli(pdfGenerateRequestDto.getIssuedAt());
+        var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
+        var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, pdfGenerateRequestDto.getHcert(), ZonedDateTime.from(issuedAtInstant.atZone(ZoneOffset.systemDefault())).toLocalDateTime());
+        return new CovidCertificateCreateResponseDto(pdf, barcode.getImage(), pdfGenerateRequestDto.getDecodedCert().getRecoveryInfo().get(0).getIdentifier());
+    }
+
     public CovidCertificateCreateResponseDto generateCovidCertificate(VaccinationCertificateCreateDto createDto) throws JsonProcessingException {
         VaccinationCertificateQrCode qrCodeData = covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto);
         VaccinationCertificatePdf pdfData = covidCertificateDtoMapperService.toVaccinationCertificatePdf(createDto, qrCodeData);

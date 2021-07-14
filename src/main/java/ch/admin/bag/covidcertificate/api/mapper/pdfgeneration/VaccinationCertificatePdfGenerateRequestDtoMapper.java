@@ -18,7 +18,7 @@ public class VaccinationCertificatePdfGenerateRequestDtoMapper {
             String countryOfVaccinationDisplay,
             String countryOfVaccinationDisplayEn
     ) {
-        CovidCertificateDiseaseOrAgentTargeted diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
+        var diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
         return new VaccinationCertificatePdf(
                 vaccinationCertificateCreateDto.getDecodedCert().getPersonData().getName().getFamilyName(),
                 vaccinationCertificateCreateDto.getDecodedCert().getPersonData().getName().getGivenName(),

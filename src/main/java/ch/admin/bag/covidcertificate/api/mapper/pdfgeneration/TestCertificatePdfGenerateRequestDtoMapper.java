@@ -19,7 +19,7 @@ public class TestCertificatePdfGenerateRequestDtoMapper {
             String memberStateOfTest,
             String memberStateOfTestEn
     ) {
-        CovidCertificateDiseaseOrAgentTargeted diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
+        var diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
         return new TestCertificatePdf(
                 testCertificateCreateDto.getDecodedCert().getPersonData().getName().getFamilyName(),
                 testCertificateCreateDto.getDecodedCert().getPersonData().getName().getGivenName(),
