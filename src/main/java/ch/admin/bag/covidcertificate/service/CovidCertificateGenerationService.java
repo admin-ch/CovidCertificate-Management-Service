@@ -43,7 +43,7 @@ public class CovidCertificateGenerationService {
     private final CovidCertificatePdfGenerateRequestDtoMapperService covidCertificatePdfGenerateRequestDtoMapperService;
 
     public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto) throws BarcodeException {
-        VaccinationCertificatePdf pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationCertificatePdf(pdfGenerateRequestDto);
+        var pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationCertificatePdf(pdfGenerateRequestDto);
         var issuedAtInstant = Instant.ofEpochMilli(pdfGenerateRequestDto.getIssuedAt());
         var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
         var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, pdfGenerateRequestDto.getHcert(), ZonedDateTime.from(issuedAtInstant.atZone(ZoneOffset.systemDefault())).toLocalDateTime());
@@ -51,7 +51,7 @@ public class CovidCertificateGenerationService {
     }
 
     public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) throws BarcodeException {
-        TestCertificatePdf pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toTestCertificatePdf(pdfGenerateRequestDto);
+        var pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toTestCertificatePdf(pdfGenerateRequestDto);
         var issuedAtInstant = Instant.ofEpochMilli(pdfGenerateRequestDto.getIssuedAt());
         var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
         var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, pdfGenerateRequestDto.getHcert(), ZonedDateTime.from(issuedAtInstant.atZone(ZoneOffset.systemDefault())).toLocalDateTime());
@@ -59,7 +59,7 @@ public class CovidCertificateGenerationService {
     }
 
     public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(RecoveryCertificatePdfGenerateRequestDto pdfGenerateRequestDto) throws BarcodeException {
-        RecoveryCertificatePdf pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toRecoveryCertificatePdf(pdfGenerateRequestDto);
+        var pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toRecoveryCertificatePdf(pdfGenerateRequestDto);
         var issuedAtInstant = Instant.ofEpochMilli(pdfGenerateRequestDto.getIssuedAt());
         var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
         var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, pdfGenerateRequestDto.getHcert(), ZonedDateTime.from(issuedAtInstant.atZone(ZoneOffset.systemDefault())).toLocalDateTime());
@@ -67,31 +67,31 @@ public class CovidCertificateGenerationService {
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(VaccinationCertificateCreateDto createDto) throws JsonProcessingException {
-        VaccinationCertificateQrCode qrCodeData = covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto);
-        VaccinationCertificatePdf pdfData = covidCertificateDtoMapperService.toVaccinationCertificatePdf(createDto, qrCodeData);
+        var qrCodeData = covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto);
+        var pdfData = covidCertificateDtoMapperService.toVaccinationCertificatePdf(createDto, qrCodeData);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationInfo().get(0).getIdentifier(), createDto);
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(TestCertificateCreateDto createDto) throws JsonProcessingException {
-        TestCertificateQrCode qrCodeData = covidCertificateDtoMapperService.toTestCertificateQrCode(createDto);
-        TestCertificatePdf pdfData = covidCertificateDtoMapperService.toTestCertificatePdf(createDto, qrCodeData);
+        var qrCodeData = covidCertificateDtoMapperService.toTestCertificateQrCode(createDto);
+        var pdfData = covidCertificateDtoMapperService.toTestCertificatePdf(createDto, qrCodeData);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getTestInfo().get(0).getIdentifier(), createDto);
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(RecoveryCertificateCreateDto createDto) throws JsonProcessingException {
-        RecoveryCertificateQrCode qrCodeData = covidCertificateDtoMapperService.toRecoveryCertificateQrCode(createDto);
-        RecoveryCertificatePdf pdfData = covidCertificateDtoMapperService.toRecoveryCertificatePdf(createDto, qrCodeData);
+        var qrCodeData = covidCertificateDtoMapperService.toRecoveryCertificateQrCode(createDto);
+        var pdfData = covidCertificateDtoMapperService.toRecoveryCertificatePdf(createDto, qrCodeData);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getRecoveryInfo().get(0).getIdentifier(), createDto);
     }
 
     private CovidCertificateCreateResponseDto generateCovidCertificate(AbstractCertificateQrCode qrCodeData, AbstractCertificatePdf pdfData, String uvci, CertificateCreateDto createDto) throws JsonProcessingException {
-        String contents = objectMapper.writer().writeValueAsString(qrCodeData);
+        var contents = objectMapper.writer().writeValueAsString(qrCodeData);
         log.info("Create barcode");
-        Barcode code = barcodeService.createBarcode(contents);
+        var code = barcodeService.createBarcode(contents);
         log.info("Create certificate pdf");
-        byte[] pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
+        var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
 
-        CovidCertificateCreateResponseDto responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
+        var responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         if (createDto.sendToPrint()) {
             printQueueClient.sendPrintJob(CertificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
         } else if (createDto.sendToApp()) {
