@@ -3,6 +3,9 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import se.digg.dgc.encoding.BarcodeException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -74,6 +78,26 @@ public class CovidCertificateGenerationController {
         return responseDto;
     }
 
+    @PostMapping("/fromexisting/vaccination")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CovidCertificateCreateResponseDto generateVaccinationPdfFromExistingCertificate(@Valid @RequestBody VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto, HttpServletRequest request) throws BarcodeException {
+        log.info("Call of Create for vaccination certificate");
+        return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+    }
+
+    @PostMapping("/fromexisting/test")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CovidCertificateCreateResponseDto generateTestPdfFromExistingCertificate(@Valid @RequestBody TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto, HttpServletRequest request) throws BarcodeException {
+        log.info("Call of Create for test certificate");
+        return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+    }
+
+    @PostMapping("/fromexisting/recovery")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CovidCertificateCreateResponseDto generateRecoveryPdfFromExistingCertificate(@Valid @RequestBody RecoveryCertificatePdfGenerateRequestDto pdfGenerateRequestDto, HttpServletRequest request) throws BarcodeException {
+        log.info("Call of Create for recovery certificate");
+        return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+    }
     private void logKpi(String type) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -25,7 +26,9 @@ public class TestCertificatePdf extends AbstractCertificatePdf {
     private final String issuer;
 
     public TestCertificatePdf(
-            CovidCertificatePersonDto personDto,
+            String familyName,
+            String givenName,
+            LocalDate dateOfBirth,
             String language,
             String diseaseOrAgentTargetedCode,
             String diseaseOrAgentTargetedSystem,
@@ -40,7 +43,7 @@ public class TestCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(personDto.getName().getFamilyName(), personDto.getName().getGivenName(), personDto.getDateOfBirth(), identifier, language);
+        super(familyName, givenName, dateOfBirth, identifier, language);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.typeOfTest = typeOfTest;

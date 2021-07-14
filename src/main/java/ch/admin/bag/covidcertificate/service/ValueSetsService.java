@@ -39,6 +39,26 @@ public class ValueSetsService {
         return vaccinationValueSet;
     }
 
+    public TestValueSet getTestValueSet(String testTypeCode, String manufacturerCode) {
+        if(!validPCRTest(testTypeCode, manufacturerCode) && !validNonPCRTest(testTypeCode, manufacturerCode)){
+            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
+        }
+
+        TestValueSet testValueSet = getValueSets()
+                .getTestSets()
+                .stream()
+                .filter(valueSet ->
+                        (validPCRTest(testTypeCode, manufacturerCode) && valueSet.getTypeCode().equals(PCR_TYPE_CODE)) ||
+                                (validNonPCRTest(testTypeCode, manufacturerCode) && valueSet.getManufacturerCodeEu().equals(manufacturerCode)))
+                .findFirst()
+                .orElse(null);
+
+        if (testValueSet == null) {
+            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
+        }
+        return testValueSet;
+    }
+
     public TestValueSet getTestValueSet(TestCertificateDataDto testCertificateDataDto) {
         if(!validPCRTest(testCertificateDataDto) && !validNonPCRTest(testCertificateDataDto)){
             throw new CreateCertificateException(INVALID_TYP_OF_TEST);
@@ -57,6 +77,16 @@ public class ValueSetsService {
             throw new CreateCertificateException(INVALID_TYP_OF_TEST);
         }
         return testValueSet;
+    }
+
+    private boolean validPCRTest(String testTypeCode, String manufacturerCode){
+        return Objects.equals(testTypeCode, PCR_TYPE_CODE) && !StringUtils.hasText(manufacturerCode);
+    }
+
+    private boolean validNonPCRTest(String testTypeCode, String manufacturerCode){
+        return (Objects.equals(testTypeCode, NONE_PCR_TYPE_CODE)
+                || !StringUtils.hasText(testTypeCode))
+                && StringUtils.hasText(manufacturerCode);
     }
 
     private boolean validPCRTest(TestCertificateDataDto testCertificateDataDto){

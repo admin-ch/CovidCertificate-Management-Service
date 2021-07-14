@@ -25,7 +25,9 @@ public class VaccinationCertificatePdf extends AbstractCertificatePdf {
     private final String issuer;
 
     public VaccinationCertificatePdf(
-            CovidCertificatePersonDto personDto,
+            String familyName,
+            String givenName,
+            LocalDate dateOfBirth,
             String language,
             String diseaseOrAgentTargetedCode,
             String diseaseOrAgentTargetedSystem,
@@ -40,7 +42,7 @@ public class VaccinationCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(personDto.getName().getFamilyName(), personDto.getName().getGivenName(), personDto.getDateOfBirth(), identifier, language);
+        super(familyName, givenName, dateOfBirth, identifier, language);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.vaccineProphylaxis = vaccineProphylaxis;
