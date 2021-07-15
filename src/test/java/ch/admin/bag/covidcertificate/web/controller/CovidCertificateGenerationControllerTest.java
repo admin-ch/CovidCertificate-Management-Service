@@ -4,6 +4,9 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
@@ -290,6 +293,117 @@ class CovidCertificateGenerationControllerTest {
                     .header("Authorization", fixture.create(String.class))
                     .content(mapper.writeValueAsString(createDto)))
                     .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+        }
+    }
+
+    @Nested
+    class GenerateVaccinationPdfFromExistingCertificate {
+        private static final String URL = BASE_URL + "fromexisting/vaccination";
+
+        @Test
+        void returnsCertificateWithOkStatus() throws Exception {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
+            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(any(VaccinationCertificatePdfGenerateRequestDto.class))).thenReturn(responseDto);
+
+            MvcResult result = mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(pdfGenerateRequestDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            CovidCertificateCreateResponseDto expectedDto = mapper.readValue(result.getResponse().getContentAsString(), CovidCertificateCreateResponseDto.class);
+            assertEquals(responseDto, expectedDto);
+        }
+
+        @Test
+        void returnsStatusCodeOfCreateCertificateException_ifOneWasThrown() throws Exception {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            var exception = fixture.create(CreateCertificateException.class);
+            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(any(VaccinationCertificatePdfGenerateRequestDto.class))).thenThrow(exception);
+
+            mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(pdfGenerateRequestDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
+        }
+    }
+
+    @Nested
+    class GenerateTestPdfFromExistingCertificate {
+        private static final String URL = BASE_URL + "fromexisting/test";
+
+        @Test
+        void returnsCertificateWithOkStatus() throws Exception {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
+            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(any(TestCertificatePdfGenerateRequestDto.class))).thenReturn(responseDto);
+
+            MvcResult result = mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(pdfGenerateRequestDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            CovidCertificateCreateResponseDto expectedDto = mapper.readValue(result.getResponse().getContentAsString(), CovidCertificateCreateResponseDto.class);
+            assertEquals(responseDto, expectedDto);
+        }
+
+        @Test
+        void returnsStatusCodeOfCreateCertificateException_ifOneWasThrown() throws Exception {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            var exception = fixture.create(CreateCertificateException.class);
+            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(any(TestCertificatePdfGenerateRequestDto.class))).thenThrow(exception);
+
+            mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(pdfGenerateRequestDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
+        }
+    }
+
+    @Nested
+    class GenerateRecoveryPdfFromExistingCertificate {
+        private static final String URL = BASE_URL + "fromexisting/recovery";
+
+        @Test
+        void returnsCertificateWithOkStatus() throws Exception {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
+            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(any(RecoveryCertificatePdfGenerateRequestDto.class))).thenReturn(responseDto);
+
+            MvcResult result = mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(pdfGenerateRequestDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            CovidCertificateCreateResponseDto expectedDto = mapper.readValue(result.getResponse().getContentAsString(), CovidCertificateCreateResponseDto.class);
+            assertEquals(responseDto, expectedDto);
+        }
+
+        @Test
+        void returnsStatusCodeOfCreateCertificateException_ifOneWasThrown() throws Exception {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            var exception = fixture.create(CreateCertificateException.class);
+            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(any(RecoveryCertificatePdfGenerateRequestDto.class))).thenThrow(exception);
+
+            mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", fixture.create(String.class))
+                    .content(mapper.writeValueAsString(pdfGenerateRequestDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
     }
 }
