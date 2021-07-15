@@ -22,14 +22,14 @@ public class CovidCertificateDtoMapperService {
     private final ValueSetsService valueSetsService;
 
     public VaccinationCertificateQrCode toVaccinationCertificateQrCode(VaccinationCertificateCreateDto createDto) {
-        VaccinationValueSet vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
         return  VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccinationValueSet);
     }
 
     public VaccinationCertificatePdf toVaccinationCertificatePdf(VaccinationCertificateCreateDto createDto, VaccinationCertificateQrCode qrCodeData){
-        VaccinationValueSet vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
-        CountryCode countryCode = valueSetsService.getCountryCode(createDto.getVaccinationInfo().get(0).getCountryOfVaccination(), createDto.getLanguage());
-        CountryCode countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
+        var countryCode = valueSetsService.getCountryCode(createDto.getVaccinationInfo().get(0).getCountryOfVaccination(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
         }
@@ -37,15 +37,15 @@ public class CovidCertificateDtoMapperService {
     }
 
     public TestCertificateQrCode toTestCertificateQrCode(TestCertificateCreateDto createDto) {
-        TestValueSet testValueSet = valueSetsService.getTestValueSet(createDto.getTestInfo().get(0));
+        var testValueSet = valueSetsService.getTestValueSet(createDto.getTestInfo().get(0));
         return TestCertificateQrCodeMapper.toTestCertificateQrCode(createDto, testValueSet);
 
     }
 
     public TestCertificatePdf toTestCertificatePdf(TestCertificateCreateDto createDto, TestCertificateQrCode qrCodeData) {
-        TestValueSet testValueSet = valueSetsService.getTestValueSet(createDto.getTestInfo().get(0));
-        CountryCode countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
-        CountryCode countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
+        var testValueSet = valueSetsService.getTestValueSet(createDto.getTestInfo().get(0));
+        var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
         }
@@ -58,8 +58,8 @@ public class CovidCertificateDtoMapperService {
     }
 
     public RecoveryCertificatePdf toRecoveryCertificatePdf(RecoveryCertificateCreateDto createDto, RecoveryCertificateQrCode qrCodeData) {
-        CountryCode countryCode = valueSetsService.getCountryCode(createDto.getRecoveryInfo().get(0).getCountryOfTest(), createDto.getLanguage());
-        CountryCode countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getRecoveryInfo().get(0).getCountryOfTest());
+        var countryCode = valueSetsService.getCountryCode(createDto.getRecoveryInfo().get(0).getCountryOfTest(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getRecoveryInfo().get(0).getCountryOfTest());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
         }

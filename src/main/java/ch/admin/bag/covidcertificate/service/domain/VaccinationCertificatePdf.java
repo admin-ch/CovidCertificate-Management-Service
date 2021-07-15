@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
-import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -9,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class VaccinationCertificatePdf extends AbstractCertificatePdf {
     private final String diseaseOrAgentTargetedCode;
     private final String diseaseOrAgentTargetedSystem;

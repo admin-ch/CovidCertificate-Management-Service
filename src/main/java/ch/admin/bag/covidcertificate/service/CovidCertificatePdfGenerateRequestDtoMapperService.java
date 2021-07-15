@@ -25,34 +25,34 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 public class CovidCertificatePdfGenerateRequestDtoMapperService {
     private final ValueSetsService valueSetsService;
 
-    public VaccinationCertificatePdf toVaccinationCertificatePdf(VaccinationCertificatePdfGenerateRequestDto createDto){
-        VaccinationValueSet vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getDecodedCert().getVaccinationInfo().get(0).getMedicinalProduct());
-        CountryCode countryCode = valueSetsService.getCountryCode(createDto.getDecodedCert().getVaccinationInfo().get(0).getCountryOfVaccination(), createDto.getLanguage());
-        CountryCode countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getDecodedCert().getVaccinationInfo().get(0).getCountryOfVaccination());
+    public VaccinationCertificatePdf toVaccinationCertificatePdf(VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto){
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(pdfGenerateRequestDto.getDecodedCert().getVaccinationInfo().get(0).getMedicinalProduct());
+        var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getVaccinationInfo().get(0).getCountryOfVaccination(), pdfGenerateRequestDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(pdfGenerateRequestDto.getDecodedCert().getVaccinationInfo().get(0).getCountryOfVaccination());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
         }
-        return VaccinationCertificatePdfGenerateRequestDtoMapper.toVaccinationCertificatePdf(createDto, vaccinationValueSet, countryCode.getDisplay(), countryCodeEn.getDisplay());
+        return VaccinationCertificatePdfGenerateRequestDtoMapper.toVaccinationCertificatePdf(pdfGenerateRequestDto, vaccinationValueSet, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
-    public TestCertificatePdf toTestCertificatePdf(TestCertificatePdfGenerateRequestDto createDto) {
-        TestValueSet testValueSet = valueSetsService.getTestValueSet(createDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest(), createDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer());
-        CountryCode countryCode = valueSetsService.getCountryCode(createDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
-        CountryCode countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest());
+    public TestCertificatePdf toTestCertificatePdf(TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
+        var testValueSet = valueSetsService.getTestValueSet(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest(), pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer());
+        var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest(), pdfGenerateRequestDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
         }
 
-        return TestCertificatePdfGenerateRequestDtoMapper.toTestCertificatePdf(createDto, testValueSet, countryCode.getDisplay(), countryCodeEn.getDisplay());
+        return TestCertificatePdfGenerateRequestDtoMapper.toTestCertificatePdf(pdfGenerateRequestDto, testValueSet, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
-    public RecoveryCertificatePdf toRecoveryCertificatePdf(RecoveryCertificatePdfGenerateRequestDto createDto) {
-        CountryCode countryCode = valueSetsService.getCountryCode(createDto.getDecodedCert().getRecoveryInfo().get(0).getCountryOfTest(), createDto.getLanguage());
-        CountryCode countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getDecodedCert().getRecoveryInfo().get(0).getCountryOfTest());
+    public RecoveryCertificatePdf toRecoveryCertificatePdf(RecoveryCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
+        var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getRecoveryInfo().get(0).getCountryOfTest(), pdfGenerateRequestDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(pdfGenerateRequestDto.getDecodedCert().getRecoveryInfo().get(0).getCountryOfTest());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
         }
 
-        return RecoveryCertificatePdfGenerateRequestDtoMapper.toRecoveryCertificatePdf(createDto, countryCode.getDisplay(), countryCodeEn.getDisplay());
+        return RecoveryCertificatePdfGenerateRequestDtoMapper.toRecoveryCertificatePdf(pdfGenerateRequestDto, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 }
