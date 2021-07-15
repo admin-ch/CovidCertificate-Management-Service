@@ -1,8 +1,10 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.parsing.StringNotEmptyToUppercaseElseNullDeserializer;
 import ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ public abstract class CertificateCreateDto {
     private CovidCertificatePersonDto personData;
     private String language;
     private CovidCertificateAddressDto address;
+    @JsonDeserialize(using = StringNotEmptyToUppercaseElseNullDeserializer.class)
     private String appCode;
 
     public CertificateCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String appCode) {
@@ -61,3 +64,4 @@ public abstract class CertificateCreateDto {
         }
     }
 }
+

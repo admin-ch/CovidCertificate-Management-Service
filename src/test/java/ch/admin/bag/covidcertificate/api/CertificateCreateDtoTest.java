@@ -116,8 +116,8 @@ public class CertificateCreateDtoTest {
     @Test
     public void throwsException__ifInvalidInAppDeliveryCode() {
         // test not alphanumeric
-        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.random(9));
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
+        var testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.random(9));
+        var exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_APP_CODE, exception.getError());
     }
 
