@@ -5,9 +5,6 @@ import ch.admin.bag.covidcertificate.api.mapper.*;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
 import ch.admin.bag.covidcertificate.service.domain.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,13 +34,13 @@ public class CovidCertificateDtoMapperService {
     }
 
     public TestCertificateQrCode toTestCertificateQrCode(TestCertificateCreateDto createDto) {
-        var testValueSet = valueSetsService.getTestValueSet(createDto.getTestInfo().get(0));
+        var testValueSet = valueSetsService.getChAcceptedTestValueSet(createDto.getTestInfo().get(0));
         return TestCertificateQrCodeMapper.toTestCertificateQrCode(createDto, testValueSet);
 
     }
 
     public TestCertificatePdf toTestCertificatePdf(TestCertificateCreateDto createDto, TestCertificateQrCode qrCodeData) {
-        var testValueSet = valueSetsService.getTestValueSet(createDto.getTestInfo().get(0));
+        var testValueSet = valueSetsService.getChAcceptedTestValueSet(createDto.getTestInfo().get(0));
         var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {

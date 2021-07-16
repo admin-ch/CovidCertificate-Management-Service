@@ -7,9 +7,6 @@ import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.VaccinationCertifi
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
@@ -36,7 +33,7 @@ public class CovidCertificatePdfGenerateRequestDtoMapperService {
     }
 
     public TestCertificatePdf toTestCertificatePdf(TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-        var testValueSet = valueSetsService.getTestValueSet(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest(), pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer());
+        var testValueSet = valueSetsService.getAllTestValueSet(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest(), pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer());
         var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest(), pdfGenerateRequestDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {

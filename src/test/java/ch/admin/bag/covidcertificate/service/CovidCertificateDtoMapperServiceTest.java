@@ -44,7 +44,7 @@ class CovidCertificateDtoMapperServiceTest {
     public void setUp() {
         customizeTestValueSet(fixture);
         lenient().when(valueSetsService.getVaccinationValueSet(any())).thenReturn(fixture.create(VaccinationValueSet.class));
-        lenient().when(valueSetsService.getTestValueSet(any())).thenReturn(fixture.create(TestValueSet.class));
+        lenient().when(valueSetsService.getChAcceptedTestValueSet(any())).thenReturn(fixture.create(TestValueSet.class));
         lenient().when(valueSetsService.getCountryCode(any(), any())).thenReturn(fixture.create(CountryCode.class));
         lenient().when(valueSetsService.getCountryCodeEn(any())).thenReturn(fixture.create(CountryCode.class));
     }
@@ -285,14 +285,14 @@ class CovidCertificateDtoMapperServiceTest {
         void shouldLoadTestValueSet() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             service.toTestCertificateQrCode(createDto);
-            verify(valueSetsService).getTestValueSet(createDto.getTestInfo().get(0));
+            verify(valueSetsService).getChAcceptedTestValueSet(createDto.getTestInfo().get(0));
         }
 
         @Test
         void throwsCreateCertificateException_ifValueSetServiceThrowsCreateCertificateException() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var expected = fixture.create(CreateCertificateException.class);
-            lenient().when(valueSetsService.getTestValueSet(any())).thenThrow(expected);
+            lenient().when(valueSetsService.getChAcceptedTestValueSet(any())).thenThrow(expected);
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
                     () -> service.toTestCertificateQrCode(createDto)
@@ -320,7 +320,7 @@ class CovidCertificateDtoMapperServiceTest {
         @Test
         void shouldMapToTestCertificateQrCode_withCorrectTestValueSet(){
             var vaccinationValueSet = fixture.create(TestValueSet.class);
-            when(valueSetsService.getTestValueSet(any())).thenReturn(vaccinationValueSet);
+            when(valueSetsService.getChAcceptedTestValueSet(any())).thenReturn(vaccinationValueSet);
             try (MockedStatic<TestCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(TestCertificateQrCodeMapper.class)) {
                 vaccinationCertificateQrMapperMock
@@ -355,7 +355,7 @@ class CovidCertificateDtoMapperServiceTest {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             service.toTestCertificatePdf(createDto, qrCodeData);
-            verify(valueSetsService).getTestValueSet(createDto.getTestInfo().get(0));
+            verify(valueSetsService).getChAcceptedTestValueSet(createDto.getTestInfo().get(0));
         }
 
         @Test
@@ -379,7 +379,7 @@ class CovidCertificateDtoMapperServiceTest {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             var expected = fixture.create(CreateCertificateException.class);
-            lenient().when(valueSetsService.getTestValueSet(any())).thenThrow(expected);
+            lenient().when(valueSetsService.getChAcceptedTestValueSet(any())).thenThrow(expected);
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
                     () -> service.toTestCertificatePdf(createDto, qrCodeData)
@@ -433,7 +433,7 @@ class CovidCertificateDtoMapperServiceTest {
         @Test
         void shouldMapToTestCertificatePdf_withCorrectTestValueSet(){
             var testValueSet = fixture.create(TestValueSet.class);
-            when(valueSetsService.getTestValueSet(any())).thenReturn(testValueSet);
+            when(valueSetsService.getChAcceptedTestValueSet(any())).thenReturn(testValueSet);
             try (MockedStatic<TestCertificatePdfMapper> testCertificatePdfMapperMock =
                          Mockito.mockStatic(TestCertificatePdfMapper.class)) {
                 testCertificatePdfMapperMock

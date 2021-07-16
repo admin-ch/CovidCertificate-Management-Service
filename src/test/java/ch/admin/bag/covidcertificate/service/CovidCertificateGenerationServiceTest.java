@@ -1,6 +1,9 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.service.document.CovidPdfCertificateGenerationService;
@@ -20,9 +23,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.digg.dgc.encoding.Barcode;
+import se.digg.dgc.encoding.BarcodeException;
+import se.digg.dgc.encoding.impl.DefaultBarcodeCreator;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.TestModelProvider.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,6 +50,8 @@ class CovidCertificateGenerationServiceTest {
     private CovidPdfCertificateGenerationService covidPdfCertificateGenerationService;
     @Mock
     private CovidCertificateDtoMapperService covidCertificateDtoMapperService;
+    @Mock
+    private CovidCertificatePdfGenerateRequestDtoMapperService covidCertificatePdfGenerateRequestDtoMapperService;
     @Mock
     private ObjectMapper objectMapper;
     @Mock
@@ -67,6 +78,255 @@ class CovidCertificateGenerationServiceTest {
         lenient().when(objectWriter.writeValueAsString(any())).thenReturn(fixture.create(String.class));
     }
 
+    @Nested
+    class GenerateVaccinationFromExistingCovidCertificate {
+        @Test
+        void shouldMapDtoToVaccinationCertificatePdf() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+            verify(covidCertificatePdfGenerateRequestDtoMapperService).toVaccinationCertificatePdf(pdfGenerateRequestDto);
+        }
+
+        @Test
+        void throwsCreateCertificateException_ifMapDtoToVaccinationCertificatePdfThrowsCreateCertificateException() {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            var expected = fixture.create(CreateCertificateException.class);
+            when(covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationCertificatePdf(any())).thenThrow(expected);
+
+            CreateCertificateException exception = assertThrows(CreateCertificateException.class,
+                    () -> service.generateFromExistingCovidCertificate(pdfGenerateRequestDto)
+            );
+
+            assertEquals(expected.getError(), exception.getError());
+        }
+
+        @Test
+        void shouldCreatePdf_withCorrectPdfData() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            var vaccinationPdf = fixture.create(VaccinationCertificatePdf.class);
+            when(covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationCertificatePdf(any())).thenReturn(vaccinationPdf);
+
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            verify(covidPdfCertificateGenerationService).generateCovidCertificate(eq(vaccinationPdf), any(), any());
+        }
+
+        @Test
+        void shouldCreatePdf_withCorrectBarcode() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
+
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            verify(covidPdfCertificateGenerationService).generateCovidCertificate(any(), eq(barcode.getPayload()), any());
+        }
+
+        @Test
+        void shouldCreatePdf_withCorrectIssuedAt() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            var issuedAt = getLocalDateTimeFromEpochMillis(pdfGenerateRequestDto.getIssuedAt());
+
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            verify(covidPdfCertificateGenerationService).generateCovidCertificate(any(), any(), eq(issuedAt));
+        }
+
+        @Test
+        void shouldReturnBarcode() throws IOException, BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
+
+            var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            assertArrayEquals(barcode.getImage(), actual.getQrCode());
+        }
+
+        @Test
+        void shouldReturnPdf() throws IOException, BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            var pdf = fixture.create(byte[].class);
+            when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
+
+            var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            assertEquals(pdf, actual.getPdf());
+        }
+
+        @Test
+        void shouldUVCI() throws IOException, BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
+            var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            assertNotNull(actual.getUvci());
+        }
+    }
+
+    @Nested
+    class GenerateTestFromExistingCovidCertificate {
+        @Test
+        void shouldMapDtoToTestCertificatePdf() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+            verify(covidCertificatePdfGenerateRequestDtoMapperService).toTestCertificatePdf(pdfGenerateRequestDto);
+        }
+
+        @Test
+        void throwsCreateCertificateException_ifMapDtoToTestCertificatePdfThrowsCreateCertificateException() {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            var expected = fixture.create(CreateCertificateException.class);
+            when(covidCertificatePdfGenerateRequestDtoMapperService.toTestCertificatePdf(any())).thenThrow(expected);
+
+            CreateCertificateException exception = assertThrows(CreateCertificateException.class,
+                    () -> service.generateFromExistingCovidCertificate(pdfGenerateRequestDto)
+            );
+
+            assertEquals(expected.getError(), exception.getError());
+        }
+
+        @Test
+        void shouldCreatePdf_withCorrectPdfData() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            var testPdf = fixture.create(TestCertificatePdf.class);
+            when(covidCertificatePdfGenerateRequestDtoMapperService.toTestCertificatePdf(any())).thenReturn(testPdf);
+
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            verify(covidPdfCertificateGenerationService).generateCovidCertificate(eq(testPdf), any(), any());
+        }
+
+        @Test
+        void shouldCreatePdf_withCorrectBarcode() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
+
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            verify(covidPdfCertificateGenerationService).generateCovidCertificate(any(), eq(barcode.getPayload()), any());
+        }
+
+        @Test
+        void shouldCreatePdf_withCorrectIssuedAt() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            var issuedAt = getLocalDateTimeFromEpochMillis(pdfGenerateRequestDto.getIssuedAt());
+
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            verify(covidPdfCertificateGenerationService).generateCovidCertificate(any(), any(), eq(issuedAt));
+        }
+
+        @Test
+        void shouldReturnBarcode() throws IOException, BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
+
+            var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            assertArrayEquals(barcode.getImage(), actual.getQrCode());
+        }
+
+        @Test
+        void shouldReturnPdf() throws IOException, BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            var pdf = fixture.create(byte[].class);
+            when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
+
+            var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            assertEquals(pdf, actual.getPdf());
+        }
+
+        @Test
+        void shouldUVCI() throws IOException, BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
+            var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            assertNotNull(actual.getUvci());
+        }
+    }
+
+    @Nested
+    class GenerateRecoveryFromExistingCovidCertificate {
+        @Test
+        void shouldMapDtoToRecoveryCertificatePdf() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+            verify(covidCertificatePdfGenerateRequestDtoMapperService).toRecoveryCertificatePdf(pdfGenerateRequestDto);
+        }
+
+        @Test
+        void throwsCreateCertificateException_ifMapDtoToRecoveryCertificatePdfThrowsCreateCertificateException() {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            var expected = fixture.create(CreateCertificateException.class);
+            when(covidCertificatePdfGenerateRequestDtoMapperService.toRecoveryCertificatePdf(any())).thenThrow(expected);
+
+            CreateCertificateException exception = assertThrows(CreateCertificateException.class,
+                    () -> service.generateFromExistingCovidCertificate(pdfGenerateRequestDto)
+            );
+
+            assertEquals(expected.getError(), exception.getError());
+        }
+
+        @Test
+        void shouldCreatePdf_withCorrectPdfData() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            var recoveryPdf = fixture.create(RecoveryCertificatePdf.class);
+            when(covidCertificatePdfGenerateRequestDtoMapperService.toRecoveryCertificatePdf(any())).thenReturn(recoveryPdf);
+
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            verify(covidPdfCertificateGenerationService).generateCovidCertificate(eq(recoveryPdf), any(), any());
+        }
+
+        @Test
+        void shouldCreatePdf_withCorrectBarcode() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
+
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            verify(covidPdfCertificateGenerationService).generateCovidCertificate(any(), eq(barcode.getPayload()), any());
+        }
+
+        @Test
+        void shouldCreatePdf_withCorrectIssuedAt() throws BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            var issuedAt = getLocalDateTimeFromEpochMillis(pdfGenerateRequestDto.getIssuedAt());
+
+            service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            verify(covidPdfCertificateGenerationService).generateCovidCertificate(any(), any(), eq(issuedAt));
+        }
+
+        @Test
+        void shouldReturnBarcode() throws IOException, BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
+
+            var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            assertArrayEquals(barcode.getImage(), actual.getQrCode());
+        }
+
+        @Test
+        void shouldReturnPdf() throws IOException, BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            var pdf = fixture.create(byte[].class);
+            when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
+
+            var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            assertEquals(pdf, actual.getPdf());
+        }
+
+        @Test
+        void shouldUVCI() throws IOException, BarcodeException {
+            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
+            var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+
+            assertNotNull(actual.getUvci());
+        }
+    }
+    
     @Nested
     class GenerateVaccinationCovidCertificate {
         @Test
@@ -427,5 +687,10 @@ class CovidCertificateGenerationServiceTest {
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verify(printQueueClient, times(1)).sendPrintJob(any());
         }
+    }
+
+    LocalDateTime getLocalDateTimeFromEpochMillis(long millis) {
+        var instant = Instant.ofEpochMilli(millis);
+        return ZonedDateTime.from(instant.atZone(ZoneId.systemDefault())).toLocalDateTime();
     }
 }

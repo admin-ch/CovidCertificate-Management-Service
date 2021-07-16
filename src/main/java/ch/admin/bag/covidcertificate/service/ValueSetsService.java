@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +28,7 @@ public class ValueSetsService {
     }
 
     public VaccinationValueSet getVaccinationValueSet(String medicinalProductCode) {
-        VaccinationValueSet vaccinationValueSet = getValueSets()
+        var vaccinationValueSet = getValueSets()
                 .getVaccinationSets()
                 .stream()
                 .filter(valueSet -> valueSet.getMedicinalProductCode().equals(medicinalProductCode))
@@ -39,39 +40,26 @@ public class ValueSetsService {
         return vaccinationValueSet;
     }
 
-    public TestValueSet getTestValueSet(String testTypeCode, String manufacturerCode) {
+    public TestValueSet getAllTestValueSet(String testTypeCode, String manufacturerCode) {
+        return getTestValueSet(getValueSets().getAllTestValueSets(), testTypeCode, manufacturerCode);
+    }
+
+    public TestValueSet getChAcceptedTestValueSet(TestCertificateDataDto testCertificateDataDto) {
+        return getTestValueSet(getValueSets().getChAcceptedTestValueSets(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
+    }
+
+    private TestValueSet getTestValueSet(Collection<TestValueSet> testValueSets, String testTypeCode, String manufacturerCode) {
         if(!validPCRTest(testTypeCode, manufacturerCode) && !validNonPCRTest(testTypeCode, manufacturerCode)){
             throw new CreateCertificateException(INVALID_TYP_OF_TEST);
         }
 
-        TestValueSet testValueSet = getValueSets()
-                .getTestSets()
+        var testValueSet = testValueSets
                 .stream()
                 .filter(valueSet ->
                         (validPCRTest(testTypeCode, manufacturerCode) && valueSet.getTypeCode().equals(PCR_TYPE_CODE)) ||
                                 (validNonPCRTest(testTypeCode, manufacturerCode) && valueSet.getManufacturerCodeEu().equals(manufacturerCode)))
                 .findFirst()
                 .orElse(null);
-
-        if (testValueSet == null) {
-            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
-        }
-        return testValueSet;
-    }
-
-    public TestValueSet getTestValueSet(TestCertificateDataDto testCertificateDataDto) {
-        if(!validPCRTest(testCertificateDataDto) && !validNonPCRTest(testCertificateDataDto)){
-            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
-        }
-
-        TestValueSet testValueSet = getValueSets()
-                    .getTestSets()
-                    .stream()
-                    .filter(valueSet ->
-                            (validPCRTest(testCertificateDataDto) && valueSet.getTypeCode().equals(PCR_TYPE_CODE)) ||
-                            (validNonPCRTest(testCertificateDataDto) && valueSet.getManufacturerCodeEu().equals(testCertificateDataDto.getManufacturerCode())))
-                    .findFirst()
-                    .orElse(null);
 
         if (testValueSet == null) {
             throw new CreateCertificateException(INVALID_TYP_OF_TEST);
@@ -87,16 +75,6 @@ public class ValueSetsService {
         return (Objects.equals(testTypeCode, NONE_PCR_TYPE_CODE)
                 || !StringUtils.hasText(testTypeCode))
                 && StringUtils.hasText(manufacturerCode);
-    }
-
-    private boolean validPCRTest(TestCertificateDataDto testCertificateDataDto){
-        return Objects.equals(testCertificateDataDto.getTypeCode(), PCR_TYPE_CODE) && !StringUtils.hasText(testCertificateDataDto.getManufacturerCode());
-    }
-
-    private boolean validNonPCRTest(TestCertificateDataDto testCertificateDataDto){
-        return (Objects.equals(testCertificateDataDto.getTypeCode(), NONE_PCR_TYPE_CODE)
-                || !StringUtils.hasText(testCertificateDataDto.getTypeCode()))
-                && StringUtils.hasText(testCertificateDataDto.getManufacturerCode());
     }
 
     public CountryCode getCountryCodeEn(String countryShort) {

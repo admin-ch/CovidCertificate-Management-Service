@@ -119,14 +119,14 @@ class ValueSetsLoaderTest {
         @Test
         void allTestValueSetsAreLoaded() {
             var dto = valueSetsLoader.getValueSets();
-            assertEquals(8, dto.getTestSets().size());
+            assertEquals(8, dto.getChAcceptedTestValueSets().size());
         }
 
         @Test
         void testValueSetsAreCorrectlyInitialized() {
             var dto = valueSetsLoader.getValueSets();
 
-            var result = dto.getTestSets().stream().filter(it -> it.getName().equals("testName")).findFirst().orElse(null);
+            var result = dto.getChAcceptedTestValueSets().stream().filter(it -> it.getName().equals("testName")).findFirst().orElse(null);
 
             assertNotNull(result);
             assertEquals("testName", result.getName());
