@@ -1,9 +1,11 @@
 package ch.admin.bag.covidcertificate.api.valueset;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class VaccinationValueSet {
     @JsonProperty("name")
     private String medicinalProduct;

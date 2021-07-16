@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
-import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -9,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class VaccinationCertificatePdf extends AbstractCertificatePdf {
     private final String diseaseOrAgentTargetedCode;
     private final String diseaseOrAgentTargetedSystem;
@@ -25,7 +24,9 @@ public class VaccinationCertificatePdf extends AbstractCertificatePdf {
     private final String issuer;
 
     public VaccinationCertificatePdf(
-            CovidCertificatePersonDto personDto,
+            String familyName,
+            String givenName,
+            LocalDate dateOfBirth,
             String language,
             String diseaseOrAgentTargetedCode,
             String diseaseOrAgentTargetedSystem,
@@ -40,7 +41,7 @@ public class VaccinationCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(personDto.getName().getFamilyName(), personDto.getName().getGivenName(), personDto.getDateOfBirth(), identifier, language);
+        super(familyName, givenName, dateOfBirth, identifier, language);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.vaccineProphylaxis = vaccineProphylaxis;

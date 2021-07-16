@@ -6,7 +6,6 @@ import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
-import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -82,20 +81,20 @@ public class CsvService {
 
     private List<CovidCertificateCreateResponseDto> createCertificates(List<CertificateCreateDto> createDtos, Class<?> csvBeanClass) throws JsonProcessingException {
         if (csvBeanClass == RecoveryCertificateCsvBean.class) {
-            return createRecoveryCertificates(createDtos.stream().map(createDto -> (RecoveryCertificateCreateDto) createDto).collect(Collectors.toList()));
+            return createRecoveryCertificates(createDtos.stream().map(RecoveryCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else if (csvBeanClass == TestCertificateCsvBean.class) {
-            return createTestCertificates(createDtos.stream().map(createDto -> (TestCertificateCreateDto) createDto).collect(Collectors.toList()));
+            return createTestCertificates(createDtos.stream().map(TestCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else if (csvBeanClass == VaccinationCertificateCsvBean.class) {
-            return createVaccinationCertificates(createDtos.stream().map(createDto -> (VaccinationCertificateCreateDto) createDto).collect(Collectors.toList()));
+            return createVaccinationCertificates(createDtos.stream().map(VaccinationCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else {
             throw new CreateCertificateException(INVALID_CSV);
         }
     }
 
     private byte[] createCsvException(List<CertificateCsvBean> csvBeans) throws IOException {
-        File returnFile = writeCsv(csvBeans);
+        var returnFile = writeCsv(csvBeans);
         byte[] errorCsv = Files.readAllBytes(returnFile.toPath());
-        returnFile.delete();
+        Files.delete(returnFile.toPath());
         throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, errorCsv));
     }
 
@@ -136,8 +135,8 @@ public class CsvService {
     }
 
     private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass) throws IOException {
-        char separator = getSeparator(file);
-        String encoding = UniversalDetector.detectCharset(file.getInputStream());
+        var separator = getSeparator(file);
+        var encoding = UniversalDetector.detectCharset(file.getInputStream());
         try (Reader reader = new BufferedReader(new InputStreamReader(new UnicodeBOMInputStream(file.getInputStream()), Charset.forName(encoding)))) {
 
             CsvToBean<CertificateCsvBean> csvToBean = new CsvToBeanBuilder<CertificateCsvBean>(reader)
@@ -146,9 +145,7 @@ public class CsvService {
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
 
-            List<CertificateCsvBean> beans = csvToBean.parse();
-            reader.close();
-            return beans;
+            return csvToBean.parse();
 
         } catch (Exception ex) {
             throw new CreateCertificateException(INVALID_CSV);
@@ -156,8 +153,8 @@ public class CsvService {
     }
 
     private char getSeparator(MultipartFile file) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-        String line = reader.readLine();
+        var reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+        var line = reader.readLine();
         reader.close();
         if (line.contains(",") && !line.contains("\t") && !line.contains(";")) {
             return ',';
@@ -185,10 +182,10 @@ public class CsvService {
     }
 
     private boolean areCreateCertificateRequestsValid(List<CertificateCreateDto> createDtos, List<CertificateCsvBean> csvBeans) {
-        boolean hasError = false;
-        for (int i = 0; i < createDtos.size(); i++) {
-            CertificateCreateDto createDto = createDtos.get(i);
-            CertificateCsvBean csvBean = csvBeans.get(i);
+        var hasError = false;
+        for (var i = 0; i < createDtos.size(); i++) {
+            var createDto = createDtos.get(i);
+            var csvBean = csvBeans.get(i);
             if (createDto != null && csvBean.getError() == null) {
                 try {
                     validate(createDto);
@@ -206,21 +203,21 @@ public class CsvService {
     private void validate(CertificateCreateDto createDto) {
         createDto.validate();
         if (createDto instanceof RecoveryCertificateCreateDto) {
-            RecoveryCertificateDataDto dataDto = ((RecoveryCertificateCreateDto) createDto).getRecoveryInfo().get(0);
-            CountryCode countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfTest(), createDto.getLanguage());
+            var dataDto = ((RecoveryCertificateCreateDto) createDto).getRecoveryInfo().get(0);
+            var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfTest(), createDto.getLanguage());
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
             }
         } else if (createDto instanceof TestCertificateCreateDto) {
-            TestCertificateDataDto dataDto = ((TestCertificateCreateDto) createDto).getTestInfo().get(0);
-            CountryCode countryCode = valueSetsService.getCountryCode(dataDto.getMemberStateOfTest(), createDto.getLanguage());
+            var dataDto = ((TestCertificateCreateDto) createDto).getTestInfo().get(0);
+            var countryCode = valueSetsService.getCountryCode(dataDto.getMemberStateOfTest(), createDto.getLanguage());
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
             }
-            valueSetsService.getTestValueSet(dataDto);
+            valueSetsService.getChAcceptedTestValueSet(dataDto);
         } else if (createDto instanceof VaccinationCertificateCreateDto) {
-            VaccinationCertificateDataDto dataDto = ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(0);
-            CountryCode countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(), createDto.getLanguage());
+            var dataDto = ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(0);
+            var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(), createDto.getLanguage());
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
@@ -228,10 +225,10 @@ public class CsvService {
         }
     }
 
-    private File writeCsv(List<CertificateCsvBean> certificateCsvBeans) {
-        UUID tempId = UUID.randomUUID();
-        File file = new File("temp" + tempId + ".csv");
-        try (CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
+    private File writeCsv(List<CertificateCsvBean> certificateCsvBeans) throws IOException {
+        var tempId = UUID.randomUUID();
+        var file = new File("temp" + tempId + ".csv");
+        try (var csvWriter = new CSVWriter(new FileWriter(file))) {
             StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(csvWriter)
                     .withSeparator(';')
                     .withApplyQuotesToAll(false)
@@ -239,7 +236,7 @@ public class CsvService {
             beanToCsv.write(certificateCsvBeans);
             return file;
         } catch (Exception e) {
-            file.delete();
+            Files.delete(file.toPath());
             throw new CreateCertificateException(WRITING_RETURN_CSV_FAILED);
         }
     }
@@ -264,11 +261,11 @@ public class CsvService {
     }
 
     private byte[] zipGeneratedCertificates(Map<String, byte[]> fileNameAndContentMap) throws IOException {
-        String extension = ".pdf";
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ZipOutputStream zos = new ZipOutputStream(baos);
+        var extension = ".pdf";
+        var baos = new ByteArrayOutputStream();
+        var zos = new ZipOutputStream(baos);
         for (Map.Entry<String, byte[]> fileNameAndContentEntry : fileNameAndContentMap.entrySet()) {
-            ZipEntry entry = new ZipEntry(fileNameAndContentEntry.getKey() + extension);
+            var entry = new ZipEntry(fileNameAndContentEntry.getKey() + extension);
             entry.setSize(fileNameAndContentEntry.getValue().length);
             zos.putNextEntry(entry);
             zos.write(fileNameAndContentEntry.getValue());
@@ -285,7 +282,7 @@ public class CsvService {
     private void logKpi(String type) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
-            LocalDateTime kpiTimestamp = LocalDateTime.now();
+            var kpiTimestamp = LocalDateTime.now();
             log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_TYPE_KEY, type), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
             kpiLogService.log(new KpiData(kpiTimestamp, type, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
         }
