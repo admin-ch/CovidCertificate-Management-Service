@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ch.admin.bag.covidcertificate</groupId>
 	<artifactId>cc-management-service</artifactId>
-	<version>2.0.0</version>
+	<version>2.1.0</version>
 	<name>cc-management-service</name>
 	<description>Service for generating Covid Certificates</description>
 
@@ -24,7 +24,7 @@
 		<itextpdf.version>5.5.13.2</itextpdf.version>
 		<springdoc.version>1.5.8</springdoc.version>
 		<jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
-		<dgc-java.version>0.9.4</dgc-java.version>
+		<dgc-java.version>1.0.1</dgc-java.version>
 		<spring-cloud-starter-sleuth.version>3.0.3</spring-cloud-starter-sleuth.version>
 		<httpclient.version>4.5.13</httpclient.version>
 		<jjwt.version>0.11.2</jjwt.version>
@@ -92,6 +92,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
 		<!-- Swedish  -->

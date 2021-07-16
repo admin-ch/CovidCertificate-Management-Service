@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import lombok.*;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
@@ -26,7 +27,7 @@ public class TestCertificateDataDto {
 
     public void validate(){
         if (sampleDateTime == null ||
-                sampleDateTime.isAfter(ZonedDateTime.now(sampleDateTime.getZone()))) {
+                sampleDateTime.toLocalDate().isAfter(LocalDate.now())) {
             throw new CreateCertificateException(INVALID_SAMPLE_OR_RESULT_DATE_TIME);
         }
         if (!StringUtils.hasText(testingCentreOrFacility) || testingCentreOrFacility.length() > MAX_STRING_LENGTH) {

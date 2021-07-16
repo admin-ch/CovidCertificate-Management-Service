@@ -175,7 +175,8 @@ public class CsvServiceTest {
         @ValueSource(strings = {"src/test/resources/csv/recovery_ansi.csv",
                 "src/test/resources/csv/recovery_print_ansi.csv",
                 "src/test/resources/csv/recovery_print_utf8.csv",
-                "src/test/resources/csv/recovery_utf8.csv"})
+                "src/test/resources/csv/recovery_utf8.csv",
+                "src/test/resources/csv/recovery_ansi_tab.csv"})
         void massTest(String path) throws IOException {
             var file = Mockito.mock(MultipartFile.class);
             var inputStream = new FileInputStream(path);
@@ -206,7 +207,8 @@ public class CsvServiceTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"src/test/resources/csv/test_ansi.csv",
-                "src/test/resources/csv/test_utf8.csv"})
+                "src/test/resources/csv/test_utf8.csv",
+                "src/test/resources/csv/test_utf8_bom.csv"})
         void massTest(String path) throws IOException {
             var file = Mockito.mock(MultipartFile.class);
             var inputStream = new FileInputStream(path);

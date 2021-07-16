@@ -17,6 +17,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mozilla.universalchardet.UnicodeBOMInputStream;
 import org.mozilla.universalchardet.UniversalDetector;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -137,7 +138,7 @@ public class CsvService {
     private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass) throws IOException {
         char separator = getSeparator(file);
         String encoding = UniversalDetector.detectCharset(file.getInputStream());
-        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), Charset.forName(encoding)))) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(new UnicodeBOMInputStream(file.getInputStream()), Charset.forName(encoding)))) {
 
             CsvToBean<CertificateCsvBean> csvToBean = new CsvToBeanBuilder<CertificateCsvBean>(reader)
                     .withSeparator(separator)
@@ -158,10 +159,15 @@ public class CsvService {
         BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
         String line = reader.readLine();
         reader.close();
-        if (line.contains(",")) {
+        if (line.contains(",") && !line.contains("\t") && !line.contains(";")) {
             return ',';
+        } else if (line.contains("\t") && !line.contains(",") && !line.contains(";")) {
+            return '\t';
+        } else if (line.contains(";") && !line.contains(",") && !line.contains("\t")){
+            return ';';
+        } else {
+            throw new CreateCertificateException(INVALID_CSV);
         }
-        return ';';
     }
 
     private List<CertificateCreateDto> mapToCreateDtos(List<CertificateCsvBean> csvBeans) {

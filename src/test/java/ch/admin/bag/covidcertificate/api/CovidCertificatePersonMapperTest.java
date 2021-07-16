@@ -6,6 +6,7 @@ import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificatePerson;
 import com.flextrade.jfixture.JFixture;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -45,6 +46,7 @@ public class CovidCertificatePersonMapperTest {
     }
 
     @Test
+    @Ignore
     public void testInvalidStandardisedGivenName() {
         final var personDto = new CovidCertificatePersonDto(
                 new CovidCertificatePersonNameDto(
@@ -59,6 +61,7 @@ public class CovidCertificatePersonMapperTest {
     }
 
     @Test
+    @Ignore
     public void testInvalidStandardisedFamilyName() {
         final var personDto = new CovidCertificatePersonDto(
                 new CovidCertificatePersonNameDto(
