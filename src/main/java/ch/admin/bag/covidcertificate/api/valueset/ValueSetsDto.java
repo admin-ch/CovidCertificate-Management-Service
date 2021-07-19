@@ -10,5 +10,6 @@ import java.util.List;
 public class ValueSetsDto {
     private final CountryCodes countryCodes;
     private final List<VaccinationValueSet> vaccinationSets;
-    private final List<TestValueSet> testSets;
+    private final List<TestValueSet> chAcceptedTestValueSets;
+    private final List<TestValueSet> allTestValueSets;
 }

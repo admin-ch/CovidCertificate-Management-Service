@@ -1,5 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
+import ch.admin.bag.covidcertificate.api.mapper.ValueSetsResponseDtoMapper;
+import ch.admin.bag.covidcertificate.api.response.ValueSetsResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
 import ch.admin.bag.covidcertificate.service.ValueSetsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -49,7 +53,7 @@ class ValueSetsControllerTest {
     private static final JFixture fixture = new JFixture();
 
     @BeforeAll
-    static void setup(){
+    static void setup() {
         customizeVaccinationValueSet(fixture);
         customizeTestValueSet(fixture);
         customizeCountryCode(fixture);
@@ -65,17 +69,39 @@ class ValueSetsControllerTest {
     @Nested
     class Get {
         @Test
-        void returnsValueSetsWithOkStatus() throws Exception {
+        void mapsValueSetsToValueSetResponseDto() throws Exception {
             var responseDto = fixture.create(ValueSetsDto.class);
             when(valueSetsService.getValueSets()).thenReturn(responseDto);
 
-            MvcResult result = mockMvc.perform(get(URL)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .header("Authorization", fixture.create(String.class)))
-                    .andExpect(status().isOk())
-                    .andReturn();
+            try (MockedStatic<ValueSetsResponseDtoMapper> valueSetsResponseDtoMapperMock = Mockito.mockStatic(ValueSetsResponseDtoMapper.class)) {
+                valueSetsResponseDtoMapperMock
+                        .when(() -> ValueSetsResponseDtoMapper.create(any()))
+                        .thenReturn(fixture.create(ValueSetsResponseDto.class));
 
-            assertEquals(mapper.writeValueAsString(responseDto), result.getResponse().getContentAsString());
+                mockMvc.perform(get(URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("Authorization", fixture.create(String.class)));
+
+                valueSetsResponseDtoMapperMock.verify(() -> ValueSetsResponseDtoMapper.create(responseDto));
+            }
+        }
+
+        @Test
+        void returnsValueSetsWithOkStatus() throws Exception {
+            var valueSetResponseDto = fixture.create(ValueSetsResponseDto.class);
+            try (MockedStatic<ValueSetsResponseDtoMapper> valueSetsResponseDtoMapperMock = Mockito.mockStatic(ValueSetsResponseDtoMapper.class)) {
+                valueSetsResponseDtoMapperMock
+                        .when(() -> ValueSetsResponseDtoMapper.create(any()))
+                        .thenReturn(valueSetResponseDto);
+
+                MvcResult result = mockMvc.perform(get(URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("Authorization", fixture.create(String.class)))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+                assertEquals(mapper.writeValueAsString(valueSetResponseDto), result.getResponse().getContentAsString());
+            }
         }
 
         @Test

@@ -120,7 +120,7 @@ public class CovidPdfCertificateGenerationService {
     }
 
 
-    public byte[] generateCovidCertificate(AbstractCertificatePdf data, Barcode barcode) {
+    public byte[] generateCovidCertificate(AbstractCertificatePdf data, String barcodePayload, LocalDateTime issuedAt) {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
@@ -140,9 +140,9 @@ public class CovidPdfCertificateGenerationService {
 
             document.add(headerTable(locale, isPartialVaccination));
 
-            Image qrCode = renderQRCode(writer, barcode.getPayload());
+            Image qrCode = renderQRCode(writer, barcodePayload);
 
-            document.add(mainTable(locale, data, qrCode, isPartialVaccination));
+            document.add(mainTable(locale, data, qrCode, isPartialVaccination, issuedAt));
 
             document.add(issuerTable(locale, isPartialVaccination));
 
@@ -217,12 +217,12 @@ public class CovidPdfCertificateGenerationService {
         return table;
     }
 
-    private PdfPTable mainTable(Locale locale, AbstractCertificatePdf data, Image qrCode, boolean isPartialVaccination) {
+    private PdfPTable mainTable(Locale locale, AbstractCertificatePdf data, Image qrCode, boolean isPartialVaccination, LocalDateTime issuedAt) {
         float[] pointColumnWidths = {50F, 20F, 30F};
         PdfPTable table = new PdfPTable(pointColumnWidths);
         table.setWidthPercentage(100);
 
-        PdfPCell cell = new PdfPCell(addLeftColumn(locale, qrCode, data, isPartialVaccination));
+        PdfPCell cell = new PdfPCell(addLeftColumn(locale, qrCode, data, isPartialVaccination, issuedAt));
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setRowspan(30);
@@ -275,7 +275,7 @@ public class CovidPdfCertificateGenerationService {
         addLocaleAndEnglishRow(table, locale, "test.country.label", data.getMemberStateOfTest(), data.getMemberStateOfTestEn());
     }
 
-    private PdfPTable addLeftColumn(Locale locale, Image qrCode, AbstractCertificatePdf data, boolean isPartialVaccination) {
+    private PdfPTable addLeftColumn(Locale locale, Image qrCode, AbstractCertificatePdf data, boolean isPartialVaccination, LocalDateTime issuedAt) {
         float[] pointColumnWidths = {50F, 50F};
         PdfPTable table = new PdfPTable(pointColumnWidths);
 
@@ -296,7 +296,7 @@ public class CovidPdfCertificateGenerationService {
         cell2.setPaddingTop(5);
         table.addCell(cell2);
 
-        addQrLabelCell(table, locale, LocalDateTime.now(), isPartialVaccination);
+        addQrLabelCell(table, locale, issuedAt, isPartialVaccination);
 
         addIssuerRow(table, locale, "personalData.title", 20, true, PADDING_LEFT);
         addNameRow(table, locale, "personalData.name.label", data.getFamilyName() + " " + data.getGivenName(), PADDING_LEFT);

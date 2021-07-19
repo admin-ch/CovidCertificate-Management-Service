@@ -70,7 +70,84 @@ public class ValueSetsServiceTest {
     }
 
     @Nested
-    class GetTestValueSet{
+    class GetAllTestValueSet{
+        @ParameterizedTest
+        @CsvSource(value = {":","'':''", "' ':' '",  "'\t':'\t'", "'\n':'\n'"}, delimiter = ':')
+        void shouldThrowCreateCertificateException_ifTestTypeCodeAndManufacturerCodeAreNullOrBlank(String typeCode, String manufacturerCode){
+            var actual = assertThrows(CreateCertificateException.class,
+                    () -> service.getAllTestValueSet(typeCode, manufacturerCode)
+            );
+
+            assertEquals(INVALID_TYP_OF_TEST, actual.getError());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        @ValueSource(strings = {"  ", "\t", "\n"})
+        void shouldReturnTestValueSetUsingTheTestTypeCode_ifTypeCodeIsPCR_andManufacturerIsNullOrBlank(String manufacturerCode){
+            var expected = fixture.create(TestValueSet.class);
+            ReflectionTestUtils.setField(expected, "typeCode", PCR_TYPE_CODE);
+            var valueSetsDto = fixture.create(ValueSetsDto.class);
+            valueSetsDto.getAllTestValueSets().add(expected);
+            when(valueSetsLoader.getValueSets()).thenReturn(valueSetsDto);
+
+            var actual= service.getAllTestValueSet(PCR_TYPE_CODE, manufacturerCode);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldThrowCreateCertificateException_ifTypeCodeIsPCR_andManufacturerIsNotBlank(){
+            var manufacturer = fixture.create(String.class);
+            var actual= assertThrows(CreateCertificateException.class,
+                    () -> service.getAllTestValueSet(PCR_TYPE_CODE, manufacturer)
+            );
+
+            assertEquals(INVALID_TYP_OF_TEST, actual.getError());
+        }
+
+        @Test
+        void shouldReturnTestValueSetUsingTheManufacturerCode_ifTypeCodeIsNotPCR_andManufacturerIsNotEmpty(){
+            var manufacturer = fixture.create(String.class);
+            var expected = fixture.create(TestValueSet.class);
+            ReflectionTestUtils.setField(expected, "manufacturerCodeEu", manufacturer);
+            var valueSetsDto = fixture.create(ValueSetsDto.class);
+            valueSetsDto.getAllTestValueSets().add(expected);
+            when(valueSetsLoader.getValueSets()).thenReturn(valueSetsDto);
+
+            var actual= service.getAllTestValueSet(NONE_PCR_TYPE_CODE, manufacturer);
+
+            assertEquals(expected, actual);
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        @ValueSource(strings = {"  ", "\t", "\n"})
+        void shouldReturnTestValueSetUsingTheManufacturerCode_ifTypeCodeIsNullOrBlank_andManufacturerIsNotEmpty(String typeCode){
+            var manufacturer = fixture.create(String.class);
+            var expected = fixture.create(TestValueSet.class);
+            ReflectionTestUtils.setField(expected, "manufacturerCodeEu", manufacturer);
+            var valueSetsDto = fixture.create(ValueSetsDto.class);
+            valueSetsDto.getAllTestValueSets().add(expected);
+            when(valueSetsLoader.getValueSets()).thenReturn(valueSetsDto);
+
+            var actual= service.getAllTestValueSet(typeCode, manufacturer);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldThrowCreateCertificateException_ifTypeCodeIsNotPCR_andManufacturerIsEmpty(){
+            var actual = assertThrows(CreateCertificateException.class,
+                    () -> service.getAllTestValueSet(NONE_PCR_TYPE_CODE, null)
+            );
+
+            assertEquals(INVALID_TYP_OF_TEST, actual.getError());
+        }
+    }
+
+    @Nested
+    class GetChAcceptedTestValueSet{
         @ParameterizedTest
         @CsvSource(value = {":","'':''", "' ':' '",  "'\t':'\t'", "'\n':'\n'"}, delimiter = ':')
         void shouldThrowCreateCertificateException_ifTestTypeCodeAndManufacturerCodeAreNullOrBlank(String typeCode, String manufacturerCode){
@@ -79,7 +156,7 @@ public class ValueSetsServiceTest {
             ReflectionTestUtils.setField(testCertificateDataDto, "manufacturerCode", manufacturerCode);
 
             var actual = assertThrows(CreateCertificateException.class,
-                    () -> service.getTestValueSet(testCertificateDataDto)
+                    () -> service.getChAcceptedTestValueSet(testCertificateDataDto)
             );
 
             assertEquals(INVALID_TYP_OF_TEST, actual.getError());
@@ -95,10 +172,10 @@ public class ValueSetsServiceTest {
             ReflectionTestUtils.setField(testCertificateDataDto, "typeCode", PCR_TYPE_CODE);
             ReflectionTestUtils.setField(testCertificateDataDto, "manufacturerCode", manufacturerCode);
             var valueSetsDto = fixture.create(ValueSetsDto.class);
-            valueSetsDto.getTestSets().add(expected);
+            valueSetsDto.getChAcceptedTestValueSets().add(expected);
             when(valueSetsLoader.getValueSets()).thenReturn(valueSetsDto);
 
-            var actual= service.getTestValueSet(testCertificateDataDto);
+            var actual= service.getChAcceptedTestValueSet(testCertificateDataDto);
 
             assertEquals(expected, actual);
         }
@@ -110,7 +187,7 @@ public class ValueSetsServiceTest {
             ReflectionTestUtils.setField(testCertificateDataDto, "manufacturerCode", fixture.create(String.class));
 
             var actual= assertThrows(CreateCertificateException.class,
-                    () -> service.getTestValueSet(testCertificateDataDto)
+                    () -> service.getChAcceptedTestValueSet(testCertificateDataDto)
             );
 
             assertEquals(INVALID_TYP_OF_TEST, actual.getError());
@@ -125,10 +202,10 @@ public class ValueSetsServiceTest {
             ReflectionTestUtils.setField(testCertificateDataDto, "typeCode", NONE_PCR_TYPE_CODE);
             ReflectionTestUtils.setField(testCertificateDataDto, "manufacturerCode", manufacturer);
             var valueSetsDto = fixture.create(ValueSetsDto.class);
-            valueSetsDto.getTestSets().add(expected);
+            valueSetsDto.getChAcceptedTestValueSets().add(expected);
             when(valueSetsLoader.getValueSets()).thenReturn(valueSetsDto);
 
-            var actual= service.getTestValueSet(testCertificateDataDto);
+            var actual= service.getChAcceptedTestValueSet(testCertificateDataDto);
 
             assertEquals(expected, actual);
         }
@@ -144,10 +221,10 @@ public class ValueSetsServiceTest {
             ReflectionTestUtils.setField(testCertificateDataDto, "typeCode", typeCode);
             ReflectionTestUtils.setField(testCertificateDataDto, "manufacturerCode", manufacturer);
             var valueSetsDto = fixture.create(ValueSetsDto.class);
-            valueSetsDto.getTestSets().add(expected);
+            valueSetsDto.getChAcceptedTestValueSets().add(expected);
             when(valueSetsLoader.getValueSets()).thenReturn(valueSetsDto);
 
-            var actual= service.getTestValueSet(testCertificateDataDto);
+            var actual= service.getChAcceptedTestValueSet(testCertificateDataDto);
 
             assertEquals(expected, actual);
         }
@@ -159,7 +236,7 @@ public class ValueSetsServiceTest {
             ReflectionTestUtils.setField(testCertificateDataDto, "manufacturerCode", null);
 
             var actual = assertThrows(CreateCertificateException.class,
-                    () -> service.getTestValueSet(testCertificateDataDto)
+                    () -> service.getChAcceptedTestValueSet(testCertificateDataDto)
             );
 
             assertEquals(INVALID_TYP_OF_TEST, actual.getError());

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,7 +25,8 @@ public class ValueSetsLoader {
             valueSetsDto = new ValueSetsDto(
                     getCountryCodes(),
                     getVaccinationValueSet(),
-                    getChAcceptedTestValueSet()
+                    getChAcceptedTestValueSet(),
+                    getAllTestValueSet()
             );
         }
     }
@@ -34,11 +36,11 @@ public class ValueSetsLoader {
     }
 
     private CountryCodes getCountryCodes() throws IOException {
-        CountryJson deJson = getCountryJson("country-alpha-2-de");
-        CountryJson frJson = getCountryJson("country-alpha-2-fr");
-        CountryJson itJson = getCountryJson("country-alpha-2-it");
-        CountryJson enJson = getCountryJson("country-alpha-2-en");
-        CountryJson rmJson = getCountryJson("country-alpha-2-rm");
+        var deJson = getCountryJson("country-alpha-2-de");
+        var frJson = getCountryJson("country-alpha-2-fr");
+        var itJson = getCountryJson("country-alpha-2-it");
+        var enJson = getCountryJson("country-alpha-2-en");
+        var rmJson = getCountryJson("country-alpha-2-rm");
         return new CountryCodes(
                 deJson.getValueSetValues(),
                 enJson.getValueSetValues(),
@@ -52,9 +54,14 @@ public class ValueSetsLoader {
         return getVaccinationJson().getEntries();
     }
 
+    private List<TestValueSet> getAllTestValueSet() throws IOException {
+        return new ArrayList<>(getTestSetJson()
+                .getEntries());
+    }
+
+
     private List<TestValueSet> getChAcceptedTestValueSet() throws IOException {
-        return getTestSetJson()
-                .getEntries()
+        return getAllTestValueSet()
                 .stream()
                 .filter(TestValueSet::isChAccepted)
                 .collect(Collectors.toList());
@@ -65,17 +72,17 @@ public class ValueSetsLoader {
     }
 
     private CountryJson getCountryJson(String fileName) throws IOException {
-        InputStream is = getInputStream(fileName);
+        var is = getInputStream(fileName);
         return objectMapper.readValue(is, CountryJson.class);
     }
 
     private VaccinationSetJson getVaccinationJson() throws IOException {
-        InputStream is = getInputStream("covid-19-vaccines");
+        var is = getInputStream("covid-19-vaccines");
         return objectMapper.readValue(is, VaccinationSetJson.class);
     }
 
     private TestSetJson getTestSetJson() throws IOException {
-        InputStream is = getInputStream("covid-19-tests");
+        var is = getInputStream("covid-19-tests");
         return objectMapper.readValue(is, TestSetJson.class);
     }
 }
