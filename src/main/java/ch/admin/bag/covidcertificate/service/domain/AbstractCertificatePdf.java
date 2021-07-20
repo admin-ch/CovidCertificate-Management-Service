@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 public abstract class AbstractCertificatePdf {
     protected String familyName;
     protected String givenName;

@@ -22,7 +22,9 @@ public class VaccinationCertificatePdfMapper {
     ) {
         CovidCertificateDiseaseOrAgentTargeted diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
         return new VaccinationCertificatePdf(
-                vaccinationCertificateCreateDto.getPersonData(),
+                vaccinationCertificateCreateDto.getPersonData().getName().getFamilyName(),
+                vaccinationCertificateCreateDto.getPersonData().getName().getGivenName(),
+                vaccinationCertificateCreateDto.getPersonData().getDateOfBirth(),
                 vaccinationCertificateCreateDto.getLanguage(),
                 diseaseOrAgentTargeted.getCode(),
                 diseaseOrAgentTargeted.getSystem(),

@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
-import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
+import ch.admin.bag.covidcertificate.api.mapper.ValueSetsResponseDtoMapper;
+import ch.admin.bag.covidcertificate.api.response.ValueSetsResponseDto;
 import ch.admin.bag.covidcertificate.service.ValueSetsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +22,10 @@ public class ValueSetsController {
 
     @GetMapping()
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public ValueSetsDto get(HttpServletRequest request) {
+    public ValueSetsResponseDto get(HttpServletRequest request) {
         log.info("Call to get value sets.");
         securityHelper.authorizeUser(request);
 
-        return valueSetsService.getValueSets();
+        return ValueSetsResponseDtoMapper.create(valueSetsService.getValueSets());
     }
 }
