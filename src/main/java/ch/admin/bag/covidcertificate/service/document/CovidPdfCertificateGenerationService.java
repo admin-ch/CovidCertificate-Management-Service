@@ -107,6 +107,7 @@ public class CovidPdfCertificateGenerationService {
         logoApple = getLogo("appstore.png", 49);
         logoGoogle = getLogo("googleplay.png", 50);
         logoApp = getLogo("appicon.png", 100);
+        this.setAltTagsForImages();
 
         addDraftWatermark = Arrays.stream(env.getActiveProfiles()).noneMatch("prod"::equals);
     }
@@ -119,6 +120,11 @@ public class CovidPdfCertificateGenerationService {
         return source;
     }
 
+    private void setAltTagsForImages() {
+        logoApple.setAccessibleAttribute(PdfName.ALT, new PdfString("app store icon"));
+        logoGoogle.setAccessibleAttribute(PdfName.ALT, new PdfString("google play icon"));
+        logoApp.setAccessibleAttribute(PdfName.ALT, new PdfString("covid certificate app icon"));
+    }
 
     public byte[] generateCovidCertificate(AbstractCertificatePdf data, String barcodePayload, LocalDateTime issuedAt) {
         try {
@@ -130,7 +136,7 @@ public class CovidPdfCertificateGenerationService {
 
             boolean isPartialVaccination = data instanceof VaccinationCertificatePdf && ((VaccinationCertificatePdf) data).isPartialVaccination();
 
-            PdfWriter writer = PdfWriter.getInstance(document, stream);
+            PdfWriter writer = this.getWriter(document, stream, locale);
 
             document.open();
 
@@ -173,6 +179,17 @@ public class CovidPdfCertificateGenerationService {
             default:
                 return Locale.GERMAN;
         }
+    }
+
+    private PdfWriter getWriter(Document document, ByteArrayOutputStream stream, Locale locale) throws DocumentException {
+        PdfWriter writer = PdfWriter.getInstance(document, stream);
+        writer.setPdfVersion(PdfWriter.PDF_VERSION_1_7);
+        writer.setTagged();
+        document.addTitle(METADATA);
+        writer.setViewerPreferences(PdfWriter.DisplayDocTitle);
+        writer.setLanguage(String.format("%s-CH", locale.getLanguage()));
+        writer.createXmpMetadata();
+        return writer;
     }
 
     protected void addMetadata(Document document) {
@@ -573,7 +590,9 @@ public class CovidPdfCertificateGenerationService {
 
         // Place QR code in template and wrap in image
         qrCode.placeBarcode(template, BaseColor.BLACK, widthHeight / size.getWidth());
-        return Image.getInstance(template);
+        var image = Image.getInstance(template);
+        image.setAlt("qr code");
+        return image;
     }
 
 }
