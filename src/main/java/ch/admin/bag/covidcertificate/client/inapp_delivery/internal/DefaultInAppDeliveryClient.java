@@ -59,7 +59,6 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                 throw new CreateCertificateException(APP_DELIVERY_FAILED);
             }
         } catch (WebClientResponseException e) {
-            log.error("Received error message", e);
             return this.handleErrorResponse(e);
         } catch (WebClientRequestException e) {
             log.error("Request to {} failed", serviceUri, e);
@@ -69,9 +68,12 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
 
     private CreateCertificateError handleErrorResponse(WebClientResponseException exception) {
         if (exception != null && exception.getStatusCode() == HttpStatus.NOT_FOUND) {
+            log.warn("Service or appCode not found", exception);
             return UNKNOWN_APP_CODE;
+        } else {
+            log.error("Received error message", exception);
+            return APP_DELIVERY_FAILED;
         }
-        return APP_DELIVERY_FAILED;
     }
 
     private void logKpi() {
