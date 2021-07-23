@@ -3,6 +3,7 @@ package ch.admin.bag.covidcertificate.client.printing.domain;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Getter
 @ToString
@@ -21,4 +22,5 @@ public class CertificatePrintRequestDto {
     private String city;
     private String language;
     private String cantonCodeSender;
+    private LocalDate vaccinationDate;
 }
