@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
@@ -52,6 +53,8 @@ class CovidCertificateGenerationServiceTest {
     private CovidCertificateDtoMapperService covidCertificateDtoMapperService;
     @Mock
     private CovidCertificatePdfGenerateRequestDtoMapperService covidCertificatePdfGenerateRequestDtoMapperService;
+    @Mock
+    private CertificatePrintRequestDtoMapper certificatePrintRequestDtoMapper;
     @Mock
     private ObjectMapper objectMapper;
     @Mock
