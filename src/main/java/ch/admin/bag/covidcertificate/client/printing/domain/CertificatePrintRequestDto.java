@@ -21,4 +21,5 @@ public class CertificatePrintRequestDto {
     private String city;
     private String language;
     private String cantonCodeSender;
+    private Boolean isBillable;
 }
