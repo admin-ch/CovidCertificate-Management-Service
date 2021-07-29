@@ -44,6 +44,7 @@ public class CovidCertificateGenerationService {
     private final CovidPdfCertificateGenerationService covidPdfCertificateGenerationService;
     private final CovidCertificateDtoMapperService covidCertificateDtoMapperService;
     private final CovidCertificatePdfGenerateRequestDtoMapperService covidCertificatePdfGenerateRequestDtoMapperService;
+    private final CertificatePrintRequestDtoMapper certificatePrintRequestDtoMapper;
 
     public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
         var pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationCertificatePdf(pdfGenerateRequestDto);
@@ -112,7 +113,7 @@ public class CovidCertificateGenerationService {
 
         var responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         if (createDto.sendToPrint()) {
-            printQueueClient.sendPrintJob(CertificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
+            printQueueClient.sendPrintJob(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
         } else if (createDto.sendToApp()) {
             var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getAppCode(), code.getPayload(), Base64.getEncoder().encodeToString(pdf));
             var createError = this.inAppDeliveryClient.deliverToApp(inAppDeliveryDto); // null if no error

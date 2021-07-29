@@ -116,3 +116,7 @@ cc-management-service:
     prometheus:
       secure: false
 
+cc-printing-service:
+  billing:
+    since-vaccination-date: 2021-08-01
+
