@@ -118,5 +118,5 @@ cc-management-service:
 
 cc-printing-service:
   billing:
-    since-vaccination-date: 2021-08-01
+    since-vaccination-date: 2021-07-15
 
