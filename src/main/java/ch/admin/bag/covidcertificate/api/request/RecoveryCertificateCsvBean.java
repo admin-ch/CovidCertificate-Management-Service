@@ -1,13 +1,11 @@
 package ch.admin.bag.covidcertificate.api.request;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.util.DateHelper;
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.time.LocalDate;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT;
 
@@ -24,15 +22,9 @@ public class RecoveryCertificateCsvBean extends CertificateCsvBean {
 
     @Override
     public RecoveryCertificateCreateDto mapToCreateDto() {
-        LocalDate dateOfFirstPositiveTestResult;
-        try {
-            dateOfFirstPositiveTestResult = LocalDate.parse(this.dateOfFirstPositiveTestResult);
-        } catch (Exception e) {
-            throw new CreateCertificateException(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT);
-        }
         RecoveryCertificateDataDto dataDto = new RecoveryCertificateDataDto(
-                dateOfFirstPositiveTestResult,
-                countryOfTest
+                DateHelper.parse(this.dateOfFirstPositiveTestResult, INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT),
+                countryOfTest.trim().toUpperCase()
         );
         return super.mapToCreateDto(dataDto);
     }
