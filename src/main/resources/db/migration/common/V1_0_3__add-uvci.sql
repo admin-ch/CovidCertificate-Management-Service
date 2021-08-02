@@ -1,0 +1,1 @@
+ALTER TABLE kpi ADD uvci VARCHAR(39);

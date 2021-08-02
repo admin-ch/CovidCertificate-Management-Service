@@ -50,7 +50,7 @@ public class CovidCertificateGenerationController {
         createDto.validate();
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
-        logKpi(KPI_TYPE_VACCINATION);
+        logKpi(KPI_TYPE_VACCINATION, responseDto.getUvci());
         return responseDto;
     }
 
@@ -62,7 +62,7 @@ public class CovidCertificateGenerationController {
         createDto.validate();
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
-        logKpi(KPI_TYPE_TEST);
+        logKpi(KPI_TYPE_TEST, responseDto.getUvci());
         return responseDto;
     }
 
@@ -74,7 +74,7 @@ public class CovidCertificateGenerationController {
         createDto.validate();
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
-        logKpi(KPI_TYPE_RECOVERY);
+        logKpi(KPI_TYPE_RECOVERY, responseDto.getUvci());
         return responseDto;
     }
 
@@ -98,12 +98,12 @@ public class CovidCertificateGenerationController {
         log.info("Call of Create for recovery certificate");
         return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
     }
-    private void logKpi(String type) {
+    private void logKpi(String type, String uvci) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
             LocalDateTime kpiTimestamp = LocalDateTime.now();
             log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_TYPE_KEY, type), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
-            kpiLogService.log(new KpiData(kpiTimestamp, type, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
+            kpiLogService.log(new KpiData(kpiTimestamp, type, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), uvci));
         }
     }
 }
