@@ -1,11 +1,13 @@
 package ch.admin.bag.covidcertificate.api.request;
 
-import ch.admin.bag.covidcertificate.util.DateHelper;
+import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_OR_RESULT_DATE_TIME;
 
@@ -28,10 +30,17 @@ public class TestCertificateCsvBean extends CertificateCsvBean {
 
     @Override
     public TestCertificateCreateDto mapToCreateDto() {
+        ZonedDateTime sampleDateTime;
+        try {
+            sampleDateTime = ZonedDateTime.parse(this.sampleDateTime);
+        } catch (Exception e) {
+            throw new CreateCertificateException(INVALID_SAMPLE_OR_RESULT_DATE_TIME);
+        }
+
         TestCertificateDataDto dataDto = new TestCertificateDataDto(
                 manufacturerCode.trim(),
                 typeCode.trim(),
-                DateHelper.parseZonedDate(this.sampleDateTime, INVALID_SAMPLE_OR_RESULT_DATE_TIME),
+                sampleDateTime,
                 testingCentreOrFacility.trim(),
                 memberStateOfTest.trim().toUpperCase()
         );

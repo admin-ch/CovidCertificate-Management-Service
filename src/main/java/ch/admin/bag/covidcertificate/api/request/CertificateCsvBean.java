@@ -53,7 +53,7 @@ public abstract class CertificateCsvBean {
                 List.of(dataDto),
                 getLanguage().trim().toLowerCase(),
                 mapToAddressDto(),
-                getInAppDeliveryCode()
+                validateAppDeliveryCode()
         );
     }
 
@@ -63,7 +63,7 @@ public abstract class CertificateCsvBean {
                 List.of(dataDto),
                 getLanguage().trim().toLowerCase(),
                 mapToAddressDto(),
-                getInAppDeliveryCode()
+                validateAppDeliveryCode()
         );
     }
 
@@ -73,7 +73,7 @@ public abstract class CertificateCsvBean {
                 List.of(dataDto),
                 getLanguage().trim().toLowerCase(),
                 mapToAddressDto(),
-                validateAppDeliveryCode(getInAppDeliveryCode())
+                validateAppDeliveryCode()
         );
     }
 
@@ -106,13 +106,14 @@ public abstract class CertificateCsvBean {
         }
     }
 
-    private String validateAppDeliveryCode(String inAppDeliveryCode) {
-        if (!LuhnChecksum.validateCheckCharacter(inAppDeliveryCode)) {
-            throw new CreateCertificateException(INVALID_APP_CODE_CHECKSUM);
-        } else if (inAppDeliveryCode.length() == 9) {
+    private String validateAppDeliveryCode() {
+        if(inAppDeliveryCode == null || inAppDeliveryCode.equals("")){
+                return null;
+        } else if (inAppDeliveryCode.length() != 9) {
             throw new CreateCertificateException(INVALID_APP_CODE_LENGTH);
+        } else if (!LuhnChecksum.validateCheckCharacter(inAppDeliveryCode)) {
+            throw new CreateCertificateException(INVALID_APP_CODE_CHECKSUM);
         }
-
         return inAppDeliveryCode;
     }
 }

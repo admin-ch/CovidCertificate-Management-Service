@@ -11,8 +11,7 @@ public final class LuhnChecksum {
     }
 
     public static boolean validateCheckCharacter(String expression) {
-        return checkNotEmpty(expression)
-                && checkAlgorithm(expression);
+        return checkAlgorithm(expression);
     }
 
     private static boolean checkAlgorithm(String expression) {
@@ -41,9 +40,5 @@ public final class LuhnChecksum {
         }
 
         return Character.toString(ALPHABET.charAt(checkChar));
-    }
-
-    private static boolean checkNotEmpty(String obj) {
-        return obj != null && !obj.equals("");
     }
 }
