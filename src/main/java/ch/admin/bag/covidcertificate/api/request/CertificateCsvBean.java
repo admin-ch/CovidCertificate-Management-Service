@@ -1,6 +1,8 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.util.DateHelper;
+import ch.admin.bag.covidcertificate.util.LuhnChecksum;
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,11 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ADDRESS;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_BIRTH;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 
 @Getter
 @ToString
@@ -51,9 +51,9 @@ public abstract class CertificateCsvBean {
         return new VaccinationCertificateCreateDto(
                 mapToPersonDto(),
                 List.of(dataDto),
-                getLanguage(),
+                getLanguage().trim().toLowerCase(),
                 mapToAddressDto(),
-                getInAppDeliveryCode()
+                validateAppDeliveryCode()
         );
     }
 
@@ -61,9 +61,9 @@ public abstract class CertificateCsvBean {
         return new TestCertificateCreateDto(
                 mapToPersonDto(),
                 List.of(dataDto),
-                getLanguage(),
+                getLanguage().trim().toLowerCase(),
                 mapToAddressDto(),
-                getInAppDeliveryCode()
+                validateAppDeliveryCode()
         );
     }
 
@@ -71,25 +71,19 @@ public abstract class CertificateCsvBean {
         return new RecoveryCertificateCreateDto(
                 mapToPersonDto(),
                 List.of(dataDto),
-                getLanguage(),
+                getLanguage().trim().toLowerCase(),
                 mapToAddressDto(),
-                getInAppDeliveryCode()
+                validateAppDeliveryCode()
         );
     }
 
     private CovidCertificatePersonDto mapToPersonDto() {
-        LocalDate birthDate;
-        try {
-            birthDate = LocalDate.parse(getDateOfBirth());
-        } catch (Exception e) {
-            throw new CreateCertificateException(INVALID_DATE_OF_BIRTH);
-        }
         return new CovidCertificatePersonDto(
                 new CovidCertificatePersonNameDto(
-                        getFamilyName(),
-                        getGivenName()
+                        getFamilyName().trim(),
+                        getGivenName().trim()
                 ),
-                birthDate
+                DateHelper.parse(getDateOfBirth(), INVALID_DATE_OF_BIRTH)
         );
     }
 
@@ -102,13 +96,24 @@ public abstract class CertificateCsvBean {
                 throw new CreateCertificateException(INVALID_ADDRESS);
             }
             return new CovidCertificateAddressDto(
-                    streetAndNr,
+                    streetAndNr.trim(),
                     zipCodeTemp,
-                    city,
-                    cantonCodeSender
+                    city.trim(),
+                    cantonCodeSender.trim().toUpperCase()
             );
         } else {
             return null;
         }
+    }
+
+    private String validateAppDeliveryCode() {
+        if(inAppDeliveryCode == null || inAppDeliveryCode.equals("")){
+                return null;
+        } else if (inAppDeliveryCode.length() != 9) {
+            throw new CreateCertificateException(INVALID_APP_CODE_LENGTH);
+        } else if (!LuhnChecksum.validateCheckCharacter(inAppDeliveryCode)) {
+            throw new CreateCertificateException(INVALID_APP_CODE_CHECKSUM);
+        }
+        return inAppDeliveryCode;
     }
 }
