@@ -26,4 +26,10 @@ public class KpiData {
         this.type = type;
         this.uvci = uvci;
     }
+
+    public KpiData(LocalDateTime timestamp, String type, String value) {
+        this.timestamp = timestamp;
+        this.value = value;
+        this.type = type;
+    }
 }

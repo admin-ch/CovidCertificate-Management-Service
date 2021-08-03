@@ -44,7 +44,7 @@ public class OneTimePasswordController {
         String otp = customTokenProvider.createToken(token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), token.getClaimAsString("homeName"));
         LocalDateTime kpiTimestamp = LocalDateTime.now();
         log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, ZonedDateTime.now(SWISS_TIMEZONE).format(LOG_FORMAT)), kv(KPI_OTP_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
-        kpiLogService.log(new KpiData(kpiTimestamp, KPI_OTP_SYSTEM_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), null));
+        kpiLogService.log(new KpiData(kpiTimestamp, KPI_OTP_SYSTEM_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
         return otp;
     }
 
