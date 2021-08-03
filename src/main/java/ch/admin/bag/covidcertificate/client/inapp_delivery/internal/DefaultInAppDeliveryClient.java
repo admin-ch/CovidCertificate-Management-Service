@@ -81,7 +81,7 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
         if (extId != null) {
             LocalDateTime kpiTimestamp = LocalDateTime.now();
             log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_TYPE_INAPP_DELIVERY), kv(KPI_UUID_KEY, extId));
-            kpiLogService.log(new KpiData(kpiTimestamp, KPI_TYPE_INAPP_DELIVERY, extId));
+            kpiLogService.log(new KpiData(kpiTimestamp, KPI_TYPE_INAPP_DELIVERY, extId, null));
         }
     }
 }
