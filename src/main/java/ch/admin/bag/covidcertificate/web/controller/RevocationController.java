@@ -42,16 +42,16 @@ public class RevocationController {
         securityHelper.authorizeUser(request);
         revocationDto.validate();
         revocationService.createRevocation(revocationDto);
-        logKpi();
+        logKpi(revocationDto.getUvci());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    private void logKpi() {
+    private void logKpi(String uvci) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
             LocalDateTime kpiTimestamp = LocalDateTime.now();
             log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
-            kpiLogService.log(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
+            kpiLogService.log(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), uvci));
         }
     }
 }

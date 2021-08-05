@@ -68,6 +68,7 @@ public class Constants {
     public static final CreateCertificateError INVALID_STANDARDISED_GIVEN_NAME = new CreateCertificateError(477, "Invalid given name! The standardised given name exceeds 80 chars", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_STANDARDISED_FAMILY_NAME = new CreateCertificateError(478, "Invalid family name! The standardised family name exceeds 80 chars", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_APP_CODE = new CreateCertificateError(479, "App code is in an invalid format.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_PRINT_FOR_TEST = new CreateCertificateError(488, "Print is not available for test certificates", HttpStatus.BAD_REQUEST);
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
@@ -76,6 +77,8 @@ public class Constants {
     public static final CreateCertificateError NOT_A_CSV = new CreateCertificateError(483, "The sent file is not a CSV file.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_CERTIFICATE_TYPE = new CreateCertificateError(484, "Invalid certificate type! 'vaccination', 'test', and 'recovery' are allowed", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_CREATE_REQUESTS = new CreateCertificateError(485, "One or more of the requests in the CSV contain invalid data. For more detailed error messages check the returned CSV", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_APP_CODE_CHECKSUM = new CreateCertificateError(486, "Invalid app code, check input.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_APP_CODE_LENGTH = new CreateCertificateError(487, "Incorrect input, the code consists of 9 characters.", HttpStatus.BAD_REQUEST);
 
     public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550, "Creating COSE protected header failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_COSE_PAYLOAD_FAILED = new CreateCertificateError(551, "Creating COSE payload failed.", HttpStatus.INTERNAL_SERVER_ERROR);

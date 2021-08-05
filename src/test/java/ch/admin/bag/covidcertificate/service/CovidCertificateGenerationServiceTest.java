@@ -561,14 +561,6 @@ class CovidCertificateGenerationServiceTest {
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verify(inAppDeliveryClient, times(1)).deliverToApp(any());
         }
-
-        @Test
-        void shouldCallPrintingService__whenAddressPassed() {
-            var createDto = getTestCertificateCreateDto(null, "1833", "de");
-
-            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
-            verify(printQueueClient, times(1)).sendPrintJob(any());
-        }
     }
 
     @Nested

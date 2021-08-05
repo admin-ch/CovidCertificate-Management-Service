@@ -36,12 +36,13 @@ public class TestCertificateCsvBean extends CertificateCsvBean {
         } catch (Exception e) {
             throw new CreateCertificateException(INVALID_SAMPLE_OR_RESULT_DATE_TIME);
         }
+
         TestCertificateDataDto dataDto = new TestCertificateDataDto(
-                manufacturerCode,
-                typeCode,
+                manufacturerCode.trim(),
+                typeCode.trim(),
                 sampleDateTime,
-                testingCentreOrFacility,
-                memberStateOfTest
+                testingCentreOrFacility.trim(),
+                memberStateOfTest.trim().toUpperCase()
         );
         return super.mapToCreateDto(dataDto);
     }

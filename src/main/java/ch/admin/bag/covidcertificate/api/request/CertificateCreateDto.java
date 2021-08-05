@@ -55,7 +55,11 @@ public abstract class CertificateCreateDto {
         if (this.address != null && StringUtils.hasText(this.appCode)) {
             throw new CreateCertificateException(DUPLICATE_DELIVERY_METHOD);
         } else {
+
             if (this.address != null) {
+                if (this instanceof TestCertificateCreateDto) {
+                    throw new CreateCertificateException(INVALID_PRINT_FOR_TEST);
+                }
                 this.address.validate();
             }
             if (this.appCode != null && !org.apache.commons.lang3.StringUtils.isAlphanumeric(this.appCode)) {

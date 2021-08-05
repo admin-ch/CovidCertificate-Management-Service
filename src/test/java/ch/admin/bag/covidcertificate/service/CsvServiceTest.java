@@ -49,6 +49,7 @@ public class CsvServiceTest {
     private final JFixture fixture = new JFixture();
     private final File validRecoveryFile;
     private final File validTestFile;
+    private final File invalidTestFile;
     private final File validVaccinationFile;
     private final File emptyCsv;
     private final File invalidCsv;
@@ -58,6 +59,7 @@ public class CsvServiceTest {
     public CsvServiceTest() {
         validRecoveryFile = new File("src/test/resources/csv/recovery_csv_valid.csv");
         validTestFile = new File("src/test/resources/csv/test_csv_valid.csv");
+        invalidTestFile = new File("src/test/resources/csv/test_csv_adress_invalid.csv");
         validVaccinationFile = new File("src/test/resources/csv/vaccination_csv_valid.csv");
         emptyCsv = new File("src/test/resources/csv/recovery_csv_empty.csv");
         invalidCsv = new File("src/test/resources/csv/recovery_csv_invalid.csv");
@@ -203,6 +205,18 @@ public class CsvServiceTest {
             CsvResponseDto response = service.handleCsvRequest(file, CertificateType.test.name());
             assertNotNull(response.getZip());
             inputStream.close();
+        }
+
+        @Test
+        void invalid_with_adress() throws IOException {
+            var file = Mockito.mock(MultipartFile.class);
+            var inputStream = new FileInputStream(invalidTestFile);
+            var inputStream2 = new FileInputStream(invalidTestFile);
+            var inputStream3 = new FileInputStream(invalidTestFile);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
+            var exception = assertThrows(CsvException.class,
+                    () -> service.handleCsvRequest(file, CertificateType.test.name()));
+            assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
         }
 
         @ParameterizedTest
