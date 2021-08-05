@@ -61,8 +61,8 @@ class DefaultInAppDeliveryClientTest {
     }
 
     @Test
-    void throwsException__ifResponseCode404() {
-        mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(404));
+    void throwsException__ifResponseCode418() {
+        mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(418));
 
         var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
         assertEquals(UNKNOWN_APP_CODE, deliveryStatus);
@@ -90,7 +90,7 @@ class DefaultInAppDeliveryClientTest {
         mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(200));
 
         assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
-        verify(this.kpiLogService, times(1)).log(any());
+        verify(kpiLogService, times(1)).log(any());
     }
 
     @AfterAll

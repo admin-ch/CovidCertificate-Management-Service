@@ -38,7 +38,7 @@ public class TestModelProvider {
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
                 language,
-                getCovidCertificateAddressDto(),
+                null,
                 null
         );
     }
