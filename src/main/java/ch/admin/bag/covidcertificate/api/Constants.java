@@ -68,6 +68,7 @@ public class Constants {
     public static final CreateCertificateError INVALID_STANDARDISED_GIVEN_NAME = new CreateCertificateError(477, "Invalid given name! The standardised given name exceeds 80 chars", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_STANDARDISED_FAMILY_NAME = new CreateCertificateError(478, "Invalid family name! The standardised family name exceeds 80 chars", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_APP_CODE = new CreateCertificateError(479, "App code is in an invalid format.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_PRINT_FOR_TEST = new CreateCertificateError(488, "Print is not available for test certificates", HttpStatus.BAD_REQUEST);
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
