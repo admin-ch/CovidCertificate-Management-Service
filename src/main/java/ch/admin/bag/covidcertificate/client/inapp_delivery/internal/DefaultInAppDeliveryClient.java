@@ -67,8 +67,8 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
     }
 
     private CreateCertificateError handleErrorResponse(WebClientResponseException exception) {
-        if (exception != null && exception.getStatusCode() == HttpStatus.NOT_FOUND) {
-            log.warn("Service or appCode not found", exception);
+        if (exception != null && exception.getStatusCode() == HttpStatus.I_AM_A_TEAPOT) {
+            log.warn("AppCode not found", exception);
             return UNKNOWN_APP_CODE;
         } else {
             log.error("Received error message", exception);
