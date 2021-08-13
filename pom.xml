@@ -20,6 +20,7 @@
 		<spring-cloud.version>2020.0.3</spring-cloud.version>
 		<logstash.version>6.6</logstash.version>
 		<janino.version>3.1.4</janino.version>
+		<cc-backend-logging.version>1.0.0</cc-backend-logging.version>
 		<guava.version>30.1.1-jre</guava.version>
 		<itextpdf.version>5.5.13.2</itextpdf.version>
 		<springdoc.version>1.5.8</springdoc.version>
@@ -146,6 +147,11 @@
             <artifactId>janino</artifactId>
             <version>${janino.version}</version>
         </dependency>
+		<dependency>
+			<groupId>ch.admin.bag.covidcertificate</groupId>
+			<artifactId>cc-backend-logging</artifactId>
+			<version>${cc-backend-logging.version}</version>
+		</dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
