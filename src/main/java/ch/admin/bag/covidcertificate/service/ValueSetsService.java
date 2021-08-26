@@ -2,6 +2,10 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.response.IssuableRapidTestDto;
+import ch.admin.bag.covidcertificate.api.response.IssuableVaccineDto;
+import ch.admin.bag.covidcertificate.api.response.RapidTestDto;
+import ch.admin.bag.covidcertificate.api.response.VaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
 import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
@@ -9,11 +13,10 @@ import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.*;
@@ -112,5 +115,33 @@ public class ValueSetsService {
                 break;
         }
         return result;
+    }
+
+    public List<RapidTestDto> getRapidTests() {
+        var rapidTests = new ArrayList<RapidTestDto>();
+        rapidTests.add(new RapidTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", true));
+        rapidTests.add(new RapidTestDto("1065", "Becton Dickinson, BD Veritor? System for Rapid Detection of SARS CoV 2", true));
+        return rapidTests;
+    }
+
+    public List<IssuableRapidTestDto> getIssuableRapidTests() {
+        var issuableRapidTests = new ArrayList<IssuableRapidTestDto>();
+        issuableRapidTests.add(new IssuableRapidTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)"));
+        issuableRapidTests.add(new IssuableRapidTestDto("1065", "Becton Dickinson, BD Veritor? System for Rapid Detection of SARS CoV 2"));
+        return issuableRapidTests;
+    }
+
+    public List<VaccineDto> getVaccines() {
+        var vaccines = new ArrayList<VaccineDto>();
+        vaccines.add(new VaccineDto("EU/1/20/1528", "Comirnaty", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100030215", "Biontech Manufacturing GmbH", true));
+        vaccines.add(new VaccineDto("EU/1/20/1507", "COVID-19 Vaccine Moderna", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100031184", "Moderna Biotech Spain S.L.", true));
+        return vaccines;
+    }
+
+    public List<IssuableVaccineDto> getIssuableVaccines() {
+        var issuableVaccines = new ArrayList<IssuableVaccineDto>();
+        issuableVaccines.add(new IssuableVaccineDto("EU/1/20/1528", "Comirnaty", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100030215", "Biontech Manufacturing GmbH"));
+        issuableVaccines.add(new IssuableVaccineDto("EU/1/20/1507", "COVID-19 Vaccine Moderna", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100031184", "Moderna Biotech Spain S.L."));
+        return issuableVaccines;
     }
 }
