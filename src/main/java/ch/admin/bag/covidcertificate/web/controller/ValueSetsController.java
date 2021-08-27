@@ -35,7 +35,7 @@ public class ValueSetsController {
         return ValueSetsResponseDtoMapper.create(valueSetsService.getValueSets());
     }
 
-    @PostMapping("/rapid-tests")
+    @GetMapping("/rapid-tests")
     public List<TestDto> getRapidTests(HttpServletRequest request) {
         log.info("Call of getRapidTests for value sets");
         securityHelper.authorizeUser(request);
@@ -43,7 +43,7 @@ public class ValueSetsController {
         return valueSetsService.getRapidTests();
     }
 
-    @PostMapping("/issuable-rapid-tests")
+    @GetMapping("/issuable-rapid-tests")
     public List<IssuableTestDto> getIssuableRapidTests(HttpServletRequest request) {
         log.info("Call of getIssuableRapidTests for value sets");
         securityHelper.authorizeUser(request);
@@ -51,7 +51,7 @@ public class ValueSetsController {
         return valueSetsService.getIssuableRapidTests();
     }
 
-    @PostMapping("/vaccines")
+    @GetMapping("/vaccines")
     public List<VaccineDto> getVaccines(HttpServletRequest request) {
         log.info("Call of getVaccines for value sets");
         securityHelper.authorizeUser(request);
@@ -59,7 +59,7 @@ public class ValueSetsController {
         return valueSetsService.getVaccines();
     }
 
-    @PostMapping("/issuable-vaccines")
+    @GetMapping("/issuable-vaccines")
     public List<IssuableVaccineDto> getIssuableVaccines(HttpServletRequest request) {
         log.info("Call of getIssuableVaccines for value sets");
         securityHelper.authorizeUser(request);
