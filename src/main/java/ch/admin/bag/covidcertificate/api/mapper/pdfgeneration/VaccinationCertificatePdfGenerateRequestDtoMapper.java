@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.api.mapper.pdfgeneration;
 
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import lombok.AccessLevel;
@@ -14,7 +14,7 @@ public class VaccinationCertificatePdfGenerateRequestDtoMapper {
 
     public static VaccinationCertificatePdf toVaccinationCertificatePdf(
             VaccinationCertificatePdfGenerateRequestDto vaccinationCertificateCreateDto,
-            VaccinationValueSet vaccinationValueSet,
+            IssuableVaccineDto vaccinationValueSet,
             String countryOfVaccinationDisplay,
             String countryOfVaccinationDisplayEn
     ) {
@@ -26,9 +26,9 @@ public class VaccinationCertificatePdfGenerateRequestDtoMapper {
                 vaccinationCertificateCreateDto.getLanguage(),
                 diseaseOrAgentTargeted.getCode(),
                 diseaseOrAgentTargeted.getSystem(),
-                vaccinationValueSet.getProphylaxis(),
-                vaccinationValueSet.getMedicinalProduct(),
-                vaccinationValueSet.getAuthHolder(),
+                vaccinationValueSet.getProphylaxisDisplay(),
+                vaccinationValueSet.getProductDisplay(),
+                vaccinationValueSet.getAuthHolderDisplay(),
                 vaccinationCertificateCreateDto.getDecodedCert().getVaccinationInfo().get(0).getNumberOfDoses(),
                 vaccinationCertificateCreateDto.getDecodedCert().getVaccinationInfo().get(0).getTotalNumberOfDoses(),
                 vaccinationCertificateCreateDto.getDecodedCert().getVaccinationInfo().get(0).getVaccinationDate(),

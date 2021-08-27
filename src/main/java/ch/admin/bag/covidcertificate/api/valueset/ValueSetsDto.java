@@ -9,7 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ValueSetsDto {
     private final CountryCodes countryCodes;
-    private final List<VaccinationValueSet> vaccinationSets;
-    private final List<TestValueSet> chAcceptedTestValueSets;
-    private final List<TestValueSet> allTestValueSets;
+    private final List<IssuableVaccineDto> vaccinationSets;
+    private final List<IssuableTestDto> testValueSets;
 }

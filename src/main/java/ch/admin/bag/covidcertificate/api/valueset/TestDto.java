@@ -1,4 +1,4 @@
-package ch.admin.bag.covidcertificate.api.response;
+package ch.admin.bag.covidcertificate.api.valueset;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -9,12 +9,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RapidTestDto extends IssuableRapidTestDto {
+public class TestDto extends IssuableTestDto {
     @Schema(type = "boolean")
     private Boolean active;
 
-    public RapidTestDto(String code, String display, Boolean active) {
-        super(code, display);
+    public TestDto(String code, String display, TestType testType, Boolean active) {
+        super(code, display, testType);
         this.active = active;
     }
 }

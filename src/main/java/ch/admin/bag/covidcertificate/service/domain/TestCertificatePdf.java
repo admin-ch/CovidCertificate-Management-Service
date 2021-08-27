@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
-import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -15,8 +14,7 @@ public class TestCertificatePdf extends AbstractCertificatePdf {
     private final String diseaseOrAgentTargetedCode;
     private final String diseaseOrAgentTargetedSystem;
     private final String typeOfTest;
-    private final String testName;
-    private final String testManufacturer;
+    private final String testNameAndManufacturer;
     private final ZonedDateTime sampleDateTime;
     private final String result;
     private final String testingCentreOrFacility;
@@ -33,8 +31,7 @@ public class TestCertificatePdf extends AbstractCertificatePdf {
             String diseaseOrAgentTargetedCode,
             String diseaseOrAgentTargetedSystem,
             String typeOfTest,
-            String testName,
-            String testManufacturer,
+            String testNameAndManufacturer,
             ZonedDateTime sampleDateTime,
             String result,
             String testingCentreOrFacility,
@@ -47,8 +44,7 @@ public class TestCertificatePdf extends AbstractCertificatePdf {
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.typeOfTest = typeOfTest;
-        this.testName = testName;
-        this.testManufacturer = testManufacturer;
+        this.testNameAndManufacturer = testNameAndManufacturer;
         this.sampleDateTime = sampleDateTime;
         this.result = result;
         this.testingCentreOrFacility = testingCentreOrFacility;
