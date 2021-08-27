@@ -11,7 +11,7 @@ public class ValueSetsResponseDtoMapper {
         return new ValueSetsResponseDto(
                 valueSetsDto.getCountryCodes(),
                 valueSetsDto.getVaccinationSets(),
-                valueSetsDto.getChAcceptedTestValueSets()
+                valueSetsDto.getTestValueSets()
         );
     }
 }

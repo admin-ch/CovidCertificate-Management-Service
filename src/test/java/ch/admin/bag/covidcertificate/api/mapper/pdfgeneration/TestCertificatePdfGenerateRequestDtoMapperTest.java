@@ -1,8 +1,8 @@
 package ch.admin.bag.covidcertificate.api.mapper.pdfgeneration;
 
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.NegativeTestResult;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import com.flextrade.jfixture.JFixture;
@@ -15,7 +15,7 @@ public class TestCertificatePdfGenerateRequestDtoMapperTest {
 
     private final JFixture fixture = new JFixture();
     private final TestCertificatePdfGenerateRequestDto incoming = fixture.create(TestCertificatePdfGenerateRequestDto.class);
-    private final TestValueSet testValueSet = fixture.create(TestValueSet.class);
+    private final IssuableTestDto testValueSet = fixture.create(IssuableTestDto.class);
     private final String memberStateOfTest = "Schweiz";
     private final String memberStateOfTestEn = "Switzerland";
 
@@ -58,19 +58,13 @@ public class TestCertificatePdfGenerateRequestDtoMapperTest {
     @Test
     public void mapsTypeOfTest() {
         TestCertificatePdf actual = TestCertificatePdfGenerateRequestDtoMapper.toTestCertificatePdf(incoming, testValueSet, memberStateOfTest, memberStateOfTestEn);
-        assertEquals(testValueSet.getType(), actual.getTypeOfTest());
+        assertEquals(testValueSet.getTestType().typeDisplay, actual.getTypeOfTest());
     }
 
     @Test
     public void mapsTestName() {
         TestCertificatePdf actual = TestCertificatePdfGenerateRequestDtoMapper.toTestCertificatePdf(incoming, testValueSet, memberStateOfTest, memberStateOfTestEn);
-        assertEquals(testValueSet.getName(), actual.getTestName());
-    }
-
-    @Test
-    public void mapsTestManufacturer() {
-        TestCertificatePdf actual = TestCertificatePdfGenerateRequestDtoMapper.toTestCertificatePdf(incoming, testValueSet, memberStateOfTest, memberStateOfTestEn);
-        assertEquals(testValueSet.getManufacturer(), actual.getTestManufacturer());
+        assertEquals(testValueSet.getDisplay(), actual.getTestNameAndManufacturer());
     }
 
     @Test

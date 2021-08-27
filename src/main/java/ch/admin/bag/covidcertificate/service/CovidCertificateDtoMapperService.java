@@ -34,13 +34,13 @@ public class CovidCertificateDtoMapperService {
     }
 
     public TestCertificateQrCode toTestCertificateQrCode(TestCertificateCreateDto createDto) {
-        var testValueSet = valueSetsService.getChAcceptedTestValueSet(createDto.getTestInfo().get(0));
+        var testValueSet = valueSetsService.getIssuableTestDto(createDto.getTestInfo().get(0));
         return TestCertificateQrCodeMapper.toTestCertificateQrCode(createDto, testValueSet);
 
     }
 
     public TestCertificatePdf toTestCertificatePdf(TestCertificateCreateDto createDto, TestCertificateQrCode qrCodeData) {
-        var testValueSet = valueSetsService.getChAcceptedTestValueSet(createDto.getTestInfo().get(0));
+        var testValueSet = valueSetsService.getIssuableTestDto(createDto.getTestInfo().get(0));
         var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {

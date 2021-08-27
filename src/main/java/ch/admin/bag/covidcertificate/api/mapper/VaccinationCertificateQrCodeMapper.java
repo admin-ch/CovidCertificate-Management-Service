@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api.mapper;
 
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateData;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
@@ -21,7 +21,7 @@ public class VaccinationCertificateQrCodeMapper {
 
     public static VaccinationCertificateQrCode toVaccinationCertificateQrCode(
             VaccinationCertificateCreateDto vaccinationCertificateCreateDto,
-            VaccinationValueSet vaccinationValueSet
+            IssuableVaccineDto issuableVaccineDto
     ) {
         return new VaccinationCertificateQrCode(
                 VERSION,
@@ -29,32 +29,32 @@ public class VaccinationCertificateQrCodeMapper {
                 VaccinationCertificateQrCodeMapper
                         .toVaccinationCertificateDataList(
                                 vaccinationCertificateCreateDto.getVaccinationInfo(),
-                                vaccinationValueSet
+                                issuableVaccineDto
                         )
         );
     }
 
     private static List<VaccinationCertificateData> toVaccinationCertificateDataList(
             List<VaccinationCertificateDataDto> vaccinationCertificateDataDtoList,
-            VaccinationValueSet vaccinationValueSet
+            IssuableVaccineDto issuableVaccineDto
     ) {
         return vaccinationCertificateDataDtoList.stream().map(vaccinationCertificateDataDto ->
                 toVaccinationCertificateData(
                         vaccinationCertificateDataDto,
-                        vaccinationValueSet
+                        issuableVaccineDto
                 )
         ).collect(Collectors.toList());
     }
 
     private static VaccinationCertificateData toVaccinationCertificateData(
             VaccinationCertificateDataDto vaccinationCertificateDataDto,
-            VaccinationValueSet vaccinationValueSet
+            IssuableVaccineDto issuableVaccineDto
     ) {
         return new VaccinationCertificateData(
                 CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
-                vaccinationValueSet.getProphylaxisCode(),
-                vaccinationValueSet.getMedicinalProductCode(),
-                vaccinationValueSet.getAuthHolderCode(),
+                issuableVaccineDto.getProphylaxisDisplay(),
+                issuableVaccineDto.getProductDisplay(),
+                issuableVaccineDto.getAuthHolderDisplay(),
                 vaccinationCertificateDataDto.getNumberOfDoses(),
                 vaccinationCertificateDataDto.getTotalNumberOfDoses(),
                 vaccinationCertificateDataDto.getVaccinationDate(),

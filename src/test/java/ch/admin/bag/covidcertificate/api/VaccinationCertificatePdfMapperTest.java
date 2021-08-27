@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
@@ -15,7 +15,7 @@ public class VaccinationCertificatePdfMapperTest {
 
     private final JFixture jFixture = new JFixture();
     private final VaccinationCertificateCreateDto incoming = jFixture.create(VaccinationCertificateCreateDto.class);
-    private final VaccinationValueSet vaccinationValueSet = jFixture.create(VaccinationValueSet.class);
+    private final IssuableVaccineDto vaccinationValueSet = jFixture.create(IssuableVaccineDto.class);
     private final VaccinationCertificateQrCode qrCode = jFixture.create(VaccinationCertificateQrCode.class);
     private final String countryOfVaccination = "Schweiz";
     private final String countryOfVaccinationEn = "Switzerland";
@@ -41,19 +41,19 @@ public class VaccinationCertificatePdfMapperTest {
     @Test
     public void mapsVaccineProphylaxis() {
         VaccinationCertificatePdf actual = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(incoming, vaccinationValueSet, qrCode, countryOfVaccination, countryOfVaccinationEn);
-        assertEquals(vaccinationValueSet.getProphylaxis(), actual.getVaccineProphylaxis());
+        assertEquals(vaccinationValueSet.getProphylaxisDisplay(), actual.getVaccineProphylaxis());
     }
 
     @Test
     public void mapsMedicinalProduct() {
         VaccinationCertificatePdf actual = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(incoming, vaccinationValueSet, qrCode, countryOfVaccination, countryOfVaccinationEn);
-        assertEquals(vaccinationValueSet.getMedicinalProduct(), actual.getMedicinalProduct());
+        assertEquals(vaccinationValueSet.getProductDisplay(), actual.getMedicinalProduct());
     }
 
     @Test
     public void mapsMarketingAuthorizationHolder() {
         VaccinationCertificatePdf actual = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(incoming, vaccinationValueSet, qrCode, countryOfVaccination, countryOfVaccinationEn);
-        assertEquals(vaccinationValueSet.getAuthHolder(), actual.getMarketingAuthorizationHolder());
+        assertEquals(vaccinationValueSet.getAuthHolderDisplay(), actual.getMarketingAuthorizationHolder());
     }
 
     @Test

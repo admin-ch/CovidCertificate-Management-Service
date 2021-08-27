@@ -5,9 +5,9 @@ import ch.admin.bag.covidcertificate.api.mapper.*;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
 import ch.admin.bag.covidcertificate.service.domain.*;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,8 +43,8 @@ class CovidCertificateDtoMapperServiceTest {
     @BeforeEach
     public void setUp() {
         customizeTestValueSet(fixture);
-        lenient().when(valueSetsService.getVaccinationValueSet(any())).thenReturn(fixture.create(VaccinationValueSet.class));
-        lenient().when(valueSetsService.getChAcceptedTestValueSet(any())).thenReturn(fixture.create(TestValueSet.class));
+        lenient().when(valueSetsService.getVaccinationValueSet(any())).thenReturn(fixture.create(IssuableVaccineDto.class));
+        lenient().when(valueSetsService.getIssuableTestDto(any())).thenReturn(fixture.create(IssuableTestDto.class));
         lenient().when(valueSetsService.getCountryCode(any(), any())).thenReturn(fixture.create(CountryCode.class));
         lenient().when(valueSetsService.getCountryCodeEn(any())).thenReturn(fixture.create(CountryCode.class));
     }
@@ -72,7 +72,7 @@ class CovidCertificateDtoMapperServiceTest {
         }
 
         @Test
-        void shouldMapToVaccinationCertificateQrCode_withCorrectCertificateCreateDto(){
+        void shouldMapToVaccinationCertificateQrCode_withCorrectCertificateCreateDto() {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
             try (MockedStatic<VaccinationCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(VaccinationCertificateQrCodeMapper.class)) {
@@ -81,15 +81,15 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(VaccinationCertificateQrCode.class));
                 service.toVaccinationCertificateQrCode(createDto);
 
-                vaccinationCertificateQrMapperMock.verify(()->
+                vaccinationCertificateQrMapperMock.verify(() ->
                         VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(eq(createDto), any()));
             }
         }
 
         @Test
-        void shouldMapToVaccinationCertificateQrCode_withCorrectVaccinationValueSet(){
-            var vaccinationValueSet = fixture.create(VaccinationValueSet.class);
-            when(valueSetsService.getVaccinationValueSet(any())).thenReturn(vaccinationValueSet);
+        void shouldMapToVaccinationCertificateQrCode_withCorrectVaccinationValueSet() {
+            var vaccineDto = fixture.create(IssuableVaccineDto.class);
+            when(valueSetsService.getVaccinationValueSet(any())).thenReturn(vaccineDto);
             try (MockedStatic<VaccinationCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(VaccinationCertificateQrCodeMapper.class)) {
                 vaccinationCertificateQrMapperMock
@@ -97,13 +97,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(VaccinationCertificateQrCode.class));
                 service.toVaccinationCertificateQrCode(fixture.create(VaccinationCertificateCreateDto.class));
 
-                vaccinationCertificateQrMapperMock.verify(()->
-                        VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(any(), eq(vaccinationValueSet)));
+                vaccinationCertificateQrMapperMock.verify(() ->
+                        VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(any(), eq(vaccineDto)));
             }
         }
 
         @Test
-        void shouldReturnVaccinationCertificateQrCode(){
+        void shouldReturnVaccinationCertificateQrCode() {
             var vaccinationCertificateQrCode = fixture.create(VaccinationCertificateQrCode.class);
             try (MockedStatic<VaccinationCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(VaccinationCertificateQrCodeMapper.class)) {
@@ -184,7 +184,7 @@ class CovidCertificateDtoMapperServiceTest {
         }
 
         @Test
-        void shouldMapToVaccinationCertificatePdf_withCorrectCertificateCreateDto(){
+        void shouldMapToVaccinationCertificatePdf_withCorrectCertificateCreateDto() {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
             try (MockedStatic<VaccinationCertificatePdfMapper> vaccinationCertificatePdfMapperMock =
                          Mockito.mockStatic(VaccinationCertificatePdfMapper.class)) {
@@ -193,15 +193,15 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(VaccinationCertificatePdf.class));
                 service.toVaccinationCertificatePdf(createDto, fixture.create(VaccinationCertificateQrCode.class));
 
-                vaccinationCertificatePdfMapperMock.verify(()->
+                vaccinationCertificatePdfMapperMock.verify(() ->
                         VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(eq(createDto), any(), any(), any(), any()));
             }
         }
 
         @Test
-        void shouldMapToVaccinationCertificatePdf_withCorrectVaccinationValueSet(){
-            var vaccinationValueSet = fixture.create(VaccinationValueSet.class);
-            when(valueSetsService.getVaccinationValueSet(any())).thenReturn(vaccinationValueSet);
+        void shouldMapToVaccinationCertificatePdf_withCorrectVaccinationValueSet() {
+            var vaccineDto = fixture.create(IssuableVaccineDto.class);
+            when(valueSetsService.getVaccinationValueSet(any())).thenReturn(vaccineDto);
             try (MockedStatic<VaccinationCertificatePdfMapper> vaccinationCertificatePdfMapperMock =
                          Mockito.mockStatic(VaccinationCertificatePdfMapper.class)) {
                 vaccinationCertificatePdfMapperMock
@@ -209,13 +209,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(VaccinationCertificatePdf.class));
                 service.toVaccinationCertificatePdf(fixture.create(VaccinationCertificateCreateDto.class), fixture.create(VaccinationCertificateQrCode.class));
 
-                vaccinationCertificatePdfMapperMock.verify(()->
-                        VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(any(), eq(vaccinationValueSet), any(), any(), any()));
+                vaccinationCertificatePdfMapperMock.verify(() ->
+                        VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(any(), eq(vaccineDto), any(), any(), any()));
             }
         }
 
         @Test
-        void shouldMapToVaccinationCertificatePdf_withCorrectQrCodeData(){
+        void shouldMapToVaccinationCertificatePdf_withCorrectQrCodeData() {
             var qrCodeData = fixture.create(VaccinationCertificateQrCode.class);
             try (MockedStatic<VaccinationCertificatePdfMapper> vaccinationCertificatePdfMapperMock =
                          Mockito.mockStatic(VaccinationCertificatePdfMapper.class)) {
@@ -224,13 +224,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(VaccinationCertificatePdf.class));
                 service.toVaccinationCertificatePdf(fixture.create(VaccinationCertificateCreateDto.class), qrCodeData);
 
-                vaccinationCertificatePdfMapperMock.verify(()->
+                vaccinationCertificatePdfMapperMock.verify(() ->
                         VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(any(), any(), eq(qrCodeData), any(), any()));
             }
         }
 
         @Test
-        void shouldMapToVaccinationCertificatePdf_withCorrectCountryValueSet(){
+        void shouldMapToVaccinationCertificatePdf_withCorrectCountryValueSet() {
             var countryValueSet = fixture.create(CountryCode.class);
             when(valueSetsService.getCountryCode(any(), any())).thenReturn(countryValueSet);
             try (MockedStatic<VaccinationCertificatePdfMapper> vaccinationCertificatePdfMapperMock =
@@ -240,13 +240,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(VaccinationCertificatePdf.class));
                 service.toVaccinationCertificatePdf(fixture.create(VaccinationCertificateCreateDto.class), fixture.create(VaccinationCertificateQrCode.class));
 
-                vaccinationCertificatePdfMapperMock.verify(()->
+                vaccinationCertificatePdfMapperMock.verify(() ->
                         VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(any(), any(), any(), eq(countryValueSet.getDisplay()), any()));
             }
         }
 
         @Test
-        void shouldMapToVaccinationCertificatePdf_withCorrectCountryEnValueSet(){
+        void shouldMapToVaccinationCertificatePdf_withCorrectCountryEnValueSet() {
             var countryEnValueSet = fixture.create(CountryCode.class);
             when(valueSetsService.getCountryCodeEn(any())).thenReturn(countryEnValueSet);
             try (MockedStatic<VaccinationCertificatePdfMapper> vaccinationCertificatePdfMapperMock =
@@ -256,13 +256,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(VaccinationCertificatePdf.class));
                 service.toVaccinationCertificatePdf(fixture.create(VaccinationCertificateCreateDto.class), fixture.create(VaccinationCertificateQrCode.class));
 
-                vaccinationCertificatePdfMapperMock.verify(()->
+                vaccinationCertificatePdfMapperMock.verify(() ->
                         VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(any(), any(), any(), any(), eq(countryEnValueSet.getDisplay())));
             }
         }
 
         @Test
-        void shouldReturnVaccinationCertificatePdf(){
+        void shouldReturnVaccinationCertificatePdf() {
             var vaccinationCertificatePdf = fixture.create(VaccinationCertificatePdf.class);
             var countryEnValueSet = fixture.create(CountryCode.class);
             when(valueSetsService.getCountryCodeEn(any())).thenReturn(countryEnValueSet);
@@ -285,14 +285,14 @@ class CovidCertificateDtoMapperServiceTest {
         void shouldLoadTestValueSet() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             service.toTestCertificateQrCode(createDto);
-            verify(valueSetsService).getChAcceptedTestValueSet(createDto.getTestInfo().get(0));
+            verify(valueSetsService).getIssuableTestDto(createDto.getTestInfo().get(0));
         }
 
         @Test
         void throwsCreateCertificateException_ifValueSetServiceThrowsCreateCertificateException() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var expected = fixture.create(CreateCertificateException.class);
-            lenient().when(valueSetsService.getChAcceptedTestValueSet(any())).thenThrow(expected);
+            lenient().when(valueSetsService.getIssuableTestDto(any())).thenThrow(expected);
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
                     () -> service.toTestCertificateQrCode(createDto)
@@ -303,7 +303,7 @@ class CovidCertificateDtoMapperServiceTest {
 
 
         @Test
-        void shouldMapToTestCertificateQrCode_withCorrectCertificateCreateDto(){
+        void shouldMapToTestCertificateQrCode_withCorrectCertificateCreateDto() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             try (MockedStatic<TestCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(TestCertificateQrCodeMapper.class)) {
@@ -312,15 +312,15 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(TestCertificateQrCode.class));
                 service.toTestCertificateQrCode(createDto);
 
-                vaccinationCertificateQrMapperMock.verify(()->
+                vaccinationCertificateQrMapperMock.verify(() ->
                         TestCertificateQrCodeMapper.toTestCertificateQrCode(eq(createDto), any()));
             }
         }
 
         @Test
-        void shouldMapToTestCertificateQrCode_withCorrectTestValueSet(){
-            var vaccinationValueSet = fixture.create(TestValueSet.class);
-            when(valueSetsService.getChAcceptedTestValueSet(any())).thenReturn(vaccinationValueSet);
+        void shouldMapToTestCertificateQrCode_withCorrectTestValueSet() {
+            var vaccinationValueSet = fixture.create(IssuableTestDto.class);
+            when(valueSetsService.getIssuableTestDto(any())).thenReturn(vaccinationValueSet);
             try (MockedStatic<TestCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(TestCertificateQrCodeMapper.class)) {
                 vaccinationCertificateQrMapperMock
@@ -328,13 +328,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(TestCertificateQrCode.class));
                 service.toTestCertificateQrCode(fixture.create(TestCertificateCreateDto.class));
 
-                vaccinationCertificateQrMapperMock.verify(()->
+                vaccinationCertificateQrMapperMock.verify(() ->
                         TestCertificateQrCodeMapper.toTestCertificateQrCode(any(), eq(vaccinationValueSet)));
             }
         }
 
         @Test
-        void shouldReturnTestCertificateQrCode(){
+        void shouldReturnTestCertificateQrCode() {
             var vaccinationCertificateQrCode = fixture.create(TestCertificateQrCode.class);
             try (MockedStatic<TestCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(TestCertificateQrCodeMapper.class)) {
@@ -355,7 +355,7 @@ class CovidCertificateDtoMapperServiceTest {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             service.toTestCertificatePdf(createDto, qrCodeData);
-            verify(valueSetsService).getChAcceptedTestValueSet(createDto.getTestInfo().get(0));
+            verify(valueSetsService).getIssuableTestDto(createDto.getTestInfo().get(0));
         }
 
         @Test
@@ -379,7 +379,7 @@ class CovidCertificateDtoMapperServiceTest {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             var expected = fixture.create(CreateCertificateException.class);
-            lenient().when(valueSetsService.getChAcceptedTestValueSet(any())).thenThrow(expected);
+            lenient().when(valueSetsService.getIssuableTestDto(any())).thenThrow(expected);
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
                     () -> service.toTestCertificatePdf(createDto, qrCodeData)
@@ -416,7 +416,7 @@ class CovidCertificateDtoMapperServiceTest {
 
 
         @Test
-        void shouldMapToTestCertificatePdf_withCorrectCertificateCreateDto(){
+        void shouldMapToTestCertificatePdf_withCorrectCertificateCreateDto() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             try (MockedStatic<TestCertificatePdfMapper> testCertificatePdfMapperMock =
                          Mockito.mockStatic(TestCertificatePdfMapper.class)) {
@@ -425,15 +425,15 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(TestCertificatePdf.class));
                 service.toTestCertificatePdf(createDto, fixture.create(TestCertificateQrCode.class));
 
-                testCertificatePdfMapperMock.verify(()->
+                testCertificatePdfMapperMock.verify(() ->
                         TestCertificatePdfMapper.toTestCertificatePdf(eq(createDto), any(), any(), any(), any()));
             }
         }
 
         @Test
-        void shouldMapToTestCertificatePdf_withCorrectTestValueSet(){
-            var testValueSet = fixture.create(TestValueSet.class);
-            when(valueSetsService.getChAcceptedTestValueSet(any())).thenReturn(testValueSet);
+        void shouldMapToTestCertificatePdf_withCorrectTestValueSet() {
+            var testValueSet = fixture.create(IssuableTestDto.class);
+            when(valueSetsService.getIssuableTestDto(any())).thenReturn(testValueSet);
             try (MockedStatic<TestCertificatePdfMapper> testCertificatePdfMapperMock =
                          Mockito.mockStatic(TestCertificatePdfMapper.class)) {
                 testCertificatePdfMapperMock
@@ -441,13 +441,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(TestCertificatePdf.class));
                 service.toTestCertificatePdf(fixture.create(TestCertificateCreateDto.class), fixture.create(TestCertificateQrCode.class));
 
-                testCertificatePdfMapperMock.verify(()->
+                testCertificatePdfMapperMock.verify(() ->
                         TestCertificatePdfMapper.toTestCertificatePdf(any(), eq(testValueSet), any(), any(), any()));
             }
         }
 
         @Test
-        void shouldMapToTestCertificatePdf_withCorrectQrCodeData(){
+        void shouldMapToTestCertificatePdf_withCorrectQrCodeData() {
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             try (MockedStatic<TestCertificatePdfMapper> testCertificatePdfMapperMock =
                          Mockito.mockStatic(TestCertificatePdfMapper.class)) {
@@ -456,13 +456,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(TestCertificatePdf.class));
                 service.toTestCertificatePdf(fixture.create(TestCertificateCreateDto.class), qrCodeData);
 
-                testCertificatePdfMapperMock.verify(()->
+                testCertificatePdfMapperMock.verify(() ->
                         TestCertificatePdfMapper.toTestCertificatePdf(any(), any(), eq(qrCodeData), any(), any()));
             }
         }
 
         @Test
-        void shouldMapToTestCertificatePdf_withCorrectCountryValueSet(){
+        void shouldMapToTestCertificatePdf_withCorrectCountryValueSet() {
             var countryValueSet = fixture.create(CountryCode.class);
             when(valueSetsService.getCountryCode(any(), any())).thenReturn(countryValueSet);
             try (MockedStatic<TestCertificatePdfMapper> testCertificatePdfMapperMock =
@@ -472,13 +472,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(TestCertificatePdf.class));
                 service.toTestCertificatePdf(fixture.create(TestCertificateCreateDto.class), fixture.create(TestCertificateQrCode.class));
 
-                testCertificatePdfMapperMock.verify(()->
+                testCertificatePdfMapperMock.verify(() ->
                         TestCertificatePdfMapper.toTestCertificatePdf(any(), any(), any(), eq(countryValueSet.getDisplay()), any()));
             }
         }
 
         @Test
-        void shouldMapToTestCertificatePdf_withCorrectCountryEnValueSet(){
+        void shouldMapToTestCertificatePdf_withCorrectCountryEnValueSet() {
 
             var countryEnValueSet = fixture.create(CountryCode.class);
             when(valueSetsService.getCountryCodeEn(any())).thenReturn(countryEnValueSet);
@@ -489,13 +489,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(TestCertificatePdf.class));
                 service.toTestCertificatePdf(fixture.create(TestCertificateCreateDto.class), fixture.create(TestCertificateQrCode.class));
 
-                testCertificatePdfMapperMock.verify(()->
+                testCertificatePdfMapperMock.verify(() ->
                         TestCertificatePdfMapper.toTestCertificatePdf(any(), any(), any(), any(), eq(countryEnValueSet.getDisplay())));
             }
         }
 
         @Test
-        void shouldReturnTestCertificatePdf(){
+        void shouldReturnTestCertificatePdf() {
             var testCertificatePdf = fixture.create(TestCertificatePdf.class);
             var countryEnValueSet = fixture.create(CountryCode.class);
             when(valueSetsService.getCountryCodeEn(any())).thenReturn(countryEnValueSet);
@@ -512,11 +512,10 @@ class CovidCertificateDtoMapperServiceTest {
     }
 
 
-
     @Nested
     class ToRecoveryCertificateQrCode {
         @Test
-        void shouldMapToRecoveryCertificateQrCode_withCorrectCertificateCreateDto(){
+        void shouldMapToRecoveryCertificateQrCode_withCorrectCertificateCreateDto() {
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
             try (MockedStatic<RecoveryCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(RecoveryCertificateQrCodeMapper.class)) {
@@ -525,13 +524,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(RecoveryCertificateQrCode.class));
                 service.toRecoveryCertificateQrCode(createDto);
 
-                vaccinationCertificateQrMapperMock.verify(()->
+                vaccinationCertificateQrMapperMock.verify(() ->
                         RecoveryCertificateQrCodeMapper.toRecoveryCertificateQrCode(eq(createDto)));
             }
         }
 
         @Test
-        void shouldReturnRecoveryCertificateQrCode(){
+        void shouldReturnRecoveryCertificateQrCode() {
             var vaccinationCertificateQrCode = fixture.create(RecoveryCertificateQrCode.class);
             try (MockedStatic<RecoveryCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(RecoveryCertificateQrCodeMapper.class)) {
@@ -590,7 +589,7 @@ class CovidCertificateDtoMapperServiceTest {
         }
 
         @Test
-        void shouldMapToRecoveryCertificatePdf_withCorrectCertificateCreateDto(){
+        void shouldMapToRecoveryCertificatePdf_withCorrectCertificateCreateDto() {
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
             try (MockedStatic<RecoveryCertificatePdfMapper> recoveryCertificatePdfMapperMock =
                          Mockito.mockStatic(RecoveryCertificatePdfMapper.class)) {
@@ -599,13 +598,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(RecoveryCertificatePdf.class));
                 service.toRecoveryCertificatePdf(createDto, fixture.create(RecoveryCertificateQrCode.class));
 
-                recoveryCertificatePdfMapperMock.verify(()->
+                recoveryCertificatePdfMapperMock.verify(() ->
                         RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(eq(createDto), any(), any(), any()));
             }
         }
 
         @Test
-        void shouldMapToRecoveryCertificatePdf_withCorrectQrCodeData(){
+        void shouldMapToRecoveryCertificatePdf_withCorrectQrCodeData() {
             var qrCodeData = fixture.create(RecoveryCertificateQrCode.class);
             try (MockedStatic<RecoveryCertificatePdfMapper> recoveryCertificatePdfMapperMock =
                          Mockito.mockStatic(RecoveryCertificatePdfMapper.class)) {
@@ -614,13 +613,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(RecoveryCertificatePdf.class));
                 service.toRecoveryCertificatePdf(fixture.create(RecoveryCertificateCreateDto.class), qrCodeData);
 
-                recoveryCertificatePdfMapperMock.verify(()->
+                recoveryCertificatePdfMapperMock.verify(() ->
                         RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(any(), eq(qrCodeData), any(), any()));
             }
         }
 
         @Test
-        void shouldMapToRecoveryCertificatePdf_withCorrectCountryValueSet(){
+        void shouldMapToRecoveryCertificatePdf_withCorrectCountryValueSet() {
             var countryValueSet = fixture.create(CountryCode.class);
             when(valueSetsService.getCountryCode(any(), any())).thenReturn(countryValueSet);
             try (MockedStatic<RecoveryCertificatePdfMapper> recoveryCertificatePdfMapperMock =
@@ -630,13 +629,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(RecoveryCertificatePdf.class));
                 service.toRecoveryCertificatePdf(fixture.create(RecoveryCertificateCreateDto.class), fixture.create(RecoveryCertificateQrCode.class));
 
-                recoveryCertificatePdfMapperMock.verify(()->
+                recoveryCertificatePdfMapperMock.verify(() ->
                         RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(any(), any(), eq(countryValueSet.getDisplay()), any()));
             }
         }
 
         @Test
-        void shouldMapToRecoveryCertificatePdf_withCorrectCountryEnValueSet(){
+        void shouldMapToRecoveryCertificatePdf_withCorrectCountryEnValueSet() {
             var countryEnValueSet = fixture.create(CountryCode.class);
             when(valueSetsService.getCountryCodeEn(any())).thenReturn(countryEnValueSet);
             try (MockedStatic<RecoveryCertificatePdfMapper> recoveryCertificatePdfMapperMock =
@@ -646,13 +645,13 @@ class CovidCertificateDtoMapperServiceTest {
                         .thenReturn(fixture.create(RecoveryCertificatePdf.class));
                 service.toRecoveryCertificatePdf(fixture.create(RecoveryCertificateCreateDto.class), fixture.create(RecoveryCertificateQrCode.class));
 
-                recoveryCertificatePdfMapperMock.verify(()->
+                recoveryCertificatePdfMapperMock.verify(() ->
                         RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(any(), any(), any(), eq(countryEnValueSet.getDisplay())));
             }
         }
 
         @Test
-        void shouldReturnRecoveryCertificatePdf(){
+        void shouldReturnRecoveryCertificatePdf() {
             var recoveryCertificatePdf = fixture.create(RecoveryCertificatePdf.class);
             var countryEnValueSet = fixture.create(CountryCode.class);
             when(valueSetsService.getCountryCodeEn(any())).thenReturn(countryEnValueSet);
