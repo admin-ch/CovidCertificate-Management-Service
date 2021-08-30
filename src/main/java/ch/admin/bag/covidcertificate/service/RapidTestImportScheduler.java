@@ -6,6 +6,7 @@ import ch.admin.bag.covidcertificate.domain.RapidTest;
 import ch.admin.bag.covidcertificate.domain.RapidTestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class RapidTestImportService {
+@ConditionalOnProperty(value = "CF_INSTANCE_INDEX", havingValue = "0")
+public class RapidTestImportScheduler {
 
     private final ValueSetsClient valueSetsClient;
 

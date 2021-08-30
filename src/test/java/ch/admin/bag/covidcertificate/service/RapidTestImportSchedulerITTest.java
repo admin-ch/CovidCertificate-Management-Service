@@ -14,14 +14,15 @@ import org.springframework.test.context.ActiveProfiles;
         "spring.datasource.url=jdbc:h2:~/test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
         "spring.datasource.username=sa",
         "spring.datasource.password=sa",
-        "spring.flyway.clean-on-validation-error=true"
+        "spring.flyway.clean-on-validation-error=true",
+        "CF_INSTANCE_INDEX=0"
 })
 @ActiveProfiles("local")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-class RapidTestImportServiceITTest {
+class RapidTestImportSchedulerITTest {
 
     @Autowired
-    private RapidTestImportService service;
+    private RapidTestImportScheduler service;
 
     @Autowired
     private RapidTestRepository repository;

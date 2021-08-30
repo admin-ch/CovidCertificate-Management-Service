@@ -41,7 +41,7 @@ public class DefaultValueSetsClient implements ValueSetsClient {
                     .block();
             if (response != null) {
                 log.trace("ch-covidcertificate-backend-verifier-service response: {}", response);
-                log.debug("Received {} entries", response.getValueSetValues().size());
+                log.debug("Received {} entries of valueSetId {}", response.getValueSetValues().size(), valueSetId);
                 return response.getValueSetValues();
             } else {
                 log.error("Response from {} is null", uri);
