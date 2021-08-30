@@ -34,6 +34,8 @@ cc-management-service:
 
   allowed-origin: "https://www.covidcertificate-d.admin.ch"
 
+  rapid-test-import:
+    cron: "0 0 8,14 * * *"
 
 cc-signing-service:
   url: "https://covidcertificate-signing-d.bag.admin.ch/bag-vaccinecer-webapp/sign"
@@ -43,6 +45,9 @@ cc-printing-service:
 
 cc-inapp-delivery-service:
   url: "https://ch-covidcertificate-backend-delivery-ws.dev.app.cfap02.atlantica.admin.ch/cgs/delivery/v1/covidcert"
+
+ch-covidcertificate-backend-verifier-service:
+  url: "https://ch-covidcertificate-backend-verifier-ws.dev.app.cfap02.atlantica.admin.ch/dcga/v1/valueSets"
 
 ## Mutual-SSL configuration
 app:
