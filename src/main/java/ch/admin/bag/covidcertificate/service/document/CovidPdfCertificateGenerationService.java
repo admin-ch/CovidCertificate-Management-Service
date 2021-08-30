@@ -282,7 +282,7 @@ public class CovidPdfCertificateGenerationService {
         addRow(table, locale, VACCINATION_DISEASE_LABEL_KEY, messageSource.getMessage(VACCINATION_DISEASE_MESSAGE_CODE, null, locale));
         addLocaleAndEnglishRow(table, locale, "test.result.label", messageSource.getMessage("test.result.value", null, locale), messageSource.getMessage("test.result.value", null, Locale.ENGLISH));
         addRow(table, locale, "test.type.label", data.getTypeOfTest());
-        addRow(table, locale, "test.name.label", data.getTestNameAndManufacturer());
+        addRow(table, locale, "test.nameAndManufacturer.label", data.getTestNameAndManufacturer());
         addRow(table, locale, "test.date.label", data.getSampleDateTime().withZoneSameInstant(SWISS_TIMEZONE).format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")));
         addRow(table, locale, "test.conducted.label", data.getTestingCentreOrFacility());
         addLocaleAndEnglishRow(table, locale, "test.country.label", data.getMemberStateOfTest(), data.getMemberStateOfTestEn());
