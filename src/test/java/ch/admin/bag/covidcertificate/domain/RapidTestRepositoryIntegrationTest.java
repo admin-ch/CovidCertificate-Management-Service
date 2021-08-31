@@ -64,6 +64,42 @@ class RapidTestRepositoryIntegrationTest {
         assertEquals(0, results.size());
     }
 
+    @Test
+    @Transactional
+    void findAllActiveAndChIssuable_ok_one_match_of_one() {
+
+    }
+
+    @Test
+    @Transactional
+    void findAllActiveAndChIssuable_ok_no_match_of_four() {
+
+    }
+
+    @Test
+    @Transactional
+    void findAllActiveAndChIssuable_ok_one_match_of_four() {
+
+    }
+
+    @Test
+    @Transactional
+    void findAllActive_ok_one_match_of_one() {
+
+    }
+
+    @Test
+    @Transactional
+    void findAllActive_ok_no_match_of_four() {
+
+    }
+
+    @Test
+    @Transactional
+    void findAllActive_ok_one_match_of_four() {
+
+    }
+
     private void persistRapidTest(String code, boolean active, LocalDateTime modifiedAt) {
         RapidTest rapidTest = new RapidTest(code, "test", active, modifiedAt);
         entityManager.persist(rapidTest);
