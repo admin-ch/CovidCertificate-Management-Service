@@ -70,11 +70,11 @@ public class ValueSetsServiceTest {
         customizeVaccine(fixture);
         customizeRapidTest(fixture);
         lenient().when(countryCodesLoader.getCountryCodes()).thenReturn(fixture.create(CountryCodes.class));
-        lenient().when(vaccineRepository.findAllActive()).thenReturn(
+        lenient().when(vaccineRepository.findAll()).thenReturn(
                 fixture.collections().createCollection(List.class, Vaccine.class));
         lenient().when(vaccineRepository.findAllActiveAndChIssuable()).thenReturn(
                 fixture.collections().createCollection(List.class, Vaccine.class));
-        lenient().when(rapidTestRepository.findAllActive()).thenReturn(
+        lenient().when(rapidTestRepository.findAll()).thenReturn(
                 fixture.collections().createCollection(List.class, RapidTest.class));
         lenient().when(rapidTestRepository.findAllActiveAndChIssuable()).thenReturn(
                 fixture.collections().createCollection(List.class, RapidTest.class));

@@ -12,9 +12,13 @@ import java.util.stream.Collectors;
 public class IssuableVaccineMapper {
 
     public static IssuableVaccineDto fromVaccine(Vaccine vaccine) {
-        return new IssuableVaccineDto(vaccine.getCode(), vaccine.getDisplay(), vaccine.getProphylaxisCode(),
-                              vaccine.getProphylaxisDisplayName(), vaccine.getAuthHolderCode(),
-                              vaccine.getAuthHolderDisplayName());
+        return new IssuableVaccineDto(
+                vaccine.getCode(),
+                vaccine.getDisplay(),
+                vaccine.getProphylaxisCode(),
+                vaccine.getProphylaxisDisplayName(),
+                vaccine.getAuthHolderCode(),
+                vaccine.getAuthHolderDisplayName());
     }
 
     public static List<IssuableVaccineDto> fromVaccines(List<Vaccine> issuableVaccines) {

@@ -139,7 +139,7 @@ public class ValueSetsService {
 
     @Transactional
     public List<TestDto> getRapidTests() {
-        List<RapidTest> rapidTests = this.rapidTestRepository.findAllActive();
+        List<RapidTest> rapidTests = this.rapidTestRepository.findAll();
         return RapidTestMapper.fromRapidTests(rapidTests);
     }
 
@@ -151,7 +151,7 @@ public class ValueSetsService {
 
     @Transactional
     public List<VaccineDto> getVaccines() {
-        List<Vaccine> vaccines = this.vaccineRepository.findAllActive();
+        List<Vaccine> vaccines = this.vaccineRepository.findAll();
         return VaccineMapper.fromVaccines(vaccines);
     }
 

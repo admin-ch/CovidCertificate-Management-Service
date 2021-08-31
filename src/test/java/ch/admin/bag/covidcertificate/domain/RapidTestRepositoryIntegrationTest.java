@@ -98,13 +98,13 @@ class RapidTestRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void findAllActive_ok_one_match_of_one() {
+    void findAll_ok_one_active_match_of_one() {
         // given
         persistRapidTest("13",
                          true,
                          LocalDateTime.now());
         // when
-        List<RapidTest> result = repository.findAllActive();
+        List<RapidTest> result = repository.findAll();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
         RapidTest rapidTest = result.get(0);
@@ -113,15 +113,17 @@ class RapidTestRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void findAllActive_ok_no_match_of_one() {
+    void findAll_ok_one_not_active_match_of_one() {
         // given
         persistRapidTest("14",
                          false,
                          LocalDateTime.now());
         // when
-        List<RapidTest> result = repository.findAllActive();
+        List<RapidTest> result = repository.findAll();
         // then
-        assertThat(result).isNotNull().isEmpty();
+        assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+        RapidTest rapidTest = result.get(0);
+        assertThat(rapidTest.active).isFalse();
     }
 
     private void persistRapidTest(String code, boolean active, LocalDateTime modifiedAt) {

@@ -20,8 +20,4 @@ public interface RapidTestRepository extends JpaRepository<RapidTest, UUID> {
             "where rt.active = true " +
             "and rt.chIssuable = true")
     List<RapidTest> findAllActiveAndChIssuable();
-
-    @Query(value = "select rt from RapidTest rt " +
-            "where rt.active = true")
-    List<RapidTest> findAllActive();
 }

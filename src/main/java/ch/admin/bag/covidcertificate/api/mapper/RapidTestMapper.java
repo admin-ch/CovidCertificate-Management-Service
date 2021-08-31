@@ -1,7 +1,6 @@
 package ch.admin.bag.covidcertificate.api.mapper;
 
 import ch.admin.bag.covidcertificate.api.valueset.TestDto;
-import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.domain.RapidTest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,10 @@ import java.util.stream.Collectors;
 public class RapidTestMapper {
 
     public static TestDto fromRapidTest(RapidTest rapidTest) {
-        return new TestDto(rapidTest.getCode(), rapidTest.getDisplay(), TestType.RAPID_TEST, rapidTest.isActive());
+        return new TestDto(rapidTest.getCode(),
+                           rapidTest.getDisplay(),
+                           null,
+                           (rapidTest.isActive() && rapidTest.isChIssuable()));
     }
 
     public static List<TestDto> fromRapidTests(List<RapidTest> rapidTests) {

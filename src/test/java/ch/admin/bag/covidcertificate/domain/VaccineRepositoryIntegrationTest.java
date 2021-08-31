@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +40,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Comirnaty",
                        true,
                        true,
-                       LocalDateTime.now(),
                        "1119349007",
                        "SARS-CoV-2 mRNA vaccine",
                        true,
@@ -65,7 +63,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test not active",
                        false,
                        true,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis active",
                        true,
@@ -76,7 +73,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test not active",
                        false,
                        true,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis not active",
                        false,
@@ -87,7 +83,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test not active",
                        false,
                        true,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis active",
                        true,
@@ -98,7 +93,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test not active",
                        false,
                        true,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis not active",
                        false,
@@ -119,7 +113,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test active",
                        true,
                        true,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis active",
                        true,
@@ -130,7 +123,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test active",
                        true,
                        true,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis not active",
                        false,
@@ -141,7 +133,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test active",
                        true,
                        true,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis active",
                        true,
@@ -152,7 +143,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test active",
                        true,
                        true,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis not active",
                        false,
@@ -171,13 +161,12 @@ public class VaccineRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void findAllActive_ok_one_match_of_one() {
+    void findAll_ok_one_match_of_one() {
         // given
         persistVaccine("EU/1/20/1528",
                        "Comirnaty",
                        true,
                        false,
-                       LocalDateTime.now(),
                        "1119349007",
                        "SARS-CoV-2 mRNA vaccine",
                        true,
@@ -185,7 +174,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Biontech Manufacturing GmbH",
                        true);
         // when
-        List<Vaccine> result = vaccineRepository.findAllActive();
+        List<Vaccine> result = vaccineRepository.findAll();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
         Vaccine vaccine = result.get(0);
@@ -194,13 +183,12 @@ public class VaccineRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void findAllActive_ok_no_match_of_four() {
+    void findAll_ok_four_match_of_four() {
         // given
         persistVaccine("EU/1/20/0001",
                        "Test not active",
                        false,
                        false,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis active",
                        true,
@@ -211,7 +199,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test not active",
                        false,
                        false,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis not active",
                        false,
@@ -222,7 +209,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test not active",
                        false,
                        false,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis active",
                        true,
@@ -233,7 +219,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test not active",
                        false,
                        false,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis not active",
                        false,
@@ -241,20 +226,19 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company not active",
                        false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllActive();
+        List<Vaccine> result = vaccineRepository.findAll();
         // then
-        assertThat(result).isNotNull().isEmpty();
+        assertThat(result).isNotNull().isNotEmpty().hasSize(4);
     }
 
     @Test
     @Transactional
-    void findAllActive_ok_one_match_of_four() {
+    void findAll_ok_four_matches_of_four() {
         // given
         persistVaccine("EU/1/20/0005",
                        "Test active",
                        true,
                        false,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis active",
                        true,
@@ -265,7 +249,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test active",
                        true,
                        false,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis not active",
                        false,
@@ -276,7 +259,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test active",
                        true,
                        false,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis active",
                        true,
@@ -287,7 +269,6 @@ public class VaccineRepositoryIntegrationTest {
                        "Test active",
                        true,
                        false,
-                       LocalDateTime.now(),
                        "1119349007",
                        "Prophylaxis not active",
                        false,
@@ -295,13 +276,9 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company not active",
                        false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllActive();
+        List<Vaccine> result = vaccineRepository.findAll();
         // then
-        assertThat(result).isNotNull().isNotEmpty().hasSize(1);
-        Vaccine vaccine = result.get(0);
-        assertThat(vaccine.active).isTrue();
-        assertThat(vaccine.prophylaxisActive).isTrue();
-        assertThat(vaccine.authHolderActive).isTrue();
+        assertThat(result).isNotNull().isNotEmpty().hasSize(4);
     }
 
     private void persistVaccine(
@@ -309,7 +286,6 @@ public class VaccineRepositoryIntegrationTest {
             String display,
             boolean active,
             boolean chIssuable,
-            LocalDateTime modifiedAt,
             String prophylaxisCode,
             String prophylaxisDisplayName,
             boolean prophylaxisActive,
@@ -322,7 +298,6 @@ public class VaccineRepositoryIntegrationTest {
                 display,
                 active,
                 chIssuable,
-                modifiedAt,
                 prophylaxisCode,
                 prophylaxisDisplayName,
                 prophylaxisActive,

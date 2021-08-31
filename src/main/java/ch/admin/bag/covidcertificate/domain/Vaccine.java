@@ -62,7 +62,6 @@ public class Vaccine {
             String display,
             boolean active,
             boolean chIssuable,
-            LocalDateTime modifiedAt,
             String prophylaxisCode,
             String prophylaxisDisplayName,
             boolean prophylaxisActive,
@@ -74,7 +73,6 @@ public class Vaccine {
         this.display = display;
         this.active = active;
         this.chIssuable = chIssuable;
-        this.modifiedAt = modifiedAt;
         this.prophylaxisCode = prophylaxisCode;
         this.prophylaxisDisplayName = prophylaxisDisplayName;
         this.prophylaxisActive = prophylaxisActive;
