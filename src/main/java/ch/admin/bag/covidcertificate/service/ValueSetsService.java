@@ -44,29 +44,28 @@ public class ValueSetsService {
     }
 
     private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
-        if (!validPCRTest(testTypeCode, testCode) && !validNonPCRTest(testTypeCode, testCode)) {
-            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
-        }
+        if (validPCRTest(testTypeCode, testCode)) {
+            return new IssuableTestDto("", TestType.PCR.typeDisplay, TestType.PCR);
+        } else if (validRapidTest(testTypeCode, testCode)) {
+            var testValueSet = testValueSets
+                    .stream()
+                    .filter(issuableTestDto -> (issuableTestDto.getCode().equals(testCode)))
+                    .findFirst()
+                    .orElse(null);
 
-        var testValueSet = testValueSets
-                .stream()
-                .filter(issuableTestDto ->
-                        (validPCRTest(testTypeCode, testCode) && issuableTestDto.getCode().equals(PCR_TYPE_CODE)) || (validNonPCRTest(testTypeCode, testCode) && issuableTestDto.getCode().equals(testCode)))
-                .findFirst()
-                .orElse(null);
-
-        if (testValueSet == null) {
-            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
+            if (testValueSet != null) {
+                return testValueSet;
+            }
         }
-        return testValueSet;
+        throw new CreateCertificateException(INVALID_TYP_OF_TEST);
     }
 
     private boolean validPCRTest(String testTypeCode, String testCode) {
-        return Objects.equals(testTypeCode, PCR_TYPE_CODE) && !StringUtils.hasText(testCode);
+        return Objects.equals(testTypeCode, TestType.PCR.typeCode) && !StringUtils.hasText(testCode);
     }
 
-    private boolean validNonPCRTest(String testTypeCode, String testCode) {
-        return (Objects.equals(testTypeCode, NONE_PCR_TYPE_CODE)
+    private boolean validRapidTest(String testTypeCode, String testCode) {
+        return (Objects.equals(testTypeCode, TestType.RAPID_TEST.typeCode)
                 || !StringUtils.hasText(testTypeCode))
                 && StringUtils.hasText(testCode);
     }
