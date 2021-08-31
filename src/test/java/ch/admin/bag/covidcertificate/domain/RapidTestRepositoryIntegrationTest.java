@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(properties = {
@@ -67,41 +68,70 @@ class RapidTestRepositoryIntegrationTest {
     @Test
     @Transactional
     void findAllActiveAndChIssuable_ok_one_match_of_one() {
-
+        // given
+        persistRapidTest("11",
+                         true,
+                         LocalDateTime.now(),
+                         true);
+        // when
+        List<RapidTest> result = repository.findAllActiveAndChIssuable();
+        // then
+        assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+        RapidTest rapidTest = result.get(0);
+        assertThat(rapidTest.active).isTrue();
+        assertThat(rapidTest.chIssuable).isTrue();
     }
 
     @Test
     @Transactional
-    void findAllActiveAndChIssuable_ok_no_match_of_four() {
-
-    }
-
-    @Test
-    @Transactional
-    void findAllActiveAndChIssuable_ok_one_match_of_four() {
-
+    void findAllActiveAndChIssuable_ok_no_match_of_one() {
+        // given
+        persistRapidTest("12",
+                         false,
+                         LocalDateTime.now(),
+                         true);
+        // when
+        List<RapidTest> result = repository.findAllActiveAndChIssuable();
+        // then
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
     @Transactional
     void findAllActive_ok_one_match_of_one() {
-
+        // given
+        persistRapidTest("13",
+                         true,
+                         LocalDateTime.now());
+        // when
+        List<RapidTest> result = repository.findAllActive();
+        // then
+        assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+        RapidTest rapidTest = result.get(0);
+        assertThat(rapidTest.active).isTrue();
     }
 
     @Test
     @Transactional
-    void findAllActive_ok_no_match_of_four() {
-
-    }
-
-    @Test
-    @Transactional
-    void findAllActive_ok_one_match_of_four() {
-
+    void findAllActive_ok_no_match_of_one() {
+        // given
+        persistRapidTest("14",
+                         false,
+                         LocalDateTime.now());
+        // when
+        List<RapidTest> result = repository.findAllActive();
+        // then
+        assertThat(result).isNotNull().isEmpty();
     }
 
     private void persistRapidTest(String code, boolean active, LocalDateTime modifiedAt) {
         RapidTest rapidTest = new RapidTest(code, "test", active, modifiedAt);
+        entityManager.persist(rapidTest);
+    }
+
+    private void persistRapidTest(String code, boolean active, LocalDateTime modifiedAt, boolean chIssuable) {
+        RapidTest rapidTest = new RapidTest(code, "test", active, modifiedAt);
+        rapidTest.chIssuable = chIssuable;
         entityManager.persist(rapidTest);
     }
 }

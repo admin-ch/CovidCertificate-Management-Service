@@ -54,6 +54,7 @@ public class VaccineRepositoryIntegrationTest {
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
         Vaccine vaccine = result.get(0);
         assertThat(vaccine.active).isTrue();
+        assertThat(vaccine.chIssuable).isTrue();
     }
 
     @Test

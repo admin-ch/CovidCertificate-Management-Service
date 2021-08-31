@@ -1,9 +1,22 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.valueset.*;
+import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
+import ch.admin.bag.covidcertificate.api.valueset.CountryCodes;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
+import ch.admin.bag.covidcertificate.api.valueset.TestDto;
+import ch.admin.bag.covidcertificate.api.valueset.TestType;
+import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
+import ch.admin.bag.covidcertificate.domain.RapidTest;
+import ch.admin.bag.covidcertificate.domain.RapidTestRepository;
+import ch.admin.bag.covidcertificate.domain.Vaccine;
+import ch.admin.bag.covidcertificate.domain.VaccineRepository;
 import com.flextrade.jfixture.JFixture;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -14,9 +27,20 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static ch.admin.bag.covidcertificate.FixtureCustomization.*;
-import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.*;
+import java.util.List;
+
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCountryCode;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeIssuableVaccineDto;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRapidTest;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestValueSet;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccine;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.PCR_TYPE_CODE;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.IT;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;
@@ -30,6 +54,12 @@ public class ValueSetsServiceTest {
     @Mock
     private CountryCodesLoader countryCodesLoader;
 
+    @Mock
+    private VaccineRepository vaccineRepository;
+
+    @Mock
+    private RapidTestRepository rapidTestRepository;
+
     private final JFixture fixture = new JFixture();
 
     @BeforeEach
@@ -37,7 +67,17 @@ public class ValueSetsServiceTest {
         customizeIssuableVaccineDto(fixture);
         customizeTestValueSet(fixture);
         customizeCountryCode(fixture);
+        customizeVaccine(fixture);
+        customizeRapidTest(fixture);
         lenient().when(countryCodesLoader.getCountryCodes()).thenReturn(fixture.create(CountryCodes.class));
+        lenient().when(vaccineRepository.findAllActive()).thenReturn(
+                fixture.collections().createCollection(List.class, Vaccine.class));
+        lenient().when(vaccineRepository.findAllActiveAndChIssuable()).thenReturn(
+                fixture.collections().createCollection(List.class, Vaccine.class));
+        lenient().when(rapidTestRepository.findAllActive()).thenReturn(
+                fixture.collections().createCollection(List.class, RapidTest.class));
+        lenient().when(rapidTestRepository.findAllActiveAndChIssuable()).thenReturn(
+                fixture.collections().createCollection(List.class, RapidTest.class));
     }
 
     @Nested

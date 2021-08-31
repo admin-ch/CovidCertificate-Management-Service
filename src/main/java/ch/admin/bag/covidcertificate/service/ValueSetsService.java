@@ -1,21 +1,50 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.mapper.IssuableRapidTestMapper;
+import ch.admin.bag.covidcertificate.api.mapper.IssuableVaccineMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RapidTestMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccineMapper;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.valueset.*;
+import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
+import ch.admin.bag.covidcertificate.api.valueset.TestDto;
+import ch.admin.bag.covidcertificate.api.valueset.VaccineDto;
+import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
+import ch.admin.bag.covidcertificate.domain.RapidTest;
+import ch.admin.bag.covidcertificate.domain.RapidTestRepository;
+import ch.admin.bag.covidcertificate.domain.Vaccine;
+import ch.admin.bag.covidcertificate.domain.VaccineRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.NONE_PCR_TYPE_CODE;
+import static ch.admin.bag.covidcertificate.api.Constants.PCR_TYPE_CODE;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.EN;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.IT;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ValueSetsService {
+
     private final CountryCodesLoader countryCodesLoader;
+    private final VaccineRepository vaccineRepository;
+    private final RapidTestRepository rapidTestRepository;
 
     public ValueSetsDto getValueSets() {
         var countryCodes = countryCodesLoader.getCountryCodes();
@@ -108,31 +137,27 @@ public class ValueSetsService {
         return result;
     }
 
+    @Transactional
     public List<TestDto> getRapidTests() {
-        var rapidTests = new ArrayList<TestDto>();
-        rapidTests.add(new TestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", TestType.RAPID_TEST, true));
-        rapidTests.add(new TestDto("1065", "Becton Dickinson, BD Veritor? System for Rapid Detection of SARS CoV 2", TestType.RAPID_TEST, true));
-        return rapidTests;
+        List<RapidTest> rapidTests = this.rapidTestRepository.findAllActive();
+        return RapidTestMapper.fromRapidTests(rapidTests);
     }
 
+    @Transactional
     public List<IssuableTestDto> getIssuableRapidTests() {
-        var issuableRapidTests = new ArrayList<IssuableTestDto>();
-        issuableRapidTests.add(new IssuableTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", TestType.RAPID_TEST));
-        issuableRapidTests.add(new IssuableTestDto("1065", "Becton Dickinson, BD Veritor? System for Rapid Detection of SARS CoV 2", TestType.RAPID_TEST));
-        return issuableRapidTests;
+        List<RapidTest> rapidTests = this.rapidTestRepository.findAllActiveAndChIssuable();
+        return IssuableRapidTestMapper.fromRapidTests(rapidTests);
     }
 
+    @Transactional
     public List<VaccineDto> getVaccines() {
-        var vaccines = new ArrayList<VaccineDto>();
-        vaccines.add(new VaccineDto("EU/1/20/1528", "Comirnaty", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100030215", "Biontech Manufacturing GmbH", true));
-        vaccines.add(new VaccineDto("EU/1/20/1507", "COVID-19 Vaccine Moderna", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100031184", "Moderna Biotech Spain S.L.", true));
-        return vaccines;
+        List<Vaccine> vaccines = this.vaccineRepository.findAllActive();
+        return VaccineMapper.fromVaccines(vaccines);
     }
 
+    @Transactional
     public List<IssuableVaccineDto> getIssuableVaccines() {
-        var issuableVaccines = new ArrayList<IssuableVaccineDto>();
-        issuableVaccines.add(new IssuableVaccineDto("EU/1/20/1528", "Comirnaty", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100030215", "Biontech Manufacturing GmbH"));
-        issuableVaccines.add(new IssuableVaccineDto("EU/1/20/1507", "COVID-19 Vaccine Moderna", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100031184", "Moderna Biotech Spain S.L."));
-        return issuableVaccines;
+        List<Vaccine> vaccines = this.vaccineRepository.findAllActiveAndChIssuable();
+        return IssuableVaccineMapper.fromVaccines(vaccines);
     }
 }
