@@ -34,7 +34,7 @@ public class RapidTest {
         this.code = code;
         this.display = display;
         this.active = active;
-        this.chIssuable = false;
+        this.chIssuable = true;
         this.modifiedAt = modifiedAt;
     }
 

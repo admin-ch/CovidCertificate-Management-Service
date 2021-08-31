@@ -35,7 +35,7 @@ cc-management-service:
   allowed-origin: "https://www.covidcertificate-d.admin.ch"
 
   rapid-test-import:
-    cron: "0 0 8,14 * * *"
+    cron: "0 0 8,10,12,14,16 * * *"
 
 cc-signing-service:
   url: "https://covidcertificate-signing-d.bag.admin.ch/bag-vaccinecer-webapp/sign"
