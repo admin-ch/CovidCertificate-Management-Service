@@ -146,38 +146,58 @@ public class ValueSetsService {
     }
 
     @Transactional
-    @Cacheable(VACCINE_CACHE_NAME)
-    @CacheEvict(value = VACCINE_CACHE_NAME, allEntries = true)
+    @Cacheable(RAPID_TEST_CACHE_NAME)
     public List<TestDto> getRapidTests() {
+        log.info("Loading rapid tests");
         List<RapidTest> rapidTests = this.rapidTestRepository.findAll();
         return RapidTestMapper.fromRapidTests(rapidTests);
     }
 
     @Transactional
-    @Cacheable(ISSUABLE_VACCINE_CACHE_NAME)
-    @CacheEvict(value = ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
+    @Cacheable(ISSUABLE_TEST_CACHE_NAME)
     public List<IssuableTestDto> getIssuableRapidTests() {
+        log.info("Loading issuable rapid tests");
         List<RapidTest> rapidTests = this.rapidTestRepository.findAllActiveAndChIssuable();
         return IssuableRapidTestMapper.fromRapidTests(rapidTests);
     }
 
     @Transactional
-    @Cacheable(RAPID_TEST_CACHE_NAME)
-    @CacheEvict(value = RAPID_TEST_CACHE_NAME, allEntries = true)
+    @Cacheable(VACCINE_CACHE_NAME)
     public List<VaccineDto> getVaccines() {
+        log.info("Loading vaccines");
         List<Vaccine> vaccines = this.vaccineRepository.findAll();
         return VaccineMapper.fromVaccines(vaccines);
     }
 
     @Transactional
-    @Cacheable(ISSUABLE_TEST_CACHE_NAME)
-    @CacheEvict(value = ISSUABLE_TEST_CACHE_NAME, allEntries = true)
+    @Cacheable(ISSUABLE_VACCINE_CACHE_NAME)
     public List<IssuableVaccineDto> getIssuableVaccines() {
+        log.info("Loading issuable vaccines");
         List<Vaccine> vaccines = this.vaccineRepository.findAllActiveAndChIssuable();
         return IssuableVaccineMapper.fromVaccines(vaccines);
     }
 
     @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
-    public void clearCache() {
+    @CacheEvict(value = RAPID_TEST_CACHE_NAME, allEntries = true)
+    public void cleanRapidTestsCache() {
+        log.info("Cleaning cache of rapid tests");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = ISSUABLE_TEST_CACHE_NAME, allEntries = true)
+    public void cleanIssuableRapidTestsCache() {
+        log.info("Cleaning cache of issuable rapid tests");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = VACCINE_CACHE_NAME, allEntries = true)
+    public void cleanVaccinesCache() {
+        log.info("Cleaning cache of vaccines");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
+    public void cleanIssuableVaccinesCache() {
+        log.info("Cleaning cache of issuable vaccines");
     }
 }
