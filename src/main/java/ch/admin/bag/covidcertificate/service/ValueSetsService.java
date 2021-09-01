@@ -10,6 +10,7 @@ import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestDto;
+import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.api.valueset.VaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
 import ch.admin.bag.covidcertificate.domain.RapidTest;
@@ -32,8 +33,6 @@ import java.util.Objects;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
-import static ch.admin.bag.covidcertificate.api.Constants.NONE_PCR_TYPE_CODE;
-import static ch.admin.bag.covidcertificate.api.Constants.PCR_TYPE_CODE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.EN;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
