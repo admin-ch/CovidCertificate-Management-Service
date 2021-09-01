@@ -15,11 +15,11 @@ public class VaccineMapper {
         return new VaccineDto(
                 vaccine.getCode(),
                 vaccine.getDisplay(),
-                vaccine.getProphylaxisCode(),
-                vaccine.getProphylaxisDisplayName(),
-                vaccine.getAuthHolderCode(),
-                vaccine.getAuthHolderDisplayName(),
-                (vaccine.isActive() && vaccine.isAuthHolderActive() && vaccine.isProphylaxisActive()));
+                vaccine.getProphylaxis().getCode(),
+                vaccine.getProphylaxis().getDisplay(),
+                vaccine.getAuthHolder().getCode(),
+                vaccine.getAuthHolder().getDisplay(),
+                (vaccine.isActive() && vaccine.getAuthHolder().isActive() && vaccine.getProphylaxis().isActive()));
     }
 
     public static List<VaccineDto> fromVaccines(List<Vaccine> vaccines) {
