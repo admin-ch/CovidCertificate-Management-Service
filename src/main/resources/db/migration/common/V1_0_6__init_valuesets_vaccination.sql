@@ -49,11 +49,7 @@ do $$
         insert into vaccines_covid_19_names values (gen_random_uuid (), 'CVnCoV', 'CVnCoV', sct_1119349007, ah_ORG_100006270, true, false);
         insert into vaccines_covid_19_names values (gen_random_uuid (), 'Sputnik-V', 'Sputnik-V', sct_J07BX03, ah_Gamaleya_Research_Institute, true, false);
         insert into vaccines_covid_19_names values (gen_random_uuid (), 'Convidecia', 'Convidecia', sct_J07BX03, ah_ORG_100013793, true, false);
-        insert into vaccines_covid_19_names values (gen_random_uuid (), 'EpiVacCorona', 'EpiVacCorona', TODO, ah_Vector_Institute, true, false);
         insert into vaccines_covid_19_names values (gen_random_uuid (), 'BBIBP-CorV', 'BBIBP-CorV', sct_J07BX03, ah_ORG_100020693, true, false);
-        insert into vaccines_covid_19_names values (gen_random_uuid (), 'Inactivated-SARS-CoV-2-Vero-Cell', 'Inactivated SARS-CoV-2 (Vero Cell)', TODO, TODO, true, TODO);
         insert into vaccines_covid_19_names values (gen_random_uuid (), 'CoronaVac', 'CoronaVac', sct_J07BX03, ah_Sinovac_Biotech, true, false);
-        insert into vaccines_covid_19_names values (gen_random_uuid (), 'Covaxin', 'Covaxin (also known as BBV152 A, B, C)', TODO, ah_Bharat_Biotech, true, false);
-        insert into vaccines_covid_19_names values (gen_random_uuid (), 'Covishield', 'Covishield (ChAdOx1_nCoV-19)', sct_J07BX03, TODO, true, false);
 
     end $$;
