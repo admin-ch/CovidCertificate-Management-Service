@@ -19,8 +19,7 @@ public class VaccineMapper {
                 vaccine.getProphylaxisDisplayName(),
                 vaccine.getAuthHolderCode(),
                 vaccine.getAuthHolderDisplayName(),
-                ((vaccine.isActive() && vaccine.isAuthHolderActive() && vaccine.isProphylaxisActive())
-                        && vaccine.isChIssuable()));
+                (vaccine.isActive() && vaccine.isAuthHolderActive() && vaccine.isProphylaxisActive()));
     }
 
     public static List<VaccineDto> fromVaccines(List<Vaccine> vaccines) {

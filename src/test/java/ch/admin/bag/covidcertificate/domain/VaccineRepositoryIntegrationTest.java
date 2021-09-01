@@ -50,6 +50,7 @@ public class VaccineRepositoryIntegrationTest {
         List<Vaccine> result = vaccineRepository.findAllActiveAndChIssuable();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+
         Vaccine vaccine = result.get(0);
         assertThat(vaccine.active).isTrue();
         assertThat(vaccine.chIssuable).isTrue();
@@ -153,6 +154,7 @@ public class VaccineRepositoryIntegrationTest {
         List<Vaccine> result = vaccineRepository.findAllActiveAndChIssuable();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+
         Vaccine vaccine = result.get(0);
         assertThat(vaccine.active).isTrue();
         assertThat(vaccine.prophylaxisActive).isTrue();
@@ -177,6 +179,7 @@ public class VaccineRepositoryIntegrationTest {
         List<Vaccine> result = vaccineRepository.findAll();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+
         Vaccine vaccine = result.get(0);
         assertThat(vaccine.active).isTrue();
     }
@@ -186,7 +189,7 @@ public class VaccineRepositoryIntegrationTest {
     void findAll_ok_four_match_of_four() {
         // given
         persistVaccine("EU/1/20/0001",
-                       "Test not active",
+                       "Test not active 01",
                        false,
                        false,
                        "1119349007",
@@ -196,7 +199,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company not active",
                        false);
         persistVaccine("EU/1/20/0002",
-                       "Test not active",
+                       "Test not active 02",
                        false,
                        false,
                        "1119349007",
@@ -206,7 +209,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company active",
                        true);
         persistVaccine("EU/1/20/0003",
-                       "Test not active",
+                       "Test not active 03",
                        false,
                        false,
                        "1119349007",
@@ -216,7 +219,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company active",
                        true);
         persistVaccine("EU/1/20/0004",
-                       "Test not active",
+                       "Test not active 04",
                        false,
                        false,
                        "1119349007",
@@ -229,6 +232,26 @@ public class VaccineRepositoryIntegrationTest {
         List<Vaccine> result = vaccineRepository.findAll();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(4);
+
+        Vaccine vaccine = result.get(0);
+        assertThat(vaccine.active).isFalse();
+        assertThat(vaccine.prophylaxisActive).isTrue();
+        assertThat(vaccine.authHolderActive).isFalse();
+
+        vaccine = result.get(1);
+        assertThat(vaccine.active).isFalse();
+        assertThat(vaccine.prophylaxisActive).isFalse();
+        assertThat(vaccine.authHolderActive).isTrue();
+
+        vaccine = result.get(2);
+        assertThat(vaccine.active).isFalse();
+        assertThat(vaccine.prophylaxisActive).isTrue();
+        assertThat(vaccine.authHolderActive).isTrue();
+
+        vaccine = result.get(3);
+        assertThat(vaccine.active).isFalse();
+        assertThat(vaccine.prophylaxisActive).isFalse();
+        assertThat(vaccine.authHolderActive).isFalse();
     }
 
     @Test
@@ -236,7 +259,7 @@ public class VaccineRepositoryIntegrationTest {
     void findAll_ok_four_matches_of_four() {
         // given
         persistVaccine("EU/1/20/0005",
-                       "Test active",
+                       "Test active 05",
                        true,
                        false,
                        "1119349007",
@@ -246,7 +269,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company not active",
                        false);
         persistVaccine("EU/1/20/0006",
-                       "Test active",
+                       "Test active 06",
                        true,
                        false,
                        "1119349007",
@@ -256,7 +279,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company active",
                        true);
         persistVaccine("EU/1/20/0007",
-                       "Test active",
+                       "Test active 07",
                        true,
                        false,
                        "1119349007",
@@ -266,7 +289,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company active",
                        true);
         persistVaccine("EU/1/20/0008",
-                       "Test active",
+                       "Test active 08",
                        true,
                        false,
                        "1119349007",
@@ -279,6 +302,26 @@ public class VaccineRepositoryIntegrationTest {
         List<Vaccine> result = vaccineRepository.findAll();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(4);
+
+        Vaccine vaccine = result.get(0);
+        assertThat(vaccine.active).isTrue();
+        assertThat(vaccine.prophylaxisActive).isTrue();
+        assertThat(vaccine.authHolderActive).isFalse();
+
+        vaccine = result.get(1);
+        assertThat(vaccine.active).isTrue();
+        assertThat(vaccine.prophylaxisActive).isFalse();
+        assertThat(vaccine.authHolderActive).isTrue();
+
+        vaccine = result.get(2);
+        assertThat(vaccine.active).isTrue();
+        assertThat(vaccine.prophylaxisActive).isTrue();
+        assertThat(vaccine.authHolderActive).isTrue();
+
+        vaccine = result.get(3);
+        assertThat(vaccine.active).isTrue();
+        assertThat(vaccine.prophylaxisActive).isFalse();
+        assertThat(vaccine.authHolderActive).isFalse();
     }
 
     private void persistVaccine(

@@ -15,7 +15,7 @@ public class RapidTestMapper {
         return new TestDto(rapidTest.getCode(),
                            rapidTest.getDisplay(),
                            null,
-                           (rapidTest.isActive() && rapidTest.isChIssuable()));
+                           rapidTest.isActive());
     }
 
     public static List<TestDto> fromRapidTests(List<RapidTest> rapidTests) {

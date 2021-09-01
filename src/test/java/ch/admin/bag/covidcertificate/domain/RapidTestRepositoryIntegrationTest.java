@@ -77,6 +77,7 @@ class RapidTestRepositoryIntegrationTest {
         List<RapidTest> result = repository.findAllActiveAndChIssuable();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+
         RapidTest rapidTest = result.get(0);
         assertThat(rapidTest.active).isTrue();
         assertThat(rapidTest.chIssuable).isTrue();
@@ -107,6 +108,7 @@ class RapidTestRepositoryIntegrationTest {
         List<RapidTest> result = repository.findAll();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+
         RapidTest rapidTest = result.get(0);
         assertThat(rapidTest.active).isTrue();
     }
@@ -122,6 +124,7 @@ class RapidTestRepositoryIntegrationTest {
         List<RapidTest> result = repository.findAll();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+
         RapidTest rapidTest = result.get(0);
         assertThat(rapidTest.active).isFalse();
     }

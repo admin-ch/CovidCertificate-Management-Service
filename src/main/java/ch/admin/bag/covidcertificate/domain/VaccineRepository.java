@@ -14,6 +14,7 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "where v.active = true " +
             "and v.authHolderActive = true " +
             "and v.prophylaxisActive = true " +
-            "and v.chIssuable = true")
+            "and v.chIssuable = true " +
+            "order by v.display asc")
     List<Vaccine> findAllActiveAndChIssuable();
 }
