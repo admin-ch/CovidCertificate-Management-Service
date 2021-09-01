@@ -18,6 +18,9 @@ import ch.admin.bag.covidcertificate.domain.Vaccine;
 import ch.admin.bag.covidcertificate.domain.VaccineRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -41,6 +44,11 @@ import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
 @RequiredArgsConstructor
 @Slf4j
 public class ValueSetsService {
+
+    private static final String VACCINE_CACHE_NAME = "vaccines";
+    private static final String ISSUABLE_VACCINE_CACHE_NAME = "issuableVaccines";
+    private static final String RAPID_TEST_CACHE_NAME = "rapidTests";
+    private static final String ISSUABLE_TEST_CACHE_NAME = "issuableTests";
 
     private final CountryCodesLoader countryCodesLoader;
     private final VaccineRepository vaccineRepository;
@@ -138,26 +146,38 @@ public class ValueSetsService {
     }
 
     @Transactional
+    @Cacheable(VACCINE_CACHE_NAME)
+    @CacheEvict(value = VACCINE_CACHE_NAME, allEntries = true)
     public List<TestDto> getRapidTests() {
         List<RapidTest> rapidTests = this.rapidTestRepository.findAll();
         return RapidTestMapper.fromRapidTests(rapidTests);
     }
 
     @Transactional
+    @Cacheable(ISSUABLE_VACCINE_CACHE_NAME)
+    @CacheEvict(value = ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
     public List<IssuableTestDto> getIssuableRapidTests() {
         List<RapidTest> rapidTests = this.rapidTestRepository.findAllActiveAndChIssuable();
         return IssuableRapidTestMapper.fromRapidTests(rapidTests);
     }
 
     @Transactional
+    @Cacheable(RAPID_TEST_CACHE_NAME)
+    @CacheEvict(value = RAPID_TEST_CACHE_NAME, allEntries = true)
     public List<VaccineDto> getVaccines() {
         List<Vaccine> vaccines = this.vaccineRepository.findAll();
         return VaccineMapper.fromVaccines(vaccines);
     }
 
     @Transactional
+    @Cacheable(ISSUABLE_TEST_CACHE_NAME)
+    @CacheEvict(value = ISSUABLE_TEST_CACHE_NAME, allEntries = true)
     public List<IssuableVaccineDto> getIssuableVaccines() {
         List<Vaccine> vaccines = this.vaccineRepository.findAllActiveAndChIssuable();
         return IssuableVaccineMapper.fromVaccines(vaccines);
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    public void clearCache() {
     }
 }
