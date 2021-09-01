@@ -15,10 +15,10 @@ public class IssuableVaccineMapper {
         return new IssuableVaccineDto(
                 vaccine.getCode(),
                 vaccine.getDisplay(),
-                vaccine.getProphylaxisCode(),
-                vaccine.getProphylaxisDisplayName(),
-                vaccine.getAuthHolderCode(),
-                vaccine.getAuthHolderDisplayName());
+                vaccine.getProphylaxis().getCode(),
+                vaccine.getProphylaxis().getDisplay(),
+                vaccine.getAuthHolder().getCode(),
+                vaccine.getAuthHolder().getDisplay());
     }
 
     public static List<IssuableVaccineDto> fromVaccines(List<Vaccine> issuableVaccines) {

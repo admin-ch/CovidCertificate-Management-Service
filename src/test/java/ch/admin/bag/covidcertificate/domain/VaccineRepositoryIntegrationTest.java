@@ -52,7 +52,7 @@ public class VaccineRepositoryIntegrationTest {
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
         Vaccine vaccine = result.get(0);
-        assertThat(vaccine.active).isTrue();
+        assertThat(vaccine.isActive()).isTrue();
         assertThat(vaccine.chIssuable).isTrue();
     }
 
@@ -156,9 +156,9 @@ public class VaccineRepositoryIntegrationTest {
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
         Vaccine vaccine = result.get(0);
-        assertThat(vaccine.active).isTrue();
-        assertThat(vaccine.prophylaxisActive).isTrue();
-        assertThat(vaccine.authHolderActive).isTrue();
+        assertThat(vaccine.isActive()).isTrue();
+        assertThat(vaccine.getProphylaxis().isActive()).isTrue();
+        assertThat(vaccine.getAuthHolder().isActive()).isTrue();
     }
 
     @Test
@@ -181,7 +181,7 @@ public class VaccineRepositoryIntegrationTest {
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
         Vaccine vaccine = result.get(0);
-        assertThat(vaccine.active).isTrue();
+        assertThat(vaccine.isActive()).isTrue();
     }
 
     @Test
@@ -234,24 +234,24 @@ public class VaccineRepositoryIntegrationTest {
         assertThat(result).isNotNull().isNotEmpty().hasSize(4);
 
         Vaccine vaccine = result.get(0);
-        assertThat(vaccine.active).isFalse();
-        assertThat(vaccine.prophylaxisActive).isTrue();
-        assertThat(vaccine.authHolderActive).isFalse();
+        assertThat(vaccine.isActive()).isFalse();
+        assertThat(vaccine.getProphylaxis().isActive()).isTrue();
+        assertThat(vaccine.getAuthHolder().isActive()).isFalse();
 
         vaccine = result.get(1);
-        assertThat(vaccine.active).isFalse();
-        assertThat(vaccine.prophylaxisActive).isFalse();
-        assertThat(vaccine.authHolderActive).isTrue();
+        assertThat(vaccine.isActive()).isFalse();
+        assertThat(vaccine.getProphylaxis().isActive()).isFalse();
+        assertThat(vaccine.getAuthHolder().isActive()).isTrue();
 
         vaccine = result.get(2);
-        assertThat(vaccine.active).isFalse();
-        assertThat(vaccine.prophylaxisActive).isTrue();
-        assertThat(vaccine.authHolderActive).isTrue();
+        assertThat(vaccine.isActive()).isFalse();
+        assertThat(vaccine.getProphylaxis().isActive()).isTrue();
+        assertThat(vaccine.getAuthHolder().isActive()).isTrue();
 
         vaccine = result.get(3);
-        assertThat(vaccine.active).isFalse();
-        assertThat(vaccine.prophylaxisActive).isFalse();
-        assertThat(vaccine.authHolderActive).isFalse();
+        assertThat(vaccine.isActive()).isFalse();
+        assertThat(vaccine.getProphylaxis().isActive()).isFalse();
+        assertThat(vaccine.getAuthHolder().isActive()).isFalse();
     }
 
     @Test
@@ -304,24 +304,24 @@ public class VaccineRepositoryIntegrationTest {
         assertThat(result).isNotNull().isNotEmpty().hasSize(4);
 
         Vaccine vaccine = result.get(0);
-        assertThat(vaccine.active).isTrue();
-        assertThat(vaccine.prophylaxisActive).isTrue();
-        assertThat(vaccine.authHolderActive).isFalse();
+        assertThat(vaccine.isActive()).isTrue();
+        assertThat(vaccine.getProphylaxis().isActive()).isTrue();
+        assertThat(vaccine.getAuthHolder().isActive()).isFalse();
 
         vaccine = result.get(1);
-        assertThat(vaccine.active).isTrue();
-        assertThat(vaccine.prophylaxisActive).isFalse();
-        assertThat(vaccine.authHolderActive).isTrue();
+        assertThat(vaccine.isActive()).isTrue();
+        assertThat(vaccine.getProphylaxis().isActive()).isFalse();
+        assertThat(vaccine.getAuthHolder().isActive()).isTrue();
 
         vaccine = result.get(2);
-        assertThat(vaccine.active).isTrue();
-        assertThat(vaccine.prophylaxisActive).isTrue();
-        assertThat(vaccine.authHolderActive).isTrue();
+        assertThat(vaccine.isActive()).isTrue();
+        assertThat(vaccine.getProphylaxis().isActive()).isTrue();
+        assertThat(vaccine.getAuthHolder().isActive()).isTrue();
 
         vaccine = result.get(3);
-        assertThat(vaccine.active).isTrue();
-        assertThat(vaccine.prophylaxisActive).isFalse();
-        assertThat(vaccine.authHolderActive).isFalse();
+        assertThat(vaccine.isActive()).isTrue();
+        assertThat(vaccine.getProphylaxis().isActive()).isFalse();
+        assertThat(vaccine.getAuthHolder().isActive()).isFalse();
     }
 
     private void persistVaccine(
@@ -340,13 +340,19 @@ public class VaccineRepositoryIntegrationTest {
                 code,
                 display,
                 active,
-                chIssuable,
+                chIssuable);
+        Prophylaxis prophylaxis = new Prophylaxis(
                 prophylaxisCode,
                 prophylaxisDisplayName,
-                prophylaxisActive,
+                prophylaxisActive);
+        vaccine.setProphylaxis(prophylaxis);
+        entityManager.persist(prophylaxis);
+        AuthHolder authHolder = new AuthHolder(
                 authHolderCode,
                 authHolderDisplayName,
                 authHolderActive);
+        vaccine.setAuthHolder(authHolder);
+        entityManager.persist(authHolder);
         entityManager.persist(vaccine);
     }
 }
