@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -15,4 +16,9 @@ public interface RapidTestRepository extends JpaRepository<RapidTest, UUID> {
 
     List<RapidTest> findAllByActiveAndModifiedAtIsNot(boolean active, LocalDateTime modifiedAt);
 
+    @Query(value = "select rt from RapidTest rt " +
+            "where rt.active = true " +
+            "and rt.chIssuable = true " +
+            "order by rt.display asc")
+    List<RapidTest> findAllActiveAndChIssuable();
 }

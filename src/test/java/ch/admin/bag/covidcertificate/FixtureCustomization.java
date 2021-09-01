@@ -2,15 +2,25 @@ package ch.admin.bag.covidcertificate;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RevocationDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
+import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
-import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
+import ch.admin.bag.covidcertificate.domain.RapidTest;
+import ch.admin.bag.covidcertificate.domain.Vaccine;
 import com.flextrade.jfixture.JFixture;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.time.LocalDateTime;
 
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 
@@ -37,6 +47,29 @@ public class FixtureCustomization {
             ReflectionTestUtils.setField(countryCode, "version", fixture.create(String.class));
             ReflectionTestUtils.setField(countryCode, "system", fixture.create(String.class));
             return countryCode;
+        });
+    }
+
+    public static void customizeVaccine(JFixture fixture) {
+        fixture.customise().lazyInstance(Vaccine.class, () -> {
+            var vaccine = new Vaccine();
+            ReflectionTestUtils.setField(vaccine, "code", fixture.create(String.class));
+            ReflectionTestUtils.setField(vaccine, "display", fixture.create(String.class));
+            ReflectionTestUtils.setField(vaccine, "active", fixture.create(Boolean.class));
+            ReflectionTestUtils.setField(vaccine, "chIssuable", fixture.create(Boolean.class));
+            ReflectionTestUtils.setField(vaccine, "modifiedAt", fixture.create(LocalDateTime.class));
+            return vaccine;
+        });
+    }
+
+    public static void customizeRapidTest(JFixture fixture) {
+        fixture.customise().lazyInstance(RapidTest.class, () -> {
+            return new RapidTest(
+                    fixture.create(String.class),
+                    fixture.create(String.class),
+                    fixture.create(Boolean.class),
+                    fixture.create(LocalDateTime.class)
+            );
         });
     }
 

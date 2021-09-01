@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(properties = {
@@ -64,8 +65,78 @@ class RapidTestRepositoryIntegrationTest {
         assertEquals(0, results.size());
     }
 
+    @Test
+    @Transactional
+    void findAllActiveAndChIssuable_ok_one_match_of_one() {
+        // given
+        persistRapidTest("11",
+                         true,
+                         LocalDateTime.now(),
+                         true);
+        // when
+        List<RapidTest> result = repository.findAllActiveAndChIssuable();
+        // then
+        assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+
+        RapidTest rapidTest = result.get(0);
+        assertThat(rapidTest.active).isTrue();
+        assertThat(rapidTest.chIssuable).isTrue();
+    }
+
+    @Test
+    @Transactional
+    void findAllActiveAndChIssuable_ok_no_match_of_one() {
+        // given
+        persistRapidTest("12",
+                         false,
+                         LocalDateTime.now(),
+                         true);
+        // when
+        List<RapidTest> result = repository.findAllActiveAndChIssuable();
+        // then
+        assertThat(result).isNotNull().isEmpty();
+    }
+
+    @Test
+    @Transactional
+    void findAll_ok_one_active_match_of_one() {
+        // given
+        persistRapidTest("13",
+                         true,
+                         LocalDateTime.now());
+        // when
+        List<RapidTest> result = repository.findAll();
+        // then
+        assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+
+        RapidTest rapidTest = result.get(0);
+        assertThat(rapidTest.active).isTrue();
+    }
+
+    @Test
+    @Transactional
+    void findAll_ok_one_not_active_match_of_one() {
+        // given
+        persistRapidTest("14",
+                         false,
+                         LocalDateTime.now());
+        // when
+        List<RapidTest> result = repository.findAll();
+        // then
+        assertThat(result).isNotNull().isNotEmpty().hasSize(1);
+
+        RapidTest rapidTest = result.get(0);
+        assertThat(rapidTest.active).isFalse();
+    }
+
     private void persistRapidTest(String code, boolean active, LocalDateTime modifiedAt) {
         RapidTest rapidTest = new RapidTest(code, "test", active, modifiedAt);
+        entityManager.persist(rapidTest);
+    }
+
+    private void persistRapidTest(String code, boolean active, LocalDateTime modifiedAt, boolean chIssuable) {
+        RapidTest rapidTest = new RapidTest(code, "test", active, modifiedAt);
+        rapidTest.chIssuable = chIssuable;
         entityManager.persist(rapidTest);
     }
 }
