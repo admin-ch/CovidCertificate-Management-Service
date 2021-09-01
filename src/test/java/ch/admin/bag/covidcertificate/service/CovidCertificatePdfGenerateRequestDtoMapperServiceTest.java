@@ -7,9 +7,10 @@ import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.VaccinationCertifi
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
+import ch.admin.bag.covidcertificate.api.valueset.TestDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
@@ -44,8 +45,8 @@ class CovidCertificatePdfGenerateRequestDtoMapperServiceTest {
     @BeforeEach
     private void init(){
         customizeCountryCode(fixture);
-        lenient().when(valueSetsService.getVaccinationValueSet(any())).thenReturn(fixture.create(VaccinationValueSet.class));
-        lenient().when(valueSetsService.getAllTestValueSet(any(), any())).thenReturn(fixture.create(TestValueSet.class));
+        lenient().when(valueSetsService.getVaccinationValueSet(any())).thenReturn(fixture.create(IssuableVaccineDto.class));
+        lenient().when(valueSetsService.getIssuableTestDto(any(), any())).thenReturn(fixture.create(TestDto.class));
         lenient().when(valueSetsService.getCountryCode(any(), any())).thenReturn(fixture.create(CountryCode.class));
         lenient().when(valueSetsService.getCountryCodeEn(any())).thenReturn(fixture.create(CountryCode.class));
     }
@@ -119,8 +120,8 @@ class CovidCertificatePdfGenerateRequestDtoMapperServiceTest {
 
             @Test
             void shouldMapToVaccinationCertificatePdfWithCorrectVaccinationValueSet(){
-                var vaccinationValueSet = fixture.create(VaccinationValueSet.class);
-                when(valueSetsService.getVaccinationValueSet(any())).thenReturn(vaccinationValueSet);
+                var vaccineDto = fixture.create(IssuableVaccineDto.class);
+                when(valueSetsService.getVaccinationValueSet(any())).thenReturn(vaccineDto);
                 try (MockedStatic<VaccinationCertificatePdfGenerateRequestDtoMapper> vaccinationCertificatePdfGenerateRequestDtoMapperMock =
                              Mockito.mockStatic(VaccinationCertificatePdfGenerateRequestDtoMapper.class)) {
                     vaccinationCertificatePdfGenerateRequestDtoMapperMock
@@ -130,7 +131,7 @@ class CovidCertificatePdfGenerateRequestDtoMapperServiceTest {
 
                     vaccinationCertificatePdfGenerateRequestDtoMapperMock.verify(()->
                             VaccinationCertificatePdfGenerateRequestDtoMapper
-                                    .toVaccinationCertificatePdf(any(), eq(vaccinationValueSet), any(), any()));
+                                    .toVaccinationCertificatePdf(any(), eq(vaccineDto), any(), any()));
                 }
         }
 
@@ -189,14 +190,14 @@ class CovidCertificatePdfGenerateRequestDtoMapperServiceTest {
         void shouldLoadTestValueSetWithCorrectTestType(){
             var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
             service.toTestCertificatePdf(pdfGenerateRequestDto);
-            verify(valueSetsService).getAllTestValueSet(eq(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest()), any());
+            verify(valueSetsService).getIssuableTestDto(eq(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest()), any());
         }
 
         @Test
         void shouldLoadTestValueSetWithCorrectManufacturer(){
             var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
             service.toTestCertificatePdf(pdfGenerateRequestDto);
-            verify(valueSetsService).getAllTestValueSet(any(), eq(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer()));
+            verify(valueSetsService).getIssuableTestDto(any(), eq(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer()));
         }
 
         @Test
@@ -259,8 +260,8 @@ class CovidCertificatePdfGenerateRequestDtoMapperServiceTest {
 
         @Test
         void shouldMapToTestCertificatePdfWithCorrectVaccinationValueSet(){
-            var testValueSet = fixture.create(TestValueSet.class);
-            when(valueSetsService.getAllTestValueSet(any(), any())).thenReturn(testValueSet);
+            var rapidTestDto = fixture.create(IssuableTestDto.class);
+            when(valueSetsService.getIssuableTestDto(any(), any())).thenReturn(rapidTestDto);
             try (MockedStatic<TestCertificatePdfGenerateRequestDtoMapper> testCertificatePdfGenerateRequestDtoMapperMock =
                          Mockito.mockStatic(TestCertificatePdfGenerateRequestDtoMapper.class)) {
                 testCertificatePdfGenerateRequestDtoMapperMock
@@ -270,7 +271,7 @@ class CovidCertificatePdfGenerateRequestDtoMapperServiceTest {
 
                 testCertificatePdfGenerateRequestDtoMapperMock.verify(()->
                         TestCertificatePdfGenerateRequestDtoMapper
-                                .toTestCertificatePdf(any(), eq(testValueSet), any(), any()));
+                                .toTestCertificatePdf(any(), eq(rapidTestDto), any(), any()));
             }
         }
 

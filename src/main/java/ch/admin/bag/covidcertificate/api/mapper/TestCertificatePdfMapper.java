@@ -1,8 +1,8 @@
 package ch.admin.bag.covidcertificate.api.mapper;
 
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.NegativeTestResult;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
@@ -16,12 +16,13 @@ public class TestCertificatePdfMapper {
 
     public static TestCertificatePdf toTestCertificatePdf(
             TestCertificateCreateDto testCertificateCreateDto,
-            TestValueSet testValueSet,
+            IssuableTestDto issuableTestDto,
             TestCertificateQrCode qrCodeData,
             String memberStateOfTest,
             String memberStateOfTestEn
     ) {
         CovidCertificateDiseaseOrAgentTargeted diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
+        // @Todo update type of test and manufacturer
         return new TestCertificatePdf(
                 testCertificateCreateDto.getPersonData().getName().getFamilyName(),
                 testCertificateCreateDto.getPersonData().getName().getGivenName(),
@@ -29,9 +30,8 @@ public class TestCertificatePdfMapper {
                 testCertificateCreateDto.getLanguage(),
                 diseaseOrAgentTargeted.getCode(),
                 diseaseOrAgentTargeted.getSystem(),
-                testValueSet.getType(),
-                testValueSet.getName(),
-                testValueSet.getManufacturer(),
+                issuableTestDto.getTestType().typeDisplay,
+                issuableTestDto.getDisplay(),
                 testCertificateCreateDto.getTestInfo().get(0).getSampleDateTime(),
                 NegativeTestResult.DISPLAY,
                 testCertificateCreateDto.getTestInfo().get(0).getTestingCentreOrFacility(),

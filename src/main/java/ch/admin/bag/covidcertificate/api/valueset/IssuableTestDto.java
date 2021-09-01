@@ -1,5 +1,7 @@
-package ch.admin.bag.covidcertificate.api.response;
+package ch.admin.bag.covidcertificate.api.valueset;
 
+import ch.admin.bag.covidcertificate.api.valueset.TestType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -7,9 +9,11 @@ import lombok.*;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class IssuableRapidTestDto {
+public class IssuableTestDto {
     @Schema(type = "string")
     private String code;
     @Schema(type = "string")
     private String display;
+    @JsonIgnore
+    private TestType testType;
 }

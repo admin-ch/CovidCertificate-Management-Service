@@ -33,7 +33,7 @@ public class CovidCertificatePdfGenerateRequestDtoMapperService {
     }
 
     public TestCertificatePdf toTestCertificatePdf(TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-        var testValueSet = valueSetsService.getAllTestValueSet(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest(), pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer());
+        var testValueSet = valueSetsService.getIssuableTestDto(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest(), pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer());
         var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest(), pdfGenerateRequestDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {

@@ -214,7 +214,7 @@ public class CsvService {
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
             }
-            valueSetsService.getChAcceptedTestValueSet(dataDto);
+            valueSetsService.getIssuableTestDto(dataDto);
         } else if (createDto instanceof VaccinationCertificateCreateDto) {
             var dataDto = ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(0);
             var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(), createDto.getLanguage());

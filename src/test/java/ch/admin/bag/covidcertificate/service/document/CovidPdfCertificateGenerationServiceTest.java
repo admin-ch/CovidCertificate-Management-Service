@@ -4,8 +4,9 @@ import ch.admin.bag.covidcertificate.api.mapper.*;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
+import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.service.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,16 +51,13 @@ class CovidPdfCertificateGenerationServiceTest {
 
 
     private void generateDocument_vaccine(VaccinationCertificateCreateDto createDto, String language, String familyName, String givenName, String fileName) throws Exception {
-        VaccinationValueSet vaccinationValueSet = new VaccinationValueSet();
-        ReflectionTestUtils.setField(vaccinationValueSet, "prophylaxis", "SARS-CoV-2 mRNA vaccine");
-        ReflectionTestUtils.setField(vaccinationValueSet, "medicinalProduct", "COVID-19 Vaccine Moderna");
-        ReflectionTestUtils.setField(vaccinationValueSet, "authHolder", "Moderna Switzerland GmbH, Basel");
+        IssuableVaccineDto vaccineDto = new IssuableVaccineDto("EU/1/20/1528", "Comirnaty", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100030215", "Biontech Manufacturing GmbH");
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
         String country = "Schweiz";
 
-        VaccinationCertificateQrCode qrCodeData = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccinationValueSet);
-        VaccinationCertificatePdf pdfData = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(createDto, vaccinationValueSet, qrCodeData, country, countryEn);
+        VaccinationCertificateQrCode qrCodeData = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccineDto);
+        VaccinationCertificatePdf pdfData = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(createDto, vaccineDto, qrCodeData, country, countryEn);
 
         doTest(pdfData, fileName, language);
 
@@ -78,10 +76,7 @@ class CovidPdfCertificateGenerationServiceTest {
 
     private void generateDocument_test(String language, String familyName, String givenName) throws Exception {
         TestCertificateCreateDto createDto = getTestCertificateCreateDto("test", "test", language);
-        TestValueSet testValueSet = new TestValueSet();
-        ReflectionTestUtils.setField(testValueSet, "name", "Name 1");
-        ReflectionTestUtils.setField(testValueSet, "type", "Rapid immunoassay");
-        ReflectionTestUtils.setField(testValueSet, "manufacturer", "XXXXX, Basel");
+        IssuableTestDto testValueSet = new IssuableTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", TestType.RAPID_TEST);
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
         String country = "Schweiz";

@@ -2,6 +2,10 @@ package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.mapper.ValueSetsResponseDtoMapper;
 import ch.admin.bag.covidcertificate.api.response.*;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
+import ch.admin.bag.covidcertificate.api.valueset.TestDto;
+import ch.admin.bag.covidcertificate.api.valueset.VaccineDto;
 import ch.admin.bag.covidcertificate.service.ValueSetsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,7 +36,7 @@ public class ValueSetsController {
     }
 
     @PostMapping("/rapid-tests")
-    public List<RapidTestDto> getRapidTests(HttpServletRequest request) {
+    public List<TestDto> getRapidTests(HttpServletRequest request) {
         log.info("Call of getRapidTests for value sets");
         securityHelper.authorizeUser(request);
 
@@ -41,7 +44,7 @@ public class ValueSetsController {
     }
 
     @PostMapping("/issuable-rapid-tests")
-    public List<IssuableRapidTestDto> getIssuableRapidTests(HttpServletRequest request) {
+    public List<IssuableTestDto> getIssuableRapidTests(HttpServletRequest request) {
         log.info("Call of getIssuableRapidTests for value sets");
         securityHelper.authorizeUser(request);
 

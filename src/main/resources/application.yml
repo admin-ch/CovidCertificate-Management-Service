@@ -115,6 +115,8 @@ cc-management-service:
   monitor:
     prometheus:
       secure: false
+  rapid-test-import:
+    cron: "0 0 03 * * *"
 
 cc-printing-service:
   billing:

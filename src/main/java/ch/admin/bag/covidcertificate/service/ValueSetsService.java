@@ -2,20 +2,11 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.response.IssuableRapidTestDto;
-import ch.admin.bag.covidcertificate.api.response.IssuableVaccineDto;
-import ch.admin.bag.covidcertificate.api.response.RapidTestDto;
-import ch.admin.bag.covidcertificate.api.response.VaccineDto;
-import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
-import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
+import ch.admin.bag.covidcertificate.api.valueset.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
@@ -24,17 +15,18 @@ import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.*;
 @Service
 @RequiredArgsConstructor
 public class ValueSetsService {
-    private final ValueSetsLoader valueSetsLoader;
+    private final CountryCodesLoader countryCodesLoader;
 
     public ValueSetsDto getValueSets() {
-        return valueSetsLoader.getValueSets();
+        var countryCodes = countryCodesLoader.getCountryCodes();
+        return new ValueSetsDto(countryCodes, this.getIssuableVaccines(), this.getIssuableRapidTests());
     }
 
-    public VaccinationValueSet getVaccinationValueSet(String medicinalProductCode) {
-        var vaccinationValueSet = getValueSets()
+    public IssuableVaccineDto getVaccinationValueSet(String productCode) {
+        var vaccinationValueSet = this.getValueSets()
                 .getVaccinationSets()
                 .stream()
-                .filter(valueSet -> valueSet.getMedicinalProductCode().equals(medicinalProductCode))
+                .filter(valueSet -> valueSet.getProductCode().equals(productCode))
                 .findFirst()
                 .orElse(null);
         if (vaccinationValueSet == null) {
@@ -43,41 +35,39 @@ public class ValueSetsService {
         return vaccinationValueSet;
     }
 
-    public TestValueSet getAllTestValueSet(String testTypeCode, String manufacturerCode) {
-        return getTestValueSet(getValueSets().getAllTestValueSets(), testTypeCode, manufacturerCode);
+    public IssuableTestDto getIssuableTestDto(String testTypeCode, String testCode) {
+        return getRapidTestDto(this.getIssuableRapidTests(), testTypeCode, testCode);
     }
 
-    public TestValueSet getChAcceptedTestValueSet(TestCertificateDataDto testCertificateDataDto) {
-        return getTestValueSet(getValueSets().getChAcceptedTestValueSets(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
+    public IssuableTestDto getIssuableTestDto(TestCertificateDataDto testCertificateDataDto) {
+        return getRapidTestDto(this.getIssuableRapidTests(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
     }
 
-    private TestValueSet getTestValueSet(Collection<TestValueSet> testValueSets, String testTypeCode, String manufacturerCode) {
-        if(!validPCRTest(testTypeCode, manufacturerCode) && !validNonPCRTest(testTypeCode, manufacturerCode)){
-            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
+    private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
+        if (validPCRTest(testTypeCode, testCode)) {
+            return new IssuableTestDto("", "PCR", TestType.PCR);
+        } else if (validRapidTest(testTypeCode, testCode)) {
+            var testValueSet = testValueSets
+                    .stream()
+                    .filter(issuableTestDto -> (issuableTestDto.getCode().equals(testCode)))
+                    .findFirst()
+                    .orElse(null);
+
+            if (testValueSet != null) {
+                return testValueSet;
+            }
         }
-
-        var testValueSet = testValueSets
-                .stream()
-                .filter(valueSet ->
-                        (validPCRTest(testTypeCode, manufacturerCode) && valueSet.getTypeCode().equals(PCR_TYPE_CODE)) ||
-                                (validNonPCRTest(testTypeCode, manufacturerCode) && valueSet.getManufacturerCodeEu().equals(manufacturerCode)))
-                .findFirst()
-                .orElse(null);
-
-        if (testValueSet == null) {
-            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
-        }
-        return testValueSet;
+        throw new CreateCertificateException(INVALID_TYP_OF_TEST);
     }
 
-    private boolean validPCRTest(String testTypeCode, String manufacturerCode){
-        return Objects.equals(testTypeCode, PCR_TYPE_CODE) && !StringUtils.hasText(manufacturerCode);
+    private boolean validPCRTest(String testTypeCode, String testCode) {
+        return Objects.equals(testTypeCode, TestType.PCR.typeCode) && !StringUtils.hasText(testCode);
     }
 
-    private boolean validNonPCRTest(String testTypeCode, String manufacturerCode){
-        return (Objects.equals(testTypeCode, NONE_PCR_TYPE_CODE)
+    private boolean validRapidTest(String testTypeCode, String testCode) {
+        return (Objects.equals(testTypeCode, TestType.RAPID_TEST.typeCode)
                 || !StringUtils.hasText(testTypeCode))
-                && StringUtils.hasText(manufacturerCode);
+                && StringUtils.hasText(testCode);
     }
 
     public CountryCode getCountryCodeEn(String countryShort) {
@@ -117,17 +107,17 @@ public class ValueSetsService {
         return result;
     }
 
-    public List<RapidTestDto> getRapidTests() {
-        var rapidTests = new ArrayList<RapidTestDto>();
-        rapidTests.add(new RapidTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", true));
-        rapidTests.add(new RapidTestDto("1065", "Becton Dickinson, BD Veritor? System for Rapid Detection of SARS CoV 2", true));
+    public List<TestDto> getRapidTests() {
+        var rapidTests = new ArrayList<TestDto>();
+        rapidTests.add(new TestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", TestType.RAPID_TEST, true));
+        rapidTests.add(new TestDto("1065", "Becton Dickinson, BD Veritor? System for Rapid Detection of SARS CoV 2", TestType.RAPID_TEST, true));
         return rapidTests;
     }
 
-    public List<IssuableRapidTestDto> getIssuableRapidTests() {
-        var issuableRapidTests = new ArrayList<IssuableRapidTestDto>();
-        issuableRapidTests.add(new IssuableRapidTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)"));
-        issuableRapidTests.add(new IssuableRapidTestDto("1065", "Becton Dickinson, BD Veritor? System for Rapid Detection of SARS CoV 2"));
+    public List<IssuableTestDto> getIssuableRapidTests() {
+        var issuableRapidTests = new ArrayList<IssuableTestDto>();
+        issuableRapidTests.add(new IssuableTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", TestType.RAPID_TEST));
+        issuableRapidTests.add(new IssuableTestDto("1065", "Becton Dickinson, BD Veritor? System for Rapid Detection of SARS CoV 2", TestType.RAPID_TEST));
         return issuableRapidTests;
     }
 

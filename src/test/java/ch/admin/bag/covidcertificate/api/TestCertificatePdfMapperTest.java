@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
@@ -15,7 +15,7 @@ public class TestCertificatePdfMapperTest {
 
     private final JFixture jFixture = new JFixture();
     private final TestCertificateCreateDto incoming = jFixture.create(TestCertificateCreateDto.class);
-    private final TestValueSet testValueSet = jFixture.create(TestValueSet.class);
+    private final IssuableTestDto testValueSet = jFixture.create(IssuableTestDto.class);
     private final TestCertificateQrCode qrCode = jFixture.create(TestCertificateQrCode.class);
     private final String memberStateOfTest = "Schweiz";
     private final String memberStateOfTestEn = "Switzerland";
@@ -41,19 +41,13 @@ public class TestCertificatePdfMapperTest {
     @Test
     public void mapsTypeOfTest() {
         TestCertificatePdf actual = TestCertificatePdfMapper.toTestCertificatePdf(incoming, testValueSet, qrCode, memberStateOfTest, memberStateOfTestEn);
-        assertEquals(testValueSet.getType(), actual.getTypeOfTest());
+        assertEquals(testValueSet.getTestType().typeDisplay, actual.getTypeOfTest());
     }
 
     @Test
     public void mapsTestName() {
         TestCertificatePdf actual = TestCertificatePdfMapper.toTestCertificatePdf(incoming, testValueSet, qrCode, memberStateOfTest, memberStateOfTestEn);
-        assertEquals(testValueSet.getName(), actual.getTestName());
-    }
-
-    @Test
-    public void mapsTestManufacturer() {
-        TestCertificatePdf actual = TestCertificatePdfMapper.toTestCertificatePdf(incoming, testValueSet, qrCode, memberStateOfTest, memberStateOfTestEn);
-        assertEquals(testValueSet.getManufacturer(), actual.getTestManufacturer());
+        assertEquals(testValueSet.getDisplay(), actual.getTestNameAndManufacturer());
     }
 
     @Test

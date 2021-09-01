@@ -27,6 +27,6 @@ class ValueSetsResponseDtoMapperTest {
     void shouldMapTestValueSets() {
         var valueSetDto = jFixture.create(ValueSetsDto.class);
         var actual = ValueSetsResponseDtoMapper.create(valueSetDto);
-        assertEquals(valueSetDto.getChAcceptedTestValueSets(), actual.getTestSets());
+        assertEquals(valueSetDto.getTestValueSets(), actual.getTestSets());
     }
 }
