@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,13 +22,13 @@ public class TestCertificateQrCodeMapperTest {
 
     private final JFixture fixture = new JFixture();
     private TestCertificateCreateDto incoming;
-    private TestValueSet testValueSet;
+    private IssuableTestDto testValueSet;
 
     @BeforeEach
     public void setUp() {
         customizeTestValueSet(fixture);
         incoming = fixture.create(TestCertificateCreateDto.class);
-        testValueSet = fixture.create(TestValueSet.class);
+        testValueSet = fixture.create(IssuableTestDto.class);
     }
 
     @Test
@@ -52,19 +52,13 @@ public class TestCertificateQrCodeMapperTest {
     @Test
     public void mapsTypeOfTest() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
-        assertEquals(testValueSet.getTypeCode(), actual.getTestInfo().get(0).getTypeOfTest());
+        assertEquals(testValueSet.getTestType().typeCode, actual.getTestInfo().get(0).getTypeOfTest());
     }
 
     @Test
     public void mapsTestName() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
-        assertEquals(testValueSet.getName(), actual.getTestInfo().get(0).getTestName());
-    }
-
-    @Test
-    public void mapsTestManufacturer() {
-        TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
-        assertEquals(testValueSet.getManufacturerCodeEu(), actual.getTestInfo().get(0).getTestManufacturer());
+        assertEquals(testValueSet.getCode(), actual.getTestInfo().get(0).getTestName());
     }
 
     @Test

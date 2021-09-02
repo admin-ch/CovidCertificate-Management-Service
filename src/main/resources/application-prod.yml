@@ -27,6 +27,7 @@ cc-management-service:
     issuer: "https://covidcertificate-management.bag.admin.ch"
     token-validity: 43200000
     privateKey: ${vcap.services.cc_jwt_signing_key.credentials.privateKey}
+  cache-duration: 21600000
   monitor:
     prometheus:
       user: "prometheus"
@@ -42,6 +43,9 @@ cc-printing-service:
 
 cc-inapp-delivery-service:
   url: "https://ch-covidcertificate-backend-delivery-ws.app.cfap02.atlantica.admin.ch/cgs/delivery/v1/covidcert"
+
+ch-covidcertificate-backend-verifier-service:
+  url: "https://ch-covidcertificate-backend-verifier-ws.app.cfap02.atlantica.admin.ch/dcga/v1/valueSets"
 
 ## Mutual-SSL configuration
 app:

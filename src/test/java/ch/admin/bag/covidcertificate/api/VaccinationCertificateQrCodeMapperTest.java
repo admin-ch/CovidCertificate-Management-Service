@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
@@ -16,7 +16,7 @@ public class VaccinationCertificateQrCodeMapperTest {
 
     private final JFixture jFixture = new JFixture();
     private final VaccinationCertificateCreateDto incoming = jFixture.create(VaccinationCertificateCreateDto.class);
-    private final VaccinationValueSet vaccinationValueSet = jFixture.create(VaccinationValueSet.class);
+    private final IssuableVaccineDto vaccinationValueSet = jFixture.create(IssuableVaccineDto.class);
 
     @Test
     public void mapsFamilyName() {
@@ -39,19 +39,19 @@ public class VaccinationCertificateQrCodeMapperTest {
     @Test
     public void mapsVaccineProphylaxis() {
         VaccinationCertificateQrCode actual = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(incoming, vaccinationValueSet);
-        assertEquals(vaccinationValueSet.getProphylaxis(), actual.getVaccinationInfo().get(0).getVaccineProphylaxis());
+        assertEquals(vaccinationValueSet.getProphylaxisDisplay(), actual.getVaccinationInfo().get(0).getVaccineProphylaxis());
     }
 
     @Test
     public void mapsMedicinalProduct() {
         VaccinationCertificateQrCode actual = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(incoming, vaccinationValueSet);
-        assertEquals(vaccinationValueSet.getMedicinalProductCode(), actual.getVaccinationInfo().get(0).getMedicinalProduct());
+        assertEquals(vaccinationValueSet.getProductCode(), actual.getVaccinationInfo().get(0).getMedicinalProduct());
     }
 
     @Test
     public void mapsMarketingAuthorizationHolder() {
         VaccinationCertificateQrCode actual = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(incoming, vaccinationValueSet);
-        assertEquals(vaccinationValueSet.getAuthHolderCode(), actual.getVaccinationInfo().get(0).getMarketingAuthorizationHolder());
+        assertEquals(vaccinationValueSet.getAuthHolderDisplay(), actual.getVaccinationInfo().get(0).getMarketingAuthorizationHolder());
     }
 
     @Test

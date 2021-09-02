@@ -1,13 +1,29 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.mapper.IssuableRapidTestMapper;
+import ch.admin.bag.covidcertificate.api.mapper.IssuableVaccineMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RapidTestMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccineMapper;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
-import ch.admin.bag.covidcertificate.api.valueset.VaccinationValueSet;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
+import ch.admin.bag.covidcertificate.api.valueset.TestDto;
+import ch.admin.bag.covidcertificate.api.valueset.TestType;
+import ch.admin.bag.covidcertificate.api.valueset.VaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
+import ch.admin.bag.covidcertificate.domain.RapidTest;
+import ch.admin.bag.covidcertificate.domain.RapidTestRepository;
+import ch.admin.bag.covidcertificate.domain.Vaccine;
+import ch.admin.bag.covidcertificate.domain.VaccineRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
@@ -15,23 +31,38 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.EN;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.IT;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ValueSetsService {
-    private final ValueSetsLoader valueSetsLoader;
+
+    private static final String VACCINE_CACHE_NAME = "vaccines";
+    private static final String ISSUABLE_VACCINE_CACHE_NAME = "issuableVaccines";
+    private static final String RAPID_TEST_CACHE_NAME = "rapidTests";
+    private static final String ISSUABLE_TEST_CACHE_NAME = "issuableTests";
+
+    private final CountryCodesLoader countryCodesLoader;
+    private final VaccineRepository vaccineRepository;
+    private final RapidTestRepository rapidTestRepository;
 
     public ValueSetsDto getValueSets() {
-        return valueSetsLoader.getValueSets();
+        var countryCodes = countryCodesLoader.getCountryCodes();
+        return new ValueSetsDto(countryCodes, this.getIssuableVaccines(), this.getIssuableRapidTests());
     }
 
-    public VaccinationValueSet getVaccinationValueSet(String medicinalProductCode) {
-        var vaccinationValueSet = getValueSets()
+    public IssuableVaccineDto getVaccinationValueSet(String productCode) {
+        var vaccinationValueSet = this.getValueSets()
                 .getVaccinationSets()
                 .stream()
-                .filter(valueSet -> valueSet.getMedicinalProductCode().equals(medicinalProductCode))
+                .filter(valueSet -> valueSet.getProductCode().equals(productCode))
                 .findFirst()
                 .orElse(null);
         if (vaccinationValueSet == null) {
@@ -40,41 +71,39 @@ public class ValueSetsService {
         return vaccinationValueSet;
     }
 
-    public TestValueSet getAllTestValueSet(String testTypeCode, String manufacturerCode) {
-        return getTestValueSet(getValueSets().getAllTestValueSets(), testTypeCode, manufacturerCode);
+    public IssuableTestDto getIssuableTestDto(String testTypeCode, String testCode) {
+        return getRapidTestDto(this.getIssuableRapidTests(), testTypeCode, testCode);
     }
 
-    public TestValueSet getChAcceptedTestValueSet(TestCertificateDataDto testCertificateDataDto) {
-        return getTestValueSet(getValueSets().getChAcceptedTestValueSets(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
+    public IssuableTestDto getIssuableTestDto(TestCertificateDataDto testCertificateDataDto) {
+        return getRapidTestDto(this.getIssuableRapidTests(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
     }
 
-    private TestValueSet getTestValueSet(Collection<TestValueSet> testValueSets, String testTypeCode, String manufacturerCode) {
-        if(!validPCRTest(testTypeCode, manufacturerCode) && !validNonPCRTest(testTypeCode, manufacturerCode)){
-            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
+    private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
+        if (validPCRTest(testTypeCode, testCode)) {
+            return new IssuableTestDto("", "PCR", TestType.PCR);
+        } else if (validRapidTest(testTypeCode, testCode)) {
+            var testValueSet = testValueSets
+                    .stream()
+                    .filter(issuableTestDto -> (issuableTestDto.getCode().equals(testCode)))
+                    .findFirst()
+                    .orElse(null);
+
+            if (testValueSet != null) {
+                return testValueSet;
+            }
         }
-
-        var testValueSet = testValueSets
-                .stream()
-                .filter(valueSet ->
-                        (validPCRTest(testTypeCode, manufacturerCode) && valueSet.getTypeCode().equals(PCR_TYPE_CODE)) ||
-                                (validNonPCRTest(testTypeCode, manufacturerCode) && valueSet.getManufacturerCodeEu().equals(manufacturerCode)))
-                .findFirst()
-                .orElse(null);
-
-        if (testValueSet == null) {
-            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
-        }
-        return testValueSet;
+        throw new CreateCertificateException(INVALID_TYP_OF_TEST);
     }
 
-    private boolean validPCRTest(String testTypeCode, String manufacturerCode){
-        return Objects.equals(testTypeCode, PCR_TYPE_CODE) && !StringUtils.hasText(manufacturerCode);
+    private boolean validPCRTest(String testTypeCode, String testCode) {
+        return Objects.equals(testTypeCode, TestType.PCR.typeCode) && !StringUtils.hasText(testCode);
     }
 
-    private boolean validNonPCRTest(String testTypeCode, String manufacturerCode){
-        return (Objects.equals(testTypeCode, NONE_PCR_TYPE_CODE)
+    private boolean validRapidTest(String testTypeCode, String testCode) {
+        return (Objects.equals(testTypeCode, TestType.RAPID_TEST.typeCode)
                 || !StringUtils.hasText(testTypeCode))
-                && StringUtils.hasText(manufacturerCode);
+                && StringUtils.hasText(testCode);
     }
 
     public CountryCode getCountryCodeEn(String countryShort) {
@@ -112,5 +141,61 @@ public class ValueSetsService {
                 break;
         }
         return result;
+    }
+
+    @Transactional
+    @Cacheable(RAPID_TEST_CACHE_NAME)
+    public List<TestDto> getRapidTests() {
+        log.info("Loading rapid tests");
+        List<RapidTest> rapidTests = this.rapidTestRepository.findAll();
+        return RapidTestMapper.fromRapidTests(rapidTests);
+    }
+
+    @Transactional
+    @Cacheable(ISSUABLE_TEST_CACHE_NAME)
+    public List<IssuableTestDto> getIssuableRapidTests() {
+        log.info("Loading issuable rapid tests");
+        List<RapidTest> rapidTests = this.rapidTestRepository.findAllActiveAndChIssuable();
+        return IssuableRapidTestMapper.fromRapidTests(rapidTests);
+    }
+
+    @Transactional
+    @Cacheable(VACCINE_CACHE_NAME)
+    public List<VaccineDto> getVaccines() {
+        log.info("Loading vaccines");
+        List<Vaccine> vaccines = this.vaccineRepository.findAll();
+        return VaccineMapper.fromVaccines(vaccines);
+    }
+
+    @Transactional
+    @Cacheable(ISSUABLE_VACCINE_CACHE_NAME)
+    public List<IssuableVaccineDto> getIssuableVaccines() {
+        log.info("Loading issuable vaccines");
+        List<Vaccine> vaccines = this.vaccineRepository.findAllActiveAndChIssuable();
+        return IssuableVaccineMapper.fromVaccines(vaccines);
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = RAPID_TEST_CACHE_NAME, allEntries = true)
+    public void cleanRapidTestsCache() {
+        log.info("Cleaning cache of rapid tests");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = ISSUABLE_TEST_CACHE_NAME, allEntries = true)
+    public void cleanIssuableRapidTestsCache() {
+        log.info("Cleaning cache of issuable rapid tests");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = VACCINE_CACHE_NAME, allEntries = true)
+    public void cleanVaccinesCache() {
+        log.info("Cleaning cache of vaccines");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
+    public void cleanIssuableVaccinesCache() {
+        log.info("Cleaning cache of issuable vaccines");
     }
 }

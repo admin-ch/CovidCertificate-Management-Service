@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class TestCertificateData {
     @JsonProperty("nm")
     private String testName;
     @JsonProperty("ma")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String testManufacturer;
     @JsonProperty("sc")
     private ZonedDateTime sampleDateTime;

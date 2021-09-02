@@ -54,7 +54,7 @@ class ValueSetsControllerTest {
 
     @BeforeAll
     static void setup() {
-        customizeVaccinationValueSet(fixture);
+        customizeIssuableVaccineDto(fixture);
         customizeTestValueSet(fixture);
         customizeCountryCode(fixture);
     }
@@ -63,7 +63,6 @@ class ValueSetsControllerTest {
     void setupMocks() {
         this.mockMvc = standaloneSetup(controller, new ResponseStatusExceptionHandler()).build();
         lenient().when(valueSetsService.getValueSets()).thenReturn(fixture.create(ValueSetsDto.class));
-
     }
 
     @Nested

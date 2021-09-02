@@ -62,7 +62,7 @@ class ValueSetsControllerSecurityTest {
 
     @BeforeAll
     private static void setup() throws Exception {
-        customizeVaccinationValueSet(fixture);
+        customizeIssuableVaccineDto(fixture);
         customizeTestValueSet(fixture);
         customizeCountryCode(fixture);
 

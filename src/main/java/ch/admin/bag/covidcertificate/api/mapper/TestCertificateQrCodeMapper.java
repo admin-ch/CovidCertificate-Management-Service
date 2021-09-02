@@ -2,8 +2,8 @@ package ch.admin.bag.covidcertificate.api.mapper;
 
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.NegativeTestResult;
-import ch.admin.bag.covidcertificate.api.valueset.TestValueSet;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateData;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
@@ -22,7 +22,7 @@ public class TestCertificateQrCodeMapper {
 
     public static TestCertificateQrCode toTestCertificateQrCode(
             TestCertificateCreateDto testCertificateCreateDto,
-            TestValueSet testValueSet
+            IssuableTestDto testValueSet
     ) {
         return new TestCertificateQrCode(
                 VERSION,
@@ -36,21 +36,21 @@ public class TestCertificateQrCodeMapper {
 
     private static List<TestCertificateData> toTestCertificateDataList(
             List<TestCertificateDataDto> testCertificateDataDtoList,
-            TestValueSet testValueSet
+            IssuableTestDto issuableTestDto
     ) {
         return testCertificateDataDtoList.stream().map(testCertificateDataDto ->
-                toTestCertificateData(testCertificateDataDto, testValueSet)
+                toTestCertificateData(testCertificateDataDto, issuableTestDto)
         ).collect(Collectors.toList());
     }
 
     private static TestCertificateData toTestCertificateData(
             TestCertificateDataDto testCertificateDataDto,
-            TestValueSet testValueSet) {
+            IssuableTestDto issuableTestDto) {
         return new TestCertificateData(
                 CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
-                testValueSet.getTypeCode(),
-                getTrimmedTestName(testValueSet.getName()),
-                testValueSet.getManufacturerCodeEu(),
+                issuableTestDto.getTestType().typeCode,
+                getTrimmedTestName(issuableTestDto.getCode()),
+                issuableTestDto.getCode(),
                 testCertificateDataDto.getSampleDateTime().truncatedTo(ChronoUnit.SECONDS),
                 NegativeTestResult.CODE,
                 testCertificateDataDto.getTestingCentreOrFacility(),
