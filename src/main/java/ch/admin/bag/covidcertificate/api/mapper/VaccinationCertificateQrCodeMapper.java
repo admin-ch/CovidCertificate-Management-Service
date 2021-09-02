@@ -52,9 +52,9 @@ public class VaccinationCertificateQrCodeMapper {
     ) {
         return new VaccinationCertificateData(
                 CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
-                issuableVaccineDto.getProphylaxisDisplay(),
-                issuableVaccineDto.getProductDisplay(),
-                issuableVaccineDto.getAuthHolderDisplay(),
+                issuableVaccineDto.getProphylaxisCode(),
+                issuableVaccineDto.getProductCode(),
+                issuableVaccineDto.getAuthHolderCode(),
                 vaccinationCertificateDataDto.getNumberOfDoses(),
                 vaccinationCertificateDataDto.getTotalNumberOfDoses(),
                 vaccinationCertificateDataDto.getVaccinationDate(),
