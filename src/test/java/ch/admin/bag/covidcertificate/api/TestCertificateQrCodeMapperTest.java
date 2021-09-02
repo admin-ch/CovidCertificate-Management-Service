@@ -52,13 +52,13 @@ public class TestCertificateQrCodeMapperTest {
     @Test
     public void mapsTypeOfTest() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
-        assertEquals(testValueSet.getTestType().typeDisplay, actual.getTestInfo().get(0).getTypeOfTest());
+        assertEquals(testValueSet.getTestType().typeCode, actual.getTestInfo().get(0).getTypeOfTest());
     }
 
     @Test
     public void mapsTestName() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
-        assertEquals(testValueSet.getDisplay(), actual.getTestInfo().get(0).getTestName());
+        assertEquals(testValueSet.getCode(), actual.getTestInfo().get(0).getTestName());
     }
 
     @Test
