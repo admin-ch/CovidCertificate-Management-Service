@@ -48,8 +48,8 @@ public class TestCertificateQrCodeMapper {
             IssuableTestDto issuableTestDto) {
         return new TestCertificateData(
                 CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
-                issuableTestDto.getTestType().typeDisplay,
-                getTrimmedTestName(issuableTestDto.getDisplay()),
+                issuableTestDto.getTestType().typeCode,
+                getTrimmedTestName(issuableTestDto.getCode()),
                 issuableTestDto.getCode(),
                 testCertificateDataDto.getSampleDateTime().truncatedTo(ChronoUnit.SECONDS),
                 NegativeTestResult.CODE,
