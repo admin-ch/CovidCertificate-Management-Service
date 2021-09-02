@@ -45,7 +45,7 @@ public class VaccinationCertificateQrCodeMapperTest {
     @Test
     public void mapsMedicinalProduct() {
         VaccinationCertificateQrCode actual = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(incoming, vaccinationValueSet);
-        assertEquals(vaccinationValueSet.getProductDisplay(), actual.getVaccinationInfo().get(0).getMedicinalProduct());
+        assertEquals(vaccinationValueSet.getProductCode(), actual.getVaccinationInfo().get(0).getMedicinalProduct());
     }
 
     @Test
