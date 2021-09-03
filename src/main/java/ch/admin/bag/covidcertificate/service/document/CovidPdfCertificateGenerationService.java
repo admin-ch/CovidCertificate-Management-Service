@@ -105,11 +105,10 @@ public class CovidPdfCertificateGenerationService {
 
         messageSource = messageSource();
 
-        logoBund = getLogo("bund.png", 13);
-        logoApple = getLogo("appstore.png", 49);
-        logoGoogle = getLogo("googleplay.png", 50);
-        logoApp = getLogo("appicon.png", 10);
-        this.setAltTagsForImages();
+        logoBund = getLogo("bund.png", "government icon", 13);
+        logoApple = getLogo("appstore.png", "app store icon", 49);
+        logoGoogle = getLogo("googleplay.png", "google play icon",  50);
+        logoApp = getLogo("appicon.png", "covid certificate app icon", 10);
 
         addDraftWatermark = Arrays.stream(env.getActiveProfiles()).noneMatch("prod"::equals);
     }
@@ -120,12 +119,6 @@ public class CovidPdfCertificateGenerationService {
         source.setUseCodeAsDefaultMessage(true);
         source.setDefaultEncoding("UTF-8");
         return source;
-    }
-
-    private void setAltTagsForImages() {
-//        logoApple.setAccessibleAttribute(PdfName.ALT, new PdfString("app store icon"));
-//        logoGoogle.setAccessibleAttribute(PdfName.ALT, new PdfString("google play icon"));
-//        logoApp.setAccessibleAttribute(PdfName.ALT, new PdfString("covid certificate app icon"));
     }
 
     public byte[] generateCovidCertificate(AbstractCertificatePdf data, String barcodePayload, LocalDateTime issuedAt) {
@@ -453,13 +446,14 @@ public class CovidPdfCertificateGenerationService {
     }
 
 
-    private Chunk getLogo(String name, int scale) {
+    private Chunk getLogo(String name, String alt, int scale) {
 
         URL imageUrl = this.getClass().getClassLoader().getResource("templates/" + name);
 
         Image logo;
         try {
             logo = Image.getInstance(Objects.requireNonNull(imageUrl));
+            logo.setAlt(alt);
             logo.scalePercent(scale);
         } catch (Exception e) {
             throw new IllegalStateException(e);
