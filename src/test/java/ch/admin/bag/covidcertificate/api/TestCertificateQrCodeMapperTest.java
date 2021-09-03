@@ -58,7 +58,7 @@ public class TestCertificateQrCodeMapperTest {
     @Test
     public void mapsTestName() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
-        assertEquals(testValueSet.getCode(), actual.getTestInfo().get(0).getTestName());
+        assertEquals(testValueSet.getDisplay(), actual.getTestInfo().get(0).getTestName());
     }
 
     @Test
