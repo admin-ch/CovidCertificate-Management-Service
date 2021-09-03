@@ -4,17 +4,20 @@ import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
-import com.itextpdf.text.pdf.qrcode.EncodeHintType;
-import com.itextpdf.text.pdf.qrcode.ErrorCorrectionLevel;
-import com.nimbusds.oauth2.sdk.util.StringUtils;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -88,24 +91,24 @@ public class CovidPdfCertificateGenerationService {
                 null);
 
 
-        fontRow = new Font(baseFont, 10, Font.NORMAL, BaseColor.BLACK);
-        font7Row = new Font(baseFont, 7, Font.NORMAL, BaseColor.BLACK);
-        font8Row = new Font(baseFont, 8, Font.NORMAL, BaseColor.BLACK);
-        fontRowBold = new Font(baseFontBold, 10, Font.NORMAL, BaseColor.BLACK);
-        fontEnglish = new Font(baseFontItalic, 9, Font.NORMAL, BaseColor.BLACK);
-        font7English = new Font(baseFontItalic, 7, Font.NORMAL, BaseColor.BLACK);
-        font8English = new Font(baseFontItalic, 8, Font.NORMAL, BaseColor.BLACK);
-        fontHeaderRed = new Font(baseFont, 26, Font.NORMAL, new BaseColor(220, 0, 24));
-        fontHeaderBlack = new Font(baseFontItalic, 16, Font.NORMAL, BaseColor.BLACK);
+        fontRow = new Font(baseFont, 10, Font.NORMAL, Color.BLACK);
+        font7Row = new Font(baseFont, 7, Font.NORMAL, Color.BLACK);
+        font8Row = new Font(baseFont, 8, Font.NORMAL, Color.BLACK);
+        fontRowBold = new Font(baseFontBold, 10, Font.NORMAL, Color.BLACK);
+        fontEnglish = new Font(baseFontItalic, 9, Font.NORMAL, Color.BLACK);
+        font7English = new Font(baseFontItalic, 7, Font.NORMAL, Color.BLACK);
+        font8English = new Font(baseFontItalic, 8, Font.NORMAL, Color.BLACK);
+        fontHeaderRed = new Font(baseFont, 26, Font.NORMAL, new Color(220, 0, 24));
+        fontHeaderBlack = new Font(baseFontItalic, 16, Font.NORMAL, Color.BLACK);
 
-        fontWatermark = new Font(baseFontBold, 80, Font.NORMAL, new BaseColor(234, 234, 234));
+        fontWatermark = new Font(baseFontBold, 80, Font.NORMAL, new Color(234, 234, 234));
 
         messageSource = messageSource();
 
-        logoBund = getLogo("bund.png", 15);
+        logoBund = getLogo("bund.png", 13);
         logoApple = getLogo("appstore.png", 49);
         logoGoogle = getLogo("googleplay.png", 50);
-        logoApp = getLogo("appicon.png", 100);
+        logoApp = getLogo("appicon.png", 10);
         this.setAltTagsForImages();
 
         addDraftWatermark = Arrays.stream(env.getActiveProfiles()).noneMatch("prod"::equals);
@@ -120,9 +123,9 @@ public class CovidPdfCertificateGenerationService {
     }
 
     private void setAltTagsForImages() {
-        logoApple.setAccessibleAttribute(PdfName.ALT, new PdfString("app store icon"));
-        logoGoogle.setAccessibleAttribute(PdfName.ALT, new PdfString("google play icon"));
-        logoApp.setAccessibleAttribute(PdfName.ALT, new PdfString("covid certificate app icon"));
+//        logoApple.setAccessibleAttribute(PdfName.ALT, new PdfString("app store icon"));
+//        logoGoogle.setAccessibleAttribute(PdfName.ALT, new PdfString("google play icon"));
+//        logoApp.setAccessibleAttribute(PdfName.ALT, new PdfString("covid certificate app icon"));
     }
 
     public byte[] generateCovidCertificate(AbstractCertificatePdf data, String barcodePayload, LocalDateTime issuedAt) {
@@ -186,7 +189,7 @@ public class CovidPdfCertificateGenerationService {
         writer.setTagged();
         document.addTitle(METADATA);
         writer.setViewerPreferences(PdfWriter.DisplayDocTitle);
-        writer.setLanguage(String.format("%s-CH", locale.getLanguage()));
+//        writer.setLanguage(String.format("%s-CH", locale.getLanguage()));
         writer.createXmpMetadata();
         return writer;
     }
@@ -202,12 +205,12 @@ public class CovidPdfCertificateGenerationService {
     private PdfPTable headerTable(Locale locale, boolean isPartialVaccination) {
         PdfPTable table = new PdfPTable(2);
         table.setWidthPercentage(100);
-        table.setPaddingTop(0);
+        table.setSpacingBefore(0);
 
         PdfPCell cell = new PdfPCell();
         cell.addElement(logoBund);
-        cell.setPaddingLeft(-5);
-        cell.setPaddingTop(30);
+        cell.setPaddingLeft(-8);
+        cell.setPaddingTop(10);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setFixedHeight(70);
         cell.setRowspan(2);
@@ -234,23 +237,28 @@ public class CovidPdfCertificateGenerationService {
     }
 
     private PdfPTable mainTable(Locale locale, AbstractCertificatePdf data, Image qrCode, boolean isPartialVaccination, LocalDateTime issuedAt) {
-        float[] pointColumnWidths = {50F, 20F, 30F};
+        float[] pointColumnWidths = {50F, 50F};
         PdfPTable table = new PdfPTable(pointColumnWidths);
         table.setWidthPercentage(100);
 
         PdfPCell cell = new PdfPCell(addLeftColumn(locale, qrCode, data, isPartialVaccination, issuedAt));
         cell.setVerticalAlignment(Element.ALIGN_TOP);
         cell.setBorder(Rectangle.NO_BORDER);
-        cell.setRowspan(30);
         cell.setFixedHeight(450);
         table.addCell(cell);
 
+        float[] pointColumnWidths2 = {40F, 60F};
+        PdfPTable right = new PdfPTable(pointColumnWidths2);
+        PdfPCell cellRight = new PdfPCell(right);
+        cellRight.setBorder(Rectangle.NO_BORDER);
+        table.addCell(cellRight);
+
         if (data instanceof VaccinationCertificatePdf) {
-            addVaccineData(locale, (VaccinationCertificatePdf) data, table, isPartialVaccination);
+            addVaccineData(locale, (VaccinationCertificatePdf) data, right, isPartialVaccination);
         } else if (data instanceof RecoveryCertificatePdf) {
-            addRecoveryData(locale, (RecoveryCertificatePdf) data, table);
+            addRecoveryData(locale, (RecoveryCertificatePdf) data, right);
         } else {
-            addTestData(locale, (TestCertificatePdf) data, table);
+            addTestData(locale, (TestCertificatePdf) data, right);
         }
         return table;
     }
@@ -485,7 +493,7 @@ public class CovidPdfCertificateGenerationService {
             addInfoCell(cell, messageSource.getMessage("info.info1", null, Locale.ENGLISH), font7English, 5);
             addInfoCell(cell, messageSource.getMessage("info.info2", null, Locale.ENGLISH), font7English, 0);
         }
-        cell.setBackgroundColor(new BaseColor(252, 231, 232));
+        cell.setBackgroundColor(new Color(252, 231, 232));
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setPaddingBottom(10);
@@ -526,7 +534,7 @@ public class CovidPdfCertificateGenerationService {
         logoCell.addElement(paragraphLogo);
         logoCell.setBorder(Rectangle.NO_BORDER);
         logoCell.setVerticalAlignment(Element.ALIGN_CENTER);
-        logoCell.setPaddingTop(20);
+        logoCell.setPaddingTop(4);
         logoCell.setRowspan(2);
         table.addCell(logoCell);
 
@@ -574,7 +582,7 @@ public class CovidPdfCertificateGenerationService {
         // Create QR code object with error correction level "Q" (25%)
         Map<EncodeHintType, Object> hints = new HashMap<>();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q);
-        BarcodeQRCode qrCode = new BarcodeQRCode(content, 1, 1, hints);
+        BarcodeQRCode qrCode = new BarcodeQRCode(content, hints);
 
         float widthHeight = 200;
 
@@ -585,7 +593,7 @@ public class CovidPdfCertificateGenerationService {
         PdfTemplate template = cb.createTemplate(widthHeight, widthHeight);
 
         // Place QR code in template and wrap in image
-        qrCode.placeBarcode(template, BaseColor.BLACK, widthHeight / size.getWidth());
+        qrCode.placeBarcode(template, widthHeight / size.getWidth());
         var image = Image.getInstance(template);
         image.setAlt("qr code");
         return image;
