@@ -189,7 +189,7 @@ public class CovidPdfCertificateGenerationService {
         writer.setTagged();
         document.addTitle(METADATA);
         writer.setViewerPreferences(PdfWriter.DisplayDocTitle);
-//        writer.setLanguage(String.format("%s-CH", locale.getLanguage()));
+        document.setDocumentLanguage(String.format("%s-CH", locale.getLanguage()));
         writer.createXmpMetadata();
         return writer;
     }
