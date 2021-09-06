@@ -308,7 +308,7 @@
       "swiss_test_kit": "",
       "manufacturer_code_eu": "2031",
       "eu_accepted": true,
-      "ch_accepted": false,
+      "ch_accepted": true,
       "active": true
     },
     {
@@ -1210,7 +1210,7 @@
       "swiss_test_kit": "",
       "manufacturer_code_eu": "1114",
       "eu_accepted": true,
-      "ch_accepted": false,
+      "ch_accepted": true,
       "active": true
     },
     {
