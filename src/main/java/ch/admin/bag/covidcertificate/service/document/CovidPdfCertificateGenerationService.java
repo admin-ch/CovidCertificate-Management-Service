@@ -108,7 +108,7 @@ public class CovidPdfCertificateGenerationService {
         logoBund = getLogo("bund.png", "government icon", 13);
         logoApple = getLogo("appstore.png", "app store icon", 49);
         logoGoogle = getLogo("googleplay.png", "google play icon",  50);
-        logoApp = getLogo("appicon.png", "covid certificate app icon", 10);
+        logoApp = getLogo("appicon.png", "covid certificate app icon", 11);
 
         addDraftWatermark = Arrays.stream(env.getActiveProfiles()).noneMatch("prod"::equals);
     }
