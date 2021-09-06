@@ -83,7 +83,7 @@ public class TestModelProvider {
     public static CovidCertificatePersonDto getCovidCertificatePersonDto() {
         return new CovidCertificatePersonDto(
                 getCovidCertificatePersonNameDto(),
-                LocalDate.of(1990, Month.MAY, 13)
+                LocalDate.of(1990, Month.MAY, 13).toString()
         );
     }
 

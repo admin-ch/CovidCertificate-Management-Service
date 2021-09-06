@@ -11,8 +11,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_STANDARDISED_FAMILY_NAME;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_STANDARDISED_GIVEN_NAME;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CovidCertificatePersonMapperTest {
@@ -21,7 +20,7 @@ public class CovidCertificatePersonMapperTest {
 
     private final String givenName = "GivenName";
     private final String familyName = "FamilyName";
-    private final LocalDate dateOfBirth = jFixture.create(LocalDate.class);
+    private final String dateOfBirth = jFixture.create(LocalDate.class).format(LOCAL_DATE_FORMAT);
 
     @Test
     public void mapsFamilyName() {
@@ -46,7 +45,9 @@ public class CovidCertificatePersonMapperTest {
     }
 
     @Test
-    @Ignore
+    @Ignore("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
+            "The new version of the library we use truncates the name and thus the exception is never thrown, " +
+            "since the standardised name never exceeds the maximum.")
     public void testInvalidStandardisedGivenName() {
         final var personDto = new CovidCertificatePersonDto(
                 new CovidCertificatePersonNameDto(
@@ -61,7 +62,9 @@ public class CovidCertificatePersonMapperTest {
     }
 
     @Test
-    @Ignore
+    @Ignore("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
+            "The new version of the library we use truncates the name and thus the exception is never thrown, " +
+            "since the standardised name never exceeds the maximum.")
     public void testInvalidStandardisedFamilyName() {
         final var personDto = new CovidCertificatePersonDto(
                 new CovidCertificatePersonNameDto(
