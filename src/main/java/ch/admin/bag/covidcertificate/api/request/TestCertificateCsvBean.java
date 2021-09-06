@@ -30,19 +30,19 @@ public class TestCertificateCsvBean extends CertificateCsvBean {
 
     @Override
     public TestCertificateCreateDto mapToCreateDto() {
-        ZonedDateTime sampleDateTime;
+        ZonedDateTime sampleDateTimeParsed;
         try {
-            sampleDateTime = ZonedDateTime.parse(this.sampleDateTime);
+            sampleDateTimeParsed = ZonedDateTime.parse(this.sampleDateTime);
         } catch (Exception e) {
             throw new CreateCertificateException(INVALID_SAMPLE_OR_RESULT_DATE_TIME);
         }
 
-        TestCertificateDataDto dataDto = new TestCertificateDataDto(
-                manufacturerCode.trim(),
-                typeCode.trim(),
-                sampleDateTime,
-                testingCentreOrFacility.trim(),
-                memberStateOfTest.trim().toUpperCase()
+        var dataDto = new TestCertificateDataDto(
+                (manufacturerCode != null) ? manufacturerCode.trim(): "",
+                (typeCode != null) ? typeCode.trim(): "",
+                sampleDateTimeParsed,
+                (testingCentreOrFacility != null) ? testingCentreOrFacility.trim(): "",
+                (memberStateOfTest != null) ? memberStateOfTest.trim().toUpperCase(): ""
         );
         return super.mapToCreateDto(dataDto);
     }
