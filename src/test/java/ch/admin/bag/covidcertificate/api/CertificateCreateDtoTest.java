@@ -138,4 +138,11 @@ public class CertificateCreateDtoTest {
         CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de");
         assertDoesNotThrow(testee::validate);
     }
+
+    @Test
+    public void validatesSuccessfully__ifInAppDeliveryCodeContainsSpaces() {
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", " 123 456 789 ");
+        assertDoesNotThrow(testee::validate);
+        assertEquals("123456789", testee.getAppCode());
+    }
 }
