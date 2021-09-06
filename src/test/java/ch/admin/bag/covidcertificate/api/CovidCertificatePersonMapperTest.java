@@ -6,13 +6,14 @@ import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificatePerson;
 import com.flextrade.jfixture.JFixture;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 
 import java.time.LocalDate;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CovidCertificatePersonMapperTest {
 
@@ -45,7 +46,7 @@ public class CovidCertificatePersonMapperTest {
     }
 
     @Test
-    @Ignore("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
+    @Disabled("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
             "The new version of the library we use truncates the name and thus the exception is never thrown, " +
             "since the standardised name never exceeds the maximum.")
     public void testInvalidStandardisedGivenName() {
@@ -62,7 +63,7 @@ public class CovidCertificatePersonMapperTest {
     }
 
     @Test
-    @Ignore("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
+    @Disabled("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
             "The new version of the library we use truncates the name and thus the exception is never thrown, " +
             "since the standardised name never exceeds the maximum.")
     public void testInvalidStandardisedFamilyName() {
