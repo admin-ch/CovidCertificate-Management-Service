@@ -26,7 +26,7 @@ public class VaccinationCertificatePdf extends AbstractCertificatePdf {
     public VaccinationCertificatePdf(
             String familyName,
             String givenName,
-            LocalDate dateOfBirth,
+            String dateOfBirth,
             String language,
             String diseaseOrAgentTargetedCode,
             String diseaseOrAgentTargetedSystem,

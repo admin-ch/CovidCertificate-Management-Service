@@ -83,7 +83,7 @@ public abstract class CertificateCsvBean {
                         getFamilyName().trim(),
                         getGivenName().trim()
                 ),
-                DateHelper.parse(getDateOfBirth(), INVALID_DATE_OF_BIRTH)
+                getDateOfBirth()
         );
     }
 
