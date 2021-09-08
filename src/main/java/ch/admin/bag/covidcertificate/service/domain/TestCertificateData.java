@@ -15,8 +15,6 @@ public class TestCertificateData {
     private String diseaseOrAgentTargeted;
     @JsonProperty("tt")
     private String typeOfTest;
-    @JsonProperty("nm")
-    private String testName;
     @JsonProperty("ma")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String testManufacturer;

@@ -49,7 +49,6 @@ public class TestCertificateQrCodeMapper {
         return new TestCertificateData(
                 CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
                 issuableTestDto.getTestType().typeCode,
-                getTrimmedTestName(issuableTestDto.getDisplay()),
                 issuableTestDto.getCode(),
                 testCertificateDataDto.getSampleDateTime().truncatedTo(ChronoUnit.SECONDS),
                 NegativeTestResult.CODE,
@@ -58,9 +57,5 @@ public class TestCertificateQrCodeMapper {
                 ISSUER,
                 UVCI.generateUVCI(testCertificateDataDto.toString())
         );
-    }
-
-    private static String getTrimmedTestName(String testName) {
-        return testName.substring(0, Math.min(testName.length(), MAX_STRING_LENGTH));
     }
 }
