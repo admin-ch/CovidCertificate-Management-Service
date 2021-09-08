@@ -6,14 +6,14 @@ import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificatePerson;
 import com.flextrade.jfixture.JFixture;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 
 import java.time.LocalDate;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_STANDARDISED_FAMILY_NAME;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_STANDARDISED_GIVEN_NAME;
-import static org.junit.jupiter.api.Assertions.*;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CovidCertificatePersonMapperTest {
 
@@ -21,7 +21,7 @@ public class CovidCertificatePersonMapperTest {
 
     private final String givenName = "GivenName";
     private final String familyName = "FamilyName";
-    private final LocalDate dateOfBirth = jFixture.create(LocalDate.class);
+    private final String dateOfBirth = jFixture.create(LocalDate.class).format(LOCAL_DATE_FORMAT);
 
     @Test
     public void mapsFamilyName() {
@@ -46,7 +46,9 @@ public class CovidCertificatePersonMapperTest {
     }
 
     @Test
-    @Ignore
+    @Disabled("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
+            "The new version of the library we use truncates the name and thus the exception is never thrown, " +
+            "since the standardised name never exceeds the maximum.")
     public void testInvalidStandardisedGivenName() {
         final var personDto = new CovidCertificatePersonDto(
                 new CovidCertificatePersonNameDto(
@@ -61,7 +63,9 @@ public class CovidCertificatePersonMapperTest {
     }
 
     @Test
-    @Ignore
+    @Disabled("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
+            "The new version of the library we use truncates the name and thus the exception is never thrown, " +
+            "since the standardised name never exceeds the maximum.")
     public void testInvalidStandardisedFamilyName() {
         final var personDto = new CovidCertificatePersonDto(
                 new CovidCertificatePersonNameDto(

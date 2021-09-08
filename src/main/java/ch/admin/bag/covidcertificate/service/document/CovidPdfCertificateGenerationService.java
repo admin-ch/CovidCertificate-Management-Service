@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.util.DateHelper;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.lowagie.text.Font;
@@ -314,7 +315,7 @@ public class CovidPdfCertificateGenerationService {
 
         addIssuerRow(table, locale, "personalData.title", 20, true, PADDING_LEFT);
         addNameRow(table, locale, "personalData.name.label", data.getFamilyName() + " " + data.getGivenName(), PADDING_LEFT);
-        addRow(table, locale, "personalData.date.label", data.getDateOfBirth().format(LOCAL_DATE_FORMAT), PADDING_LEFT);
+        addRow(table, locale, "personalData.date.label", DateHelper.formatDateOfBirth(data.getDateOfBirth()), PADDING_LEFT);
 
         return table;
     }
@@ -400,7 +401,7 @@ public class CovidPdfCertificateGenerationService {
 
     private void addIssuerRow(PdfPTable table, Locale locale, boolean isPartialVaccination) {
         String issuerLabel = isPartialVaccination ? "evidence.issuer" : "issuer.title";
-        addIssuerRow(table, locale, issuerLabel, 15, false, (float) CovidPdfCertificateGenerationService.PADDING_LEFT);
+        addIssuerRow(table, locale, issuerLabel, 15, false, CovidPdfCertificateGenerationService.PADDING_LEFT);
     }
 
     private void addIssuerRow(PdfPTable table, Locale locale, String key, int padding, boolean title, float paddingLeft) {
@@ -475,7 +476,7 @@ public class CovidPdfCertificateGenerationService {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(95);
         table.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        table.setSpacingBefore((float) 10);
+        table.setSpacingBefore(10);
 
         PdfPCell cell = new PdfPCell();
         if (isPartialVaccination) {
@@ -508,7 +509,7 @@ public class CovidPdfCertificateGenerationService {
         float[] pointColumnWidths = {60F, 30F, 10F};
         PdfPTable table = new PdfPTable(pointColumnWidths);
         table.setWidthPercentage(100);
-        table.setSpacingBefore((float) 5);
+        table.setSpacingBefore(5);
 
         String footerAppKey = isPartialVaccination ? "footer.evidence.app" : "footer.app";
 

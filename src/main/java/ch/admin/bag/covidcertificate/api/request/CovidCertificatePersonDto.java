@@ -1,9 +1,8 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.util.DateHelper;
 import lombok.*;
-
-import java.time.LocalDate;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
 
@@ -15,7 +14,7 @@ public class CovidCertificatePersonDto {
 
     private CovidCertificatePersonNameDto name;
 
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
 
     public void validate() {
         if (name == null) {
@@ -23,8 +22,12 @@ public class CovidCertificatePersonDto {
         } else {
             name.validate();
         }
-        if (dateOfBirth == null || dateOfBirth.isBefore(MIN_DATE_OF_BIRTH) || dateOfBirth.isAfter(MAX_DATE_OF_BIRTH)) {
-            throw new CreateCertificateException(INVALID_DATE_OF_BIRTH);
-        }
+        validateDateOfBirth(dateOfBirth);
     }
+
+    private void validateDateOfBirth(String dateOfBirth){
+        var parsedDateOfBirth = DateHelper.parseDateOfBirth(dateOfBirth);
+        if (parsedDateOfBirth.isBefore(MIN_DATE_OF_BIRTH) || parsedDateOfBirth.isAfter(MAX_DATE_OF_BIRTH)) {
+            throw new CreateCertificateException(INVALID_DATE_OF_BIRTH);
+        }    }
 }
