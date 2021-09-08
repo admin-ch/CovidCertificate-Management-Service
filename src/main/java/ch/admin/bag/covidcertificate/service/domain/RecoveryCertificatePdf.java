@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class RecoveryCertificatePdf extends AbstractCertificatePdf {
     private final String diseaseOrAgentTargetedCode;
     private final String diseaseOrAgentTargetedSystem;
@@ -23,7 +23,7 @@ public class RecoveryCertificatePdf extends AbstractCertificatePdf {
     public RecoveryCertificatePdf(
             String familyName,
             String givenName,
-            LocalDate dateOfBirth,
+            String dateOfBirth,
             String language,
             String diseaseOrAgentTargetedCode,
             String diseaseOrAgentTargetedSystem,

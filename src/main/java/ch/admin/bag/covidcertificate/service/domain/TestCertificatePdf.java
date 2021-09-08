@@ -4,12 +4,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 @Getter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class TestCertificatePdf extends AbstractCertificatePdf {
     private final String diseaseOrAgentTargetedCode;
     private final String diseaseOrAgentTargetedSystem;
@@ -26,7 +25,7 @@ public class TestCertificatePdf extends AbstractCertificatePdf {
     public TestCertificatePdf(
             String familyName,
             String givenName,
-            LocalDate dateOfBirth,
+            String dateOfBirth,
             String language,
             String diseaseOrAgentTargetedCode,
             String diseaseOrAgentTargetedSystem,

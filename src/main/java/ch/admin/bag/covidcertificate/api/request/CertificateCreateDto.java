@@ -24,11 +24,11 @@ public abstract class CertificateCreateDto {
     @JsonDeserialize(using = StringNotEmptyToUppercaseElseNullDeserializer.class)
     private String appCode;
 
-    public CertificateCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String appCode) {
+    protected CertificateCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String appCode) {
         this.personData = personData;
         this.language = language;
         this.address = address;
-        this.appCode = StringUtils.hasText(appCode) ? appCode.toUpperCase() : null;
+        this.appCode = StringUtils.hasText(appCode) ? StringUtils.trimAllWhitespace(appCode).toUpperCase() : null;
     }
 
     public boolean sendToPrint() {

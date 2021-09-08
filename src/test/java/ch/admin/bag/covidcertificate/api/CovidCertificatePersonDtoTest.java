@@ -21,14 +21,14 @@ public class CovidCertificatePersonDtoTest {
     public void testNoPersonData() {
         CovidCertificatePersonDto testee = new CovidCertificatePersonDto(
                 null,
-                dateOfBirth
+                dateOfBirth.format(LOCAL_DATE_FORMAT)
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_PERSON_DATA, exception.getError());
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
-                dateOfBirth
+                dateOfBirth.format(LOCAL_DATE_FORMAT)
         );
         assertDoesNotThrow(testee::validate);
     }
@@ -44,21 +44,21 @@ public class CovidCertificatePersonDtoTest {
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
-                MIN_DATE_OF_BIRTH.minusDays(1)
+                MIN_DATE_OF_BIRTH.minusDays(1).format(LOCAL_DATE_FORMAT)
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DATE_OF_BIRTH, exception.getError());
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
-                MAX_DATE_OF_BIRTH.plusDays(1)
+                MAX_DATE_OF_BIRTH.plusDays(1).format(LOCAL_DATE_FORMAT)
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DATE_OF_BIRTH, exception.getError());
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
-                dateOfBirth
+                dateOfBirth.format(LOCAL_DATE_FORMAT)
         );
         assertDoesNotThrow(testee::validate);
     }
