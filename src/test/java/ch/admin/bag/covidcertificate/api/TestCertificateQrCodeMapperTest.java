@@ -3,12 +3,10 @@ package ch.admin.bag.covidcertificate.api;
 import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
-import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -17,7 +15,8 @@ import java.time.ZonedDateTime;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestValueSet;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestCertificateQrCodeMapperTest {
 
