@@ -42,9 +42,13 @@ public class SecurityHelper {
             throw new AccessDeniedException("Access denied for HIN with CH-Login");
         }
 
-        final var clientId = jeapAuthenticationToken.getToken().getClaimAsString("client_id");
+        var clientId = jeapAuthenticationToken.getToken().getClaimAsString("azp");
 
-        log.info("Received call from client_id '{}'", clientId);
+        if (clientId == null) {
+            clientId = jeapAuthenticationToken.getToken().getClaimAsString("client_id");
+        }
+
+        log.info("Received call from clientId '{}'", clientId);
 
         if (CLIENT_ID_MANAGEMENT_UI.equals(clientId)){
             var displayName = jeapAuthenticationToken.getToken().getClaimAsString("displayName");
