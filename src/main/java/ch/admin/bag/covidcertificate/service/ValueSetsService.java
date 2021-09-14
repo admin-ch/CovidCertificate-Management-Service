@@ -32,12 +32,11 @@ import java.util.Objects;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
-import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.EN;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
+import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.EN;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.IT;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
-
 
 @Service
 @RequiredArgsConstructor
