@@ -34,13 +34,12 @@ import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.*;
 public class ValueSetsService {
 
     private static final String VALUE_SETS_CACHE_NAME = "valueSets";
-    private static final String ISSUABLE_VACCINE_DTO_CACHE_NAME = "issuableVaccineDtos";
-    private static final String ISSUABLE_TEST_DTO_CACHE_NAME = "issuableTestDtos";
+    private static final String ISSUABLE_VACCINE_DTO_CACHE_NAME = "issuableVaccineDto";
+    private static final String ISSUABLE_TEST_DTO_CACHE_NAME = "issuableTestDto";
     private static final String VACCINE_CACHE_NAME = "vaccines";
     private static final String ISSUABLE_VACCINE_CACHE_NAME = "issuableVaccines";
     private static final String RAPID_TEST_CACHE_NAME = "rapidTests";
     private static final String ISSUABLE_TEST_CACHE_NAME = "issuableTests";
-    private static final String COUNTRY_CODE_CACHE_NAME = "countryCodes";
 
     private final CountryCodesLoader countryCodesLoader;
     private final VaccineRepository vaccineRepository;
@@ -103,12 +102,10 @@ public class ValueSetsService {
                 && StringUtils.hasText(testCode);
     }
 
-    @Cacheable(COUNTRY_CODE_CACHE_NAME)
     public CountryCode getCountryCodeEn(String countryShort) {
         return getCountryCode(countryShort, EN);
     }
 
-    @Cacheable(COUNTRY_CODE_CACHE_NAME)
     public CountryCode getCountryCode(String countryShort, String language) {
         List<CountryCode> countryCodes = getCountryCodesForLanguage(language);
         return countryCodes.stream()
@@ -118,7 +115,7 @@ public class ValueSetsService {
     }
 
     private List<CountryCode> getCountryCodesForLanguage(String language) {
-        var countryCodes = getValueSets().getCountryCodes();
+        var countryCodes = countryCodesLoader.getCountryCodes();
         List<CountryCode> result = Collections.emptyList();
         switch (language) {
             case DE:
@@ -210,12 +207,6 @@ public class ValueSetsService {
     @CacheEvict(value = ISSUABLE_TEST_DTO_CACHE_NAME, allEntries = true)
     public void cleanIssuableTestDtoCache() {
         log.info("Cleaning cache of issuable test dto");
-    }
-
-    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
-    @CacheEvict(value = COUNTRY_CODE_CACHE_NAME, allEntries = true)
-    public void cleanCountryCodeCache() {
-        log.info("Cleaning cache of country codes");
     }
 
 }
