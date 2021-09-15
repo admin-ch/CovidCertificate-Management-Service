@@ -13,7 +13,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 @AllArgsConstructor
 public class VaccinationCertificateDataDto {
 
-    private static final Integer MAX_NB_OF_DOSES = 9;
+    private static final int MAX_NB_OF_DOSES = 9;
 
     private String medicinalProductCode;
 
