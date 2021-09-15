@@ -13,6 +13,8 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 @AllArgsConstructor
 public class VaccinationCertificateDataDto {
 
+    private static final Integer MAX_NB_OF_DOSES = 9;
+
     private String medicinalProductCode;
 
     private Integer numberOfDoses;
@@ -27,7 +29,9 @@ public class VaccinationCertificateDataDto {
         if (numberOfDoses == null ||
                 numberOfDoses < 1 ||
                 totalNumberOfDoses == null ||
-                numberOfDoses > totalNumberOfDoses) {
+                numberOfDoses > totalNumberOfDoses ||
+                numberOfDoses > MAX_NB_OF_DOSES ||
+                totalNumberOfDoses > MAX_NB_OF_DOSES) {
             throw new CreateCertificateException(INVALID_DOSES);
         }
         if (vaccinationDate == null || vaccinationDate.isAfter(LocalDate.now())) {
