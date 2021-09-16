@@ -48,15 +48,15 @@ public class SecurityHelper {
             clientId = jeapAuthenticationToken.getToken().getClaimAsString("client_id");
         }
 
-        log.info("Received call from clientId '{}'", clientId);
-
         if (CLIENT_ID_MANAGEMENT_UI.equals(clientId)){
             var displayName = jeapAuthenticationToken.getToken().getClaimAsString("displayName");
 
             if (displayName == null) {
                 displayName = jeapAuthenticationToken.getTokenName();
             }
-            log.info("Authenticated User is '{}'.", displayName);
+            log.info("Received call from clientId '{}' with user is '{}'.", clientId, displayName);
+        } else {
+            log.info("Received call from clientId '{}'", clientId);
         }
 
         return true;
