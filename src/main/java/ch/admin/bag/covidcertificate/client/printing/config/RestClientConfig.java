@@ -26,13 +26,11 @@ public class RestClientConfig {
     public WebClient defaultWebClient(JeapOAuth2WebclientBuilderFactory jeapOAuth2WebclientBuilderFactory) {
         // Config Timeout
         HttpClient httpClient = HttpClient.create()
-                .tcpConfiguration(client ->
-                        client.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout * 1000)
-                                .doOnConnected(conn -> conn
-                                        .addHandlerLast(new ReadTimeoutHandler(readTimeout))
-                                ));
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout * 1000)
+                .doOnConnected(conn -> conn
+                .addHandlerLast(new ReadTimeoutHandler(readTimeout)));
 
-        ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient.wiretap(true));
+        ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient.wiretap(false));
 
         return jeapOAuth2WebclientBuilderFactory
                 .createForClientId(applicationName)
