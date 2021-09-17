@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,6 +56,45 @@ public class CovidCertificatePersonDtoTest {
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DATE_OF_BIRTH, exception.getError());
+
+        testee = new CovidCertificatePersonDto(
+                personNameDto,
+                LocalDate.now().plusDays(1).format(LOCAL_DATE_FORMAT)
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_DATE_OF_BIRTH_IN_FUTURE, exception.getError());
+
+        testee = new CovidCertificatePersonDto(
+                personNameDto,
+                LocalDate.now().format(LOCAL_DATE_FORMAT)
+        );
+        assertDoesNotThrow(testee::validate);
+
+        testee = new CovidCertificatePersonDto(
+                personNameDto,
+                LocalDate.now().plusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM"))
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_DATE_OF_BIRTH_IN_FUTURE, exception.getError());
+
+        testee = new CovidCertificatePersonDto(
+                personNameDto,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))
+        );
+        assertDoesNotThrow(testee::validate);
+
+        testee = new CovidCertificatePersonDto(
+                personNameDto,
+                LocalDate.now().plusYears(1).format(DateTimeFormatter.ofPattern("yyyy"))
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_DATE_OF_BIRTH_IN_FUTURE, exception.getError());
+
+        testee = new CovidCertificatePersonDto(
+                personNameDto,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"))
+        );
+        assertDoesNotThrow(testee::validate);
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
