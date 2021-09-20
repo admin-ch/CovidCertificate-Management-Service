@@ -59,9 +59,18 @@ public class CovidCertificatePersonDtoTest {
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
+                dateOfBirth.format(LOCAL_DATE_FORMAT)
+        );
+        assertDoesNotThrow(testee::validate);
+    }
+
+    @Test
+    public void testInvalidDateOfBirth_oneDayInFuture() {
+        CovidCertificatePersonDto testee = new CovidCertificatePersonDto(
+                personNameDto,
                 LocalDate.now().plusDays(1).format(LOCAL_DATE_FORMAT)
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DATE_OF_BIRTH_IN_FUTURE, exception.getError());
 
         testee = new CovidCertificatePersonDto(
@@ -70,11 +79,15 @@ public class CovidCertificatePersonDtoTest {
         );
         assertDoesNotThrow(testee::validate);
 
-        testee = new CovidCertificatePersonDto(
+    }
+
+    @Test
+    public void testInvalidDateOfBirth_oneMonthInFuture() {
+        CovidCertificatePersonDto testee = new CovidCertificatePersonDto(
                 personNameDto,
                 LocalDate.now().plusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM"))
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DATE_OF_BIRTH_IN_FUTURE, exception.getError());
 
         testee = new CovidCertificatePersonDto(
@@ -82,12 +95,15 @@ public class CovidCertificatePersonDtoTest {
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))
         );
         assertDoesNotThrow(testee::validate);
+    }
 
-        testee = new CovidCertificatePersonDto(
+    @Test
+    public void testInvalidDateOfBirth_oneYearInFuture() {
+        CovidCertificatePersonDto testee = new CovidCertificatePersonDto(
                 personNameDto,
                 LocalDate.now().plusYears(1).format(DateTimeFormatter.ofPattern("yyyy"))
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DATE_OF_BIRTH_IN_FUTURE, exception.getError());
 
         testee = new CovidCertificatePersonDto(
@@ -95,11 +111,6 @@ public class CovidCertificatePersonDtoTest {
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"))
         );
         assertDoesNotThrow(testee::validate);
-
-        testee = new CovidCertificatePersonDto(
-                personNameDto,
-                dateOfBirth.format(LOCAL_DATE_FORMAT)
-        );
-        assertDoesNotThrow(testee::validate);
     }
+
 }
