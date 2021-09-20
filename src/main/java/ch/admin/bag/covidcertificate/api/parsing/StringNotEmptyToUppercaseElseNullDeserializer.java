@@ -20,6 +20,6 @@ public class StringNotEmptyToUppercaseElseNullDeserializer extends StdDeserializ
     public String deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         String appCode = jp.getCodec().readValue(jp, String.class);
 
-        return StringUtils.hasText(appCode) ? appCode.toUpperCase() : null;
+        return StringUtils.hasText(appCode) ? StringUtils.trimAllWhitespace(appCode).toUpperCase() : null;
     }
 }

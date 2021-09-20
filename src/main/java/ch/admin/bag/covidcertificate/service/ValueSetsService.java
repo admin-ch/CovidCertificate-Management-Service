@@ -23,7 +23,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
@@ -44,6 +43,9 @@ import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
 @Slf4j
 public class ValueSetsService {
 
+    private static final String VALUE_SETS_CACHE_NAME = "valueSets";
+    private static final String ISSUABLE_VACCINE_DTO_CACHE_NAME = "issuableVaccineDto";
+    private static final String ISSUABLE_TEST_DTO_CACHE_NAME = "issuableTestDto";
     private static final String VACCINE_CACHE_NAME = "vaccines";
     private static final String ISSUABLE_VACCINE_CACHE_NAME = "issuableVaccines";
     private static final String RAPID_TEST_CACHE_NAME = "rapidTests";
@@ -53,11 +55,13 @@ public class ValueSetsService {
     private final VaccineRepository vaccineRepository;
     private final RapidTestRepository rapidTestRepository;
 
+    @Cacheable(VALUE_SETS_CACHE_NAME)
     public ValueSetsDto getValueSets() {
         var countryCodes = countryCodesLoader.getCountryCodes();
         return new ValueSetsDto(countryCodes, this.getIssuableVaccines(), this.getIssuableRapidTests());
     }
 
+    @Cacheable(ISSUABLE_VACCINE_DTO_CACHE_NAME)
     public IssuableVaccineDto getVaccinationValueSet(String productCode) {
         var vaccinationValueSet = this.getValueSets()
                 .getVaccinationSets()
@@ -71,10 +75,12 @@ public class ValueSetsService {
         return vaccinationValueSet;
     }
 
+    @Cacheable(ISSUABLE_TEST_DTO_CACHE_NAME)
     public IssuableTestDto getIssuableTestDto(String testTypeCode, String testCode) {
         return getRapidTestDto(this.getIssuableRapidTests(), testTypeCode, testCode);
     }
 
+    @Cacheable(ISSUABLE_TEST_DTO_CACHE_NAME)
     public IssuableTestDto getIssuableTestDto(TestCertificateDataDto testCertificateDataDto) {
         return getRapidTestDto(this.getIssuableRapidTests(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
     }
@@ -119,7 +125,7 @@ public class ValueSetsService {
     }
 
     private List<CountryCode> getCountryCodesForLanguage(String language) {
-        var countryCodes = getValueSets().getCountryCodes();
+        var countryCodes = countryCodesLoader.getCountryCodes();
         List<CountryCode> result = Collections.emptyList();
         switch (language) {
             case DE:
@@ -143,7 +149,6 @@ public class ValueSetsService {
         return result;
     }
 
-    @Transactional
     @Cacheable(RAPID_TEST_CACHE_NAME)
     public List<TestDto> getRapidTests() {
         log.info("Loading rapid tests");
@@ -151,7 +156,6 @@ public class ValueSetsService {
         return RapidTestMapper.fromRapidTests(rapidTests);
     }
 
-    @Transactional
     @Cacheable(ISSUABLE_TEST_CACHE_NAME)
     public List<IssuableTestDto> getIssuableRapidTests() {
         log.info("Loading issuable rapid tests");
@@ -159,7 +163,6 @@ public class ValueSetsService {
         return IssuableRapidTestMapper.fromRapidTests(rapidTests);
     }
 
-    @Transactional
     @Cacheable(VACCINE_CACHE_NAME)
     public List<VaccineDto> getVaccines() {
         log.info("Loading vaccines");
@@ -167,7 +170,6 @@ public class ValueSetsService {
         return VaccineMapper.fromVaccines(vaccines);
     }
 
-    @Transactional
     @Cacheable(ISSUABLE_VACCINE_CACHE_NAME)
     public List<IssuableVaccineDto> getIssuableVaccines() {
         log.info("Loading issuable vaccines");
@@ -198,4 +200,23 @@ public class ValueSetsService {
     public void cleanIssuableVaccinesCache() {
         log.info("Cleaning cache of issuable vaccines");
     }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = VALUE_SETS_CACHE_NAME, allEntries = true)
+    public void cleanValueSetsCache() {
+        log.info("Cleaning cache of value sets");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = ISSUABLE_VACCINE_DTO_CACHE_NAME, allEntries = true)
+    public void cleanIssuableVaccineDtoCache() {
+        log.info("Cleaning cache of issuable vaccine dto");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = ISSUABLE_TEST_DTO_CACHE_NAME, allEntries = true)
+    public void cleanIssuableTestDtoCache() {
+        log.info("Cleaning cache of issuable test dto");
+    }
+
 }

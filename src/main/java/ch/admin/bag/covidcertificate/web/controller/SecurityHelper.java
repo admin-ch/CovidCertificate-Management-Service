@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
-import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class SecurityHelper {
 
+    private static final String CLIENT_ID_MANAGEMENT_UI = "cc-management-ui";
+
     private final ServletJeapAuthorization jeapAuthorization;
 
     public boolean authorizeUser(HttpServletRequest request) {
@@ -22,14 +23,8 @@ public class SecurityHelper {
         log.trace("Access token: {}.", request.getHeader("Authorization"));
 
         // Access the Spring Security Authentication as JeapAuthenticationToken
-        JeapAuthenticationToken jeapAuthenticationToken = jeapAuthorization.getJeapAuthenticationToken();
+        var jeapAuthenticationToken = jeapAuthorization.getJeapAuthenticationToken();
         log.trace(jeapAuthenticationToken.toString());
-
-        String displayName = jeapAuthenticationToken.getToken().getClaimAsString("displayName");
-
-        if (displayName == null) {
-            displayName = jeapAuthenticationToken.getTokenName();
-        }
 
         if (jeapAuthenticationToken.getUserRoles().contains("bag-cc-superuser") &&
                 !jeapAuthenticationToken.getUserRoles().contains("bag-cc-strongauth")) {
@@ -47,7 +42,22 @@ public class SecurityHelper {
             throw new AccessDeniedException("Access denied for HIN with CH-Login");
         }
 
-        log.info("Authenticated User is '{}'.", displayName);
+        var clientId = jeapAuthenticationToken.getToken().getClaimAsString("azp");
+
+        if (clientId == null) {
+            clientId = jeapAuthenticationToken.getToken().getClaimAsString("client_id");
+        }
+
+        if (CLIENT_ID_MANAGEMENT_UI.equals(clientId)){
+            var displayName = jeapAuthenticationToken.getToken().getClaimAsString("displayName");
+
+            if (displayName == null) {
+                displayName = jeapAuthenticationToken.getTokenName();
+            }
+            log.info("Received call from clientId '{}' with user is '{}'.", clientId, displayName);
+        } else {
+            log.info("Received call from clientId '{}'", clientId);
+        }
 
         return true;
     }
