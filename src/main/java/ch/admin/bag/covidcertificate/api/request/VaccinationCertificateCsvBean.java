@@ -30,18 +30,18 @@ public class VaccinationCertificateCsvBean extends CertificateCsvBean {
 
     @Override
     public VaccinationCertificateCreateDto mapToCreateDto() {
-        int numberOfDoses;
-        int totalNumberOfDoses;
+        int nbOfDoses;
+        int totalNbOfDoses;
         try {
-            numberOfDoses = Integer.parseInt(this.numberOfDoses);
-            totalNumberOfDoses = Integer.parseInt(this.totalNumberOfDoses);
+            nbOfDoses = Integer.parseInt(this.numberOfDoses);
+            totalNbOfDoses = Integer.parseInt(this.totalNumberOfDoses);
         } catch (NumberFormatException e) {
             throw new CreateCertificateException(INVALID_DOSES);
         }
-        VaccinationCertificateDataDto dataDto = new VaccinationCertificateDataDto(
-                medicinalProductCode.trim(),
-                numberOfDoses,
-                totalNumberOfDoses,
+        var dataDto = new VaccinationCertificateDataDto(
+                medicinalProductCode != null ? medicinalProductCode.trim().toUpperCase() : null,
+                nbOfDoses,
+                totalNbOfDoses,
                 DateHelper.parse(this.vaccinationDate, INVALID_VACCINATION_DATE),
                 countryOfVaccination.trim().toUpperCase()
         );
