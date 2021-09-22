@@ -40,10 +40,8 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
 
     @Override
     public CreateCertificateError deliverToApp(InAppDeliveryRequestDto requestDto) {
-        var builder = UriComponentsBuilder.fromHttpUrl(serviceUri);
-
-        var uri = builder.toUriString();
-        log.debug("Call the InApp Delivery Backend with url {}", serviceUri);
+        final var uri = UriComponentsBuilder.fromHttpUrl(serviceUri).toUriString();
+        log.debug("Call the InApp Delivery Backend with url {}", uri);
         try {
             var response = defaultWebClient.post()
                     .uri(uri)
@@ -59,19 +57,19 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                 throw new CreateCertificateException(APP_DELIVERY_FAILED);
             }
         } catch (WebClientResponseException e) {
-            return this.handleErrorResponse(e);
+            return this.handleErrorResponse(requestDto, uri, e);
         } catch (WebClientRequestException e) {
-            log.error("Request to {} failed", serviceUri, e);
+            log.error("Call the InApp Delivery Backend for transfer code '{}' with url '{}' failed", requestDto.getCode(), uri, e);
             return APP_DELIVERY_FAILED;
         }
     }
 
-    private CreateCertificateError handleErrorResponse(WebClientResponseException exception) {
+    private CreateCertificateError handleErrorResponse(InAppDeliveryRequestDto requestDto, String uri, WebClientResponseException exception) {
         if (exception != null && exception.getStatusCode() == HttpStatus.I_AM_A_TEAPOT) {
-            log.warn("AppCode not found", exception);
+            log.warn("InApp Delivery Backend returned '{}' for transfer code '{}'", HttpStatus.I_AM_A_TEAPOT.value(), requestDto.getCode());
             return UNKNOWN_APP_CODE;
         } else {
-            log.error("Received error message", exception);
+            log.error("Call the InApp Delivery Backend for transfer code '{}' with url '{}' failed", requestDto.getCode(), uri, exception);
             return APP_DELIVERY_FAILED;
         }
     }
@@ -79,7 +77,7 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
     private void logKpi() {
         String extId = jeapAuthorization.getExtIdInAuthentication();
         if (extId != null) {
-            LocalDateTime kpiTimestamp = LocalDateTime.now();
+            final var kpiTimestamp = LocalDateTime.now();
             log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_TYPE_INAPP_DELIVERY), kv(KPI_UUID_KEY, extId));
             kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_INAPP_DELIVERY, extId));
         }
