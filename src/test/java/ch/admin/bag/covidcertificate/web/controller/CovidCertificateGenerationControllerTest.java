@@ -11,6 +11,7 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponse
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.KpiDataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flextrade.jfixture.JFixture;
@@ -52,6 +53,8 @@ class CovidCertificateGenerationControllerTest {
     private CovidCertificateGenerationService covidCertificateGenerationService;
     @Mock
     private ServletJeapAuthorization jeapAuthorization;
+    @Mock
+    private KpiDataService kpiLogService;
 
     private MockMvc mockMvc;
 

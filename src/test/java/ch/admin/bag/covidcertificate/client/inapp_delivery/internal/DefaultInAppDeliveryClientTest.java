@@ -90,7 +90,7 @@ class DefaultInAppDeliveryClientTest {
         mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(200));
 
         assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
-        verify(kpiLogService, times(1)).log(any());
+        verify(kpiLogService, times(1)).saveKpiData(any());
     }
 
     @AfterAll
