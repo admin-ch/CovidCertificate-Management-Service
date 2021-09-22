@@ -3,10 +3,17 @@ package ch.admin.bag.covidcertificate.service;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvError;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.CertificateType;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
-import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
@@ -20,16 +27,25 @@ import org.mozilla.universalchardet.UniversalDetector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
 @Slf4j
@@ -41,7 +57,6 @@ public class CsvService {
     private static final String PDF_FILE_NAME_PREFIX = "covid-certificate-";
 
     private final CovidCertificateGenerationService covidCertificateGenerationService;
-    private final ServletJeapAuthorization jeapAuthorization;
     private final KpiDataService kpiLogService;
     private final ValueSetsService valueSetsService;
 
@@ -65,14 +80,16 @@ public class CsvService {
     }
 
     private byte[] handleCsvRequest(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass) throws IOException {
-        List<CertificateCsvBean> csvBeans = mapToBean(file, csvBeanClass);
+        final var charset = Charset.forName(UniversalDetector.detectCharset(file.getInputStream()));
+        log.debug("Found charset {} for file", charset);
+        List<CertificateCsvBean> csvBeans = mapToBean(file, csvBeanClass, charset);
         checkSize(csvBeans);
         List<CertificateCreateDto> createDtos = mapToCreateDtos(csvBeans);
         if (areCreateCertificateRequestsValid(createDtos, csvBeans)) {
             List<CovidCertificateCreateResponseDto> responseDtos = createCertificates(createDtos, csvBeanClass);
             return zipGeneratedCertificates(getPdfMap(responseDtos));
         } else {
-            return createCsvException(csvBeans);
+            return createCsvException(csvBeans, charset);
         }
     }
 
@@ -88,8 +105,8 @@ public class CsvService {
         }
     }
 
-    private byte[] createCsvException(List<CertificateCsvBean> csvBeans) throws IOException {
-        var returnFile = writeCsv(csvBeans);
+    private byte[] createCsvException(List<CertificateCsvBean> csvBeans, Charset charset) throws IOException {
+        var returnFile = writeCsv(csvBeans, charset);
         byte[] errorCsv = Files.readAllBytes(returnFile.toPath());
         Files.delete(returnFile.toPath());
         throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, errorCsv));
@@ -131,10 +148,9 @@ public class CsvService {
         return responseDtos;
     }
 
-    private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass) throws IOException {
+    private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass, Charset charset) throws IOException {
         var separator = getSeparator(file);
-        var encoding = UniversalDetector.detectCharset(file.getInputStream());
-        try (Reader reader = new BufferedReader(new InputStreamReader(new UnicodeBOMInputStream(file.getInputStream()), Charset.forName(encoding)))) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(new UnicodeBOMInputStream(file.getInputStream()), charset))) {
 
             CsvToBean<CertificateCsvBean> csvToBean = new CsvToBeanBuilder<CertificateCsvBean>(reader)
                     .withSeparator(separator)
@@ -222,10 +238,10 @@ public class CsvService {
         }
     }
 
-    private File writeCsv(List<CertificateCsvBean> certificateCsvBeans) throws IOException {
+    private File writeCsv(List<CertificateCsvBean> certificateCsvBeans, Charset charset) throws IOException {
         var tempId = UUID.randomUUID();
         var file = new File("temp" + tempId + ".csv");
-        try (var csvWriter = new CSVWriter(new FileWriter(file))) {
+        try (var csvWriter = new CSVWriter(new FileWriter(file, charset))) {
             StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(csvWriter)
                     .withSeparator(';')
                     .withApplyQuotesToAll(false)
