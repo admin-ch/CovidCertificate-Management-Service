@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.client.signing.internal;
 
+import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,17 +45,19 @@ class DefaultSigningClientTest {
 
     @Test
     void makesRequestToCorrectUrl() {
-        String url = fixture.create(String.class);
+        var url = fixture.create(String.class);
+        var signingInformation =  fixture.create(SigningInformation.class);
+        var fullUrl = url+signingInformation.getAlias();
         ReflectionTestUtils.setField(signingClient, "url", url);
 
-        signingClient.create(fixture.create(byte[].class));
+        signingClient.create(fixture.create(byte[].class), signingInformation);
 
-        verify(restTemplate).exchange(eq(url), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
+        verify(restTemplate).exchange(eq(fullUrl), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
     }
 
     @Test
     void makesPostRequest() {
-        signingClient.create(fixture.create(byte[].class));
+        signingClient.create(fixture.create(byte[].class), fixture.create(SigningInformation.class));
 
         verify(restTemplate).exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), any(Class.class));
     }
@@ -63,7 +67,7 @@ class DefaultSigningClientTest {
         HttpHeaders headers = new HttpHeaders();
         headers.put("Content-Type", Collections.singletonList(MediaType.APPLICATION_CBOR_VALUE));
 
-        signingClient.create(fixture.create(byte[].class));
+        signingClient.create(fixture.create(byte[].class), fixture.create(SigningInformation.class));
 
         verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argThat(argument -> argument.getHeaders().equals(headers)) , any(Class.class));
     }
@@ -71,7 +75,7 @@ class DefaultSigningClientTest {
     @Test
     void makesRequestWithCorrectBody() {
         byte[] body = fixture.create(byte[].class);
-        signingClient.create(body);
+        signingClient.create(body, fixture.create(SigningInformation.class));
 
         verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argThat(argument -> Objects.equals(argument.getBody(), body)) , any(Class.class));
     }
@@ -82,7 +86,7 @@ class DefaultSigningClientTest {
         when(responseEntity.getBody()).thenReturn(fixture.create(byte[].class));
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenReturn(responseEntity);
 
-        var actual = signingClient.create(fixture.create(byte[].class));
+        var actual = signingClient.create(fixture.create(byte[].class), fixture.create(SigningInformation.class));
 
         assertEquals(responseEntity.getBody(), actual);
     }
@@ -93,7 +97,7 @@ class DefaultSigningClientTest {
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenThrow(exception);
 
         var cosePayload = fixture.create(byte[].class);
-        var actual = assertThrows(RestClientException.class, () -> signingClient.create(cosePayload));
+        var actual = assertThrows(RestClientException.class, () -> signingClient.create(cosePayload, fixture.create(SigningInformation.class)));
 
         assertEquals(exception, actual);
     }

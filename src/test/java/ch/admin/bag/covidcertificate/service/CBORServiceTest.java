@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CBORServiceTest {
-    private final JFixture jFixture = new JFixture();
+    private final JFixture fixture = new JFixture();
 
     @Mock
     private COSETime coseTime;
@@ -30,9 +30,8 @@ class CBORServiceTest {
     void whenGetProtectedHeader_thenOk() throws Exception {
         // given
         String keyIdentifier = "24BC6B7B7BD2C328";
-        ReflectionTestUtils.setField(cborService, "keyIdentifier", keyIdentifier);
         // when
-        byte[] result = cborService.getProtectedHeader();
+        byte[] result = cborService.getProtectedHeader(keyIdentifier);
         // then
         assertNotNull(result);
         CBORObject resultCBORObject = CBORObject.DecodeFromBytes(result);
@@ -44,7 +43,7 @@ class CBORServiceTest {
     void givenKeyIdentifierIsEmpty_whenGetProtectedHeader_thenThrowsIllegalArgumentException() {
         // when then
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                cborService::getProtectedHeader);
+                () -> cborService.getProtectedHeader(""));
         assertTrue(exception.getMessage().toLowerCase().contains("keyidentifier"));
     }
 
@@ -79,8 +78,8 @@ class CBORServiceTest {
     @Test
     void whenGetSignatureData_thenOk() {
         // given
-        byte[] coseProtectedHeader = jFixture.create(byte[].class);
-        byte[] payload = jFixture.create(byte[].class);
+        byte[] coseProtectedHeader = fixture.create(byte[].class);
+        byte[] payload = fixture.create(byte[].class);
         // when
         byte[] result = cborService.getSignatureData(coseProtectedHeader, payload);
         // then
@@ -103,7 +102,7 @@ class CBORServiceTest {
     @Test
     void givenPayloadIsEmpty_whenGetSignatureData_thenThrowsIllegalArgumentException() {
         // when then
-        byte[] bodyProtected = jFixture.create(byte[].class);
+        byte[] bodyProtected = fixture.create(byte[].class);
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> cborService.getSignatureData(bodyProtected, null));
         assertTrue(exception.getMessage().toLowerCase().contains("payload"));
@@ -112,9 +111,9 @@ class CBORServiceTest {
     @Test
     void whenGetCOSESign1_thenOk() {
         // given
-        byte[] coseProtectedHeader = jFixture.create(byte[].class);
-        byte[] payload = jFixture.create(byte[].class);
-        byte[] signature = jFixture.create(byte[].class);
+        byte[] coseProtectedHeader = fixture.create(byte[].class);
+        byte[] payload = fixture.create(byte[].class);
+        byte[] signature = fixture.create(byte[].class);
         // when
         byte[] result = cborService.getCOSESign1(coseProtectedHeader, payload, signature);
         // then
@@ -137,7 +136,7 @@ class CBORServiceTest {
     @Test
     void givenPayloadIsEmpty_whenGetCOSESign1_thenThrowsIllegalArgumentException() {
         // when then
-        byte[] protectedHeader = jFixture.create(byte[].class);
+        byte[] protectedHeader = fixture.create(byte[].class);
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> cborService.getCOSESign1(protectedHeader, null, null));
         assertTrue(exception.getMessage().toLowerCase().contains("payload"));
@@ -146,7 +145,7 @@ class CBORServiceTest {
     @Test
     void givenSignatureIsEmpty_whenGetCOSESign1_thenThrowsIllegalArgumentException() {
         // given
-        byte[] bytesMock = jFixture.create(byte[].class);
+        byte[] bytesMock = fixture.create(byte[].class);
         // when then
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> cborService.getCOSESign1(bytesMock, bytesMock, null));

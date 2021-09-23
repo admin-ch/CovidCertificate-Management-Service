@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
+import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,17 +16,17 @@ public class COSEService {
     private final CBORService cborService;
     private final SigningClient signingClient;
 
-    public byte[] getCOSESign1(byte[] dgcCBOR) {
-        byte[] protectedHeader = getProtectedHeader();
+    public byte[] getCOSESign1(byte[] dgcCBOR, SigningInformation signingInformation) {
+        byte[] protectedHeader = getProtectedHeader(signingInformation);
         byte[] payload = getPayload(dgcCBOR);
         byte[] signatureData = getSignatureData(protectedHeader, payload);
-        byte[] signature = getSignature(signatureData);
+        byte[] signature = getSignature(signatureData, signingInformation);
         return getCOSESign1(protectedHeader, payload, signature);
     }
 
-    private byte[] getProtectedHeader() {
+    private byte[] getProtectedHeader(SigningInformation signingInformation) {
         try {
-            return cborService.getProtectedHeader();
+            return cborService.getProtectedHeader(signingInformation.getKeyIdentifier());
         } catch (Exception e) {
             throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
         }
@@ -47,9 +48,9 @@ public class COSEService {
         }
     }
 
-    private byte[] getSignature(byte[] signatureData) {
+    private byte[] getSignature(byte[] signatureData, SigningInformation signingInformation) {
         try {
-            return signingClient.create(signatureData);
+            return signingClient.create(signatureData, signingInformation);
         } catch (Exception e) {
             throw new CreateCertificateException(CREATE_SIGNATURE_FAILED);
         }
