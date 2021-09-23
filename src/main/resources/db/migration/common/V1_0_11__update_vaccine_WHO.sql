@@ -24,7 +24,7 @@ set ch_issuable = true,
 where id = '4109a8fa-84b2-4a3f-bf33-6c746a79a11d';
 
 INSERT INTO vaccines_covid_19_names (id, code, display, prophylaxis, auth_holder, active, ch_issuable, modified_at)
-VALUES ('fe39b8af-eccd-45de-acd7-ce7206052af9', 'CH/120/0002',
+VALUES ('fe39b8af-eccd-45de-acd7-ce7206052af9', 'CH/1/20/0002',
         'SARS-CoV-2 Vaccine (Vero Cell), Inactivated(lnCoV)',
         '1ee3559a-ed64-4062-a10e-baeded624ae8', '0ccef01d-b2af-4fb8-9cf8-2b9cdc265562', true, true,
         '2021-09-22 15:00:00.000000');
