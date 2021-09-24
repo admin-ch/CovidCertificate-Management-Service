@@ -50,7 +50,7 @@ public class DefaultSigningClient implements SigningClient {
     private String buildSigningUrl(SigningInformation signingInformation){
         return new DefaultUriBuilderFactory()
                 .uriString(url)
-                .path(signingInformation.getAlias())
+                .pathSegment(signingInformation.getAlias())
                 .build().toString();
     }
 }
