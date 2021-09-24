@@ -56,7 +56,7 @@ public class ValueSetsService {
 
     public ValueSetsDto getValueSets() {
         var countryCodes = countryCodesLoader.getCountryCodes();
-        return new ValueSetsDto(countryCodes, this.getApiIssuableVaccines(), this.getIssuableRapidTests());
+        return new ValueSetsDto(countryCodes, this.getWebIssuableVaccines(), this.getIssuableRapidTests());
     }
 
     public IssuableVaccineDto getVaccinationValueSet(String productCode) {
