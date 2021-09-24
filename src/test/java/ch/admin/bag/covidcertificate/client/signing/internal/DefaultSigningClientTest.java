@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,9 +46,9 @@ class DefaultSigningClientTest {
 
     @Test
     void makesRequestToCorrectUrl() {
-        var url = fixture.create(String.class);
+        var url = UUID.randomUUID().toString();
         var signingInformation =  fixture.create(SigningInformation.class);
-        var fullUrl = url+signingInformation.getAlias();
+        var fullUrl = url+"/"+signingInformation.getAlias();
         ReflectionTestUtils.setField(signingClient, "url", url);
 
         signingClient.create(fixture.create(byte[].class), signingInformation);
