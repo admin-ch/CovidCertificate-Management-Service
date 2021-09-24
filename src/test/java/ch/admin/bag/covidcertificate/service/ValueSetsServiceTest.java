@@ -72,7 +72,7 @@ public class ValueSetsServiceTest {
         lenient().when(countryCodesLoader.getCountryCodes()).thenReturn(fixture.create(CountryCodes.class));
         lenient().when(vaccineRepository.findAll()).thenReturn(
                 fixture.collections().createCollection(List.class, Vaccine.class));
-        lenient().when(vaccineRepository.findAllActiveAndChIssuable()).thenReturn(
+        lenient().when(vaccineRepository.findAllApiActiveAndChIssuable()).thenReturn(
                 fixture.collections().createCollection(List.class, Vaccine.class));
         lenient().when(rapidTestRepository.findAll()).thenReturn(
                 fixture.collections().createCollection(List.class, RapidTest.class));

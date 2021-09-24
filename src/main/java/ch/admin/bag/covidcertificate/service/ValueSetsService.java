@@ -45,7 +45,8 @@ import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
 public class ValueSetsService {
 
     private static final String VACCINE_CACHE_NAME = "vaccines";
-    private static final String ISSUABLE_VACCINE_CACHE_NAME = "issuableVaccines";
+    private static final String API_ISSUABLE_VACCINE_CACHE_NAME = "apiIssuableVaccines";
+    private static final String WEB_ISSUABLE_VACCINE_CACHE_NAME = "webIssuableVaccines";
     private static final String RAPID_TEST_CACHE_NAME = "rapidTests";
     private static final String ISSUABLE_TEST_CACHE_NAME = "issuableTests";
 
@@ -55,7 +56,7 @@ public class ValueSetsService {
 
     public ValueSetsDto getValueSets() {
         var countryCodes = countryCodesLoader.getCountryCodes();
-        return new ValueSetsDto(countryCodes, this.getIssuableVaccines(), this.getIssuableRapidTests());
+        return new ValueSetsDto(countryCodes, this.getApiIssuableVaccines(), this.getIssuableRapidTests());
     }
 
     public IssuableVaccineDto getVaccinationValueSet(String productCode) {
@@ -168,10 +169,18 @@ public class ValueSetsService {
     }
 
     @Transactional
-    @Cacheable(ISSUABLE_VACCINE_CACHE_NAME)
-    public List<IssuableVaccineDto> getIssuableVaccines() {
-        log.info("Loading issuable vaccines");
-        List<Vaccine> vaccines = this.vaccineRepository.findAllActiveAndChIssuable();
+    @Cacheable(API_ISSUABLE_VACCINE_CACHE_NAME)
+    public List<IssuableVaccineDto> getApiIssuableVaccines() {
+        log.info("Loading api issuable vaccines");
+        List<Vaccine> vaccines = this.vaccineRepository.findAllApiActiveAndChIssuable();
+        return IssuableVaccineMapper.fromVaccines(vaccines);
+    }
+
+    @Transactional
+    @Cacheable(WEB_ISSUABLE_VACCINE_CACHE_NAME)
+    public List<IssuableVaccineDto> getWebIssuableVaccines() {
+        log.info("Loading web issuable vaccines");
+        List<Vaccine> vaccines = this.vaccineRepository.findAllWebActiveAndChIssuable();
         return IssuableVaccineMapper.fromVaccines(vaccines);
     }
 
@@ -194,8 +203,14 @@ public class ValueSetsService {
     }
 
     @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
-    @CacheEvict(value = ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
-    public void cleanIssuableVaccinesCache() {
-        log.info("Cleaning cache of issuable vaccines");
+    @CacheEvict(value = API_ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
+    public void cleanApiIssuableVaccinesCache() {
+        log.info("Cleaning cache of api issuable vaccines");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = WEB_ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
+    public void cleanWebIssuableVaccinesCache() {
+        log.info("Cleaning cache of web issuable vaccines");
     }
 }
