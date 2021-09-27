@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
-public class VaccineRepositoryIntegrationTest {
+class VaccineRepositoryIntegrationTest {
     @Autowired
     private VaccineRepository vaccineRepository;
     @PersistenceContext
@@ -54,7 +54,7 @@ public class VaccineRepositoryIntegrationTest {
 
         Vaccine vaccine = result.get(0);
         assertThat(vaccine.isActive()).isTrue();
-        assertThat(vaccine.chIssuable).isTrue();
+        assertThat(vaccine.isChIssuable()).isTrue();
     }
 
     @Test
