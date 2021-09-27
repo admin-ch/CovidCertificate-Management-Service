@@ -32,6 +32,12 @@ public class Vaccine {
 
     boolean chIssuable;
 
+    boolean swissMedic;
+
+    boolean emea;
+
+    boolean whoEul;
+
     LocalDateTime modifiedAt;
 
     @ManyToOne

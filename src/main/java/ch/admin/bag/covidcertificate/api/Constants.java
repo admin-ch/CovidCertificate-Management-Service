@@ -91,4 +91,5 @@ public class Constants {
     public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556, "Printing failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557, "Writing CSV failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558, "App delivery failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError SIGNING_CERTIFICATE_MISSING = new CreateCertificateError(559, "No signing certificate was found.", HttpStatus.INTERNAL_SERVER_ERROR);
 }

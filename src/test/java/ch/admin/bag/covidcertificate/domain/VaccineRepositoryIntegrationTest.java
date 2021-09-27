@@ -47,7 +47,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Biontech Manufacturing GmbH",
                         true);
         // when
-        List<Vaccine> result = vaccineRepository.findAllActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllApiActiveAndChIssuable();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
@@ -101,7 +101,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company not active",
                        false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllApiActiveAndChIssuable();
         // then
         assertThat(result).isNotNull().isEmpty();
     }
@@ -151,7 +151,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company not active",
                        false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllApiActiveAndChIssuable();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 

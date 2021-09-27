@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.client.signing.internal;
 
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
 import ch.admin.bag.covidcertificate.config.ProfileRegistry;
+import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.util.Collections;
 
@@ -29,18 +31,26 @@ public class DefaultSigningClient implements SigningClient {
         this.restTemplate = restTemplate;
     }
 
-
-    public byte[] create(byte[] cosePayload) {
-        log.info("Call signing service with url {}", url);
+    public byte[] create(byte[] cosePayload, SigningInformation signingInformation) {
+        var signingUrl = buildSigningUrl(signingInformation);
+        log.info("Call signing service with url {}", signingUrl);
         HttpHeaders headers = new HttpHeaders();
         headers.put("Content-Type", Collections.singletonList(MediaType.APPLICATION_CBOR_VALUE));
         try {
-            ResponseEntity<byte[]> result = restTemplate.exchange(this.url, HttpMethod.POST, new HttpEntity<>(cosePayload, headers), byte[].class);
+
+            ResponseEntity<byte[]> result = restTemplate.exchange(signingUrl, HttpMethod.POST, new HttpEntity<>(cosePayload, headers), byte[].class);
 
             return result.getBody();
         }catch (RestClientException e){
             log.error("Connection with signing service {} could not be established.", url, e);
             throw e;
         }
+    }
+
+    private String buildSigningUrl(SigningInformation signingInformation){
+        return new DefaultUriBuilderFactory()
+                .uriString(url)
+                .pathSegment(signingInformation.getAlias())
+                .build().toString();
     }
 }

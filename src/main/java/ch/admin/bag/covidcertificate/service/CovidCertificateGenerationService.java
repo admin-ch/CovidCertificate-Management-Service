@@ -13,6 +13,7 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponse
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
+import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import ch.admin.bag.covidcertificate.service.document.CovidPdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificateQrCode;
@@ -45,6 +46,7 @@ public class CovidCertificateGenerationService {
     private final CovidCertificateDtoMapperService covidCertificateDtoMapperService;
     private final CovidCertificatePdfGenerateRequestDtoMapperService covidCertificatePdfGenerateRequestDtoMapperService;
     private final CertificatePrintRequestDtoMapper certificatePrintRequestDtoMapper;
+    private final SigningInformationService signingInformationService;
 
     public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
         var pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationCertificatePdf(pdfGenerateRequestDto);
@@ -89,25 +91,32 @@ public class CovidCertificateGenerationService {
     public CovidCertificateCreateResponseDto generateCovidCertificate(VaccinationCertificateCreateDto createDto) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toVaccinationCertificatePdf(createDto, qrCodeData);
-        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationInfo().get(0).getIdentifier(), createDto);
+        var signingInformation = signingInformationService.getVaccinationSigningInformation(createDto);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(TestCertificateCreateDto createDto) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toTestCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toTestCertificatePdf(createDto, qrCodeData);
-        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getTestInfo().get(0).getIdentifier(), createDto);
+        var signingInformation = signingInformationService.getTestSigningInformation();
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getTestInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(RecoveryCertificateCreateDto createDto) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toRecoveryCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toRecoveryCertificatePdf(createDto, qrCodeData);
-        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getRecoveryInfo().get(0).getIdentifier(), createDto);
+        var signingInformation = signingInformationService.getRecoverySigningInformation(createDto);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getRecoveryInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
-    private CovidCertificateCreateResponseDto generateCovidCertificate(AbstractCertificateQrCode qrCodeData, AbstractCertificatePdf pdfData, String uvci, CertificateCreateDto createDto) throws JsonProcessingException {
+    private CovidCertificateCreateResponseDto generateCovidCertificate(AbstractCertificateQrCode qrCodeData,
+                                                                       AbstractCertificatePdf pdfData,
+                                                                       String uvci,
+                                                                       CertificateCreateDto createDto,
+                                                                       SigningInformation signingInformation) throws JsonProcessingException {
         var contents = objectMapper.writer().writeValueAsString(qrCodeData);
         log.info("Create barcode");
-        var code = barcodeService.createBarcode(contents);
+        var code = barcodeService.createBarcode(contents, signingInformation);
         log.info("Create certificate pdf");
         var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
 

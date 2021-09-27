@@ -4,7 +4,6 @@ import com.upokecenter.cbor.CBORObject;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import se.digg.dgc.signatures.cwt.support.CBORInstantConverter;
 
@@ -28,13 +27,10 @@ public class CBORService {
     private static final String CONTEXT = "Signature1";
     private static final byte[] EXTERNAL_AAD = new byte[0];
     private static final CBORObject UNPROTECTED_HEADER = CBORObject.NewMap();
-    // Protected Header
-    @Value("${cc-management-service.cose.key-identifier}")
-    private String keyIdentifier;
 
     private final COSETime coseTime;
 
-    public byte[] getProtectedHeader() throws DecoderException {
+    public byte[] getProtectedHeader(String keyIdentifier) throws DecoderException {
         if (keyIdentifier == null || keyIdentifier.isBlank()) {
             throw new IllegalArgumentException("KeyIdentifier must not be empty.");
         }
