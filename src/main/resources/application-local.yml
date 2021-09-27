@@ -1,6 +1,6 @@
 spring:
   flyway:
-    locations: classpath:db/migration/common
+    locations: classpath:db/migration/common, classpath:db/migration/local
   security:
     oauth2:
       client:
