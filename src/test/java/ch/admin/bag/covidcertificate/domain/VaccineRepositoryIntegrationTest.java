@@ -359,8 +359,8 @@ public class VaccineRepositoryIntegrationTest {
                 code,
                 display,
                 active,
-                chIssuable);
-        vaccine.swissMedic = swissMedic;
+                chIssuable,
+                swissMedic);
         Prophylaxis prophylaxis = new Prophylaxis(
                 prophylaxisCode,
                 prophylaxisDisplayName,

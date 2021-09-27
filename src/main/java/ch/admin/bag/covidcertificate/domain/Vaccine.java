@@ -54,12 +54,14 @@ public class Vaccine {
             String code,
             String display,
             boolean active,
-            boolean chIssuable
+            boolean chIssuable,
+            boolean swissMedic
     ) {
 
         this.code = code;
         this.display = display;
         this.active = active;
         this.chIssuable = chIssuable;
+        this.swissMedic = swissMedic;
     }
 }
