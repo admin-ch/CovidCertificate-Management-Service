@@ -22,44 +22,46 @@ public class Vaccine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    UUID id;
+    private UUID id;
 
-    String code;
+    private String code;
 
-    String display;
+    private String display;
 
-    boolean active;
+    private boolean active;
 
-    boolean chIssuable;
+    private boolean chIssuable;
 
-    boolean swissMedic;
+    private boolean swissMedic;
 
-    boolean emea;
+    private boolean emea;
 
-    boolean whoEul;
+    private boolean whoEul;
 
-    LocalDateTime modifiedAt;
+    private LocalDateTime modifiedAt;
 
     @ManyToOne
     @JoinColumn(name = "auth_holder")
     @Setter
-    AuthHolder authHolder;
+    private AuthHolder authHolder;
 
     @ManyToOne
     @Setter
     @JoinColumn(name = "prophylaxis")
-    Prophylaxis prophylaxis;
+    private Prophylaxis prophylaxis;
 
     public Vaccine(
             String code,
             String display,
             boolean active,
-            boolean chIssuable
+            boolean chIssuable,
+            boolean swissMedic
     ) {
 
         this.code = code;
         this.display = display;
         this.active = active;
         this.chIssuable = chIssuable;
+        this.swissMedic = swissMedic;
     }
 }
