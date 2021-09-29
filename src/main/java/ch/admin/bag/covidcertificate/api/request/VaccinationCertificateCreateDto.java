@@ -16,15 +16,18 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_VACCINATION_DATA;
 public class VaccinationCertificateCreateDto extends CertificateCreateDto {
 
     private List<VaccinationCertificateDataDto> vaccinationInfo;
+    private SystemSource systemSource;
 
     public VaccinationCertificateCreateDto(
             CovidCertificatePersonDto personData,
             List<VaccinationCertificateDataDto> vaccinationInfo,
             String language,
             CovidCertificateAddressDto address,
-            String inAppDeliveryCode
+            String inAppDeliveryCode,
+            SystemSource systemSource
     ) {
         super(personData, language, address, inAppDeliveryCode);
+        this.systemSource = systemSource;
         this.vaccinationInfo = vaccinationInfo;
     }
 

@@ -23,7 +23,12 @@ public class VaccinationCertificateDataDto {
 
     private String countryOfVaccination;
 
+    private SystemSource systemSource;
+
     public void validate() {
+        if (systemSource == null) {
+            throw new IllegalStateException("mandatory attribute systemSource is missing. Check Request implementation.");
+        }
         if (numberOfDoses == null ||
                 numberOfDoses < 1 ||
                 totalNumberOfDoses == null ||

@@ -16,7 +16,44 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 @Slf4j
 @RequiredArgsConstructor
 public class CovidCertificateDtoMapperService {
+    private final String SWITZERLAND = "CH";
     private final ValueSetsService valueSetsService;
+
+    public void validate(VaccinationCertificateCreateDto createDto) {
+        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
+        String countryOfVaccination = createDto.getVaccinationInfo().get(0).getCountryOfVaccination();
+        final String productCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
+        switch (createDto.getSystemSource()) {
+            case WebUI:{
+                var issuableVaccinesOpt = valueSetsService.getWebIssuableVaccines()
+                        .stream().filter(issuableVaccine -> issuableVaccine.getProductCode().equals(productCode)).findFirst();
+                boolean issuable = (issuableVaccinesOpt.isPresent() ? false : true /* issuableVaccinesOpt.get().isCHIssuable */);
+                // a product not issueable in switzerland has been used
+                if (/* !issuable && */ SWITZERLAND.equalsIgnoreCase(countryCodeEn.getShortName())) {
+                    throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
+                }
+                break;
+            }
+            case CsvUpload:
+            case ApiGateway:{
+                // var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
+                // the product is issueable in switzerland only
+                if (/* vaccinationValueSet.isCHIssuable() && */ !SWITZERLAND.equalsIgnoreCase(countryCodeEn.getShortName())) {
+                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+                }
+                break;
+            }
+            case ApiPlatform:{
+                // var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
+                if (/* vaccinationValueSet.isApiPlatformIssuable() && */ SWITZERLAND.equalsIgnoreCase(countryCodeEn.getShortName())) {
+                    throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
+                }
+                break;
+            }
+            default:
+                throw new IllegalStateException("Attribute systemSource value is invalid. Check Request implementation and/or Dto Validation. ");
+        }
+    }
 
     public VaccinationCertificateQrCode toVaccinationCertificateQrCode(VaccinationCertificateCreateDto createDto) {
         var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());

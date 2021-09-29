@@ -26,6 +26,7 @@ public class VaccinationCertificateCreateDtoTest {
                 null,
                 language,
                 TestModelProvider.getCovidCertificateAddressDto(),
+                null,
                 null
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
@@ -36,6 +37,7 @@ public class VaccinationCertificateCreateDtoTest {
                 List.of(),
                 language,
                 TestModelProvider.getCovidCertificateAddressDto(),
+                null,
                 null
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
@@ -46,6 +48,7 @@ public class VaccinationCertificateCreateDtoTest {
                 List.of(dataDto),
                 language,
                 TestModelProvider.getCovidCertificateAddressDto(),
+                null,
                 null
         );
         assertDoesNotThrow(testee::validate);

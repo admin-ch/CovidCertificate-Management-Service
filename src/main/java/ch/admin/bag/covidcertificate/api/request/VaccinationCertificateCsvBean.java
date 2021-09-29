@@ -43,7 +43,8 @@ public class VaccinationCertificateCsvBean extends CertificateCsvBean {
                 numberOfDoses,
                 totalNumberOfDoses,
                 DateHelper.parse(this.vaccinationDate, INVALID_VACCINATION_DATE),
-                countryOfVaccination.trim().toUpperCase()
+                countryOfVaccination.trim().toUpperCase(),
+                SystemSource.CsvUpload
         );
         return super.mapToCreateDto(dataDto);
     }

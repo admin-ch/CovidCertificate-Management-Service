@@ -18,6 +18,7 @@ public class TestModelProvider {
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
                 language,
                 getCovidCertificateAddressDto(),
+                null,
                 null
         );
     }
@@ -28,7 +29,8 @@ public class TestModelProvider {
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
                 language,
                 null,
-                inAppCode
+                inAppCode,
+                null
         );
     }
 
@@ -100,7 +102,8 @@ public class TestModelProvider {
                 2,
                 2,
                 LocalDate.of(2021, Month.APRIL, 29),
-                "CH"
+                "CH",
+                SystemSource.WebUI
         );
     }
 
