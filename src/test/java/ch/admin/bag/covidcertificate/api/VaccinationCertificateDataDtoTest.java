@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import org.junit.Test;
 

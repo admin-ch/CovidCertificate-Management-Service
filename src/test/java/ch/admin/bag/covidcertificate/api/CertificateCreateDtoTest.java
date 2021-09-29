@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 
@@ -20,34 +21,38 @@ public class CertificateCreateDtoTest {
     private static class CertificateCreateDtoIml extends CertificateCreateDto {
         public CertificateCreateDtoIml(
                 CovidCertificatePersonDto personData,
-                String language
-        ) {
-            super(personData, language, null, null);
-        }
-
-        public CertificateCreateDtoIml(
-                CovidCertificatePersonDto personData,
                 String language,
-                CovidCertificateAddressDto address
+                SystemSource systemSource
         ) {
-            super(personData, language, address, null);
-        }
-
-        public CertificateCreateDtoIml(
-                CovidCertificatePersonDto personData,
-                String language,
-                String inAppDeliveryCode
-        ) {
-            super(personData, language, null, inAppDeliveryCode);
+            super(personData, language, null, null, systemSource);
         }
 
         public CertificateCreateDtoIml(
                 CovidCertificatePersonDto personData,
                 String language,
                 CovidCertificateAddressDto address,
-                String inAppDeliveryCode
+                SystemSource systemSource
         ) {
-            super(personData, language, address, inAppDeliveryCode);
+            super(personData, language, address, null, systemSource);
+        }
+
+        public CertificateCreateDtoIml(
+                CovidCertificatePersonDto personData,
+                String language,
+                String inAppDeliveryCode,
+                SystemSource systemSource
+        ) {
+            super(personData, language, null, inAppDeliveryCode, systemSource);
+        }
+
+        public CertificateCreateDtoIml(
+                CovidCertificatePersonDto personData,
+                String language,
+                CovidCertificateAddressDto address,
+                String inAppDeliveryCode,
+                SystemSource systemSource
+        ) {
+            super(personData, language, address, inAppDeliveryCode, systemSource);
         }
     }
 
@@ -56,7 +61,8 @@ public class CertificateCreateDtoTest {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 null,
                 language,
-                addressDto
+                addressDto,
+                SystemSource.WebUI
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_PERSON_DATA, exception.getError());
@@ -64,7 +70,8 @@ public class CertificateCreateDtoTest {
         testee = new CertificateCreateDtoIml(
                 personDto,
                 language,
-                addressDto
+                addressDto,
+                SystemSource.WebUI
         );
         assertDoesNotThrow(testee::validate);
     }
@@ -74,7 +81,8 @@ public class CertificateCreateDtoTest {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 null,
-                addressDto
+                addressDto,
+                SystemSource.WebUI
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_LANGUAGE, exception.getError());
@@ -82,7 +90,8 @@ public class CertificateCreateDtoTest {
         testee = new CertificateCreateDtoIml(
                 personDto,
                 "en",
-                addressDto
+                addressDto,
+                SystemSource.WebUI
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_LANGUAGE, exception.getError());
@@ -90,7 +99,8 @@ public class CertificateCreateDtoTest {
         testee = new CertificateCreateDtoIml(
                 personDto,
                 language,
-                addressDto
+                addressDto,
+                SystemSource.WebUI
         );
         assertDoesNotThrow(testee::validate);
     }
@@ -100,14 +110,16 @@ public class CertificateCreateDtoTest {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 "de",
-                addressDto
+                addressDto,
+                SystemSource.WebUI
         );
         assertDoesNotThrow(testee::validate);
     }
 
     @Test
     public void throwsException__ifAddressAndInAppDeliveryCodeArePassed() {
-        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", addressDto, RandomStringUtils.randomAlphanumeric(9));
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
+                personDto, "de", addressDto, RandomStringUtils.randomAlphanumeric(9), SystemSource.WebUI);
 
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(DUPLICATE_DELIVERY_METHOD, exception.getError());
@@ -116,32 +128,34 @@ public class CertificateCreateDtoTest {
     @Test
     public void throwsException__ifInvalidInAppDeliveryCode() {
         // test not alphanumeric
-        var testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.random(9));
+        var testee = new CertificateCreateDtoIml(
+                personDto, "de", RandomStringUtils.random(9), SystemSource.WebUI);
         var exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_APP_CODE, exception.getError());
     }
 
     @Test
     public void validatesSuccessfully__ifAddressOnlyIsPassed() {
-        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", addressDto);
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", addressDto, SystemSource.WebUI);
         assertDoesNotThrow(testee::validate);
     }
 
     @Test
     public void validatesSuccessfully__ifInAppDeliveryCodeOnlyIsPassed() {
-        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", RandomStringUtils.randomAlphanumeric(9));
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
+                personDto, "de", RandomStringUtils.randomAlphanumeric(9), SystemSource.WebUI);
         assertDoesNotThrow(testee::validate);
     }
 
     @Test
     public void validatesSuccessfully__ifNoDeliveryIsPassed() {
-        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de");
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", SystemSource.WebUI);
         assertDoesNotThrow(testee::validate);
     }
 
     @Test
     public void validatesSuccessfully__ifInAppDeliveryCodeContainsSpaces() {
-        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", " 123 456 789 ");
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", " 123 456 789 ", SystemSource.WebUI);
         assertDoesNotThrow(testee::validate);
         assertEquals("123456789", testee.getAppCode());
     }

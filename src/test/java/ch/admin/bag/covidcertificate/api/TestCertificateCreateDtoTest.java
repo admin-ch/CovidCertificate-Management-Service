@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
 import org.junit.Test;
@@ -27,8 +28,9 @@ public class TestCertificateCreateDtoTest {
                 null,
                 language,
                 null,
-                null
-        );
+                null,
+                SystemSource.WebUI
+       );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_TEST_DATA, exception.getError());
 
@@ -37,7 +39,8 @@ public class TestCertificateCreateDtoTest {
                 List.of(),
                 language,
                 null,
-                null
+                null,
+                SystemSource.WebUI
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_TEST_DATA, exception.getError());
@@ -47,7 +50,8 @@ public class TestCertificateCreateDtoTest {
                 List.of(),
                 language,
                 getCovidCertificateAddressDto(),
-                null
+                null,
+                SystemSource.WebUI
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_PRINT_FOR_TEST, exception.getError());
@@ -57,7 +61,8 @@ public class TestCertificateCreateDtoTest {
                 List.of(dataDto),
                 language,
                 null,
-                null
+                null,
+                SystemSource.WebUI
         );
         assertDoesNotThrow(testee::validate);
     }
