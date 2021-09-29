@@ -45,7 +45,7 @@ public class CovidCertificateGenerationController {
         createDto.validate();
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
-        kpiLogService.logCertificateGenerationKpi(KPI_TYPE_VACCINATION, responseDto.getUvci());
+        kpiLogService.logVaccinationCertificateGenerationKpi(createDto, responseDto.getUvci());
         return responseDto;
     }
 
@@ -69,7 +69,7 @@ public class CovidCertificateGenerationController {
         createDto.validate();
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
-        kpiLogService.logCertificateGenerationKpi(KPI_TYPE_RECOVERY, responseDto.getUvci());
+        kpiLogService.logRecoveryCertificateGenerationKpi(createDto, responseDto.getUvci());
         return responseDto;
     }
 

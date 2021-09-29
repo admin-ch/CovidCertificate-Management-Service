@@ -102,7 +102,7 @@ public class CsvService {
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logCertificateGenerationKpi(KPI_TYPE_RECOVERY, responseDto.getUvci());
+            kpiLogService.logRecoveryCertificateGenerationKpi(createDto, responseDto.getUvci());
         }
         return responseDtos;
     }
@@ -126,7 +126,7 @@ public class CsvService {
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logCertificateGenerationKpi(KPI_TYPE_VACCINATION, responseDto.getUvci());
+            kpiLogService.logVaccinationCertificateGenerationKpi(createDto, responseDto.getUvci());
         }
         return responseDtos;
     }

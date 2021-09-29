@@ -51,7 +51,7 @@ public class RevocationController {
         if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
             LocalDateTime kpiTimestamp = LocalDateTime.now();
             log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
-            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), uvci, null));
+            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), uvci, null, null));
         }
     }
 }
