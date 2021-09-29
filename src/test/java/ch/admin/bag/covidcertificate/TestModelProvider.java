@@ -19,7 +19,7 @@ public class TestModelProvider {
                 language,
                 getCovidCertificateAddressDto(),
                 null,
-                null
+                SystemSource.WebUI
         );
     }
 
@@ -30,7 +30,7 @@ public class TestModelProvider {
                 language,
                 null,
                 inAppCode,
-                null
+                SystemSource.WebUI
         );
     }
 
@@ -41,7 +41,8 @@ public class TestModelProvider {
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
                 language,
                 null,
-                null
+                null,
+                SystemSource.WebUI
         );
     }
 
@@ -51,7 +52,8 @@ public class TestModelProvider {
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
                 language,
                 null,
-                inAppCode
+                inAppCode,
+                SystemSource.WebUI
         );
     }
 
@@ -61,7 +63,8 @@ public class TestModelProvider {
                 List.of(getRecoveryCertificateDataDto()),
                 language,
                 getCovidCertificateAddressDto(),
-                null
+                null,
+                SystemSource.WebUI
         );
     }
 
@@ -71,7 +74,8 @@ public class TestModelProvider {
                 List.of(getRecoveryCertificateDataDto()),
                 language,
                 null,
-                inAppCode
+                inAppCode,
+                SystemSource.WebUI
         );
     }
 
@@ -102,8 +106,7 @@ public class TestModelProvider {
                 2,
                 2,
                 LocalDate.of(2021, Month.APRIL, 29),
-                "CH",
-                SystemSource.WebUI
+                "CH"
         );
     }
 

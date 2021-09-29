@@ -26,8 +26,7 @@ public class VaccinationCertificateDataDtoTest {
                 null,
                 totalNumberOfDoses,
                 vaccinationDate,
-                countryOfVaccination,
-                SystemSource.WebUI
+                countryOfVaccination
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DOSES, exception.getError());
@@ -37,8 +36,7 @@ public class VaccinationCertificateDataDtoTest {
                 numberOfDoses,
                 null,
                 vaccinationDate,
-                countryOfVaccination,
-                SystemSource.WebUI
+                countryOfVaccination
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DOSES, exception.getError());
@@ -48,8 +46,7 @@ public class VaccinationCertificateDataDtoTest {
                 3,
                 2,
                 vaccinationDate,
-                countryOfVaccination,
-                SystemSource.WebUI
+                countryOfVaccination
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DOSES, exception.getError());
@@ -59,8 +56,7 @@ public class VaccinationCertificateDataDtoTest {
                 -1,
                 2,
                 vaccinationDate,
-                countryOfVaccination,
-                SystemSource.WebUI
+                countryOfVaccination
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_DOSES, exception.getError());
@@ -70,8 +66,7 @@ public class VaccinationCertificateDataDtoTest {
                 numberOfDoses,
                 totalNumberOfDoses,
                 vaccinationDate,
-                countryOfVaccination,
-                SystemSource.WebUI
+                countryOfVaccination
         );
         assertDoesNotThrow(testee::validate);
     }
@@ -83,8 +78,7 @@ public class VaccinationCertificateDataDtoTest {
                 numberOfDoses,
                 totalNumberOfDoses,
                 null,
-                countryOfVaccination,
-                SystemSource.WebUI
+                countryOfVaccination
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_VACCINATION_DATE, exception.getError());
@@ -94,8 +88,7 @@ public class VaccinationCertificateDataDtoTest {
                 numberOfDoses,
                 totalNumberOfDoses,
                 LocalDate.now().plusDays(2),
-                countryOfVaccination,
-                SystemSource.WebUI
+                countryOfVaccination
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_VACCINATION_DATE, exception.getError());
@@ -105,8 +98,7 @@ public class VaccinationCertificateDataDtoTest {
                 numberOfDoses,
                 totalNumberOfDoses,
                 vaccinationDate,
-                countryOfVaccination,
-                SystemSource.WebUI
+                countryOfVaccination
         );
         assertDoesNotThrow(testee::validate);
     }
@@ -118,8 +110,7 @@ public class VaccinationCertificateDataDtoTest {
                 numberOfDoses,
                 totalNumberOfDoses,
                 vaccinationDate,
-                null,
-                SystemSource.WebUI
+                null
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(INVALID_COUNTRY_OF_VACCINATION, exception.getError());
@@ -129,8 +120,7 @@ public class VaccinationCertificateDataDtoTest {
                 numberOfDoses,
                 totalNumberOfDoses,
                 vaccinationDate,
-                countryOfVaccination,
-                SystemSource.WebUI
+                countryOfVaccination
         );
         assertDoesNotThrow(testee::validate);
     }

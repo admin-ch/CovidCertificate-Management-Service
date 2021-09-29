@@ -3,6 +3,7 @@ package ch.admin.bag.covidcertificate.api;
 import ch.admin.bag.covidcertificate.TestModelProvider;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class VaccinationCertificateCreateDtoTest {
                 language,
                 TestModelProvider.getCovidCertificateAddressDto(),
                 null,
-                null
+                SystemSource.WebUI
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_VACCINATION_DATA, exception.getError());
@@ -38,7 +39,7 @@ public class VaccinationCertificateCreateDtoTest {
                 language,
                 TestModelProvider.getCovidCertificateAddressDto(),
                 null,
-                null
+                SystemSource.WebUI
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_VACCINATION_DATA, exception.getError());
@@ -49,7 +50,7 @@ public class VaccinationCertificateCreateDtoTest {
                 language,
                 TestModelProvider.getCovidCertificateAddressDto(),
                 null,
-                null
+                SystemSource.WebUI
         );
         assertDoesNotThrow(testee::validate);
     }
