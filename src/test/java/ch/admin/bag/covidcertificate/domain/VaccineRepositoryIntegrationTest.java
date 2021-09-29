@@ -46,9 +46,12 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Biontech Manufacturing GmbH",
-                        true);
+                       true,
+                       false,
+                       true,
+                       false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllGatewayApiActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllGatewayApiActive();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
@@ -70,6 +73,9 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Test company not active",
+                       false,
+                       false,
+                       true,
                        false);
         persistVaccine("EU/1/20/0002",
                        "Test not active",
@@ -80,7 +86,11 @@ public class VaccineRepositoryIntegrationTest {
                        false,
                        "ORG-100030215",
                        "Test company active",
-                       true);
+                       true,
+                       false,
+                       true,
+                       false);
+
         persistVaccine("EU/1/20/0003",
                        "Test not active",
                        false,
@@ -90,7 +100,11 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Test company active",
-                       true);
+                       true,
+                       false,
+                       true,
+                       false);
+
         persistVaccine("EU/1/20/0004",
                        "Test not active",
                        false,
@@ -100,9 +114,13 @@ public class VaccineRepositoryIntegrationTest {
                        false,
                        "ORG-100030215",
                        "Test company not active",
+                       false,
+                       false,
+                       true,
                        false);
+
         // when
-        List<Vaccine> result = vaccineRepository.findAllGatewayApiActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllGatewayApiActive();
         // then
         assertThat(result).isNotNull().isEmpty();
     }
@@ -120,6 +138,9 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Test company not active",
+                       false,
+                       false,
+                       false,
                        false);
         persistVaccine("EU/1/20/0006",
                        "Test active",
@@ -127,10 +148,13 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "1119349007",
                        "Prophylaxis not active",
-                       false,
+                       true,
                        "ORG-100030215",
                        "Test company active",
-                       true);
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0007",
                        "Test active",
                        true,
@@ -140,7 +164,10 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Test company active",
-                       true);
+                       false,
+                       false,
+                       false,
+                       false);
         persistVaccine("EU/1/20/0008",
                        "Test active",
                        true,
@@ -150,9 +177,12 @@ public class VaccineRepositoryIntegrationTest {
                        false,
                        "ORG-100030215",
                        "Test company not active",
+                       false,
+                       false,
+                       false,
                        false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllGatewayApiActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllGatewayApiActive();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
@@ -175,7 +205,10 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Biontech Manufacturing GmbH",
-                       true);
+                       false,
+                       false,
+                       true,
+                       false);
         // when
         List<Vaccine> result = vaccineRepository.findAll();
         // then
@@ -198,6 +231,9 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Test company not active",
+                       false,
+                       false,
+                       true,
                        false);
         persistVaccine("EU/1/20/0002",
                        "Test not active 02",
@@ -208,7 +244,10 @@ public class VaccineRepositoryIntegrationTest {
                        false,
                        "ORG-100030215",
                        "Test company active",
-                       true);
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0003",
                        "Test not active 03",
                        false,
@@ -218,7 +257,10 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Test company active",
-                       true);
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0004",
                        "Test not active 04",
                        false,
@@ -228,6 +270,9 @@ public class VaccineRepositoryIntegrationTest {
                        false,
                        "ORG-100030215",
                        "Test company not active",
+                       false,
+                       false,
+                       true,
                        false);
         // when
         List<Vaccine> result = vaccineRepository.findAll();
@@ -268,6 +313,9 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Test company not active",
+                       false,
+                       false,
+                       true,
                        false);
         persistVaccine("EU/1/20/0006",
                        "Test active 06",
@@ -278,7 +326,10 @@ public class VaccineRepositoryIntegrationTest {
                        false,
                        "ORG-100030215",
                        "Test company active",
-                       true);
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0007",
                        "Test active 07",
                        true,
@@ -288,7 +339,10 @@ public class VaccineRepositoryIntegrationTest {
                        true,
                        "ORG-100030215",
                        "Test company active",
-                       true);
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0008",
                        "Test active 08",
                        true,
@@ -298,6 +352,9 @@ public class VaccineRepositoryIntegrationTest {
                        false,
                        "ORG-100030215",
                        "Test company not active",
+                       false,
+                       false,
+                       true,
                        false);
         // when
         List<Vaccine> result = vaccineRepository.findAll();
@@ -335,14 +392,20 @@ public class VaccineRepositoryIntegrationTest {
             boolean prophylaxisActive,
             String authHolderCode,
             String authHolderDisplayName,
-            boolean authHolderActive) {
+            boolean authHolderActive,
+            boolean webUiSelectable,
+            boolean apiGatewaySelectable,
+            boolean apiPlatformSelectable) {
 
         Vaccine vaccine = new Vaccine(
                 code,
                 display,
                 active,
                 chIssuable,
-                Issuable.CH_ONLY);
+                Issuable.CH_ONLY,
+                webUiSelectable,
+                apiGatewaySelectable,
+                apiPlatformSelectable);
         Prophylaxis prophylaxis = new Prophylaxis(
                 prophylaxisCode,
                 prophylaxisDisplayName,

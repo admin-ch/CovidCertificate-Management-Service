@@ -70,12 +70,19 @@ public class Vaccine {
             String display,
             boolean active,
             boolean chIssuable,
-            Issuable issuable
+            Issuable issuable,
+            boolean webUiSelectable,
+            boolean apiGatewaySelectable,
+            boolean apiPlatformSelectable
     ) {
 
         this.code = code;
         this.display = display;
         this.active = active;
         this.chIssuable = chIssuable;
+        this.issuable = issuable;
+        this.webUiSelectable = webUiSelectable;
+        this.apiGatewaySelectable = apiGatewaySelectable;
+        this.apiPlatformSelectable = apiPlatformSelectable;
     }
 }

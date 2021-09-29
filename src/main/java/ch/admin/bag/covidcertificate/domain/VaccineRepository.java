@@ -18,7 +18,7 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "and p.active = true " +
             "and v.apiGatewaySelectable = true " +
             "order by v.display asc")
-    List<Vaccine> findAllGatewayApiActiveAndChIssuable();
+    List<Vaccine> findAllGatewayApiActive();
 
     @Query(value = "select v from Vaccine v " +
             "join AuthHolder a on a.id = v.authHolder.id " +
@@ -26,7 +26,7 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "where v.active = true " +
             "and v.webUiSelectable = true " +
             "order by v.display asc")
-    List<Vaccine> findAllWebUiActiveAndChIssuable();
+    List<Vaccine> findAllWebUiActive();
 
     @Query(value = "select v from Vaccine v " +
             "join AuthHolder a on a.id = v.authHolder.id " +
@@ -34,6 +34,6 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "where v.active = true " +
             "and v.apiPlatformSelectable = true " +
             "order by v.display asc")
-    List<Vaccine> findAllPlatformApiActiveAndChIssuable();
+    List<Vaccine> findAllPlatformApiActive();
 
 }

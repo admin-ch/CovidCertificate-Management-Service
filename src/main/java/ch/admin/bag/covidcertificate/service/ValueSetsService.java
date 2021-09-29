@@ -175,21 +175,21 @@ public class ValueSetsService {
     @Cacheable(API_GATEWAY_ISSUABLE_VACCINE_CACHE_NAME)
     public List<IssuableVaccineDto> getApiGatewayIssuableVaccines() {
         log.info("Loading api gateway issuable vaccines");
-        List<Vaccine> vaccines = this.vaccineRepository.findAllGatewayApiActiveAndChIssuable();
+        List<Vaccine> vaccines = this.vaccineRepository.findAllGatewayApiActive();
         return IssuableVaccineMapper.fromVaccines(vaccines);
     }
 
     @Cacheable(WEB_UI_ISSUABLE_VACCINE_CACHE_NAME)
     public List<IssuableVaccineDto> getWebUiIssuableVaccines() {
         log.info("Loading web ui issuable vaccines");
-        List<Vaccine> vaccines = this.vaccineRepository.findAllWebUiActiveAndChIssuable();
+        List<Vaccine> vaccines = this.vaccineRepository.findAllWebUiActive();
         return IssuableVaccineMapper.fromVaccines(vaccines);
     }
 
     @Cacheable(API_PLATFORM_ISSUABLE_VACCINE_CACHE_NAME)
     public List<IssuableVaccineDto> getApiPlatformIssuableVaccines() {
         log.info("Loading platform api issuable vaccines");
-        List<Vaccine> vaccines = this.vaccineRepository.findAllPlatformApiActiveAndChIssuable();
+        List<Vaccine> vaccines = this.vaccineRepository.findAllPlatformApiActive();
         return IssuableVaccineMapper.fromVaccines(vaccines);
     }
 
