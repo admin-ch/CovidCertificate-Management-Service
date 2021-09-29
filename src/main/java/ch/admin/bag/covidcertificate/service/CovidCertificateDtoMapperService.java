@@ -21,7 +21,7 @@ public class CovidCertificateDtoMapperService {
 
     public void validate(VaccinationCertificateCreateDto createDto) {
         var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
-        String countryOfVaccination = createDto.getVaccinationInfo().get(0).getCountryOfVaccination();
+        final boolean isCountryCH = SWITZERLAND.equalsIgnoreCase(countryCodeEn.getShortName());
         final String productCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
         switch (createDto.getSystemSource()) {
             case WebUI:{
@@ -36,17 +36,20 @@ public class CovidCertificateDtoMapperService {
             }
             case CsvUpload:
             case ApiGateway:{
-                // var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
+                // var issuableVaccinesOpt = valueSetsService.getApiGatewayIssuableVaccines()
+                //     .stream().filter(issuableVaccine -> issuableVaccine.getProductCode().equals(productCode)).findFirst();
                 // the product is issueable in switzerland only
-                if (/* vaccinationValueSet.isCHIssuable() && */ !SWITZERLAND.equalsIgnoreCase(countryCodeEn.getShortName())) {
+                if (/* issuableVaccinesOpt.isPresent() && */ isCountryCH) {
                     throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
                 }
                 break;
             }
             case ApiPlatform:{
-                // var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
-                if (/* vaccinationValueSet.isApiPlatformIssuable() && */ SWITZERLAND.equalsIgnoreCase(countryCodeEn.getShortName())) {
-                    throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
+                boolean deleteMePlease = false;
+                // var issuableVaccinesOpt = valueSetsService.getApiPlatformIssuableVaccines()
+                //     .stream().filter(issuableVaccine -> issuableVaccine.getProductCode().equals(productCode)).findFirst();
+                if (/* issuableVaccinesOpt.isPresent() && */ isCountryCH) {
+                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
                 }
                 break;
             }
