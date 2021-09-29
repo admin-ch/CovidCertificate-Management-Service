@@ -1,16 +1,29 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.mapper.*;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.service.domain.*;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_VACCINATION;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_OF_TEST;
 
 @Service
 @Slf4j
@@ -25,9 +38,14 @@ public class CovidCertificateDtoMapperService {
         final String productCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
         switch (createDto.getSystemSource()) {
             case WebUI:{
-                var issuableVaccinesOpt = valueSetsService.getWebIssuableVaccines()
-                        .stream().filter(issuableVaccine -> issuableVaccine.getProductCode().equals(productCode)).findFirst();
-                boolean issuable = (issuableVaccinesOpt.isPresent() ? false : true /* issuableVaccinesOpt.get().isCHIssuable */);
+                var issuableVaccinesOpt = valueSetsService.getWebUiIssuableVaccines()
+                                                          .stream()
+                                                          .filter(issuableVaccine -> issuableVaccine.getProductCode()
+                                                                                                    .equals(productCode))
+                                                          .findFirst();
+                boolean issuable = (issuableVaccinesOpt.isPresent()
+                        ? false
+                        : true /* issuableVaccinesOpt.get().isCHIssuable */);
                 // a product not issueable in switzerland has been used
                 if (/* !issuable && */ SWITZERLAND.equalsIgnoreCase(countryCodeEn.getShortName())) {
                     throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
