@@ -35,4 +35,5 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "and v.apiPlatformSelectable = true " +
             "order by v.display asc")
     List<Vaccine> findAllPlatformApiActiveAndChIssuable();
+
 }

@@ -169,7 +169,7 @@ public class ValueSetsService {
     public List<VaccineDto> getVaccines() {
         log.info("Loading vaccines");
         List<Vaccine> vaccines = this.vaccineRepository.findAll();
-        return VaccineMapper.fromVaccines(vaccines);
+        return VaccineMapper.uniqueVaccines(vaccines);
     }
 
     @Cacheable(API_GATEWAY_ISSUABLE_VACCINE_CACHE_NAME)

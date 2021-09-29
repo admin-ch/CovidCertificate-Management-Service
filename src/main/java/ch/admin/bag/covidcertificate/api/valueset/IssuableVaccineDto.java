@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
@@ -27,6 +28,7 @@ public class IssuableVaccineDto {
     private String authHolderCode;
     @Schema(type = "string")
     private String authHolderDisplay;
+    @Setter
     private Issuable issuable;
 
     public IssuableVaccineDto(String productCode, String productDisplay, Issuable issuable) {
