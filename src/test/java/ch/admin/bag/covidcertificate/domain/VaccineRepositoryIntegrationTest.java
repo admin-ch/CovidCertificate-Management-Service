@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.api.request.Issuable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,13 +48,13 @@ public class VaccineRepositoryIntegrationTest {
                        "Biontech Manufacturing GmbH",
                         true);
         // when
-        List<Vaccine> result = vaccineRepository.findAllApiActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllGatewayApiActiveAndChIssuable();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
         Vaccine vaccine = result.get(0);
         assertThat(vaccine.isActive()).isTrue();
-        assertThat(vaccine.chIssuable).isTrue();
+        assertThat(vaccine.issuable).isEqualTo(Issuable.CH_ONLY);
     }
 
     @Test
@@ -101,7 +102,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company not active",
                        false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllApiActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllGatewayApiActiveAndChIssuable();
         // then
         assertThat(result).isNotNull().isEmpty();
     }
@@ -151,7 +152,7 @@ public class VaccineRepositoryIntegrationTest {
                        "Test company not active",
                        false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllApiActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllGatewayApiActiveAndChIssuable();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
@@ -340,7 +341,8 @@ public class VaccineRepositoryIntegrationTest {
                 code,
                 display,
                 active,
-                chIssuable);
+                chIssuable,
+                Issuable.CH_ONLY);
         Prophylaxis prophylaxis = new Prophylaxis(
                 prophylaxisCode,
                 prophylaxisDisplayName,
