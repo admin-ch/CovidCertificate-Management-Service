@@ -45,6 +45,8 @@ public class CsvServiceTest {
     private KpiDataService kpiLogService;
     @Mock
     private ValueSetsService valueSetsService;
+    @Mock
+    private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
     private final JFixture fixture = new JFixture();
     private final File validRecoveryFile;
