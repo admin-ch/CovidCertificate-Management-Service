@@ -27,13 +27,20 @@ public class CovidCertificateVaccinationValidationService {
         final String productCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
 
         switch (createDto.getSystemSource()) {
-            case WebUI:{
+            case WebUI: {
                 var issuableVaccine = retrieveProduct(productCode, valueSetsService.getWebUiIssuableVaccines());
                 throwExceptionIfIssuableIsViolated(isCountryCH, issuableVaccine.getIssuable());
                 break;
             }
-            case CsvUpload:
-            case ApiGateway:{
+            case CsvUpload: {
+                if (!isCountryCH) {
+                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+                }
+                var issuableVaccine = retrieveProduct(productCode, valueSetsService.getApiGatewayIssuableVaccines());
+                throwExceptionIfIssuableIsViolated(true, issuableVaccine.getIssuable());
+                break;
+            }
+            case ApiGateway: {
                 // the source requires switzerland
                 if (!isCountryCH) {
                     throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
