@@ -41,14 +41,14 @@ public class RecoveryCertificateDataDto {
             case ApiGateway: {
                 // the source requires switzerland
                 if (!isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+                    throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
                 }
                 break;
             }
             case ApiPlatform: {
                 // this source requires foreign countries
                 if (isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+                    throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
                 }
                 break;
             }
