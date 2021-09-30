@@ -35,7 +35,8 @@ public class RecoveryCertificateCreateDto extends CertificateCreateDto {
         if (recoveryInfo == null || recoveryInfo.isEmpty()) {
             throw new CreateCertificateException(NO_RECOVERY_DATA);
         } else {
-            recoveryInfo.forEach(RecoveryCertificateDataDto::validate);
+            recoveryInfo.forEach(
+                    recoveryCertificateDataDto -> recoveryCertificateDataDto.validate(this.getSystemSource()));
         }
     }
 }

@@ -7,7 +7,10 @@ import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.Issuable;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
@@ -20,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_VACCINATION;
@@ -31,39 +33,14 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_O
 @Slf4j
 @RequiredArgsConstructor
 public class CovidCertificateDtoMapperService {
+
     private final String SWITZERLAND = "CH";
+
     private final ValueSetsService valueSetsService;
 
-    public void validate(RecoveryCertificateCreateDto createDto) {
-        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getRecoveryInfo().get(0).getCountryOfTest());
-        final boolean isCountryCH = SWITZERLAND.equalsIgnoreCase(countryCodeEn.getShortName());
-        switch (createDto.getSystemSource()) {
-            case WebUI:{
-                break;
-            }
-            case CsvUpload:
-            case ApiGateway:{
-                // the source requires switzerland
-                if (!isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
-                }
-                break;
-            }
-            case ApiPlatform: {
-                // this source requires foreign countries
-                if (isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
-                }
-                break;
-            }
-            default:
-                throw new IllegalStateException("Attribute systemSource is invalid. Check Request implementation and/or Dto Validation. ");
-        }
-    }
-
     public void validate(VaccinationCertificateCreateDto createDto) {
-        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
-        final boolean isCountryCH = SWITZERLAND.equalsIgnoreCase(countryCodeEn.getShortName());
+        final boolean isCountryCH = SWITZERLAND.equalsIgnoreCase(
+                createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
         final String productCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
         switch (createDto.getSystemSource()) {
             case WebUI:{
@@ -73,7 +50,6 @@ public class CovidCertificateDtoMapperService {
             }
             case CsvUpload:
             case ApiGateway:{
-                retrieveProduct(productCode, valueSetsService.getApiGatewayIssuableVaccines());
                 // the source requires switzerland
                 if (!isCountryCH) {
                     throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
@@ -81,7 +57,6 @@ public class CovidCertificateDtoMapperService {
                 break;
             }
             case ApiPlatform: {
-                retrieveProduct(productCode, valueSetsService.getApiPlatformIssuableVaccines());
                 // this source requires foreign countries
                 if (isCountryCH) {
                     throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
