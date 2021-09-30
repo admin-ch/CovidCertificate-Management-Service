@@ -10,7 +10,6 @@ import lombok.ToString;
 import java.time.LocalDate;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_VACCINATION;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT;
 
 @Getter
@@ -19,7 +18,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_FIRST_
 @AllArgsConstructor
 public class RecoveryCertificateDataDto {
 
-    private final String SWITZERLAND = "CH";
+    private static final String SWITZERLAND = "CH";
 
     private LocalDate dateOfFirstPositiveTestResult;
 
@@ -53,8 +52,7 @@ public class RecoveryCertificateDataDto {
                 break;
             }
             default:
-                throw new IllegalStateException(
-                        "Attribute systemSource is invalid. Check Request implementation and/or Dto Validation. ");
+                throw new IllegalStateException("Attribute systemSource is invalid. Check Request implementation and/or Dto Validation.");
         }
     }
 }

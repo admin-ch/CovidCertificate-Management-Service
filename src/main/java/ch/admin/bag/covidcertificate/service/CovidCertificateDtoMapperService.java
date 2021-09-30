@@ -34,14 +34,14 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_O
 @RequiredArgsConstructor
 public class CovidCertificateDtoMapperService {
 
-    private final String SWITZERLAND = "CH";
+    private static final String SWITZERLAND = "CH";
 
     private final ValueSetsService valueSetsService;
 
     public void validate(VaccinationCertificateCreateDto createDto) {
-        final boolean isCountryCH = SWITZERLAND.equalsIgnoreCase(
-                createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
+        final boolean isCountryCH = SWITZERLAND.equalsIgnoreCase(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
         final String productCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
+
         switch (createDto.getSystemSource()) {
             case WebUI:{
                 var issuableVaccine = retrieveProduct(productCode, valueSetsService.getWebUiIssuableVaccines());
@@ -64,7 +64,7 @@ public class CovidCertificateDtoMapperService {
                 break;
             }
             default:
-                throw new IllegalStateException("Attribute systemSource is invalid. Check Request implementation and/or Dto Validation. ");
+                throw new IllegalStateException("Attribute systemSource is invalid. Check Request implementation and/or Dto Validation.");
         }
     }
 
