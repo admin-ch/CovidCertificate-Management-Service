@@ -44,6 +44,7 @@ public class CsvService {
     private final ServletJeapAuthorization jeapAuthorization;
     private final KpiDataService kpiLogService;
     private final ValueSetsService valueSetsService;
+    private final CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
     public CsvResponseDto handleCsvRequest(MultipartFile file, String certificateType) throws IOException {
         CertificateType validCertificateType;
@@ -219,6 +220,8 @@ public class CsvService {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
             valueSetsService.getVaccinationValueSet(dataDto.getMedicinalProductCode());
+
+            covidCertificateVaccinationValidationService.validateProductAndCountry((VaccinationCertificateCreateDto) createDto);
         }
     }
 
