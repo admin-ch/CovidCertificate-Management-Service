@@ -41,7 +41,7 @@ public class CovidCertificateGenerationController {
         log.info("Call of Create for vaccination certificate");
         securityHelper.authorizeUser(request);
         createDto.validate();
-        covidCertificateVaccinationValidationService.validate(createDto);
+        covidCertificateVaccinationValidationService.validateProductAndCountry(createDto);
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
         kpiLogService.logVaccinationCertificateGenerationKpi(createDto, responseDto.getUvci());

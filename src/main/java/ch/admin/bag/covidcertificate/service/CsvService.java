@@ -221,7 +221,7 @@ public class CsvService {
             }
             valueSetsService.getVaccinationValueSet(dataDto.getMedicinalProductCode());
 
-            covidCertificateVaccinationValidationService.validate((VaccinationCertificateCreateDto) createDto);
+            covidCertificateVaccinationValidationService.validateProductAndCountry((VaccinationCertificateCreateDto) createDto);
         }
     }
 

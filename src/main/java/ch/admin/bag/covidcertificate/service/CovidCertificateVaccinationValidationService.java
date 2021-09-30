@@ -22,7 +22,7 @@ public class CovidCertificateVaccinationValidationService {
 
     private final ValueSetsService valueSetsService;
 
-    public void validate(VaccinationCertificateCreateDto createDto) {
+    public void validateProductAndCountry(VaccinationCertificateCreateDto createDto) {
         final boolean isCountryCH = SWITZERLAND.equalsIgnoreCase(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
         final String productCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
 
