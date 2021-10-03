@@ -592,9 +592,9 @@ public class CovidPdfCertificateGenerationService {
     private Image renderQRCode(PdfWriter writer, String content) throws BadElementException {
         PdfContentByte cb = writer.getDirectContent();
 
-        // Create QR code object with error correction level "Q" (25%)
+        // Create QR code object with error correction level "M" (up to 15% damage)
         Map<EncodeHintType, Object> hints = new HashMap<>();
-        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q);
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
         BarcodeQRCode qrCode = new BarcodeQRCode(content, hints);
 
         float widthHeight = 200;
