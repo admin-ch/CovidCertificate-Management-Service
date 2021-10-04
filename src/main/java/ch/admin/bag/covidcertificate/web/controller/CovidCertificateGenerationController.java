@@ -8,6 +8,7 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePd
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
