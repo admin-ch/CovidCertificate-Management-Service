@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.api.request.Issuable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,24 +38,26 @@ class VaccineRepositoryIntegrationTest {
     void findAllActiveAndChIssuable_ok_one_match_of_one() {
         // given
         persistVaccine("EU/1/20/1528",
-                "Comirnaty",
-                true,
-                true,
-                "1119349007",
-                "SARS-CoV-2 mRNA vaccine",
-                true,
-                "ORG-100030215",
-                "Biontech Manufacturing GmbH",
-                true,
-                true);
+                       "Comirnaty",
+                       true,
+                       true,
+                       "1119349007",
+                       "SARS-CoV-2 mRNA vaccine",
+                       true,
+                       "ORG-100030215",
+                       "Biontech Manufacturing GmbH",
+                       true,
+                       false,
+                       true,
+                       false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllApiActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllGatewayApiActive();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
         Vaccine vaccine = result.get(0);
         assertThat(vaccine.isActive()).isTrue();
-        assertThat(vaccine.isChIssuable()).isTrue();
+        assertThat(vaccine.getIssuable()).isEqualTo(Issuable.CH_ONLY);
     }
 
     @Test
@@ -62,51 +65,62 @@ class VaccineRepositoryIntegrationTest {
     void findAllActiveAndChIssuable_ok_no_match_of_four() {
         // given
         persistVaccine("EU/1/20/0001",
-                "Test not active",
-                false,
-                true,
-                "1119349007",
-                "Prophylaxis active",
-                true,
-                "ORG-100030215",
-                "Test company not active",
-                false,
-                true);
+                       "Test not active",
+                       false,
+                       true,
+                       "1119349007",
+                       "Prophylaxis active",
+                       true,
+                       "ORG-100030215",
+                       "Test company not active",
+                       false,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0002",
-                "Test not active",
-                false,
-                true,
-                "1119349007",
-                "Prophylaxis not active",
-                false,
-                "ORG-100030215",
-                "Test company active",
-                true,
-                true);
+                       "Test not active",
+                       false,
+                       true,
+                       "1119349007",
+                       "Prophylaxis not active",
+                       false,
+                       "ORG-100030215",
+                       "Test company active",
+                       true,
+                       false,
+                       true,
+                       false);
+
         persistVaccine("EU/1/20/0003",
-                "Test not active",
-                false,
-                true,
-                "1119349007",
-                "Prophylaxis active",
-                true,
-                "ORG-100030215",
-                "Test company active",
-                true,
-                true);
+                       "Test not active",
+                       false,
+                       true,
+                       "1119349007",
+                       "Prophylaxis active",
+                       true,
+                       "ORG-100030215",
+                       "Test company active",
+                       true,
+                       false,
+                       true,
+                       false);
+
         persistVaccine("EU/1/20/0004",
-                "Test not active",
-                false,
-                true,
-                "1119349007",
-                "Prophylaxis not active",
-                false,
-                "ORG-100030215",
-                "Test company not active",
-                false,
-                true);
+                       "Test not active",
+                       false,
+                       true,
+                       "1119349007",
+                       "Prophylaxis not active",
+                       false,
+                       "ORG-100030215",
+                       "Test company not active",
+                       false,
+                       false,
+                       true,
+                       false);
+
         // when
-        List<Vaccine> result = vaccineRepository.findAllApiActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllGatewayApiActive();
         // then
         assertThat(result).isNotNull().isEmpty();
     }
@@ -116,51 +130,59 @@ class VaccineRepositoryIntegrationTest {
     void findAllActiveAndChIssuable_ok_one_match_of_four() {
         // given
         persistVaccine("EU/1/20/0005",
-                "Test active",
-                true,
-                true,
-                "1119349007",
-                "Prophylaxis active",
-                true,
-                "ORG-100030215",
-                "Test company not active",
-                false,
-                true);
+                       "Test active",
+                       true,
+                       true,
+                       "1119349007",
+                       "Prophylaxis active",
+                       true,
+                       "ORG-100030215",
+                       "Test company not active",
+                       false,
+                       false,
+                       false,
+                       false);
         persistVaccine("EU/1/20/0006",
-                "Test active",
-                true,
-                true,
-                "1119349007",
-                "Prophylaxis not active",
-                false,
-                "ORG-100030215",
-                "Test company active",
-                true,
-                true);
+                       "Test active",
+                       true,
+                       true,
+                       "1119349007",
+                       "Prophylaxis not active",
+                       true,
+                       "ORG-100030215",
+                       "Test company active",
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0007",
-                "Test active",
-                true,
-                true,
-                "1119349007",
-                "Prophylaxis active",
-                true,
-                "ORG-100030215",
-                "Test company active",
-                true,
-                true);
+                       "Test active",
+                       true,
+                       true,
+                       "1119349007",
+                       "Prophylaxis active",
+                       true,
+                       "ORG-100030215",
+                       "Test company active",
+                       false,
+                       false,
+                       false,
+                       false);
         persistVaccine("EU/1/20/0008",
-                "Test active",
-                true,
-                true,
-                "1119349007",
-                "Prophylaxis not active",
-                false,
-                "ORG-100030215",
-                "Test company not active",
-                false,
-                true);
+                       "Test active",
+                       true,
+                       true,
+                       "1119349007",
+                       "Prophylaxis not active",
+                       false,
+                       "ORG-100030215",
+                       "Test company not active",
+                       false,
+                       false,
+                       false,
+                       false);
         // when
-        List<Vaccine> result = vaccineRepository.findAllApiActiveAndChIssuable();
+        List<Vaccine> result = vaccineRepository.findAllGatewayApiActive();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
@@ -175,16 +197,18 @@ class VaccineRepositoryIntegrationTest {
     void findAll_ok_one_match_of_one() {
         // given
         persistVaccine("EU/1/20/1528",
-                "Comirnaty",
-                true,
-                false,
-                "1119349007",
-                "SARS-CoV-2 mRNA vaccine",
-                true,
-                "ORG-100030215",
-                "Biontech Manufacturing GmbH",
-                true,
-                true);
+                       "Comirnaty",
+                       true,
+                       false,
+                       "1119349007",
+                       "SARS-CoV-2 mRNA vaccine",
+                       true,
+                       "ORG-100030215",
+                       "Biontech Manufacturing GmbH",
+                       false,
+                       false,
+                       true,
+                       false);
         // when
         List<Vaccine> result = vaccineRepository.findAll();
         // then
@@ -199,49 +223,57 @@ class VaccineRepositoryIntegrationTest {
     void findAll_ok_four_match_of_four() {
         // given
         persistVaccine("EU/1/20/0001",
-                "Test not active 01",
-                false,
-                false,
-                "1119349007",
-                "Prophylaxis active",
-                true,
-                "ORG-100030215",
-                "Test company not active",
-                false,
-                true);
+                       "Test not active 01",
+                       false,
+                       false,
+                       "1119349007",
+                       "Prophylaxis active",
+                       true,
+                       "ORG-100030215",
+                       "Test company not active",
+                       false,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0002",
-                "Test not active 02",
-                false,
-                false,
-                "1119349007",
-                "Prophylaxis not active",
-                false,
-                "ORG-100030215",
-                "Test company active",
-                true,
-                true);
+                       "Test not active 02",
+                       false,
+                       false,
+                       "1119349007",
+                       "Prophylaxis not active",
+                       false,
+                       "ORG-100030215",
+                       "Test company active",
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0003",
-                "Test not active 03",
-                false,
-                false,
-                "1119349007",
-                "Prophylaxis active",
-                true,
-                "ORG-100030215",
-                "Test company active",
-                true,
-                true);
+                       "Test not active 03",
+                       false,
+                       false,
+                       "1119349007",
+                       "Prophylaxis active",
+                       true,
+                       "ORG-100030215",
+                       "Test company active",
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0004",
-                "Test not active 04",
-                false,
-                false,
-                "1119349007",
-                "Prophylaxis not active",
-                false,
-                "ORG-100030215",
-                "Test company not active",
-                false,
-                true);
+                       "Test not active 04",
+                       false,
+                       false,
+                       "1119349007",
+                       "Prophylaxis not active",
+                       false,
+                       "ORG-100030215",
+                       "Test company not active",
+                       false,
+                       false,
+                       true,
+                       false);
         // when
         List<Vaccine> result = vaccineRepository.findAll();
         // then
@@ -273,49 +305,57 @@ class VaccineRepositoryIntegrationTest {
     void findAll_ok_four_matches_of_four() {
         // given
         persistVaccine("EU/1/20/0005",
-                "Test active 05",
-                true,
-                false,
-                "1119349007",
-                "Prophylaxis active",
-                true,
-                "ORG-100030215",
-                "Test company not active",
-                false,
-                true);
+                       "Test active 05",
+                       true,
+                       false,
+                       "1119349007",
+                       "Prophylaxis active",
+                       true,
+                       "ORG-100030215",
+                       "Test company not active",
+                       false,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0006",
-                "Test active 06",
-                true,
-                false,
-                "1119349007",
-                "Prophylaxis not active",
-                false,
-                "ORG-100030215",
-                "Test company active",
-                true,
-                true);
+                       "Test active 06",
+                       true,
+                       false,
+                       "1119349007",
+                       "Prophylaxis not active",
+                       false,
+                       "ORG-100030215",
+                       "Test company active",
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0007",
-                "Test active 07",
-                true,
-                false,
-                "1119349007",
-                "Prophylaxis active",
-                true,
-                "ORG-100030215",
-                "Test company active",
-                true,
-                true);
+                       "Test active 07",
+                       true,
+                       false,
+                       "1119349007",
+                       "Prophylaxis active",
+                       true,
+                       "ORG-100030215",
+                       "Test company active",
+                       true,
+                       false,
+                       true,
+                       false);
         persistVaccine("EU/1/20/0008",
-                "Test active 08",
-                true,
-                false,
-                "1119349007",
-                "Prophylaxis not active",
-                false,
-                "ORG-100030215",
-                "Test company not active",
-                false,
-                true);
+                       "Test active 08",
+                       true,
+                       false,
+                       "1119349007",
+                       "Prophylaxis not active",
+                       false,
+                       "ORG-100030215",
+                       "Test company not active",
+                       false,
+                       false,
+                       true,
+                       false);
         // when
         List<Vaccine> result = vaccineRepository.findAll();
         // then
@@ -353,14 +393,19 @@ class VaccineRepositoryIntegrationTest {
             String authHolderCode,
             String authHolderDisplayName,
             boolean authHolderActive,
-            boolean swissMedic) {
+            boolean webUiSelectable,
+            boolean apiGatewaySelectable,
+            boolean apiPlatformSelectable) {
 
         Vaccine vaccine = new Vaccine(
                 code,
                 display,
                 active,
                 chIssuable,
-                swissMedic);
+                Issuable.CH_ONLY,
+                webUiSelectable,
+                apiGatewaySelectable,
+                apiPlatformSelectable);
         Prophylaxis prophylaxis = new Prophylaxis(
                 prophylaxisCode,
                 prophylaxisDisplayName,

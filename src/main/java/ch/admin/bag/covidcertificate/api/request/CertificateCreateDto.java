@@ -23,12 +23,14 @@ public abstract class CertificateCreateDto {
     private CovidCertificateAddressDto address;
     @JsonDeserialize(using = StringNotEmptyToUppercaseElseNullDeserializer.class)
     private String appCode;
+    private SystemSource systemSource;
 
-    protected CertificateCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String appCode) {
+    protected CertificateCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String appCode, SystemSource systemSource) {
         this.personData = personData;
         this.language = language;
         this.address = address;
         this.appCode = StringUtils.hasText(appCode) ? StringUtils.trimAllWhitespace(appCode).toUpperCase() : null;
+        this.systemSource = systemSource;
     }
 
     public boolean sendToPrint() {
@@ -40,6 +42,9 @@ public abstract class CertificateCreateDto {
     }
 
     public void validate() {
+        if (systemSource == null) {
+            throw new IllegalStateException("mandatory attribute systemSource is missing. Check Request implementation.");
+        }
         if (personData == null) {
             throw new CreateCertificateException(NO_PERSON_DATA);
         } else {

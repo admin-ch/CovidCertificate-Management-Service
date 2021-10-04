@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.api.request.Issuable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,13 +31,27 @@ public class Vaccine {
 
     private boolean active;
 
+    /**
+     * This attribute is a simple boolean based on it's database value
+     *
+     * @deprecated This attribute is legacy and should be replaced by issuable.
+     * <p> Use {@link Vaccine#issuable} instead.
+     */
+    @Deprecated(since = "2.5.8")
     private boolean chIssuable;
 
-    private boolean swissMedic;
+    /**
+     * This attribute tells us if a vaccine is issuable in CH_ONLY,
+     * CH_AND_ABROAD or ABROAD_ONLY and it is based on its stored enum value
+     * in the database.
+     */
+    private Issuable issuable;
 
-    private boolean emea;
+    private boolean webUiSelectable;
 
-    private boolean whoEul;
+    private boolean apiGatewaySelectable;
+
+    private boolean apiPlatformSelectable;
 
     private LocalDateTime modifiedAt;
 
@@ -55,13 +70,19 @@ public class Vaccine {
             String display,
             boolean active,
             boolean chIssuable,
-            boolean swissMedic
+            Issuable issuable,
+            boolean webUiSelectable,
+            boolean apiGatewaySelectable,
+            boolean apiPlatformSelectable
     ) {
 
         this.code = code;
         this.display = display;
         this.active = active;
         this.chIssuable = chIssuable;
-        this.swissMedic = swissMedic;
+        this.issuable = issuable;
+        this.webUiSelectable = webUiSelectable;
+        this.apiGatewaySelectable = apiGatewaySelectable;
+        this.apiPlatformSelectable = apiPlatformSelectable;
     }
 }

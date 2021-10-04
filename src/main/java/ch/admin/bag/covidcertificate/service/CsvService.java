@@ -45,7 +45,14 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CERTIFICATE_TYPE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_VACCINATION;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CREATE_REQUESTS;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV_SIZE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.WRITING_RETURN_CSV_FAILED;
 
 @Service
 @Slf4j
@@ -59,6 +66,7 @@ public class CsvService {
     private final CovidCertificateGenerationService covidCertificateGenerationService;
     private final KpiDataService kpiLogService;
     private final ValueSetsService valueSetsService;
+    private final CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
     public CsvResponseDto handleCsvRequest(MultipartFile file, String certificateType) throws IOException {
         CertificateType validCertificateType;
@@ -119,7 +127,7 @@ public class CsvService {
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logCertificateGenerationKpi(KPI_TYPE_RECOVERY, responseDto.getUvci());
+            kpiLogService.logRecoveryCertificateGenerationKpi(createDto, responseDto.getUvci());
         }
         return responseDtos;
     }
@@ -143,7 +151,7 @@ public class CsvService {
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logCertificateGenerationKpi(KPI_TYPE_VACCINATION, responseDto.getUvci());
+            kpiLogService.logVaccinationCertificateGenerationKpi(createDto, responseDto.getUvci());
         }
         return responseDtos;
     }
@@ -235,6 +243,8 @@ public class CsvService {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
             valueSetsService.getVaccinationValueSet(dataDto.getMedicinalProductCode());
+
+            covidCertificateVaccinationValidationService.validateProductAndCountry((VaccinationCertificateCreateDto) createDto);
         }
     }
 

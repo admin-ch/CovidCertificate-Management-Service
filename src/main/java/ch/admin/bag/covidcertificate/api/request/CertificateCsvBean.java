@@ -1,7 +1,6 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.util.DateHelper;
 import ch.admin.bag.covidcertificate.util.LuhnChecksum;
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;
@@ -12,7 +11,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ADDRESS;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_APP_CODE_CHECKSUM;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_APP_CODE_LENGTH;
 
 @Getter
 @ToString
@@ -53,7 +54,8 @@ public abstract class CertificateCsvBean {
                 List.of(dataDto),
                 getLanguage().trim().toLowerCase(),
                 mapToAddressDto(),
-                validateAppDeliveryCode()
+                validateAppDeliveryCode(),
+                SystemSource.CsvUpload
         );
     }
 
@@ -63,7 +65,8 @@ public abstract class CertificateCsvBean {
                 List.of(dataDto),
                 getLanguage().trim().toLowerCase(),
                 mapToAddressDto(),
-                validateAppDeliveryCode()
+                validateAppDeliveryCode(),
+                SystemSource.CsvUpload
         );
     }
 
@@ -73,7 +76,8 @@ public abstract class CertificateCsvBean {
                 List.of(dataDto),
                 getLanguage().trim().toLowerCase(),
                 mapToAddressDto(),
-                validateAppDeliveryCode()
+                validateAppDeliveryCode(),
+                SystemSource.CsvUpload
         );
     }
 
