@@ -1,13 +1,25 @@
 package ch.admin.bag.covidcertificate.service.document;
 
-import ch.admin.bag.covidcertificate.api.mapper.*;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
-import ch.admin.bag.covidcertificate.service.domain.*;
+import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +33,9 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static ch.admin.bag.covidcertificate.TestModelProvider.*;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,13 +65,20 @@ class CovidPdfCertificateGenerationServiceTest {
 
 
     private void generateDocument_vaccine(VaccinationCertificateCreateDto createDto, String language, String familyName, String givenName, String fileName) throws Exception {
-        IssuableVaccineDto vaccineDto = new IssuableVaccineDto("EU/1/20/1528", "Comirnaty", "1119349007", "SARS-CoV-2 mRNA vaccine", "ORG-100030215", "Biontech Manufacturing GmbH");
+        IssuableVaccineDto vaccineDto = new IssuableVaccineDto("EU/1/20/1528", "Comirnaty", "1119349007",
+                                                               "SARS-CoV-2 mRNA vaccine", "ORG-100030215",
+                                                               "Biontech Manufacturing GmbH", Issuable.CH_ONLY);
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
         String country = "Schweiz";
 
-        VaccinationCertificateQrCode qrCodeData = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccineDto);
-        VaccinationCertificatePdf pdfData = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(createDto, vaccineDto, qrCodeData, country, countryEn);
+        VaccinationCertificateQrCode qrCodeData = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(
+                createDto, vaccineDto);
+        VaccinationCertificatePdf pdfData = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(createDto,
+                                                                                                        vaccineDto,
+                                                                                                        qrCodeData,
+                                                                                                        country,
+                                                                                                        countryEn);
 
         doTest(pdfData, fileName, language);
 

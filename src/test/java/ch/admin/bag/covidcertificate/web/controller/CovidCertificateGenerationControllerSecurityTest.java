@@ -11,6 +11,7 @@ import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfigurati
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import ch.admin.bag.covidcertificate.testutil.JwtTestUtil;
 import ch.admin.bag.covidcertificate.testutil.KeyPairTestUtil;
@@ -54,6 +55,8 @@ class CovidCertificateGenerationControllerSecurityTest {
     private ServletJeapAuthorization jeapAuthorization;
     @MockBean
     private KpiDataService kpiDataService;
+    @MockBean
+    private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
     @Autowired
     private MockMvc mockMvc;
 
