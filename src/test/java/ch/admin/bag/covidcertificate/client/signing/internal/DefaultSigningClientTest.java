@@ -9,20 +9,29 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.Objects;
-import java.util.StringJoiner;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultSigningClientTest {
@@ -95,10 +104,11 @@ class DefaultSigningClientTest {
     @Test
     void throwsExceptionIfRequestThrowsException() {
         var exception = fixture.create(RestClientException.class);
+        var signingInformation = fixture.create(SigningInformation.class);
+        var cosePayload = fixture.create(byte[].class);
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenThrow(exception);
 
-        var cosePayload = fixture.create(byte[].class);
-        var actual = assertThrows(RestClientException.class, () -> signingClient.create(cosePayload, fixture.create(SigningInformation.class)));
+        var actual = assertThrows(RestClientException.class, () -> signingClient.create(cosePayload, signingInformation));
 
         assertEquals(exception, actual);
     }
