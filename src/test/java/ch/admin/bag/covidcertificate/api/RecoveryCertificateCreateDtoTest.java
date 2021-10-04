@@ -5,6 +5,7 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import org.junit.Test;
 
 import java.util.List;
@@ -26,7 +27,8 @@ public class RecoveryCertificateCreateDtoTest {
                 null,
                 language,
                 TestModelProvider.getCovidCertificateAddressDto(),
-                null
+                null,
+                SystemSource.WebUI
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_RECOVERY_DATA, exception.getError());
@@ -36,7 +38,8 @@ public class RecoveryCertificateCreateDtoTest {
                 List.of(),
                 language,
                 TestModelProvider.getCovidCertificateAddressDto(),
-                null
+                null,
+                SystemSource.WebUI
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
         assertEquals(NO_RECOVERY_DATA, exception.getError());
@@ -46,7 +49,8 @@ public class RecoveryCertificateCreateDtoTest {
                 List.of(dataDto),
                 language,
                 TestModelProvider.getCovidCertificateAddressDto(),
-                null
+                null,
+                SystemSource.WebUI
         );
         assertDoesNotThrow(testee::validate);
     }

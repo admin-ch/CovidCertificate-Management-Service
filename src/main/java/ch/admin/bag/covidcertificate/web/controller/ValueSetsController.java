@@ -63,10 +63,28 @@ public class ValueSetsController {
 
     @GetMapping("/issuable-vaccines")
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<IssuableVaccineDto> getIssuableVaccines(HttpServletRequest request) {
-        log.info("Call of getIssuableVaccines for value sets");
+    public List<IssuableVaccineDto> getApiIssuableVaccines(HttpServletRequest request) {
+        log.info("Call of getApiIssuableVaccines for value sets");
         securityHelper.authorizeUser(request);
 
-        return valueSetsService.getIssuableVaccines();
+        return valueSetsService.getApiGatewayIssuableVaccines();
+    }
+
+    @GetMapping("/api-platform-issuable-vaccines")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public List<IssuableVaccineDto> getApiPlatformIssuableVaccines(HttpServletRequest request) {
+        log.info("Call of getApiPlatformIssuableVaccines for value sets");
+        securityHelper.authorizeUser(request);
+
+        return valueSetsService.getApiPlatformIssuableVaccines();
+    }
+
+    @GetMapping("/web-ui-issuable-vaccines")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public List<IssuableVaccineDto> getWebUiIssuableVaccines(HttpServletRequest request) {
+        log.info("Call of getWebUiIssuableVaccines for value sets");
+        securityHelper.authorizeUser(request);
+
+        return valueSetsService.getWebUiIssuableVaccines();
     }
 }

@@ -47,7 +47,9 @@ public class ValueSetsService {
     private static final String ISSUABLE_VACCINE_DTO_CACHE_NAME = "issuableVaccineDto";
     private static final String ISSUABLE_TEST_DTO_CACHE_NAME = "issuableTestDto";
     private static final String VACCINE_CACHE_NAME = "vaccines";
-    private static final String ISSUABLE_VACCINE_CACHE_NAME = "issuableVaccines";
+    private static final String API_GATEWAY_ISSUABLE_VACCINE_CACHE_NAME = "apiGatewayIssuableVaccines";
+    private static final String WEB_UI_ISSUABLE_VACCINE_CACHE_NAME = "webUiIssuableVaccines";
+    private static final String API_PLATFORM_ISSUABLE_VACCINE_CACHE_NAME = "apiPlatformIssuableVaccines";
     private static final String RAPID_TEST_CACHE_NAME = "rapidTests";
     private static final String ISSUABLE_TEST_CACHE_NAME = "issuableTests";
 
@@ -58,17 +60,17 @@ public class ValueSetsService {
     @Cacheable(VALUE_SETS_CACHE_NAME)
     public ValueSetsDto getValueSets() {
         var countryCodes = countryCodesLoader.getCountryCodes();
-        return new ValueSetsDto(countryCodes, this.getIssuableVaccines(), this.getIssuableRapidTests());
+        return new ValueSetsDto(countryCodes, this.getWebUiIssuableVaccines(), this.getIssuableRapidTests());
     }
 
     @Cacheable(ISSUABLE_VACCINE_DTO_CACHE_NAME)
     public IssuableVaccineDto getVaccinationValueSet(String productCode) {
         var vaccinationValueSet = this.getValueSets()
-                .getVaccinationSets()
-                .stream()
-                .filter(valueSet -> valueSet.getProductCode().equals(productCode))
-                .findFirst()
-                .orElse(null);
+                                      .getVaccinationSets()
+                                      .stream()
+                                      .filter(valueSet -> valueSet.getProductCode().equals(productCode))
+                                      .findFirst()
+                                      .orElse(null);
         if (vaccinationValueSet == null) {
             throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
         }
@@ -167,13 +169,27 @@ public class ValueSetsService {
     public List<VaccineDto> getVaccines() {
         log.info("Loading vaccines");
         List<Vaccine> vaccines = this.vaccineRepository.findAll();
-        return VaccineMapper.fromVaccines(vaccines);
+        return VaccineMapper.uniqueVaccines(vaccines);
     }
 
-    @Cacheable(ISSUABLE_VACCINE_CACHE_NAME)
-    public List<IssuableVaccineDto> getIssuableVaccines() {
-        log.info("Loading issuable vaccines");
-        List<Vaccine> vaccines = this.vaccineRepository.findAllActiveAndChIssuable();
+    @Cacheable(API_GATEWAY_ISSUABLE_VACCINE_CACHE_NAME)
+    public List<IssuableVaccineDto> getApiGatewayIssuableVaccines() {
+        log.info("Loading api gateway issuable vaccines");
+        List<Vaccine> vaccines = this.vaccineRepository.findAllGatewayApiActive();
+        return IssuableVaccineMapper.fromVaccines(vaccines);
+    }
+
+    @Cacheable(WEB_UI_ISSUABLE_VACCINE_CACHE_NAME)
+    public List<IssuableVaccineDto> getWebUiIssuableVaccines() {
+        log.info("Loading web ui issuable vaccines");
+        List<Vaccine> vaccines = this.vaccineRepository.findAllWebUiActive();
+        return IssuableVaccineMapper.fromVaccines(vaccines);
+    }
+
+    @Cacheable(API_PLATFORM_ISSUABLE_VACCINE_CACHE_NAME)
+    public List<IssuableVaccineDto> getApiPlatformIssuableVaccines() {
+        log.info("Loading platform api issuable vaccines");
+        List<Vaccine> vaccines = this.vaccineRepository.findAllPlatformApiActive();
         return IssuableVaccineMapper.fromVaccines(vaccines);
     }
 
@@ -196,9 +212,15 @@ public class ValueSetsService {
     }
 
     @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
-    @CacheEvict(value = ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
-    public void cleanIssuableVaccinesCache() {
-        log.info("Cleaning cache of issuable vaccines");
+    @CacheEvict(value = API_GATEWAY_ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
+    public void cleanApiIssuableVaccinesCache() {
+        log.info("Cleaning cache of api issuable vaccines");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = WEB_UI_ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
+    public void cleanWebIssuableVaccinesCache() {
+        log.info("Cleaning cache of web issuable vaccines");
     }
 
     @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")

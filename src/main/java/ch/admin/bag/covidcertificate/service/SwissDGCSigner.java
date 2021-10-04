@@ -1,19 +1,26 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import lombok.Builder;
+import org.springframework.stereotype.Service;
 import se.digg.dgc.signatures.DGCSigner;
 
 import java.time.Instant;
 
 @Builder
+@Service
 public class SwissDGCSigner implements DGCSigner {
 
     private final COSEService coseService;
 
+    public byte[] sign(byte[] dgcCBOR, Instant expiration, SigningInformation signingInformation) {
+        return coseService.getCOSESign1(dgcCBOR, signingInformation);
+    }
+
     // Parameter expiration is not used! We have to support it because of the interface signature.
     @Override
     public byte[] sign(byte[] dgcCBOR, Instant expiration) {
-        return coseService.getCOSESign1(dgcCBOR);
+        return coseService.getCOSESign1(dgcCBOR, null);
     }
 
     @Override

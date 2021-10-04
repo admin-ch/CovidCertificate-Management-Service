@@ -1,6 +1,8 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,19 +26,21 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BarcodeServiceTest {
     @Mock
-    private DGCBarcodeEncoder dgcBarcodeEncoder;
+    private SwissDGCBarcodeEncoder dgcBarcodeEncoder;
 
     @InjectMocks
     private BarcodeService barcodeService;
+
+    private final JFixture fixture = new JFixture();
 
     @Test
     void whenCreateBarcode_thenOk() throws Exception {
         // given
         Barcode barcode = getBarcode();
-        when(dgcBarcodeEncoder.encodeToBarcode(any(byte[].class), any(Instant.class)))
+        when(dgcBarcodeEncoder.encodeToBarcode(any(byte[].class), any(Instant.class), any()))
                 .thenReturn(barcode);
         // when
-        Barcode result = barcodeService.createBarcode("{\"hello\": \"world\"}");
+        Barcode result = barcodeService.createBarcode("{\"hello\": \"world\"}", fixture.create(SigningInformation.class));
         // then
         assertEquals(barcode, result);
     }
@@ -44,22 +48,22 @@ class BarcodeServiceTest {
     @Test
     void givenCreateCertificateExceptionIsThrown_whenCreateBarcode_thenThrowsThisException() throws Exception {
         // given
-        when(dgcBarcodeEncoder.encodeToBarcode(any(byte[].class), any(Instant.class)))
+        when(dgcBarcodeEncoder.encodeToBarcode(any(byte[].class), any(Instant.class), any(SigningInformation.class)))
                 .thenThrow(new CreateCertificateException(CREATE_SIGNATURE_FAILED));
         // when then
         CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                () -> barcodeService.createBarcode("{\"hello\": \"world\"}"));
+                () -> barcodeService.createBarcode("{\"hello\": \"world\"}", fixture.create(SigningInformation.class)));
         assertEquals(CREATE_SIGNATURE_FAILED, exception.getError());
     }
 
     @Test
     void givenExceptionIsThrown_whenCreateBarcode_thenThrowsBarcodeError() throws Exception {
         // given
-        when(dgcBarcodeEncoder.encodeToBarcode(any(byte[].class), any(Instant.class)))
+        when(dgcBarcodeEncoder.encodeToBarcode(any(byte[].class), any(Instant.class), any()))
                 .thenThrow(IOException.class);
         // when then
         CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                () -> barcodeService.createBarcode("{\"hello\": \"world\"}"));
+                () -> barcodeService.createBarcode("{\"hello\": \"world\"}", fixture.create(SigningInformation.class)));
         assertEquals(CREATE_BARCODE_FAILED, exception.getError());
     }
 

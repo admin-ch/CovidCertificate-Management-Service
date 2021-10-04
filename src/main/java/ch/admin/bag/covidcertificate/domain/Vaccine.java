@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.api.request.Issuable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,38 +23,66 @@ public class Vaccine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    UUID id;
+    private UUID id;
 
-    String code;
+    private String code;
 
-    String display;
+    private String display;
 
-    boolean active;
+    private boolean active;
 
-    boolean chIssuable;
+    /**
+     * This attribute is a simple boolean based on it's database value
+     *
+     * @deprecated This attribute is legacy and should be replaced by issuable.
+     * <p> Use {@link Vaccine#issuable} instead.
+     */
+    @Deprecated(since = "2.5.8")
+    private boolean chIssuable;
 
-    LocalDateTime modifiedAt;
+    /**
+     * This attribute tells us if a vaccine is issuable in CH_ONLY,
+     * CH_AND_ABROAD or ABROAD_ONLY and it is based on its stored enum value
+     * in the database.
+     */
+    private Issuable issuable;
+
+    private boolean webUiSelectable;
+
+    private boolean apiGatewaySelectable;
+
+    private boolean apiPlatformSelectable;
+
+    private LocalDateTime modifiedAt;
 
     @ManyToOne
     @JoinColumn(name = "auth_holder")
     @Setter
-    AuthHolder authHolder;
+    private AuthHolder authHolder;
 
     @ManyToOne
     @Setter
     @JoinColumn(name = "prophylaxis")
-    Prophylaxis prophylaxis;
+    private Prophylaxis prophylaxis;
 
     public Vaccine(
             String code,
             String display,
             boolean active,
-            boolean chIssuable
+            boolean chIssuable,
+            Issuable issuable,
+            boolean webUiSelectable,
+            boolean apiGatewaySelectable,
+            boolean apiPlatformSelectable
     ) {
 
         this.code = code;
         this.display = display;
         this.active = active;
         this.chIssuable = chIssuable;
+        this.issuable = issuable;
+        this.webUiSelectable = webUiSelectable;
+        this.apiGatewaySelectable = apiGatewaySelectable;
+        this.apiPlatformSelectable = apiPlatformSelectable;
     }
 }

@@ -61,12 +61,14 @@ class CovidCertificateGenerationServiceTest {
     private PrintQueueClient printQueueClient;
     @Mock
     private InAppDeliveryClient inAppDeliveryClient;
+    @Mock
+    private SigningInformationService signingInformationService;
 
     private final JFixture fixture = new JFixture();
 
     @BeforeEach
     public void setUp() throws IOException {
-        lenient().when(barcodeService.createBarcode(any())).thenReturn(fixture.create(Barcode.class));
+        lenient().when(barcodeService.createBarcode(any(), any())).thenReturn(fixture.create(Barcode.class));
         lenient().when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(fixture.create(byte[].class));
 
         lenient().when(covidCertificateDtoMapperService.toVaccinationCertificateQrCode(any())).thenReturn(fixture.create(VaccinationCertificateQrCode.class));
@@ -84,7 +86,7 @@ class CovidCertificateGenerationServiceTest {
     @Nested
     class GenerateVaccinationFromExistingCovidCertificate {
         @Test
-        void shouldMapDtoToVaccinationCertificatePdf() throws BarcodeException {
+        void shouldMapDtoToVaccinationCertificatePdf() {
             var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
             service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
             verify(covidCertificatePdfGenerateRequestDtoMapperService).toVaccinationCertificatePdf(pdfGenerateRequestDto);
@@ -104,7 +106,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldCreatePdf_withCorrectPdfData() throws BarcodeException {
+        void shouldCreatePdf_withCorrectPdfData() {
             var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
             var vaccinationPdf = fixture.create(VaccinationCertificatePdf.class);
             when(covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationCertificatePdf(any())).thenReturn(vaccinationPdf);
@@ -125,7 +127,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldCreatePdf_withCorrectIssuedAt() throws BarcodeException {
+        void shouldCreatePdf_withCorrectIssuedAt() {
             var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
             var issuedAt = getLocalDateTimeFromEpochMillis(pdfGenerateRequestDto.getIssuedAt());
 
@@ -145,7 +147,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldReturnPdf() throws IOException, BarcodeException {
+        void shouldReturnPdf() {
             var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
             var pdf = fixture.create(byte[].class);
             when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
@@ -156,7 +158,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldUVCI() throws IOException, BarcodeException {
+        void shouldUVCI() {
             var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
             var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
 
@@ -167,7 +169,7 @@ class CovidCertificateGenerationServiceTest {
     @Nested
     class GenerateTestFromExistingCovidCertificate {
         @Test
-        void shouldMapDtoToTestCertificatePdf() throws BarcodeException {
+        void shouldMapDtoToTestCertificatePdf() {
             var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
             service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
             verify(covidCertificatePdfGenerateRequestDtoMapperService).toTestCertificatePdf(pdfGenerateRequestDto);
@@ -187,7 +189,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldCreatePdf_withCorrectPdfData() throws BarcodeException {
+        void shouldCreatePdf_withCorrectPdfData() {
             var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
             var testPdf = fixture.create(TestCertificatePdf.class);
             when(covidCertificatePdfGenerateRequestDtoMapperService.toTestCertificatePdf(any())).thenReturn(testPdf);
@@ -208,7 +210,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldCreatePdf_withCorrectIssuedAt() throws BarcodeException {
+        void shouldCreatePdf_withCorrectIssuedAt() {
             var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
             var issuedAt = getLocalDateTimeFromEpochMillis(pdfGenerateRequestDto.getIssuedAt());
 
@@ -228,7 +230,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldReturnPdf() throws IOException, BarcodeException {
+        void shouldReturnPdf() {
             var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
             var pdf = fixture.create(byte[].class);
             when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
@@ -239,7 +241,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldUVCI() throws IOException, BarcodeException {
+        void shouldUVCI() {
             var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
             var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
 
@@ -250,7 +252,7 @@ class CovidCertificateGenerationServiceTest {
     @Nested
     class GenerateRecoveryFromExistingCovidCertificate {
         @Test
-        void shouldMapDtoToRecoveryCertificatePdf() throws BarcodeException {
+        void shouldMapDtoToRecoveryCertificatePdf() {
             var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
             service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
             verify(covidCertificatePdfGenerateRequestDtoMapperService).toRecoveryCertificatePdf(pdfGenerateRequestDto);
@@ -270,7 +272,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldCreatePdf_withCorrectPdfData() throws BarcodeException {
+        void shouldCreatePdf_withCorrectPdfData() {
             var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
             var recoveryPdf = fixture.create(RecoveryCertificatePdf.class);
             when(covidCertificatePdfGenerateRequestDtoMapperService.toRecoveryCertificatePdf(any())).thenReturn(recoveryPdf);
@@ -291,7 +293,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldCreatePdf_withCorrectIssuedAt() throws BarcodeException {
+        void shouldCreatePdf_withCorrectIssuedAt() {
             var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
             var issuedAt = getLocalDateTimeFromEpochMillis(pdfGenerateRequestDto.getIssuedAt());
 
@@ -301,7 +303,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldReturnBarcode() throws IOException, BarcodeException {
+        void shouldReturnBarcode() throws BarcodeException {
             var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
             var barcode = new DefaultBarcodeCreator().create(pdfGenerateRequestDto.getHcert(), StandardCharsets.US_ASCII);
 
@@ -311,7 +313,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldReturnPdf() throws IOException, BarcodeException {
+        void shouldReturnPdf() {
             var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
             var pdf = fixture.create(byte[].class);
             when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
@@ -322,7 +324,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldUVCI() throws IOException, BarcodeException {
+        void shouldUVCI() {
             var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
             var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
 
@@ -382,7 +384,7 @@ class CovidCertificateGenerationServiceTest {
 
             service.generateCovidCertificate(createDto);
 
-            verify(barcodeService).createBarcode(contents);
+            verify(barcodeService).createBarcode(eq(contents), any());
         }
 
         @Test
@@ -392,7 +394,7 @@ class CovidCertificateGenerationServiceTest {
             var barcode = fixture.create(Barcode.class);
             var now = LocalDateTime.now();
             when(covidCertificateDtoMapperService.toVaccinationCertificatePdf(any(), any())).thenReturn(vaccinationPdf);
-            when(barcodeService.createBarcode(any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -406,7 +408,7 @@ class CovidCertificateGenerationServiceTest {
         void shouldReturnBarcode() throws IOException {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var barcode = fixture.create(Barcode.class);
-            when(barcodeService.createBarcode(any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -502,7 +504,7 @@ class CovidCertificateGenerationServiceTest {
 
             service.generateCovidCertificate(createDto);
 
-            verify(barcodeService).createBarcode(contents);
+            verify(barcodeService).createBarcode(eq(contents), any());
         }
 
         @Test
@@ -512,7 +514,7 @@ class CovidCertificateGenerationServiceTest {
             var barcode = fixture.create(Barcode.class);
             var now = LocalDateTime.now();
             when(covidCertificateDtoMapperService.toTestCertificatePdf(any(), any())).thenReturn(TestPdf);
-            when(barcodeService.createBarcode(any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -527,7 +529,7 @@ class CovidCertificateGenerationServiceTest {
         void shouldReturnBarcode() throws IOException {
             var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var barcode = fixture.create(Barcode.class);
-            when(barcodeService.createBarcode(any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -615,7 +617,7 @@ class CovidCertificateGenerationServiceTest {
 
             service.generateCovidCertificate(createDto);
 
-            verify(barcodeService).createBarcode(contents);
+            verify(barcodeService).createBarcode(eq(contents), any());
         }
 
         @Test
@@ -625,7 +627,7 @@ class CovidCertificateGenerationServiceTest {
             var barcode = fixture.create(Barcode.class);
             var now = LocalDateTime.now();
             when(covidCertificateDtoMapperService.toRecoveryCertificatePdf(any(), any())).thenReturn(RecoveryPdf);
-            when(barcodeService.createBarcode(any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -640,7 +642,7 @@ class CovidCertificateGenerationServiceTest {
         void shouldReturnBarcode() throws IOException {
             var createDto = getRecoveryCertificateCreateDto("de");
             var barcode = fixture.create(Barcode.class);
-            when(barcodeService.createBarcode(any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
 
             var actual = service.generateCovidCertificate(createDto);
 

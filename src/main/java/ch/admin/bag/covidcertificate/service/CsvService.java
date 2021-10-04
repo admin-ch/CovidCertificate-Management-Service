@@ -3,11 +3,17 @@ package ch.admin.bag.covidcertificate.service;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvError;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.CertificateType;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
-import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
-import ch.admin.bag.covidcertificate.domain.KpiData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
@@ -18,21 +24,35 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mozilla.universalchardet.UnicodeBOMInputStream;
 import org.mozilla.universalchardet.UniversalDetector;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static net.logstash.logback.argument.StructuredArguments.kv;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CERTIFICATE_TYPE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_VACCINATION;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CREATE_REQUESTS;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV_SIZE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.WRITING_RETURN_CSV_FAILED;
 
 @Service
 @Slf4j
@@ -44,9 +64,9 @@ public class CsvService {
     private static final String PDF_FILE_NAME_PREFIX = "covid-certificate-";
 
     private final CovidCertificateGenerationService covidCertificateGenerationService;
-    private final ServletJeapAuthorization jeapAuthorization;
     private final KpiDataService kpiLogService;
     private final ValueSetsService valueSetsService;
+    private final CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
     public CsvResponseDto handleCsvRequest(MultipartFile file, String certificateType) throws IOException {
         CertificateType validCertificateType;
@@ -68,14 +88,16 @@ public class CsvService {
     }
 
     private byte[] handleCsvRequest(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass) throws IOException {
-        List<CertificateCsvBean> csvBeans = mapToBean(file, csvBeanClass);
+        final var charset = Charset.forName(UniversalDetector.detectCharset(file.getInputStream()));
+        log.debug("Found charset {} for file", charset);
+        List<CertificateCsvBean> csvBeans = mapToBean(file, csvBeanClass, charset);
         checkSize(csvBeans);
         List<CertificateCreateDto> createDtos = mapToCreateDtos(csvBeans);
         if (areCreateCertificateRequestsValid(createDtos, csvBeans)) {
             List<CovidCertificateCreateResponseDto> responseDtos = createCertificates(createDtos, csvBeanClass);
             return zipGeneratedCertificates(getPdfMap(responseDtos));
         } else {
-            return createCsvException(csvBeans);
+            return createCsvException(csvBeans, charset);
         }
     }
 
@@ -91,8 +113,8 @@ public class CsvService {
         }
     }
 
-    private byte[] createCsvException(List<CertificateCsvBean> csvBeans) throws IOException {
-        var returnFile = writeCsv(csvBeans);
+    private byte[] createCsvException(List<CertificateCsvBean> csvBeans, Charset charset) throws IOException {
+        var returnFile = writeCsv(csvBeans, charset);
         byte[] errorCsv = Files.readAllBytes(returnFile.toPath());
         Files.delete(returnFile.toPath());
         throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, errorCsv));
@@ -105,7 +127,7 @@ public class CsvService {
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            logKpi(KPI_TYPE_RECOVERY, responseDto.getUvci());
+            kpiLogService.logRecoveryCertificateGenerationKpi(createDto, responseDto.getUvci());
         }
         return responseDtos;
     }
@@ -117,7 +139,7 @@ public class CsvService {
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            logKpi(KPI_TYPE_TEST, responseDto.getUvci());
+            kpiLogService.logTestCertificateGenerationKpi(createDto, responseDto.getUvci());
         }
         return responseDtos;
     }
@@ -129,15 +151,14 @@ public class CsvService {
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            logKpi(KPI_TYPE_VACCINATION, responseDto.getUvci());
+            kpiLogService.logVaccinationCertificateGenerationKpi(createDto, responseDto.getUvci());
         }
         return responseDtos;
     }
 
-    private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass) throws IOException {
+    private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass, Charset charset) throws IOException {
         var separator = getSeparator(file);
-        var encoding = UniversalDetector.detectCharset(file.getInputStream());
-        try (Reader reader = new BufferedReader(new InputStreamReader(new UnicodeBOMInputStream(file.getInputStream()), Charset.forName(encoding)))) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(new UnicodeBOMInputStream(file.getInputStream()), charset))) {
 
             CsvToBean<CertificateCsvBean> csvToBean = new CsvToBeanBuilder<CertificateCsvBean>(reader)
                     .withSeparator(separator)
@@ -160,7 +181,7 @@ public class CsvService {
             return ',';
         } else if (line.contains("\t") && !line.contains(",") && !line.contains(";")) {
             return '\t';
-        } else if (line.contains(";") && !line.contains(",") && !line.contains("\t")){
+        } else if (line.contains(";") && !line.contains(",") && !line.contains("\t")) {
             return ';';
         } else {
             throw new CreateCertificateException(INVALID_CSV);
@@ -222,13 +243,15 @@ public class CsvService {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
             valueSetsService.getVaccinationValueSet(dataDto.getMedicinalProductCode());
+
+            covidCertificateVaccinationValidationService.validateProductAndCountry((VaccinationCertificateCreateDto) createDto);
         }
     }
 
-    private File writeCsv(List<CertificateCsvBean> certificateCsvBeans) throws IOException {
+    private File writeCsv(List<CertificateCsvBean> certificateCsvBeans, Charset charset) throws IOException {
         var tempId = UUID.randomUUID();
         var file = new File("temp" + tempId + ".csv");
-        try (var csvWriter = new CSVWriter(new FileWriter(file))) {
+        try (var csvWriter = new CSVWriter(new FileWriter(file, charset))) {
             StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(csvWriter)
                     .withSeparator(';')
                     .withApplyQuotesToAll(false)
@@ -277,14 +300,5 @@ public class CsvService {
 
     private void logUvci(String uvci) {
         log.debug("Certificate created with: {}", uvci);
-    }
-
-    private void logKpi(String type, String uvci) {
-        Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
-            var kpiTimestamp = LocalDateTime.now();
-            log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_TYPE_KEY, type), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
-            kpiLogService.log(new KpiData(kpiTimestamp, type, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), uvci));
-        }
     }
 }

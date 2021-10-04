@@ -22,9 +22,10 @@ public class RecoveryCertificateCreateDto extends CertificateCreateDto {
             List<RecoveryCertificateDataDto> recoveryInfo,
             String language,
             CovidCertificateAddressDto address,
-            String inAppDeliveryCode
+            String inAppDeliveryCode,
+            SystemSource systemSource
     ) {
-        super(personData, language, address, inAppDeliveryCode);
+        super(personData, language, address, inAppDeliveryCode, systemSource);
         this.recoveryInfo = recoveryInfo;
     }
 
@@ -34,7 +35,8 @@ public class RecoveryCertificateCreateDto extends CertificateCreateDto {
         if (recoveryInfo == null || recoveryInfo.isEmpty()) {
             throw new CreateCertificateException(NO_RECOVERY_DATA);
         } else {
-            recoveryInfo.forEach(RecoveryCertificateDataDto::validate);
+            recoveryInfo.forEach(
+                    recoveryCertificateDataDto -> recoveryCertificateDataDto.validate(this.getSystemSource()));
         }
     }
 }
