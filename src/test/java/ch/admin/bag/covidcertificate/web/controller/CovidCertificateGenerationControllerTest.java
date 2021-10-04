@@ -11,6 +11,7 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponse
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -33,8 +34,15 @@ import org.springframework.test.web.servlet.MvcResult;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static ch.admin.bag.covidcertificate.FixtureCustomization.*;
-import static ch.admin.bag.covidcertificate.TestModelProvider.*;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCovidCertificateAddressDto;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCovidCertificateCreateResponseDto;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCreateCertificateException;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRecoveryCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccinationCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -55,6 +63,8 @@ class CovidCertificateGenerationControllerTest {
     private ServletJeapAuthorization jeapAuthorization;
     @Mock
     private KpiDataService kpiLogService;
+    @Mock
+    private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
     private MockMvc mockMvc;
 

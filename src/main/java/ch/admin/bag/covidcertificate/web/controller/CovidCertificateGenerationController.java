@@ -16,14 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import se.digg.dgc.encoding.BarcodeException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION;
 
 @RestController
 @RequestMapping("/api/v1/covidcertificate")
@@ -35,6 +31,7 @@ public class CovidCertificateGenerationController {
 
     private final SecurityHelper securityHelper;
     private final CovidCertificateGenerationService covidCertificateGenerationService;
+    private final CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
     private final KpiDataService kpiLogService;
 
     @PostMapping("/vaccination")
@@ -43,9 +40,10 @@ public class CovidCertificateGenerationController {
         log.info("Call of Create for vaccination certificate");
         securityHelper.authorizeUser(request);
         createDto.validate();
+        covidCertificateVaccinationValidationService.validateProductAndCountry(createDto);
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
-        kpiLogService.logCertificateGenerationKpi(KPI_TYPE_VACCINATION, responseDto.getUvci());
+        kpiLogService.logVaccinationCertificateGenerationKpi(createDto, responseDto.getUvci());
         return responseDto;
     }
 
@@ -69,7 +67,7 @@ public class CovidCertificateGenerationController {
         createDto.validate();
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
-        kpiLogService.logCertificateGenerationKpi(KPI_TYPE_RECOVERY, responseDto.getUvci());
+        kpiLogService.logRecoveryCertificateGenerationKpi(createDto, responseDto.getUvci());
         return responseDto;
     }
 

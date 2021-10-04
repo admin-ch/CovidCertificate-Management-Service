@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
+import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
@@ -29,7 +30,8 @@ public class FixtureCustomization {
         fixture.customise().lazyInstance(IssuableVaccineDto.class, () -> new IssuableVaccineDto(
                 fixture.create(String.class), fixture.create(String.class),
                 fixture.create(String.class), fixture.create(String.class),
-                fixture.create(String.class), fixture.create(String.class)
+                fixture.create(String.class), fixture.create(String.class),
+                fixture.create(Issuable.class)
         ));
     }
 

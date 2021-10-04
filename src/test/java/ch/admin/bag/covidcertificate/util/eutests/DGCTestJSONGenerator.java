@@ -15,6 +15,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.upokecenter.cbor.CBORObject;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,6 +37,7 @@ import java.util.zip.ZipException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Ignore("Util for automated JSON file generation for EU tests.")
+@Disabled("Util for automated JSON file generation for EU tests.")
 @ExtendWith(MockitoExtension.class)
 public class DGCTestJSONGenerator {
     private static final String PATH = "target/dgc-testdata/";
