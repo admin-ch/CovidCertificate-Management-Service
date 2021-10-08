@@ -31,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 antMatchers("/actuator/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
                             "/api/v1/revocation-list", "/api/v1/ping").
                     and().
-                authorizeRequests().anyRequest().permitAll();
+                    authorizeRequests().anyRequest().permitAll();
     }
 
     @Bean
