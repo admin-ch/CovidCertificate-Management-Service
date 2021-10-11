@@ -13,7 +13,7 @@ public class SwissDGCSigner implements DGCSigner {
 
     private final COSEService coseService;
 
-    public byte[] sign(byte[] dgcCBOR, Instant expiration, SigningInformation signingInformation) {
+    public byte[] sign(byte[] dgcCBOR, SigningInformation signingInformation) {
         return coseService.getCOSESign1(dgcCBOR, signingInformation);
     }
 

@@ -3,13 +3,17 @@ package ch.admin.bag.covidcertificate.service;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import com.upokecenter.cbor.CBORException;
 import lombok.extern.slf4j.Slf4j;
-import se.digg.dgc.encoding.*;
+import se.digg.dgc.encoding.Barcode;
+import se.digg.dgc.encoding.BarcodeCreator;
+import se.digg.dgc.encoding.BarcodeException;
+import se.digg.dgc.encoding.Base45;
+import se.digg.dgc.encoding.DGCConstants;
+import se.digg.dgc.encoding.Zlib;
 import se.digg.dgc.service.impl.DefaultDGCBarcodeEncoder;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
-import java.time.Instant;
 
 @Slf4j
 public class SwissDGCBarcodeEncoder extends DefaultDGCBarcodeEncoder {
@@ -22,13 +26,13 @@ public class SwissDGCBarcodeEncoder extends DefaultDGCBarcodeEncoder {
         this.barcodeCreator = barcodeCreator;
     }
 
-    public String encode(final byte[] dcc, final Instant expiration, final SigningInformation signingInformation) throws IOException, SignatureException {
+    public String encode(final byte[] dcc, final SigningInformation signingInformation) throws IOException, SignatureException {
 
         log.trace("Encoding to Base45 from CBOR-encoded DCC-payload (length: {}) ...", dcc.length);
 
         // Create a signed CWT ...
         //
-        byte[] cwt = this.sign(dcc, expiration, signingInformation);
+        byte[] cwt = this.sign(dcc, signingInformation);
 
         // Compression and Base45 encoding ...
         //
@@ -43,13 +47,13 @@ public class SwissDGCBarcodeEncoder extends DefaultDGCBarcodeEncoder {
         return DGCConstants.DGC_V1_HEADER + base45;
     }
 
-    public byte[] sign(final byte[] dcc, final Instant expiration, final SigningInformation signingInformation) throws IOException {
+    public byte[] sign(final byte[] dcc, final SigningInformation signingInformation) throws IOException {
 
         try {
             // Sign the DGC ...
             //
             log.trace("Creating CWT and signing CBOR-encoded DCC (length: {}) ...", dcc.length);
-            return this.dgcSigner.sign(dcc, expiration, signingInformation);
+            return this.dgcSigner.sign(dcc, signingInformation);
         }
         catch (final CBORException e) {
             log.info("Internal CBOR error - {}", e.getMessage(), e);
@@ -57,9 +61,9 @@ public class SwissDGCBarcodeEncoder extends DefaultDGCBarcodeEncoder {
         }
     }
 
-    public Barcode encodeToBarcode(final byte[] dcc, final Instant expiration, final SigningInformation signingInformation) throws IOException, SignatureException, BarcodeException {
+    public Barcode encodeToBarcode(final byte[] dcc, final SigningInformation signingInformation) throws IOException, SignatureException, BarcodeException {
 
-        final String base45 = this.encode(dcc, expiration, signingInformation);
+        final String base45 = this.encode(dcc, signingInformation);
 
         // Create the Barcode ...
         //

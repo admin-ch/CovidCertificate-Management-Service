@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -19,6 +20,6 @@ public interface SigningInformationRepository extends JpaRepository<SigningInfor
 
     @Query(value = "select s from SigningInformation s " +
             "where s.certificateType = :certificateType ")
-    SigningInformation findSigningInformation(
+    List<SigningInformation> findSigningInformation(
             @Param("certificateType") String certificateType);
 }

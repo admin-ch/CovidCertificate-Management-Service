@@ -6,9 +6,17 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertifica
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
+import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
+import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequestDto;
+import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import ch.admin.bag.covidcertificate.service.document.CovidPdfCertificateGenerationService;
-import ch.admin.bag.covidcertificate.service.domain.*;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.flextrade.jfixture.JFixture;
@@ -17,6 +25,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -33,11 +42,24 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Base64;
 
-import static ch.admin.bag.covidcertificate.TestModelProvider.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -158,7 +180,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldUVCI() {
+        void shouldReturnUVCI() {
             var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
             var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
 
@@ -241,7 +263,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldUVCI() {
+        void shouldReturnUVCI() {
             var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
             var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
 
@@ -324,7 +346,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldUVCI() {
+        void shouldReturnUVCI() {
             var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
             var actual = service.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
 
@@ -351,6 +373,13 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
+        void shouldGetSigningInformationForTheCovidCertificate() throws IOException {
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
+            service.generateCovidCertificate(createDto);
+            verify(signingInformationService).getVaccinationSigningInformation(createDto);
+        }
+
+        @Test
         void throwsCreateCertificateException_ifMapDtoToVaccinationCertificateQrCodeThrowsCreateCertificateException() {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var expected = fixture.create(CreateCertificateException.class);
@@ -373,7 +402,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldCreateBarcode() throws IOException {
+        void shouldCreateBarcode_withCorrectContents() throws IOException {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var qrCodeData = fixture.create(VaccinationCertificateQrCode.class);
             when(covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto)).thenReturn(qrCodeData);
@@ -385,6 +414,17 @@ class CovidCertificateGenerationServiceTest {
             service.generateCovidCertificate(createDto);
 
             verify(barcodeService).createBarcode(eq(contents), any());
+        }
+
+        @Test
+        void shouldCreateBarcode_usingCorrectSigningInformation() throws IOException {
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
+            var signingInformation = fixture.create(SigningInformation.class);
+            when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+
+            service.generateCovidCertificate(createDto);
+
+            verify(barcodeService).createBarcode(any(), eq(signingInformation));
         }
 
         @Test
@@ -427,7 +467,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldUVCI() throws IOException {
+        void shouldReturnUVCI() throws IOException {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
 
             var actual = service.generateCovidCertificate(createDto);
@@ -436,19 +476,80 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldSendInAppDelivery__whenCodeIsPassed() {
+        void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
+            var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
-            verify(inAppDeliveryClient, times(1)).deliverToApp(any());
+
+            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
         }
 
         @Test
-        void shouldCallPrintingService__whenAddressPassed() {
+        void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
+            var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
+            var barcode = fixture.create(Barcode.class);
+            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+
+            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
+        }
+
+        @Test
+        void shouldSendInAppDelivery_withCorrectPdfData_whenAppCodeIsPassed() {
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
+            var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
+            var pdfByteArray = fixture.create(byte[].class);
+            var pdf = Base64.getEncoder().encodeToString(pdfByteArray);
+            when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdfByteArray);
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+
+            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
+        }
+
+        @Test
+        void shouldNotSendInAppDelivery_whenNoAppCodeIsPassed() {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
-            verify(printQueueClient, times(1)).sendPrintJob(any());
+            verifyNoInteractions(inAppDeliveryClient);
+        }
+
+        @Test
+        void shouldMapCreateDto_toCertificatePrintRequestDto_whenAddressPassed() {
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
+            var qrCodeData = fixture.create(VaccinationCertificateQrCode.class);
+            var pdf = fixture.create(byte[].class);
+            when(covidCertificateDtoMapperService.toVaccinationCertificateQrCode(any())).thenReturn(qrCodeData);
+            when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(certificatePrintRequestDtoMapper, times(1))
+                    .toCertificatePrintRequestDto(pdf, qrCodeData.getVaccinationInfo().get(0).getIdentifier(), createDto);
+        }
+
+        @Test
+        void shouldCallPrintingService_whenAddressPassed() {
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
+            var certificatePrintRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), any(), any())).thenReturn(certificatePrintRequestDto);
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(printQueueClient, times(1)).sendPrintJob(certificatePrintRequestDto);
+        }
+
+        @Test
+        void shouldNotCallPrintingService_whenNoAddressPassed() {
+            var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verifyNoInteractions(printQueueClient);
+            verifyNoInteractions(certificatePrintRequestDtoMapper);
         }
     }
 
@@ -468,6 +569,13 @@ class CovidCertificateGenerationServiceTest {
             when(covidCertificateDtoMapperService.toTestCertificateQrCode(createDto)).thenReturn(qrCodeData);
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toTestCertificatePdf(createDto, qrCodeData);
+        }
+
+        @Test
+        void shouldGetSigningInformationForTheCovidCertificate() throws IOException {
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
+            service.generateCovidCertificate(createDto);
+            verify(signingInformationService).getTestSigningInformation();
         }
 
         @Test
@@ -493,7 +601,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldCreateBarcode() throws IOException {
+        void shouldCreateBarcode_withCorrectContents() throws IOException {
             var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             when(covidCertificateDtoMapperService.toTestCertificateQrCode(createDto)).thenReturn(qrCodeData);
@@ -505,6 +613,17 @@ class CovidCertificateGenerationServiceTest {
             service.generateCovidCertificate(createDto);
 
             verify(barcodeService).createBarcode(eq(contents), any());
+        }
+
+        @Test
+        void shouldCreateBarcode_usingCorrectSigningInformation() throws IOException {
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
+            var signingInformation = fixture.create(SigningInformation.class);
+            when(signingInformationService.getTestSigningInformation()).thenReturn(signingInformation);
+
+            service.generateCovidCertificate(createDto);
+
+            verify(barcodeService).createBarcode(any(), eq(signingInformation));
         }
 
         @Test
@@ -548,7 +667,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldUVCI() throws IOException {
+        void shouldReturnUVCI() throws IOException {
             var createDto = getTestCertificateCreateDto(null, "1833", "de");
 
             var actual = service.generateCovidCertificate(createDto);
@@ -557,11 +676,49 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldSendInAppDelivery__whenCodeIsPassed() {
+        void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getTestCertificateCreateDto(null, "1833", "de", "BITBITBIT");
+            var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
-            verify(inAppDeliveryClient, times(1)).deliverToApp(any());
+
+            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
+        }
+
+        @Test
+        void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
+            var createDto = getTestCertificateCreateDto(null, "1833", "de", "BITBITBIT");
+            var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
+            var barcode = fixture.create(Barcode.class);
+            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+
+            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
+        }
+
+        @Test
+        void shouldSendInAppDelivery_withCorrectPdfData_whenAppCodeIsPassed() {
+            var createDto = getTestCertificateCreateDto(null, "1833", "de", "BITBITBIT");
+            var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
+            var pdfByteArray = fixture.create(byte[].class);
+            var pdf = Base64.getEncoder().encodeToString(pdfByteArray);
+            when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdfByteArray);
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+
+            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
+        }
+
+        @Test
+        void shouldNotSendInAppDelivery_whenNoAppCodeIsPassed() {
+            var createDto = getTestCertificateCreateDto(null, "1833", "de");
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verifyNoInteractions(inAppDeliveryClient);
         }
     }
 
@@ -581,6 +738,13 @@ class CovidCertificateGenerationServiceTest {
             when(covidCertificateDtoMapperService.toRecoveryCertificateQrCode(createDto)).thenReturn(qrCodeData);
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toRecoveryCertificatePdf(createDto, qrCodeData);
+        }
+
+        @Test
+        void shouldGetSigningInformationForTheCovidCertificate() throws IOException {
+            var createDto = getRecoveryCertificateCreateDto("de");;
+            service.generateCovidCertificate(createDto);
+            verify(signingInformationService).getRecoverySigningInformation(createDto);
         }
 
         @Test
@@ -606,7 +770,7 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldCreateBarcode() throws IOException {
+        void shouldCreateBarcode_withCorrectContents() throws IOException {
             var createDto = getRecoveryCertificateCreateDto("de");
             var qrCodeData = fixture.create(RecoveryCertificateQrCode.class);
             when(covidCertificateDtoMapperService.toRecoveryCertificateQrCode(createDto)).thenReturn(qrCodeData);
@@ -618,6 +782,17 @@ class CovidCertificateGenerationServiceTest {
             service.generateCovidCertificate(createDto);
 
             verify(barcodeService).createBarcode(eq(contents), any());
+        }
+
+        @Test
+        void shouldCreateBarcode_usingCorrectSigningInformation() throws IOException {
+            var createDto = getRecoveryCertificateCreateDto("de");
+            var signingInformation = fixture.create(SigningInformation.class);
+            when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+
+            service.generateCovidCertificate(createDto);
+
+            verify(barcodeService).createBarcode(any(), eq(signingInformation));
         }
 
         @Test
@@ -670,19 +845,80 @@ class CovidCertificateGenerationServiceTest {
         }
 
         @Test
-        void shouldSendInAppDelivery__whenCodeIsPassed() {
+        void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getRecoveryCertificateCreateDto("de", "BITBITBIT");
+            var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
-            verify(inAppDeliveryClient, times(1)).deliverToApp(any());
+
+            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
         }
 
         @Test
-        void shouldCallPrintingService__whenAddressPassed() {
+        void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
+            var createDto = getRecoveryCertificateCreateDto("de", "BITBITBIT");
+            var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
+            var barcode = fixture.create(Barcode.class);
+            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+
+            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
+        }
+
+        @Test
+        void shouldSendInAppDelivery_withCorrectPdfData_whenAppCodeIsPassed() {
+            var createDto = getRecoveryCertificateCreateDto("de", "BITBITBIT");
+            var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
+            var pdfByteArray = fixture.create(byte[].class);
+            var pdf = Base64.getEncoder().encodeToString(pdfByteArray);
+            when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdfByteArray);
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+
+            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
+        }
+
+        @Test
+        void shouldNotSendInAppDelivery_whenNoAppCodeIsPassed() {
             var createDto = getRecoveryCertificateCreateDto("de");
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
-            verify(printQueueClient, times(1)).sendPrintJob(any());
+            verifyNoInteractions(inAppDeliveryClient);
+        }
+
+        @Test
+        void shouldMapCreateDto_toCertificatePrintRequestDto_whenAddressPassed() {
+            var createDto = getRecoveryCertificateCreateDto("de");
+            var qrCodeData = fixture.create(RecoveryCertificateQrCode.class);
+            var pdf = fixture.create(byte[].class);
+            when(covidCertificateDtoMapperService.toRecoveryCertificateQrCode(any())).thenReturn(qrCodeData);
+            when(covidPdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(certificatePrintRequestDtoMapper, times(1))
+                    .toCertificatePrintRequestDto(pdf, qrCodeData.getRecoveryInfo().get(0).getIdentifier(), createDto);
+        }
+
+        @Test
+        void shouldCallPrintingService_whenAddressPassed() {
+            var createDto = getRecoveryCertificateCreateDto("de");
+            var certificatePrintRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), any(), any())).thenReturn(certificatePrintRequestDto);
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verify(printQueueClient, times(1)).sendPrintJob(certificatePrintRequestDto);
+        }
+
+        @Test
+        void shouldNotCallPrintingService_whenNoAddressPassed() {
+            var createDto = getRecoveryCertificateCreateDto("de", "BITBITBIT");
+
+            assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
+            verifyNoInteractions(printQueueClient);
+            verifyNoInteractions(certificatePrintRequestDtoMapper);
         }
     }
 
