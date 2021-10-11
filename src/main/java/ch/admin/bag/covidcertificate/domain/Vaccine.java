@@ -47,7 +47,7 @@ public class Vaccine {
      */
     private Issuable issuable;
 
-    private int webUiOrder;
+    private int vaccineOrder;
 
     private boolean webUiSelectable;
 
@@ -73,7 +73,7 @@ public class Vaccine {
             boolean active,
             boolean chIssuable,
             Issuable issuable,
-            int webUiOrder,
+            int vaccineOrder,
             boolean webUiSelectable,
             boolean apiGatewaySelectable,
             boolean apiPlatformSelectable
@@ -84,7 +84,7 @@ public class Vaccine {
         this.active = active;
         this.chIssuable = chIssuable;
         this.issuable = issuable;
-        this.webUiOrder = webUiOrder;
+        this.vaccineOrder = vaccineOrder;
         this.webUiSelectable = webUiSelectable;
         this.apiGatewaySelectable = apiGatewaySelectable;
         this.apiPlatformSelectable = apiPlatformSelectable;

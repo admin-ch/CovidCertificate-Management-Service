@@ -464,7 +464,7 @@ class VaccineRepositoryIntegrationTest {
                 false);
         // when
         List<Vaccine> result = vaccineRepository.findAllWebUiActive();
-        List<Integer> uiOrder = result.stream().map(Vaccine::getWebUiOrder).collect(Collectors.toList());
+        List<Integer> uiOrder = result.stream().map(Vaccine::getVaccineOrder).collect(Collectors.toList());
         boolean isSortedAsc = uiOrder.stream().sorted().collect(Collectors.toList()).equals(uiOrder);
 
         // then
@@ -487,7 +487,7 @@ class VaccineRepositoryIntegrationTest {
             String authHolderCode,
             String authHolderDisplayName,
             boolean authHolderActive,
-            int webUiOrder,
+            int vaccineOrder,
             boolean webUiSelectable,
             boolean apiGatewaySelectable,
             boolean apiPlatformSelectable) {
@@ -498,7 +498,7 @@ class VaccineRepositoryIntegrationTest {
                 active,
                 chIssuable,
                 Issuable.CH_ONLY,
-                webUiOrder,
+                vaccineOrder,
                 webUiSelectable,
                 apiGatewaySelectable,
                 apiPlatformSelectable);
