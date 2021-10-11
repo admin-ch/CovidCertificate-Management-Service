@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+import static ch.admin.bag.covidcertificate.api.Constants.AMBIGUOUS_SIGNING_CERTIFICATE;
 import static ch.admin.bag.covidcertificate.api.Constants.SIGNING_CERTIFICATE_MISSING;
 
 @Service
@@ -32,12 +33,15 @@ public class SigningInformationService {
     }
 
     public SigningInformation getTestSigningInformation(){
-        var signingInformation = signingInformationRepository.findSigningInformation(SigningCertificateCategory.TEST.value);
-        if(signingInformation == null){
+        var signingInformationList = signingInformationRepository.findSigningInformation(SigningCertificateCategory.TEST.value);
+        if(signingInformationList == null || signingInformationList.isEmpty()){
             log.error("No signing certificate was found to sign the test certificate.");
             throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
+        }else if(signingInformationList.size() > 1){
+            log.error("Ambiguous signing certificate. Multiple signing certificates were found to sign the test certificate");
+            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
         }
-        return signingInformation;
+        return signingInformationList.get(0);
     }
 
     public SigningInformation getRecoverySigningInformation(RecoveryCertificateCreateDto createDto){
@@ -46,12 +50,15 @@ public class SigningInformationService {
         if(Objects.equals(countryOfTest, "CH")) {
             signingCertificateCategory = SigningCertificateCategory.RECOVERY_CH.value;
         }
-        var signingInformation = signingInformationRepository.findSigningInformation(signingCertificateCategory);
+        var signingInformationList = signingInformationRepository.findSigningInformation(signingCertificateCategory);
 
-        if(signingInformation == null){
+        if(signingInformationList == null || signingInformationList.isEmpty()){
             log.error("No signing certificate was found to sign the recovery certificate for positive test in {}.", countryOfTest);
             throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
+        }else if(signingInformationList.size() > 1){
+            log.error("Ambiguous signing certificate. Multiple signing certificates were found for positive test in {}.", countryOfTest);
+            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
         }
-        return signingInformation;
+        return signingInformationList.get(0);
     }
 }
