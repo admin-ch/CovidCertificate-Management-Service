@@ -4,7 +4,6 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
-import ch.admin.bag.covidcertificate.domain.SigningInformationRepository;
 import ch.admin.bag.covidcertificate.service.domain.SigningCertificateCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +18,11 @@ import static ch.admin.bag.covidcertificate.api.Constants.SIGNING_CERTIFICATE_MI
 @RequiredArgsConstructor
 @Slf4j
 public class SigningInformationService {
-    private final SigningInformationRepository signingInformationRepository;
+    private final SigningInformationCacheService signingInformationCacheService;
 
     public SigningInformation getVaccinationSigningInformation(VaccinationCertificateCreateDto createDto){
         var medicinalProductCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
-        var signingInformation =  signingInformationRepository.findSigningInformation(SigningCertificateCategory.VACCINATION.value, medicinalProductCode);
+        var signingInformation =  signingInformationCacheService.findSigningInformation(SigningCertificateCategory.VACCINATION.value, medicinalProductCode);
 
         if(signingInformation == null){
             log.error("No signing certificate was found to sign the certificate for the {} vaccine.", medicinalProductCode);
@@ -33,7 +32,7 @@ public class SigningInformationService {
     }
 
     public SigningInformation getTestSigningInformation(){
-        var signingInformationList = signingInformationRepository.findSigningInformation(SigningCertificateCategory.TEST.value);
+        var signingInformationList = signingInformationCacheService.findSigningInformation(SigningCertificateCategory.TEST.value);
         if(signingInformationList == null || signingInformationList.isEmpty()){
             log.error("No signing certificate was found to sign the test certificate.");
             throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
@@ -50,7 +49,7 @@ public class SigningInformationService {
         if(Objects.equals(countryOfTest, "CH")) {
             signingCertificateCategory = SigningCertificateCategory.RECOVERY_CH.value;
         }
-        var signingInformationList = signingInformationRepository.findSigningInformation(signingCertificateCategory);
+        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory);
 
         if(signingInformationList == null || signingInformationList.isEmpty()){
             log.error("No signing certificate was found to sign the recovery certificate for positive test in {}.", countryOfTest);
