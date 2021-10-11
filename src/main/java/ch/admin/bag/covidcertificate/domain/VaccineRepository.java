@@ -25,7 +25,7 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "join Prophylaxis p on p.id = v.prophylaxis.id " +
             "where v.active = true " +
             "and v.webUiSelectable = true " +
-            "order by v.display asc")
+            "order by v.vaccineOrder asc")
     List<Vaccine> findAllWebUiActive();
 
     @Query(value = "select v from Vaccine v " +

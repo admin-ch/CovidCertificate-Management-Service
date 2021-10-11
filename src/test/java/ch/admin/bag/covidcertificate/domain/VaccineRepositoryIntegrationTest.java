@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,6 +48,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Biontech Manufacturing GmbH",
                        true,
+                       200,
                        false,
                        true,
                        false);
@@ -74,6 +76,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company not active",
                        false,
+                       200,
                        false,
                        true,
                        false);
@@ -87,6 +90,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company active",
                        true,
+                       200,
                        false,
                        true,
                        false);
@@ -101,6 +105,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company active",
                        true,
+                       200,
                        false,
                        true,
                        false);
@@ -115,6 +120,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company not active",
                        false,
+                       200,
                        false,
                        true,
                        false);
@@ -139,6 +145,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company not active",
                        false,
+                       200,
                        false,
                        false,
                        false);
@@ -152,6 +159,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company active",
                        true,
+                       200,
                        false,
                        true,
                        false);
@@ -165,6 +173,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company active",
                        false,
+                       200,
                        false,
                        false,
                        false);
@@ -178,6 +187,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company not active",
                        false,
+                       200,
                        false,
                        false,
                        false);
@@ -206,6 +216,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Biontech Manufacturing GmbH",
                        false,
+                       200,
                        false,
                        true,
                        false);
@@ -232,6 +243,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company not active",
                        false,
+                       200,
                        false,
                        true,
                        false);
@@ -245,6 +257,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company active",
                        true,
+                       200,
                        false,
                        true,
                        false);
@@ -258,6 +271,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company active",
                        true,
+                       200,
                        false,
                        true,
                        false);
@@ -271,6 +285,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company not active",
                        false,
+                       200,
                        false,
                        true,
                        false);
@@ -314,6 +329,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company not active",
                        false,
+                       200,
                        false,
                        true,
                        false);
@@ -327,6 +343,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company active",
                        true,
+                       200,
                        false,
                        true,
                        false);
@@ -340,6 +357,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company active",
                        true,
+                       200,
                        false,
                        true,
                        false);
@@ -353,6 +371,7 @@ class VaccineRepositoryIntegrationTest {
                        "ORG-100030215",
                        "Test company not active",
                        false,
+                       200,
                        false,
                        true,
                        false);
@@ -382,6 +401,81 @@ class VaccineRepositoryIntegrationTest {
         assertThat(vaccine.getAuthHolder().isActive()).isFalse();
     }
 
+    @Test
+    @Transactional
+    void findAllWebUiActive_ok_in_correct_order() {
+        // given
+        persistVaccine("Covishield",
+                "Covishield (ChAdOx1_nCoV-19)",
+                true,
+                true,
+                "1119349007",
+                "SARS-CoV-2 mRNA vaccine",
+                true,
+                "ORG-100030215",
+                "Biontech Manufacturing GmbH",
+                true,
+                50,
+                true,
+                false,
+                true);
+        persistVaccine("EU/1/20/1528",
+                "Comirnaty",
+                true,
+                true,
+                "1119349007",
+                "SARS-CoV-2 mRNA vaccine",
+                true,
+                "ORG-100030215",
+                "Biontech Manufacturing GmbH",
+                true,
+                10,
+                true,
+                false,
+                false);
+        persistVaccine("EU/1/20/1507",
+                "Spikevax (previously COVID-19 Vaccine Moderna)",
+                true,
+                true,
+                "1119349007",
+                "SARS-CoV-2 mRNA vaccine",
+                true,
+                "ORG-100030215",
+                "Biontech Manufacturing GmbH",
+                true,
+                20,
+                true,
+                false,
+                false);
+
+        persistVaccine("EU/1/20/1528",
+                "Sputnik-V",
+                true,
+                false,
+                "1119349007",
+                "SARS-CoV-2 mRNA vaccine",
+                true,
+                "ORG-100030215",
+                "Biontech Manufacturing GmbH",
+                true,
+                200,
+                false,
+                false,
+                false);
+        // when
+        List<Vaccine> result = vaccineRepository.findAllWebUiActive();
+        List<Integer> uiOrder = result.stream().map(Vaccine::getVaccineOrder).collect(Collectors.toList());
+        boolean isSortedAsc = uiOrder.stream().sorted().collect(Collectors.toList()).equals(uiOrder);
+
+        // then
+        assertThat(result).isNotNull().isNotEmpty().hasSize(3);
+        assertThat(isSortedAsc).isTrue();
+
+        Vaccine vaccine = result.get(0);
+        assertThat(vaccine.isActive()).isTrue();
+        assertThat(vaccine.getIssuable()).isEqualTo(Issuable.CH_ONLY);
+    }
+
     private void persistVaccine(
             String code,
             String display,
@@ -393,6 +487,7 @@ class VaccineRepositoryIntegrationTest {
             String authHolderCode,
             String authHolderDisplayName,
             boolean authHolderActive,
+            int vaccineOrder,
             boolean webUiSelectable,
             boolean apiGatewaySelectable,
             boolean apiPlatformSelectable) {
@@ -403,6 +498,7 @@ class VaccineRepositoryIntegrationTest {
                 active,
                 chIssuable,
                 Issuable.CH_ONLY,
+                vaccineOrder,
                 webUiSelectable,
                 apiGatewaySelectable,
                 apiPlatformSelectable);
