@@ -110,8 +110,8 @@ management:
 
 cc-management-service:
   rest:
-    connectTimeoutSeconds: 5
-    readTimeoutSeconds: 5
+    connectTimeoutSeconds: 8
+    readTimeoutSeconds: 8
   monitor:
     prometheus:
       secure: false
