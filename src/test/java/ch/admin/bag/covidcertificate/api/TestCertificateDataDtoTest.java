@@ -29,7 +29,7 @@ public class TestCertificateDataDtoTest {
                 memberStateOfTest
         );
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_SAMPLE_OR_RESULT_DATE_TIME, exception.getError());
+        assertEquals(INVALID_SAMPLE_DATE_TIME, exception.getError());
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
@@ -39,7 +39,7 @@ public class TestCertificateDataDtoTest {
                 memberStateOfTest
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_SAMPLE_OR_RESULT_DATE_TIME, exception.getError());
+        assertEquals(INVALID_SAMPLE_DATE_TIME, exception.getError());
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
