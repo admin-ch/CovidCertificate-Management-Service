@@ -52,8 +52,7 @@ public class ResponseStatusExceptionHandler {
         Throwable cause = e.getCause().getCause();
 
         if(cause instanceof CreateCertificateException) {
-            CreateCertificateException createCertificateException = (CreateCertificateException) e.getCause().getCause();
-            return this.handleCreateCertificateException(createCertificateException);
+            return this.handleCreateCertificateException((CreateCertificateException) cause);
         }
         return new ResponseEntity<>("Malformed Request", HttpStatus.BAD_REQUEST);
     }

@@ -7,6 +7,7 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -22,20 +23,25 @@ public class DateDeserializer extends JsonDeserializer<LocalDate> {
 
     @Override
     public LocalDate deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException {
-        String dateAsString = jsonparser.getText();
-        var origin = jsonparser.getParsingContext().getCurrentValue().getClass().getSimpleName();
-
         try {
-            return LocalDate.parse(dateAsString);
-        } catch (DateTimeParseException e) {
-            if (vaccinationCertificate.equals(origin)) {
-                throw new CreateCertificateException(INVALID_VACCINATION_DATE);
-            } else if(recoveryCertificate.equals(origin)) {
-                throw new CreateCertificateException(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT);
-            } else if(testCertificate.equals(origin)) {
-                throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
+            return jsonparser.getCodec().readValue(jsonparser, LocalDate.class);
+        } catch (InvalidFormatException e) {
+            try {
+                String dateAsString = jsonparser.getText();
+                return LocalDate.parse(dateAsString);
+            } catch(DateTimeParseException dateTimeParseException) {
+                String origin = jsonparser.getParsingContext().getCurrentValue().getClass().getSimpleName();
+
+                if (vaccinationCertificate.equals(origin)) {
+                   throw new CreateCertificateException(INVALID_VACCINATION_DATE);
+                } else if(recoveryCertificate.equals(origin)) {
+                    throw new CreateCertificateException(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT);
+                } else if(testCertificate.equals(origin)) {
+                    throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
+                } else {
+                    throw dateTimeParseException;
+                }
             }
-            throw e;
         }
     }
 }

@@ -18,16 +18,19 @@ public class ZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
 
     @Override
     public ZonedDateTime deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException {
-        String dateAsString = jsonparser.getText();
-        var origin = jsonparser.getParsingContext().getCurrentValue().getClass().getSimpleName();
-
         try {
-            return ZonedDateTime.parse(dateAsString);
-        } catch (DateTimeParseException e) {
-            if (testCertificate.equals(origin)) {
-                throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
+            return jsonparser.getCodec().readValue(jsonparser, ZonedDateTime.class);
+        } catch(Exception e) {
+            try {
+                String dateAsString = jsonparser.getText();
+                return ZonedDateTime.parse(dateAsString);
+            } catch (DateTimeParseException dateTimeParseException) {
+                String origin = jsonparser.getParsingContext().getCurrentValue().getClass().getSimpleName();
+                if (testCertificate.equals(origin)) {
+                    throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
+                }
+                throw dateTimeParseException;
             }
-            throw e;
         }
     }
 }

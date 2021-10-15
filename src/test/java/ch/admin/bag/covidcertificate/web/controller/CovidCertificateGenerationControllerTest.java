@@ -34,20 +34,15 @@ import org.springframework.test.web.servlet.MvcResult;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCovidCertificateAddressDto;
-import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCovidCertificateCreateResponseDto;
-import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCreateCertificateException;
-import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRecoveryCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccinationCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.*;
+import static ch.admin.bag.covidcertificate.TestModelProvider.*;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
@@ -139,6 +134,21 @@ class CovidCertificateGenerationControllerTest {
                     .header("Authorization", fixture.create(String.class))
                     .content(mapper.writeValueAsString(createDto)))
                     .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+        }
+
+        @Test
+        void returns465StatusCode_ifDateParsingFailed() throws Exception {
+            var JSON = getVaccinationCertificateJSONWithInvalidVaccinationDate();
+
+            var errorCode = new CreateCertificateException(INVALID_VACCINATION_DATE).getError().getErrorCode();
+
+            mockMvc.perform(post(URL)
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", fixture.create(String.class))
+                            .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
     }
 
@@ -257,6 +267,21 @@ class CovidCertificateGenerationControllerTest {
                     .content(mapper.writeValueAsString(createDto)))
                     .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
         }
+
+        @Test
+        void returns464StatusCode_ifDateParsingFailed() throws Exception {
+            var JSON = getTestCertificateCreateDtoJSONWithInvalidSampleDateTime();
+
+            var errorCode = new CreateCertificateException(INVALID_SAMPLE_DATE_TIME).getError().getErrorCode();
+
+            mockMvc.perform(post(URL)
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", fixture.create(String.class))
+                            .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
+        }
     }
 
     @Nested
@@ -306,6 +331,21 @@ class CovidCertificateGenerationControllerTest {
                     .header("Authorization", fixture.create(String.class))
                     .content(mapper.writeValueAsString(createDto)))
                     .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+        }
+
+        @Test
+        void returns466StatusCode_ifDateParsingFailed() throws Exception {
+            var JSON = getRecoveryCertificateCreateJSONWithInvalidPositiveTestResultDate();
+
+            var errorCode = new CreateCertificateException(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT).getError().getErrorCode();
+
+            mockMvc.perform(post(URL)
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("Authorization", fixture.create(String.class))
+                            .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
     }
 
