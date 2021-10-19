@@ -9,7 +9,7 @@ import lombok.ToString;
 
 import java.time.ZonedDateTime;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_OR_RESULT_DATE_TIME;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TIME;
 
 @Getter
 @ToString
@@ -34,7 +34,7 @@ public class TestCertificateCsvBean extends CertificateCsvBean {
         try {
             sampleDateTimeParsed = ZonedDateTime.parse(this.sampleDateTime);
         } catch (Exception e) {
-            throw new CreateCertificateException(INVALID_SAMPLE_OR_RESULT_DATE_TIME);
+            throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
         }
 
         var dataDto = new TestCertificateDataDto(

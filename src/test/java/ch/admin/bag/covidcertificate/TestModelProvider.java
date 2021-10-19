@@ -57,6 +57,18 @@ public class TestModelProvider {
         );
     }
 
+    public static String getVaccinationCertificateJSONWithInvalidVaccinationDate() {
+        return "{\"name\":{\"familyName\":\"2eaf462f-3b6a-4088-9892-fe4461dda8a3\",\"givenName\":\"1c2828d9-9ed3-4f60-b843-4d4b4eec9dc9\"},\"dateOfBirth\":\"0c511a7c-dcc7-42d1-848c-b88159f036a4\",\"language\":\"de\",\"address\":{\"streetAndNr\":\"b8463a54-d9c9-4594-b2df-efafa4926c79\",\"zipCode\":86,\"city\":\"04cab8fc-0beb-4011-8109-e6a0e034c307\",\"cantonCodeSender\":\"3bedd305-9301-48e3-9473-26e8188b01f6\"},\"appCode\":\"DB1E7078-1E31-46FD-8605-F67105907D46\",\"systemSource\":\"ApiGateway\",\"vaccinationInfo\":[{\"medicinalProductCode\":\"7dc3e1c9-9ca9-4180-b407-0741549ba898\",\"numberOfDoses\":4,\"totalNumberOfDoses\":6,\"vaccinationDate\":\"2010--0202\",\"countryOfVaccination\":\"16ebd49a-de13-407b-984e-7e2cb9611dd5\"},{\"medicinalProductCode\":\"8b306ac9-1f87-4b09-9a3c-d38a211f14f8\",\"numberOfDoses\":7,\"totalNumberOfDoses\":8,\"vaccinationDate\":[2021,10,15],\"countryOfVaccination\":\"ea06cb48-e2cc-4a53-9f86-6e7221734728\"},{\"medicinalProductCode\":\"aedecc6e-a6ca-4149-8d72-e0d188f8d66d\",\"numberOfDoses\":7,\"totalNumberOfDoses\":8,\"vaccinationDate\":[2021,10,15],\"countryOfVaccination\":\"dfa035fc-21f0-447b-b8ee-ddcc651c8cd3\"}]}";
+    }
+
+    public static String getRecoveryCertificateCreateJSONWithInvalidPositiveTestResultDate() {
+        return "{\"name\":{\"familyName\":\"faimlyName\",\"givenName\":\"givenName\"},\"dateOfBirth\":\"1990-05-13\",\"language\":\"de\",\"address\":null,\"appCode\":\"null\",\"systemSource\":\"WebUI\",\"recoveryInfo\":[{\"dateOfFirstPositiveTestResult\":\"2010--0505\",\"countryOfTest\":\"CH\"}]}";
+    }
+
+    public static String getTestCertificateCreateDtoJSONWithInvalidSampleDateTime() {
+        return "{\"name\":{\"familyName\":\"faimlyName\",\"givenName\":\"givenName\"},\"dateOfBirth\":\"1990-05-13\",\"language\":\"de\",\"address\":null,\"appCode\":\"null\",\"systemSource\":\"WebUI\",\"testInfo\":[{\"manufacturerCode\":\"1833\",\"typeCode\":\"null\",\"sampleDateTime\":\"2010--0205\",\"testingCentreOrFacility\":\"Test Center\",\"memberStateOfTest\":\"CH\"}]}";
+    }
+
     public static RecoveryCertificateCreateDto getRecoveryCertificateCreateDto(String language) {
         return new RecoveryCertificateCreateDto(
                 getCovidCertificatePersonDto(),
