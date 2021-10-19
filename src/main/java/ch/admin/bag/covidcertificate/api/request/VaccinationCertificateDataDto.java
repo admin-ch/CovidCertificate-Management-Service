@@ -1,6 +1,8 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.util.DateDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ public class VaccinationCertificateDataDto {
 
     private Integer totalNumberOfDoses;
 
+    @JsonDeserialize(using = DateDeserializer.class)
     private LocalDate vaccinationDate;
 
     private String countryOfVaccination;
