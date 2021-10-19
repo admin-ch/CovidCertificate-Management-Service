@@ -44,8 +44,8 @@ class SigningInformationServiceTest {
 
     @BeforeEach
     void setup(){
-        lenient().when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(fixture.create(SigningInformation.class));
-        lenient().when(signingInformationCacheService.findSigningInformation(any())).thenReturn(Collections.singletonList(fixture.create(SigningInformation.class)));
+        lenient().when(signingInformationCacheService.findSigningInformation(any(), any(), any())).thenReturn(fixture.create(SigningInformation.class));
+        lenient().when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(Collections.singletonList(fixture.create(SigningInformation.class)));
     }
 
     @Nested
@@ -53,7 +53,7 @@ class SigningInformationServiceTest {
         @Test
         void shouldLoadSigningInformationFromCacheWithCorrectSigningCertificateCategory(){
             signingInformationService.getVaccinationSigningInformation(fixture.create(VaccinationCertificateCreateDto.class));
-            verify(signingInformationCacheService).findSigningInformation(eq(SigningCertificateCategory.VACCINATION.value), any());
+            verify(signingInformationCacheService).findSigningInformation(eq(SigningCertificateCategory.VACCINATION.value), any(), any());
         }
 
         @Test
@@ -62,13 +62,13 @@ class SigningInformationServiceTest {
             var vaccinationCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
 
             signingInformationService.getVaccinationSigningInformation(createDto);
-            verify(signingInformationCacheService).findSigningInformation(any(), eq(vaccinationCode));
+            verify(signingInformationCacheService).findSigningInformation(any(), eq(vaccinationCode), any());
         }
 
         @Test
         void shouldReturnLoadedSigningInformation(){
             var signingInformation = fixture.create(SigningInformation.class);
-            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(signingInformation);
+            when(signingInformationCacheService.findSigningInformation(any(), any(), any())).thenReturn(signingInformation);
 
             var actual = signingInformationService.getVaccinationSigningInformation(fixture.create(VaccinationCertificateCreateDto.class));
 
@@ -78,7 +78,7 @@ class SigningInformationServiceTest {
         @Test
         void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifNoSigningInformationIsFound(){
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
-            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(null);
+            when(signingInformationCacheService.findSigningInformation(any(), any(), any())).thenReturn(null);
 
             var exception = assertThrows(CreateCertificateException.class,
                     () -> signingInformationService.getVaccinationSigningInformation(createDto)
@@ -94,13 +94,13 @@ class SigningInformationServiceTest {
         @Test
         void shouldLoadSigningInformationFromCacheWithCorrectSigningCertificateCategory(){
             signingInformationService.getTestSigningInformation();
-            verify(signingInformationCacheService).findSigningInformation(SigningCertificateCategory.TEST.value);
+            verify(signingInformationCacheService).findSigningInformation(eq(SigningCertificateCategory.TEST.value), any());
         }
 
         @Test
         void shouldReturnLoadedSigningInformation(){
             var signingInformation = fixture.create(SigningInformation.class);
-            when(signingInformationCacheService.findSigningInformation(any())).thenReturn(Collections.singletonList(signingInformation));
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(Collections.singletonList(signingInformation));
 
             var actual = signingInformationService.getTestSigningInformation();
 
@@ -110,7 +110,7 @@ class SigningInformationServiceTest {
         @ParameterizedTest
         @NullAndEmptySource
         void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifNoSigningInformationIsFound(List<SigningInformation> signingInformationList){
-            when(signingInformationCacheService.findSigningInformation(any())).thenReturn(signingInformationList);
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(signingInformationList);
 
             var exception = assertThrows(CreateCertificateException.class,
                     () -> signingInformationService.getTestSigningInformation()
@@ -123,7 +123,7 @@ class SigningInformationServiceTest {
         @Test
         void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifMultipleSigningInformationAreFound(){
             var signingInformationList = new ArrayList<>(fixture.collections().createCollection(SigningInformation.class));
-            when(signingInformationCacheService.findSigningInformation(any())).thenReturn(signingInformationList);
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(signingInformationList);
 
             var exception = assertThrows(CreateCertificateException.class,
                     () -> signingInformationService.getTestSigningInformation()
@@ -144,21 +144,21 @@ class SigningInformationServiceTest {
             ReflectionTestUtils.setField(createDto, "recoveryInfo", Collections.singletonList(recoveryDataDto));
 
             signingInformationService.getRecoverySigningInformation(createDto);
-            verify(signingInformationCacheService).findSigningInformation(SigningCertificateCategory.RECOVERY_CH.value);
+            verify(signingInformationCacheService).findSigningInformation(eq(SigningCertificateCategory.RECOVERY_CH.value), any());
         }
 
         @Test
         void shouldLoadSigningInformationFromCacheWithCorrectSigningCertificateCategory_forNonCHCertificates(){
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
             signingInformationService.getRecoverySigningInformation(createDto);
-            verify(signingInformationCacheService).findSigningInformation(SigningCertificateCategory.RECOVERY_NON_CH.value);
+            verify(signingInformationCacheService).findSigningInformation(eq(SigningCertificateCategory.RECOVERY_NON_CH.value), any());
         }
 
         @Test
         void shouldReturnLoadedSigningInformation(){
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
             var signingInformation = fixture.create(SigningInformation.class);
-            when(signingInformationCacheService.findSigningInformation(any())).thenReturn(Collections.singletonList(signingInformation));
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(Collections.singletonList(signingInformation));
 
             var actual = signingInformationService.getRecoverySigningInformation(createDto);
 
@@ -169,7 +169,7 @@ class SigningInformationServiceTest {
         @NullAndEmptySource
         void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifNoSigningInformationIsFound(List<SigningInformation> signingInformationList){
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
-            when(signingInformationCacheService.findSigningInformation(any())).thenReturn(signingInformationList);
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(signingInformationList);
 
             var exception = assertThrows(CreateCertificateException.class,
                     () -> signingInformationService.getRecoverySigningInformation(createDto)
@@ -183,7 +183,7 @@ class SigningInformationServiceTest {
         void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifMultipleSigningInformationAreFound(){
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
             var signingInformationList = new ArrayList<>(fixture.collections().createCollection(SigningInformation.class));
-            when(signingInformationCacheService.findSigningInformation(any())).thenReturn(signingInformationList);
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(signingInformationList);
 
             var exception = assertThrows(CreateCertificateException.class,
                     () -> signingInformationService.getRecoverySigningInformation(createDto)

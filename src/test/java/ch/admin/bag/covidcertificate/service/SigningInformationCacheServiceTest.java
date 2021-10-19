@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,8 +33,8 @@ class SigningInformationCacheServiceTest {
 
     @BeforeEach
     private void setup(){
-        lenient().when(signingInformationRepository.findSigningInformation(any(), any())).thenReturn(fixture.create(SigningInformation.class));
-        lenient().when(signingInformationRepository.findSigningInformation(any())).thenReturn(Collections.singletonList(fixture.create(SigningInformation.class)));
+        lenient().when(signingInformationRepository.findSigningInformation(any(), any(), any())).thenReturn(fixture.create(SigningInformation.class));
+        lenient().when(signingInformationRepository.findSigningInformation(any(), any())).thenReturn(Collections.singletonList(fixture.create(SigningInformation.class)));
     }
 
 
@@ -42,19 +43,21 @@ class SigningInformationCacheServiceTest {
         @Test
         void shouldCallRepositoryWithCorrectParameter(){
             var certificateType = fixture.create(String.class);
+            var validAt = fixture.create(LocalDate.class);
 
-            signingInformationCacheService.findSigningInformation(certificateType);
+            signingInformationCacheService.findSigningInformation(certificateType, validAt);
 
-            verify(signingInformationRepository).findSigningInformation(certificateType);
+            verify(signingInformationRepository).findSigningInformation(eq(certificateType), eq(validAt));
         }
 
         @Test
         void shouldReturnLoadedSigningInformation(){
             var certificateType = fixture.create(String.class);
+            var validAt = fixture.create(LocalDate.class);
             var signingInformationList = Collections.singletonList(fixture.create(SigningInformation.class));
-            when(signingInformationRepository.findSigningInformation(any())).thenReturn(signingInformationList);
+            when(signingInformationRepository.findSigningInformation(any(), any())).thenReturn(signingInformationList);
 
-            var actual = signingInformationCacheService.findSigningInformation(certificateType);
+            var actual = signingInformationCacheService.findSigningInformation(certificateType, validAt);
 
             assertEquals(signingInformationList, actual);
         }
@@ -66,29 +69,32 @@ class SigningInformationCacheServiceTest {
         void shouldCallRepositoryWithCorrectCertificateType(){
             var certificateType = fixture.create(String.class);
             var code = fixture.create(String.class);
+            var validAt = fixture.create(LocalDate.class);
 
-            signingInformationCacheService.findSigningInformation(certificateType, code);
+            signingInformationCacheService.findSigningInformation(certificateType, code, validAt);
 
-            verify(signingInformationRepository).findSigningInformation(eq(certificateType), any());
+            verify(signingInformationRepository).findSigningInformation(eq(certificateType), any(), any());
         }
 
         @Test
         void shouldCallRepositoryWithCorrectCode(){
             var certificateType = fixture.create(String.class);
             var code = fixture.create(String.class);
+            var validAt = fixture.create(LocalDate.class);
 
-            signingInformationCacheService.findSigningInformation(certificateType, code);
+            signingInformationCacheService.findSigningInformation(certificateType, code, validAt);
 
-            verify(signingInformationRepository).findSigningInformation(any(), eq(code));
+            verify(signingInformationRepository).findSigningInformation(any(), eq(code), any());
         }
         @Test
         void shouldNotCallRepositoryIfSigningInformationAreInCache(){
             var certificateType = fixture.create(String.class);
             var code = fixture.create(String.class);
+            var validAt = fixture.create(LocalDate.class);
             var signingInformation = fixture.create(SigningInformation.class);
-            when(signingInformationRepository.findSigningInformation(any(), any())).thenReturn(signingInformation);
+            when(signingInformationRepository.findSigningInformation(any(), any(), any())).thenReturn(signingInformation);
 
-            var actual = signingInformationCacheService.findSigningInformation(certificateType, code);
+            var actual = signingInformationCacheService.findSigningInformation(certificateType, code, validAt);
 
             assertEquals(signingInformation, actual);
         }

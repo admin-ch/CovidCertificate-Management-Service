@@ -7,7 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_PAYLOAD_FAILED;
+import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_PROTECTED_HEADER_FAILED;
+import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_SIGN1_FAILED;
+import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_SIGNATURE_DATA_FAILED;
+import static ch.admin.bag.covidcertificate.api.Constants.CREATE_SIGNATURE_FAILED;
 
 @Service
 @Slf4j
@@ -26,7 +30,12 @@ public class COSEService {
 
     private byte[] getProtectedHeader(SigningInformation signingInformation) {
         try {
-            return cborService.getProtectedHeader(signingInformation.getKeyIdentifier());
+            //TODO: keyIdentifier should be deleted. It is deprecated and used only for backwards compatibility.
+            var keyIdentifier = signingInformation.getKeyIdentifier();
+            if(signingInformation.getCertificateAlias() != null && !signingInformation.getCertificateAlias().isBlank()){
+                keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
+            }
+            return cborService.getProtectedHeader(keyIdentifier);
         } catch (Exception e) {
             throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
         }
@@ -50,7 +59,7 @@ public class COSEService {
 
     private byte[] getSignature(byte[] signatureData, SigningInformation signingInformation) {
         try {
-            return signingClient.create(signatureData, signingInformation);
+            return signingClient.createSignature(signatureData, signingInformation);
         } catch (Exception e) {
             throw new CreateCertificateException(CREATE_SIGNATURE_FAILED);
         }
