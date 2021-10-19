@@ -45,7 +45,7 @@ class SigningInformationRepositoryTest {
     private static Stream<Arguments> getValidIntervals() {
         return Stream.of(
                 Arguments.of(LocalDate.now().minusYears(1), LocalDate.now().plusYears(1)),
-                Arguments.of(LocalDate.now().minusYears(1), null),
+                Arguments.of(LocalDate.now().minusYears(1), LocalDate.now()),
                 Arguments.of(LocalDate.now(), LocalDate.now().plusYears(1))
         );
     }
