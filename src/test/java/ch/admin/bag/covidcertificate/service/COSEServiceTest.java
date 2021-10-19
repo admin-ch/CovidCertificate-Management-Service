@@ -10,10 +10,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_PAYLOAD_FAILED;
 import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_PROTECTED_HEADER_FAILED;
@@ -45,14 +47,35 @@ class COSEServiceTest {
         lenient().when(cborService.getPayload(any(byte[].class))).thenReturn(fixture.create(byte[].class));
         lenient().when(cborService.getSignatureData(any(byte[].class), any(byte[].class))).thenReturn(fixture.create(byte[].class));
         lenient().when(cborService.getCOSESign1(any(byte[].class), any(byte[].class), any(byte[].class))).thenReturn(fixture.create(byte[].class));
-        lenient().when(signingClient.create(any(byte[].class), any())).thenReturn(fixture.create(byte[].class));
+        lenient().when(signingClient.createSignature(any(byte[].class), any())).thenReturn(fixture.create(byte[].class));
     }
 
     @Nested
     class GetCOSESign1 {
         @Test
-        void callsCBORServiceGetProtectedHeader_withCorrectKeyIdentifier() throws Exception {
+        void callsSigningService_toGetKeyIdentifier_whenCertificateAliasIsPresent() {
             var signingInformation = fixture.create(SigningInformation.class);
+            coseService.getCOSESign1(fixture.create(byte[].class), signingInformation);
+            // then
+            verify(signingClient).getKeyIdentifier(signingInformation.getCertificateAlias());
+        }
+
+        @Test
+        void callsCBORServiceGetProtectedHeader_withIdentifierFromSigningService_whenCertificateAliasIsPresent() throws Exception {
+            var signingInformation = fixture.create(SigningInformation.class);
+            var keyIdentifier = fixture.create(String.class);
+            when(signingClient.getKeyIdentifier(any())).thenReturn(keyIdentifier);
+            coseService.getCOSESign1(fixture.create(byte[].class), signingInformation);
+            // then
+            verify(cborService).getProtectedHeader(keyIdentifier);
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void callsCBORServiceGetProtectedHeader_withIdentifierFromSigningInformation_whenCertificateAliasIsNullOrBlank(String certificateAlias) throws Exception {
+            var signingInformation = fixture.create(SigningInformation.class);
+            ReflectionTestUtils.setField(signingInformation, "certificateAlias", certificateAlias);
+
             coseService.getCOSESign1(fixture.create(byte[].class), signingInformation);
             // then
             verify(cborService).getProtectedHeader(signingInformation.getKeyIdentifier());
@@ -94,7 +117,7 @@ class COSEServiceTest {
             // when
             coseService.getCOSESign1(fixture.create(byte[].class), fixture.create(SigningInformation.class));
             // then
-            verify(signingClient).create(eq(signatureData), any());
+            verify(signingClient).createSignature(eq(signatureData), any());
         }
 
         @Test
@@ -103,7 +126,7 @@ class COSEServiceTest {
             // when
             coseService.getCOSESign1(fixture.create(byte[].class), signingInformation);
             // then
-            verify(signingClient).create(any(), eq(signingInformation));
+            verify(signingClient).createSignature(any(), eq(signingInformation));
         }
 
 
@@ -130,7 +153,7 @@ class COSEServiceTest {
         @Test
         void callsCBORServiceGetCOSESign1_withCorrectSignature() {
             var signature = fixture.create(byte[].class);
-            when(signingClient.create(any(), any())).thenReturn(signature);
+            when(signingClient.createSignature(any(), any())).thenReturn(signature);
             // when
             coseService.getCOSESign1(fixture.create(byte[].class), fixture.create(SigningInformation.class));
             // then
@@ -192,7 +215,7 @@ class COSEServiceTest {
             var dgcCBOR = fixture.create(byte[].class);
             var signingInformation = fixture.create(SigningInformation.class);
             // given
-            when(signingClient.create(any(byte[].class), any())).thenThrow(exceptionClass);
+            when(signingClient.createSignature(any(byte[].class), any())).thenThrow(exceptionClass);
             // when then
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
                     () -> coseService.getCOSESign1(dgcCBOR, signingInformation));

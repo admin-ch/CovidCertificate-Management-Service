@@ -4,5 +4,7 @@ import ch.admin.bag.covidcertificate.domain.SigningInformation;
 
 public interface SigningClient {
 
-     byte[] create(byte[] payload, SigningInformation signingInformation);
+     byte[] createSignature(byte[] payload, SigningInformation signingInformation);
+     String getKeyIdentifier(String certificateAlias);
+
 }
