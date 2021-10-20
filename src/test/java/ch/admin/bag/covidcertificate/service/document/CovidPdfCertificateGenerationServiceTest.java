@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CovidPdfCertificateGenerationServiceTest {
 
-    private CovidPdfCertificateGenerationService service;
+    private PdfCertificateGenerationService service;
 
     @Mock
     private ConfigurableEnvironment environment;
@@ -60,9 +60,8 @@ class CovidPdfCertificateGenerationServiceTest {
     @BeforeEach
     void setup() throws Exception {
         when(environment.getActiveProfiles()).thenReturn(new String[]{"unittest"});
-        service = new CovidPdfCertificateGenerationService(environment);
+        service = new PdfCertificateGenerationService(environment);
     }
-
 
     private void generateDocument_vaccine(VaccinationCertificateCreateDto createDto, String language, String familyName, String givenName, String fileName) throws Exception {
         IssuableVaccineDto vaccineDto = new IssuableVaccineDto("EU/1/20/1528", "Comirnaty", "1119349007",
@@ -121,7 +120,6 @@ class CovidPdfCertificateGenerationServiceTest {
 
     }
 
-
     @Test
     void generateAllDocuments() throws Exception {
         generateAllDocuments(familyNameSmall, givenNameSmall);
@@ -151,7 +149,6 @@ class CovidPdfCertificateGenerationServiceTest {
         generateDocument_partialVaccination("it", familyName, givenName);
         generateDocument_partialVaccination("rm", familyName, givenName);
     }
-
 
     void doTest(AbstractCertificatePdf pdfData, String filename, String language) throws Exception {
 
