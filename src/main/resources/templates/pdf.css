@@ -120,6 +120,10 @@ body {
     padding: 1px 0;
 }
 
+.test #personal-data {
+    margin-top: -24px !important;
+}
+
 #personal-data {
     table-layout: fixed;
     padding-bottom: 24px;
@@ -137,7 +141,7 @@ body {
 }
 
 #issuer .body-text-en {
-    padding-bottom: 12px;
+    padding-bottom: 8px;
 }
 
 #disclaimer {
