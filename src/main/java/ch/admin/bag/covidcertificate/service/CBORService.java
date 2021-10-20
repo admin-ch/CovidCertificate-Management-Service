@@ -55,16 +55,16 @@ public class CBORService {
         return cborObject.EncodeToBytes();
     }
 
-    public byte[] getSignatureData(byte[] bodyProtected, byte[] payload) {
-        if (bodyProtected == null || bodyProtected.length == 0) {
-            throw new IllegalArgumentException("BodyProtected must not be empty.");
+    public byte[] getSignatureData(byte[] protectedHeader, byte[] payload) {
+        if (protectedHeader == null || protectedHeader.length == 0) {
+            throw new IllegalArgumentException("ProtectedHeader must not be empty.");
         }
         if (payload == null || payload.length == 0) {
             throw new IllegalArgumentException("Payload must not be empty.");
         }
         CBORObject cborObject = CBORObject.NewArray();
         cborObject.Add(CONTEXT);
-        cborObject.Add(bodyProtected);
+        cborObject.Add(protectedHeader);
         cborObject.Add(EXTERNAL_AAD);
         cborObject.Add(payload);
         return cborObject.EncodeToBytes();

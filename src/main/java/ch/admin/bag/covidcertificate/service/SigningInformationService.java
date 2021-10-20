@@ -4,25 +4,26 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
-import ch.admin.bag.covidcertificate.domain.SigningInformationRepository;
 import ch.admin.bag.covidcertificate.service.domain.SigningCertificateCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
+import static ch.admin.bag.covidcertificate.api.Constants.AMBIGUOUS_SIGNING_CERTIFICATE;
 import static ch.admin.bag.covidcertificate.api.Constants.SIGNING_CERTIFICATE_MISSING;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class SigningInformationService {
-    private final SigningInformationRepository signingInformationRepository;
+    private final SigningInformationCacheService signingInformationCacheService;
 
     public SigningInformation getVaccinationSigningInformation(VaccinationCertificateCreateDto createDto){
         var medicinalProductCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
-        var signingInformation =  signingInformationRepository.findSigningInformation(SigningCertificateCategory.VACCINATION.value, medicinalProductCode);
+        var signingInformation =  signingInformationCacheService.findSigningInformation(SigningCertificateCategory.VACCINATION.value, medicinalProductCode, LocalDate.now());
 
         if(signingInformation == null){
             log.error("No signing certificate was found to sign the certificate for the {} vaccine.", medicinalProductCode);
@@ -32,12 +33,15 @@ public class SigningInformationService {
     }
 
     public SigningInformation getTestSigningInformation(){
-        var signingInformation = signingInformationRepository.findSigningInformation(SigningCertificateCategory.TEST.value);
-        if(signingInformation == null){
+        var signingInformationList = signingInformationCacheService.findSigningInformation(SigningCertificateCategory.TEST.value, LocalDate.now());
+        if(signingInformationList == null || signingInformationList.isEmpty()){
             log.error("No signing certificate was found to sign the test certificate.");
             throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
+        }else if(signingInformationList.size() > 1){
+            log.error("Ambiguous signing certificate. Multiple signing certificates were found to sign the test certificate");
+            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
         }
-        return signingInformation;
+        return signingInformationList.get(0);
     }
 
     public SigningInformation getRecoverySigningInformation(RecoveryCertificateCreateDto createDto){
@@ -46,12 +50,15 @@ public class SigningInformationService {
         if(Objects.equals(countryOfTest, "CH")) {
             signingCertificateCategory = SigningCertificateCategory.RECOVERY_CH.value;
         }
-        var signingInformation = signingInformationRepository.findSigningInformation(signingCertificateCategory);
+        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory, LocalDate.now());
 
-        if(signingInformation == null){
+        if(signingInformationList == null || signingInformationList.isEmpty()){
             log.error("No signing certificate was found to sign the recovery certificate for positive test in {}.", countryOfTest);
             throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
+        }else if(signingInformationList.size() > 1){
+            log.error("Ambiguous signing certificate. Multiple signing certificates were found for positive test in {}.", countryOfTest);
+            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
         }
-        return signingInformation;
+        return signingInformationList.get(0);
     }
 }

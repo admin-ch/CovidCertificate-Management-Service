@@ -1,6 +1,8 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.util.ZonedDateTimeDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.springframework.util.StringUtils;
 
@@ -19,6 +21,7 @@ public class TestCertificateDataDto {
 
     private String typeCode;
 
+    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
     private ZonedDateTime sampleDateTime;
 
     private String testingCentreOrFacility;
@@ -28,7 +31,7 @@ public class TestCertificateDataDto {
     public void validate(){
         if (sampleDateTime == null ||
                 sampleDateTime.toLocalDate().isAfter(LocalDate.now())) {
-            throw new CreateCertificateException(INVALID_SAMPLE_OR_RESULT_DATE_TIME);
+            throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
         }
         if (!StringUtils.hasText(testingCentreOrFacility) || testingCentreOrFacility.length() > MAX_STRING_LENGTH) {
             throw new CreateCertificateException(INVALID_TEST_CENTER);

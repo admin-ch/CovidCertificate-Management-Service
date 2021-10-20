@@ -6,6 +6,7 @@ import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,6 +45,16 @@ public class ResponseStatusExceptionHandler {
     @ExceptionHandler(value = {AccessDeniedException.class, SecurityException.class})
     protected ResponseEntity<Object> handleAccessDeniedException() {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(value = {HttpMessageNotReadableException.class})
+    protected ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        Throwable cause = e.getCause().getCause();
+
+        if(cause instanceof CreateCertificateException) {
+            return this.handleCreateCertificateException((CreateCertificateException) cause);
+        }
+        return new ResponseEntity<>("Malformed Request", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = {Exception.class})
