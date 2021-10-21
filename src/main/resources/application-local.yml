@@ -38,7 +38,7 @@ cc-management-service:
 
 cc-signing-service:
   url: "https://localhost:8443/cc-signing/sign"
-  kid-url: "https://localhost:9090/sign/configuration/kid"
+  kid-url: "https://localhost:8443/cc-signing/sign/configuration/kid"
 
 cc-printing-service:
   url: "http://localhost:8124/api/v1/print"
