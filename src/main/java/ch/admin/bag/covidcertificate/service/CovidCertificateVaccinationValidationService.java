@@ -34,18 +34,13 @@ public class CovidCertificateVaccinationValidationService {
             }
             case ApiGateway:
             case CsvUpload: {
-                if (!isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
-                }
                 var issuableVaccine = retrieveProduct(productCode, valueSetsService.getApiGatewayIssuableVaccines());
-                throwExceptionIfIssuableIsViolated(true, issuableVaccine.getIssuable());
+                throwExceptionIfIssuableIsViolated(isCountryCH, issuableVaccine.getIssuable());
                 break;
             }
             case ApiPlatform: {
-                // this source requires foreign countries
-                if (isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
-                }
+                var issuableVaccine = retrieveProduct(productCode, valueSetsService.getApiPlatformIssuableVaccines());
+                throwExceptionIfIssuableIsViolated(isCountryCH, issuableVaccine.getIssuable());
                 break;
             }
             default:
