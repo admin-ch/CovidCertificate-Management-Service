@@ -22,8 +22,12 @@ public class SigningInformationService {
     private final SigningInformationCacheService signingInformationCacheService;
 
     public SigningInformation getVaccinationSigningInformation(VaccinationCertificateCreateDto createDto){
+        return getVaccinationSigningInformation(createDto, LocalDate.now());
+    }
+
+    public SigningInformation getVaccinationSigningInformation(VaccinationCertificateCreateDto createDto, LocalDate validAt){
         var medicinalProductCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
-        var signingInformation =  signingInformationCacheService.findSigningInformation(SigningCertificateCategory.VACCINATION.value, medicinalProductCode, LocalDate.now());
+        var signingInformation =  signingInformationCacheService.findSigningInformation(SigningCertificateCategory.VACCINATION.value, medicinalProductCode, validAt);
 
         if(signingInformation == null){
             log.error("No signing certificate was found to sign the certificate for the {} vaccine.", medicinalProductCode);
@@ -33,7 +37,11 @@ public class SigningInformationService {
     }
 
     public SigningInformation getTestSigningInformation(){
-        var signingInformationList = signingInformationCacheService.findSigningInformation(SigningCertificateCategory.TEST.value, LocalDate.now());
+        return getTestSigningInformation(LocalDate.now());
+    }
+
+    public SigningInformation getTestSigningInformation(LocalDate validAt){
+        var signingInformationList = signingInformationCacheService.findSigningInformation(SigningCertificateCategory.TEST.value, validAt);
         if(signingInformationList == null || signingInformationList.isEmpty()){
             log.error("No signing certificate was found to sign the test certificate.");
             throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
@@ -45,12 +53,16 @@ public class SigningInformationService {
     }
 
     public SigningInformation getRecoverySigningInformation(RecoveryCertificateCreateDto createDto){
+        return getRecoverySigningInformation(createDto, LocalDate.now());
+    }
+
+    public SigningInformation getRecoverySigningInformation(RecoveryCertificateCreateDto createDto, LocalDate validAt){
         var countryOfTest = createDto.getRecoveryInfo().get(0).getCountryOfTest();
         var signingCertificateCategory = SigningCertificateCategory.RECOVERY_NON_CH.value;
         if(Objects.equals(countryOfTest, "CH")) {
             signingCertificateCategory = SigningCertificateCategory.RECOVERY_CH.value;
         }
-        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory, LocalDate.now());
+        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory, validAt);
 
         if(signingInformationList == null || signingInformationList.isEmpty()){
             log.error("No signing certificate was found to sign the recovery certificate for positive test in {}.", countryOfTest);
