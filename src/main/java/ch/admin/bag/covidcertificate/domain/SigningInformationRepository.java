@@ -14,7 +14,7 @@ public interface SigningInformationRepository extends JpaRepository<SigningInfor
 
     @Query(value = "select s from SigningInformation s " +
             "where s.certificateType = :certificateType " +
-            "and s.code = :code " +
+            "and upper(s.code) = upper(:code) " +
             "and s.validFrom <= :validAt " +
             "and s.validTo >= :validAt ")
     SigningInformation findSigningInformation(

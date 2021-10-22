@@ -68,7 +68,7 @@ public class ValueSetsService {
         var vaccinationValueSet = this.getValueSets()
                                       .getVaccinationSets()
                                       .stream()
-                                      .filter(valueSet -> valueSet.getProductCode().equals(productCode))
+                                      .filter(valueSet -> valueSet.getProductCode().equalsIgnoreCase(productCode))
                                       .findFirst()
                                       .orElse(null);
         if (vaccinationValueSet == null) {
