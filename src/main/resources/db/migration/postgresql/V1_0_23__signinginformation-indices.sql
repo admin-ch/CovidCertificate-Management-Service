@@ -1,0 +1,2 @@
+DROP INDEX idx_signing_information_certificate_type_code;
+CREATE INDEX idx_signing_information_certificate_type_code ON signing_information (certificate_type, upper(code));
