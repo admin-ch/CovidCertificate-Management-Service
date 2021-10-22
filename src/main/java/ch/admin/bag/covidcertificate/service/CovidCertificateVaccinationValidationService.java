@@ -50,7 +50,10 @@ public class CovidCertificateVaccinationValidationService {
 
     private IssuableVaccineDto retrieveProduct(String productCode, List<IssuableVaccineDto> issuableVaccineDtoList) {
         var issuableVaccinesOpt = issuableVaccineDtoList.stream()
-                .filter(issuableVaccine -> issuableVaccine.getProductCode().equals(productCode)).findFirst();
+                                                        .filter(issuableVaccine -> issuableVaccine.getProductCode()
+                                                                                                  .equalsIgnoreCase(
+                                                                                                          productCode))
+                                                        .findFirst();
         // the product is not available for this source
         if (issuableVaccinesOpt.isEmpty()) {
             throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);

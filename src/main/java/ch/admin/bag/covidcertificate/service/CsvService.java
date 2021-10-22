@@ -242,8 +242,6 @@ public class CsvService {
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
-            valueSetsService.getVaccinationValueSet(dataDto.getMedicinalProductCode());
-
             covidCertificateVaccinationValidationService.validateProductAndCountry((VaccinationCertificateCreateDto) createDto);
         }
     }
