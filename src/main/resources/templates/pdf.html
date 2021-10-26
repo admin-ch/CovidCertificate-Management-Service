@@ -3,8 +3,7 @@
 <head>
     <title th:text="#{document.title}"></title>
     <meta name="subject" content="CovidCertificate"/>
-    <meta name="author" content="openhtmltopdf.com team"/>
-    <meta name="description" content="An example containing everything for easy testing"/>
+    <meta name="author" th:content="#{document.author}"/>
     <link th:href="@{pdf.css}" rel="stylesheet"/>
     <style>
         @page {
@@ -278,9 +277,13 @@
 </div>
 <table th:id="footer">
     <tr>
-        <td>
+        <td th:unless="${isEvidence}">
             <p th:text="#{footer.app}" class="body-text no-padding"></p>
             <p th:text="#{footer.app(${'en'})}" class="body-text-en"></p>
+        </td>
+        <td th:if="${isEvidence}">
+            <p th:text="#{footer.evidence.app}" class="body-text no-padding"></p>
+            <p th:text="#{footer.evidence.app(${'en'})}" class="body-text-en"></p>
         </td>
         <td rowspan="2" class="table-center">
             <img th:src="appicon.png" alt="covid certificate app icon" width="48"></img>
