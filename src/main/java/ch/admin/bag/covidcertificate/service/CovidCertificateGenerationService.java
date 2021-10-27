@@ -14,7 +14,7 @@ import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
-import ch.admin.bag.covidcertificate.service.document.CovidPdfCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificateQrCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,7 +42,7 @@ public class CovidCertificateGenerationService {
     private final PrintQueueClient printQueueClient;
     private final InAppDeliveryClient inAppDeliveryClient;
     private final ObjectMapper objectMapper;
-    private final CovidPdfCertificateGenerationService covidPdfCertificateGenerationService;
+    private final PdfCertificateGenerationService pdfCertificateGenerationService;
     private final CovidCertificateDtoMapperService covidCertificateDtoMapperService;
     private final CovidCertificatePdfGenerateRequestDtoMapperService covidCertificatePdfGenerateRequestDtoMapperService;
     private final CertificatePrintRequestDtoMapper certificatePrintRequestDtoMapper;
@@ -76,7 +76,7 @@ public class CovidCertificateGenerationService {
         try {
             var issuedAt = getLocalDateTimeFromEpochMillis(issuedAtMillis);
             var barcode = new DefaultBarcodeCreator().create(hcert, StandardCharsets.US_ASCII);
-            var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, hcert, issuedAt);
+            var pdf = pdfCertificateGenerationService.generateCovidCertificate(pdfData, hcert, issuedAt);
             return new CovidCertificateCreateResponseDto(pdf, barcode.getImage(), uvci);
         } catch (BarcodeException e) {
             throw new CreateCertificateException(CREATE_BARCODE_FAILED);
@@ -118,7 +118,7 @@ public class CovidCertificateGenerationService {
         log.info("Create barcode");
         var code = barcodeService.createBarcode(contents, signingInformation);
         log.info("Create certificate pdf");
-        var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
+        var pdf = pdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
 
         var responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         if (createDto.sendToPrint()) {
