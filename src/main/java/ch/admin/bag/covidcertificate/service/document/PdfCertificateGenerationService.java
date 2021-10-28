@@ -32,7 +32,7 @@ public class PdfCertificateGenerationService {
 
     public PdfCertificateGenerationService(ConfigurableEnvironment env) {
         this.pdfBuilder = getPdfBuilder();
-        this.showWatermark = Arrays.stream(env.getActiveProfiles()).noneMatch("dev"::equals);
+        this.showWatermark = Arrays.stream(env.getActiveProfiles()).noneMatch("prod"::equals);
     }
 
     private PdfRendererBuilder getPdfBuilder() {
