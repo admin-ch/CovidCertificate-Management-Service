@@ -1,9 +1,7 @@
 package ch.admin.bag.covidcertificate.service.document;
 
+import ch.admin.bag.covidcertificate.service.document.util.PdfHtmlRenderer;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
@@ -11,28 +9,25 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
-import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class PdfCertificateGenerationService {
 
     private final PdfRendererBuilder pdfBuilder;
-    private final boolean showWatermark;
+    private final PdfHtmlRenderer pdfHtmlRenderer;
 
-    public PdfCertificateGenerationService(ConfigurableEnvironment env) {
+    public PdfCertificateGenerationService() {
         this.pdfBuilder = getPdfBuilder();
-        this.showWatermark = Arrays.stream(env.getActiveProfiles()).noneMatch("prod"::equals);
+        this.pdfHtmlRenderer = new PdfHtmlRenderer();
     }
 
     private PdfRendererBuilder getPdfBuilder() {
@@ -50,8 +45,7 @@ public class PdfCertificateGenerationService {
     public byte[] generateCovidCertificate(AbstractCertificatePdf data, String barcodePayload, LocalDateTime issuedAt) {
         try {
             var templatePath = this.getClass().getClassLoader().getResource("templates/pdf.html");
-            var barcodeImage = this.getBarcodeImage(barcodePayload);
-            var content = this.parseThymeleafTemplate("pdf", this.getContext(data), barcodeImage, issuedAt);
+            var content = this.pdfHtmlRenderer.render(data, this.getBarcodeImage(barcodePayload), issuedAt);
 
             var os = new ByteArrayOutputStream();
             pdfBuilder.toStream(os);
@@ -64,61 +58,6 @@ public class PdfCertificateGenerationService {
         }
     }
 
-    private String parseThymeleafTemplate(String templateName, Context context, String barcodePayload, LocalDateTime issuedAt) {
-        var templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix("templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-
-        var templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-        templateEngine.setMessageResolver(new CustomMessageResolver());
-
-        context.setVariable("qrCode", barcodePayload);
-        context.setVariable("dateFormatter", LOCAL_DATE_FORMAT);
-        context.setVariable("creationDate", issuedAt.format(LOCAL_DATE_FORMAT));
-        context.setVariable("creationTime", issuedAt.format(DateTimeFormatter.ofPattern("HH:mm")));
-
-        return templateEngine.process(templateName, context);
-    }
-
-    private Context getContext(AbstractCertificatePdf data) {
-        var context = new Context();
-        context.setLocale(this.getLocale(data.getLanguage()));
-        context.setVariable("isEvidence", false);
-        context.setVariable("showWatermark", this.showWatermark);
-
-        // set data in correct type
-        if (data instanceof VaccinationCertificatePdf) {
-            context.setVariable("data", (VaccinationCertificatePdf) data);
-            context.setVariable("type", "vaccine");
-            context.setVariable("isEvidence",
-                    ((VaccinationCertificatePdf) data).getNumberOfDoses() < ((VaccinationCertificatePdf) data).getTotalNumberOfDoses()
-            );
-        } else if (data instanceof RecoveryCertificatePdf) {
-            context.setVariable("data", (RecoveryCertificatePdf) data);
-            context.setVariable("type", "recovery");
-        } else {
-            context.setVariable("data", (TestCertificatePdf) data);
-            context.setVariable("type", "test");
-            context.setVariable("dateTimeFormatter", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"));
-        }
-        return context;
-    }
-
-    private Locale getLocale(String language) {
-        switch (language) {
-            case "fr":
-                return Locale.FRENCH;
-            case "it":
-                return Locale.ITALIAN;
-            case "rm":
-                return Locale.forLanguageTag("rm");
-            default:
-                return Locale.GERMAN;
-        }
-    }
-
     private String getBarcodeImage(String barcodeContent) throws IOException {
         // Create QR code object with error correction level "M" (up to 15% damage)
         Map<EncodeHintType, Object> hints = new HashMap<>();
@@ -128,4 +67,5 @@ public class PdfCertificateGenerationService {
 
         return qrCode.getBase64Barcode();
     }
+
 }
