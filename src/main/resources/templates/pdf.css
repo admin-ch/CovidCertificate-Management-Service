@@ -1,0 +1,173 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 0;
+    margin: 0 0 0 40px;
+}
+
+.two-col-table {
+    width: 100%;
+    table-layout: fixed;
+    padding: 0;
+    margin: 0 0 0 -2px;
+}
+
+.two-col-table td {
+    vertical-align: top;
+}
+
+.two-col-table .first-col {
+    width: 43%;
+    max-width: 43%;
+    padding-right: 4%;
+}
+
+.two-col-table .second-col {
+    width: 53%;
+    max-width: 53%;
+}
+
+.heading, .body-text, .body-text-en, .body-text-small, .body-text-small-en {
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+
+.heading {
+    font-weight: 600;
+}
+
+.body-text, .heading {
+    font-size: 10pt;
+}
+
+.body-text-en {
+    font-size: 9pt;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.body-text-small {
+    font-size: 8pt;
+}
+
+.body-text-small-en {
+    font-size: 8pt;
+    font-style: italic;
+}
+
+.no-padding {
+    margin: 0;
+    padding: 0;
+    line-height: 110%;
+}
+
+.table-row td {
+    padding-bottom: 12px;
+}
+
+.table-row-padding {
+    padding-right: 5px;
+}
+
+.table-center {
+    text-align: center;
+}
+
+#header {
+    margin-bottom: 8px;
+    vertical-align: middle;
+}
+
+#logo-bund {
+    width: 210px;
+    margin-left: -42px;
+    padding-top: 8px;
+}
+
+#title {
+    color: rgb(220, 0, 24);
+    font-size: 26pt;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+#title-en {
+    font-size: 16pt;
+    font-style: italic;
+    font-weight: normal;
+    padding: 0;
+    margin: -8px 0 0;
+}
+
+#qr-code-section {
+    padding-bottom: 24px;
+}
+
+#qr-code {
+    /* QR Code does have a different size when generated locally, because of this it looks too far left. On other environments it looks fine */
+    width: 300px;
+    height: 300px;
+    margin-bottom: 0;
+}
+
+#health-data-header-row, #personal-data-header-row {
+    padding-top: 12px;
+    padding-bottom: 16px;
+}
+
+#health-data-header-row span {
+    padding: 1px 0;
+}
+
+.test #personal-data {
+    margin-top: -24px !important;
+}
+
+#personal-data {
+    table-layout: fixed;
+    padding-bottom: 24px;
+    margin: 0 0 0 -2px;
+}
+
+#personal-data td {
+    min-width: 130px;
+    vertical-align: top;
+}
+
+#personal-data p {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+#issuer .body-text-en {
+    padding-bottom: 8px;
+}
+
+#disclaimer {
+    padding: 4px 2px;
+    text-align: center;
+    background-color: rgb(252, 231, 232);
+}
+
+#disclaimer p {
+    font-size: 7pt;
+}
+
+#footer {
+    padding: 12px 0;
+    width: 100%;
+    margin: 0 0 0 -2px;
+}
+
+#watermark {
+    position: absolute;
+    top: 45%;
+    left: 25%;
+    z-index: -10;
+
+    font-size: 80pt;
+    font-weight: 600;
+    color: #eaeaea;
+    transform: rotate(-45deg);
+}

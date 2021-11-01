@@ -1,0 +1,306 @@
+<html xmlns:th="http://www.thymeleaf.org" th:enctype="utf-8" th:with="lang=${#locale.language}" th:lang="${lang}"
+      th:xmllang="${lang}">
+<head>
+    <title th:text="#{document.title}"></title>
+    <meta name="subject" content="CovidCertificate"/>
+    <meta name="author" th:content="#{document.author}"/>
+    <link th:href="@{pdf.css}" rel="stylesheet"/>
+    <style>
+        @page {
+            margin: 40px 50px 10px 30px;
+            size: A4;
+        }
+    </style>
+</head>
+<body th:class="${type}">
+<table th:id="header" class="two-col-table">
+    <tr>
+        <td class="first-col"><img th:id="logo-bund" th:src="bund.png" alt="government icon"></img></td>
+        <td th:unless="${isEvidence}" class="second-col">
+            <div>
+                <h1 th:text="#{document.title}" th:id="title"></h1>
+                <h3 th:text="#{document.title(${'en'})}" th:id="title-en"></h3>
+            </div>
+        </td>
+        <td th:if="${isEvidence}" class="second-col">
+            <div>
+                <h1 th:text="#{evidence.document.title}" th:id="title"></h1>
+                <h3 th:text="#{evidence.document.title(${'en'})}" th:id="title-en"></h3>
+            </div>
+        </td>
+    </tr>
+</table>
+<table class="two-col-table" th:id="health-data">
+    <tr>
+        <td th:id="qr-code-section" class="first-col">
+            <!-- QR Code does have a different size when generated locally, because of this it looks too far left. On other environments it looks fine -->
+            <img th:id="qr-code" th:src="|data:image/png;base64,${qrCode}|" alt="Barcode Zertifikat"/>
+            <p th:text="${data.getIdentifier()}" th:class="body-text"></p>
+            <p th:text="#{qrCode.label(${creationDate}, ${creationTime})}" class="body-text-small"></p>
+            <p th:text="#{qrCode.label(${creationDate}, ${creationTime}, ${'en'})}"
+               class="body-text-small-en">
+            </p>
+            <p th:text="#{qrCode.date.label}" th:class="body-text-small-en"></p>
+        </td>
+        <td th:switch="${type}" class="second-col">
+            <table th:case="'vaccine'" class="two-col-table">
+                <tr class="table-row">
+                    <th th:id="health-data-header-row" th:unless="${isEvidence}">
+                        <p th:text="#{vaccination.title}" class="heading no-padding"></p>
+                        <p th:text="#{vaccination.title(${'en'})}" th:class="body-text-en"></p>
+                    </th>
+                    <th th:id="health-data-header-row" th:if="${isEvidence}">
+                        <p th:text="#{evidence.title}" class="heading no-padding"></p>
+                        <p th:text="#{evidence.title(${'en'})}" th:class="body-text-en"></p>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.disease.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.disease.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text" th:text="#{vaccination.disease}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.dosis.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.dosis.label(${'en'})}"></p>
+                    </td>
+                    <td>
+                        <span class="body-text"
+                              th:text="${data.getNumberOfDoses()}"></span>
+                        /
+                        <span class="body-text"
+                              th:text="${data.getTotalNumberOfDoses()}"></span>
+                    </td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.type.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.type.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getVaccineProphylaxis()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.product.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.product.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getMedicinalProduct()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.manufacturer.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.manufacturer.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getMarketingAuthorizationHolder()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.date.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.date.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getVaccinationDate().format(dateFormatter)}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.country.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.country.label(${'en'})}"></p>
+                    </td>
+                    <td>
+                        <p class="body-text no-padding" th:text="${data.getCountryOfVaccination()}"></p>
+                        <p class="body-text-en" th:text="${data.getCountryOfVaccinationEn()}"></p>
+                    </td>
+                </tr>
+            </table>
+            <table th:case="'recovery'" class="two-col-table">
+                <tr class="table-row">
+                    <th th:id="health-data-header-row">
+                        <p th:text="#{recovery.title}" class="heading no-padding"></p>
+                        <p th:text="#{recovery.title(${'en'})}" class="body-text-en"></p>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.disease.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.disease.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text" th:text="#{vaccination.disease}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{recovery.firstPositiveTestResult.label}"></p>
+                        <p class="body-text-en" th:text="#{recovery.firstPositiveTestResult.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getDateOfFirstPositiveTestResult().format(dateFormatter)}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{recovery.validFrom}"></p>
+                        <p class="body-text-en" th:text="#{recovery.validFrom(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getValidFrom().format(dateFormatter)}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{recovery.validUntil}"></p>
+                        <p class="body-text-en" th:text="#{recovery.validUntil(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getValidUntil().format(dateFormatter)}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{recovery.countryOfTest.label}"></p>
+                        <p class="body-text-en" th:text="#{recovery.countryOfTest.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getCountryOfTest()}"></td>
+                </tr>
+            </table>
+            <table th:case="'test'" class="two-col-table">
+                <tr class="table-row">
+                    <th th:id="health-data-header-row">
+                        <p th:text="#{test.title}" class="heading no-padding"></p>
+                        <p th:text="#{test.title(${'en'})}" th:class="body-text-en"></p>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.disease.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.disease.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text" th:text="#{vaccination.disease}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.result.label}"></p>
+                        <p class="body-text-en" th:text="#{test.result.label(${'en'})}"></p>
+                    </td>
+                    <td>
+                        <p class="body-text no-padding" th:text="#{test.result.value}"></p>
+                        <p class="body-text-en" th:text="#{test.result.value(${'en'})}"></p>
+                    </td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.type.label}"></p>
+                        <p class="body-text-en" th:text="#{test.type.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getTypeOfTest()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.nameAndManufacturer.label}"></p>
+                        <p class="body-text-en" th:text="#{test.nameAndManufacturer.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getTestNameAndManufacturer()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.date.label}"></p>
+                        <p class="body-text-en" th:text="#{test.date.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getSampleDateTime().format(dateTimeFormatter)}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.conducted.label}"></p>
+                        <p class="body-text-en" th:text="#{test.conducted.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getTestingCentreOrFacility()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.country.label}"></p>
+                        <p class="body-text-en" th:text="#{test.country.label(${'en'})}"></p>
+                    </td>
+                    <td>
+                        <p class="body-text no-padding" th:text="${data.getMemberStateOfTest()}"></p>
+                        <p class="body-text-en" th:text="${data.getMemberStateOfTestEn()}"></p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<table th:id="personal-data">
+    <tr class="table-row">
+        <th th:id="personal-data-header-row" colspan="2">
+            <p th:text="#{personalData.title}" class="heading no-padding"></p>
+            <p th:text="#{personalData.title(${'en'})}" class="body-text-en"></p>
+        </th>
+        <th></th>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{personalData.name.label}"></p>
+            <p class="body-text-en" th:text="#{personalData.name.label(${'en'})}"></p>
+        </td>
+        <td>
+            <p class="body-text" th:text="${data.getGivenName()}"></p>
+            <p class="body-text" th:text="${data.getFamilyName()}"></p>
+        </td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{personalData.date.label}"></p>
+            <p class="body-text-en" th:text="#{personalData.date.label(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${birthdate}"></td>
+    </tr>
+</table>
+<div th:id="issuer">
+    <p class="body-text no-padding" th:text="#{issuer.title}"></p>
+    <p class="body-text-en" th:text="#{issuer.title(${'en'})}"></p>
+    <p th:text="#{issuer.issuer}" class="heading no-padding"></p>
+    <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
+</div>
+<div th:id="disclaimer">
+    <p class="body-text-small" th:text="#{info.info1}"></p>
+    <p class="body-text-small" th:text="#{info.info2}"></p>
+    <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
+    <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
+</div>
+<table th:id="footer">
+    <tr>
+        <td th:unless="${isEvidence}">
+            <p th:text="#{footer.app}" class="body-text no-padding"></p>
+            <p th:text="#{footer.app(${'en'})}" class="body-text-en"></p>
+        </td>
+        <td th:if="${isEvidence}">
+            <p th:text="#{footer.evidence.app}" class="body-text no-padding"></p>
+            <p th:text="#{footer.evidence.app(${'en'})}" class="body-text-en"></p>
+        </td>
+        <td rowspan="2" class="table-center">
+            <img th:src="appicon.png" alt="covid certificate app icon" width="48"></img>
+            <p class="body-text-small no-padding">Covid Certificate</p>
+        </td>
+        <td class="table-center" style="display: block">
+            <img th:src="appstore.png" alt="app store icon" height="24"></img>
+        </td>
+    </tr>
+    <tr>
+        <td th:text="#{footer.infoline}" class="heading"></td>
+        <td class="table-center" style="display: block">
+            <img th:src="googleplay.png" alt="google play icon" height="24"></img>
+        </td>
+    </tr>
+</table>
+<div th:if="${showWatermark}" th:id="watermark">DRAFT</div>
+</body>
+</html>

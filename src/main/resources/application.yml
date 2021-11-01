@@ -117,6 +117,8 @@ cc-management-service:
       secure: false
   rapid-test-import:
     cron: "0 0 03 * * *"
+  pdf:
+    show-watermark: true
 
 cc-printing-service:
   billing:

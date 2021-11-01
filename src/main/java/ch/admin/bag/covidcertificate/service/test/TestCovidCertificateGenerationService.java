@@ -12,9 +12,8 @@ import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import ch.admin.bag.covidcertificate.service.BarcodeService;
 import ch.admin.bag.covidcertificate.service.CovidCertificateDtoMapperService;
-import ch.admin.bag.covidcertificate.service.CovidCertificatePdfGenerateRequestDtoMapperService;
 import ch.admin.bag.covidcertificate.service.SigningInformationService;
-import ch.admin.bag.covidcertificate.service.document.CovidPdfCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificateQrCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,9 +34,8 @@ public class TestCovidCertificateGenerationService {
     private final PrintQueueClient printQueueClient;
     private final InAppDeliveryClient inAppDeliveryClient;
     private final ObjectMapper objectMapper;
-    private final CovidPdfCertificateGenerationService covidPdfCertificateGenerationService;
+    private final PdfCertificateGenerationService covidPdfCertificateGenerationService;
     private final CovidCertificateDtoMapperService covidCertificateDtoMapperService;
-    private final CovidCertificatePdfGenerateRequestDtoMapperService covidCertificatePdfGenerateRequestDtoMapperService;
     private final CertificatePrintRequestDtoMapper certificatePrintRequestDtoMapper;
     private final SigningInformationService signingInformationService;
 
