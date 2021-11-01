@@ -33,6 +33,7 @@
 <table class="two-col-table" th:id="health-data">
     <tr>
         <td th:id="qr-code-section" class="first-col">
+            <!-- QR Code does have a different size when generated locally, because of this it looks too far left. On other environments it looks fine -->
             <img th:id="qr-code" th:src="|data:image/png;base64,${qrCode}|" alt="Barcode Zertifikat"/>
             <p th:text="${data.getIdentifier()}" th:class="body-text"></p>
             <p th:text="#{qrCode.label(${creationDate}, ${creationTime})}" class="body-text-small"></p>
@@ -260,7 +261,7 @@
             <p class="body-text-en" th:text="#{personalData.date.label(${'en'})}"></p>
         </td>
         <td class="body-text"
-            th:text="${data.getDateOfBirth()}"></td>
+            th:text="${birthdate}"></td>
     </tr>
 </table>
 <div th:id="issuer">
