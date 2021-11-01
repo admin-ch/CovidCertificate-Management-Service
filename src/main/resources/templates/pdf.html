@@ -154,8 +154,10 @@
                         <p class="body-text no-padding" th:text="#{recovery.validUntil}"></p>
                         <p class="body-text-en" th:text="#{recovery.validUntil(${'en'})}"></p>
                     </td>
-                    <td class="body-text"
-                        th:text="${data.getValidUntil().format(dateFormatter)}"></td>
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:utext="#{recovery.countrySpecific}"></p>
+                        <p class="body-text-en" th:utext="#{recovery.countrySpecific(${'en'})}"></p>
+                    </td>
                 </tr>
                 <tr class="table-row">
                     <td class="table-row-padding">
@@ -273,8 +275,10 @@
 <div th:id="disclaimer">
     <p class="body-text-small" th:text="#{info.info1}"></p>
     <p class="body-text-small" th:text="#{info.info2}"></p>
+    <p class="body-text-small" th:if="${type == 'recovery'} "th:utext="#{recovery.info}"></p>
     <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
     <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
+    <p class="body-text-small-en" th:if="${type == 'recovery'} "th:utext="#{recovery.info(${'en'})}"></p>
 </div>
 <table th:id="footer">
     <tr>
