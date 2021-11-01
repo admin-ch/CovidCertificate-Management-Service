@@ -105,10 +105,10 @@ body {
 }
 
 #qr-code {
-    /* QR Code does have a different size when generated locally, because of this it looks too far left. On other environments it looks fine */
     width: 300px;
     height: 300px;
     margin-bottom: 0;
+    margin-left: 15px;
 }
 
 #health-data-header-row, #personal-data-header-row {
