@@ -2,6 +2,8 @@ package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import lombok.*;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.util.StringUtils;
 
 import java.util.regex.Matcher;
@@ -31,13 +33,16 @@ public class CovidCertificatePersonNameDto {
         }
 
         Matcher givenNameMatcher = p.matcher(givenName);
-        Matcher familyNameMatcher = p.matcher(familyName);
-
         if(givenNameMatcher.find()) {
             throw new CreateCertificateException(INVALID_GIVEN_NAME);
         }
+
+        Matcher familyNameMatcher = p.matcher(familyName);
         if(familyNameMatcher.find()) {
             throw new CreateCertificateException(INVALID_FAMILY_NAME);
         }
+
+        familyName = Jsoup.clean(familyName, Safelist.none());
+        givenName = Jsoup.clean(givenName, Safelist.none());
     }
 }
