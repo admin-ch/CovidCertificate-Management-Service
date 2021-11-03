@@ -1,9 +1,7 @@
 package ch.admin.bag.covidcertificate.service.document;
 
+import ch.admin.bag.covidcertificate.service.document.util.PdfHtmlRenderer;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
@@ -11,28 +9,25 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
-import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class PdfCertificateGenerationService {
 
     private final PdfRendererBuilder pdfBuilder;
-    private final boolean showWatermark;
+    private final PdfHtmlRenderer pdfHtmlRenderer;
 
-    public PdfCertificateGenerationService(ConfigurableEnvironment env) {
+    public PdfCertificateGenerationService() {
         this.pdfBuilder = getPdfBuilder();
-        this.showWatermark = Arrays.stream(env.getActiveProfiles()).noneMatch("prod"::equals);
+        this.pdfHtmlRenderer = new PdfHtmlRenderer();
     }
 
     private PdfRendererBuilder getPdfBuilder() {
@@ -50,8 +45,7 @@ public class PdfCertificateGenerationService {
     public byte[] generateCovidCertificate(AbstractCertificatePdf data, String barcodePayload, LocalDateTime issuedAt) {
         try {
             var templatePath = this.getClass().getClassLoader().getResource("templates/pdf.html");
-            var barcodeImage = this.getBarcodeImage(barcodePayload);
-            var content = this.parseThymeleafTemplate("pdf", this.getContext(data), barcodeImage, issuedAt);
+            var content = this.pdfHtmlRenderer.render(data, this.getBarcodeImage(barcodePayload), issuedAt);
 
             var os = new ByteArrayOutputStream();
             pdfBuilder.toStream(os);
@@ -116,4 +110,5 @@ public class PdfCertificateGenerationService {
 
         return qrCode.getBase64Barcode();
     }
+
 }

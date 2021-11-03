@@ -33,6 +33,7 @@
 <table class="two-col-table" th:id="health-data">
     <tr>
         <td th:id="qr-code-section" class="first-col">
+            <!-- QR Code does have a different size when generated locally, because of this it looks too far left. On other environments it looks fine -->
             <img th:id="qr-code" th:src="|data:image/png;base64,${qrCode}|" alt="Barcode Zertifikat"/>
             <p th:text="${data.getIdentifier()}" th:class="body-text"></p>
             <p th:text="#{qrCode.label(${creationDate}, ${creationTime})}" class="body-text-small"></p>
@@ -153,8 +154,10 @@
                         <p class="body-text no-padding" th:text="#{recovery.validUntil}"></p>
                         <p class="body-text-en" th:text="#{recovery.validUntil(${'en'})}"></p>
                     </td>
-                    <td class="body-text"
-                        th:text="${data.getValidUntil().format(dateFormatter)}"></td>
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:utext="#{recovery.countrySpecific}"></p>
+                        <p class="body-text-en" th:utext="#{recovery.countrySpecific(${'en'})}"></p>
+                    </td>
                 </tr>
                 <tr class="table-row">
                     <td class="table-row-padding">
@@ -320,7 +323,7 @@
             <p class="body-text-en" th:text="#{personalData.date.label(${'en'})}"></p>
         </td>
         <td class="body-text"
-            th:text="${data.getDateOfBirth()}"></td>
+            th:text="${birthdate}"></td>
     </tr>
 </table>
 <div th:id="issuer">
@@ -332,8 +335,10 @@
 <div th:id="disclaimer">
     <p class="body-text-small" th:text="#{info.info1}"></p>
     <p class="body-text-small" th:text="#{info.info2}"></p>
+    <p class="body-text-small" th:if="${type == 'recovery'} "th:utext="#{recovery.info}"></p>
     <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
     <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
+    <p class="body-text-small-en" th:if="${type == 'recovery'} "th:utext="#{recovery.info(${'en'})}"></p>
 </div>
 <table th:id="footer">
     <tr>
