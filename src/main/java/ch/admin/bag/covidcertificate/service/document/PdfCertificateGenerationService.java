@@ -7,7 +7,6 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -55,49 +54,6 @@ public class PdfCertificateGenerationService {
             return os.toByteArray();
         } catch (Exception e) {
             throw new IllegalStateException(e);
-        }
-    }
-
-    private String parseThymeleafTemplate(String templateName, Context context, String barcodePayload, LocalDateTime issuedAt) {
-        var templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix("templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-
-        var templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-        templateEngine.setMessageResolver(new CustomMessageResolver());
-
-        context.setVariable("qrCode", barcodePayload);
-        context.setVariable("dateFormatter", LOCAL_DATE_FORMAT);
-        context.setVariable("creationDate", issuedAt.format(LOCAL_DATE_FORMAT));
-        context.setVariable("creationTime", issuedAt.format(DateTimeFormatter.ofPattern("HH:mm")));
-
-        return templateEngine.process(templateName, context);
-    }
-
-    private Context getContext(AbstractCertificatePdf data) {
-        var context = new Context();
-        context.setLocale(this.getLocale(data.getLanguage()));
-        context.setVariable("isEvidence", false);
-        context.setVariable("showWatermark", this.showWatermark);
-        context.setVariable("data", data);
-        context.setVariable("type", data.getType());
-        context.setVariable("dateTimeFormatter", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"));
-        context.setVariable("isEvidence", data.isEvidence());
-        return context;
-    }
-
-    private Locale getLocale(String language) {
-        switch (language) {
-            case "fr":
-                return Locale.FRENCH;
-            case "it":
-                return Locale.ITALIAN;
-            case "rm":
-                return Locale.forLanguageTag("rm");
-            default:
-                return Locale.GERMAN;
         }
     }
 

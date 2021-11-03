@@ -287,15 +287,11 @@
                     <td class="body-text"
                         th:text="${data.getCountryOfTest()}"></td>
                 </tr>
-
-                <tr class="table-row">
-                    <div th:id="issuer">
-                        <p class="body-text no-padding" th:text="#{antibody.validInSwitzerlandOnly}"></p>
-                        <p class="body-text-en" th:text="#{antibody.validInSwitzerlandOnly(${'en'})}"></p>
-                    </div>
-                </tr>
-
             </table>
+            <div th:id="issuer">
+                <p class="body-text no-padding" th:text="#{antibody.validInSwitzerlandOnly}"></p>
+                <p class="body-text-en" th:text="#{antibody.validInSwitzerlandOnly(${'en'})}"></p>
+            </div>
         </td>
     </tr>
 </table>

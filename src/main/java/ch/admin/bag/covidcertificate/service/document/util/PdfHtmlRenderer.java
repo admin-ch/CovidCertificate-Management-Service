@@ -2,9 +2,6 @@ package ch.admin.bag.covidcertificate.service.document.util;
 
 import ch.admin.bag.covidcertificate.service.document.CustomMessageResolver;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import ch.admin.bag.covidcertificate.util.DateHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.thymeleaf.TemplateEngine;
@@ -49,28 +46,17 @@ public class PdfHtmlRenderer {
     private Context getContext(AbstractCertificatePdf data, String barcodeImage, LocalDateTime issuedAt) {
         var context = new Context();
         context.setLocale(this.getLocale(data.getLanguage()));
-        context.setVariable("isEvidence", false);
+        context.setVariable("data", data);
+        context.setVariable("isEvidence", data.isEvidence());
         context.setVariable("showWatermark", this.showWatermark);
         context.setVariable("qrCode", barcodeImage);
         context.setVariable("dateFormatter", LOCAL_DATE_FORMAT);
         context.setVariable("creationDate", issuedAt.format(LOCAL_DATE_FORMAT));
         context.setVariable("creationTime", issuedAt.format(DateTimeFormatter.ofPattern("HH:mm")));
         context.setVariable("birthdate", DateHelper.formatDateOfBirth(data.getDateOfBirth()));
+        context.setVariable("dateTimeFormatter", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"));
+        context.setVariable("type", data.getType());
 
-        // set data in correct type
-        if (data instanceof VaccinationCertificatePdf) {
-            context.setVariable("data", (VaccinationCertificatePdf) data);
-            context.setVariable("type", "vaccine");
-            var isEvidence = ((VaccinationCertificatePdf) data).getNumberOfDoses() < ((VaccinationCertificatePdf) data).getTotalNumberOfDoses();
-            context.setVariable("isEvidence", isEvidence);
-        } else if (data instanceof RecoveryCertificatePdf) {
-            context.setVariable("data", (RecoveryCertificatePdf) data);
-            context.setVariable("type", "recovery");
-        } else {
-            context.setVariable("data", (TestCertificatePdf) data);
-            context.setVariable("type", "test");
-            context.setVariable("dateTimeFormatter", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"));
-        }
         return context;
     }
 
