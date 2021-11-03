@@ -14,12 +14,18 @@ public abstract class AbstractCertificatePdf {
     protected String dateOfBirth;
     protected String identifier;
     protected String language;
+    protected String type;
 
-    protected AbstractCertificatePdf(String familyName, String givenName, String dateOfBirth, String identifier, String language) {
+    protected AbstractCertificatePdf(String familyName, String givenName, String dateOfBirth, String identifier, String language, String type) {
         this.familyName = familyName;
         this.givenName = givenName;
         this.dateOfBirth = dateOfBirth;
         this.identifier = identifier;
         this.language = language;
+        this.type = type;
+    }
+
+    public boolean isEvidence() {
+        return false;
     }
 }

@@ -9,42 +9,37 @@ import java.time.LocalDate;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class RecoveryCertificatePdf extends AbstractCertificatePdf {
+public class AntibodyCertificatePdf extends AbstractCertificatePdf {
     private final String diseaseOrAgentTargetedCode;
     private final String diseaseOrAgentTargetedSystem;
-    private final LocalDate dateOfFirstPositiveTestResult;
+    private final LocalDate sampleDate;
+    private final String testingCentreOrFacility;
     private final String countryOfTest;
     private final String countryOfTestEn;
 
     private final String issuer;
-    private final LocalDate validFrom;
-    private final LocalDate validUntil;
 
-    public RecoveryCertificatePdf(
+    public AntibodyCertificatePdf(
             String familyName,
             String givenName,
             String dateOfBirth,
             String language,
             String diseaseOrAgentTargetedCode,
             String diseaseOrAgentTargetedSystem,
-            LocalDate dateOfFirstPositiveTestResult,
+            LocalDate sampleDate,
+            String testingCentreOrFacility,
             String countryOfTest,
             String countryOfTestEn,
             String issuer,
-            LocalDate validFrom,
-            LocalDate validUntil,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language, "recovery");
+        super(familyName, givenName, dateOfBirth, identifier, language, "antibody");
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
-        this.dateOfFirstPositiveTestResult = dateOfFirstPositiveTestResult;
+        this.sampleDate = sampleDate;
+        this.testingCentreOrFacility = testingCentreOrFacility;
         this.countryOfTest = countryOfTest;
         this.countryOfTestEn = countryOfTestEn;
         this.issuer = issuer;
-        this.validFrom = validFrom;
-        this.validUntil = validUntil;
     }
-
-
 }
