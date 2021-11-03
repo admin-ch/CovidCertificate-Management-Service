@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.util;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
@@ -14,7 +15,6 @@ import static org.apache.commons.codec.binary.Hex.encodeHexString;
 public class UVCI {
     private static final String PREFIX = "urn:uvci";
     private static final String VERSION = "01";
-    private static final String COUNTRY_CODE = "CH";
     private static final byte[] SALT;
 
     private UVCI() {
@@ -31,7 +31,7 @@ public class UVCI {
     public static String generateUVCI(String input) {
         long timestamp = System.nanoTime();
         String opaqueString = getOpaqueString(input + timestamp);
-        return String.format("%s:%s:%s:%s", PREFIX, VERSION, COUNTRY_CODE, opaqueString);
+        return String.format("%s:%s:%s:%s", PREFIX, VERSION, Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND, opaqueString);
     }
 
     private static String getOpaqueString(String input) {

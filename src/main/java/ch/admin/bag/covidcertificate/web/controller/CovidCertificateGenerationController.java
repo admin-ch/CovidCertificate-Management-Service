@@ -106,4 +106,11 @@ public class CovidCertificateGenerationController {
         log.info("Call of Create for recovery certificate");
         return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
     }
+
+    @PostMapping("/fromexisting/antibody")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CovidCertificateCreateResponseDto generateAntibodyPdfFromExistingCertificate(@Valid @RequestBody AntibodyCertificatePdfGenerateRequestDto pdfGenerateRequestDto, HttpServletRequest request) {
+        log.info("Call of Create for antibody certificate");
+        return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+    }
 }
