@@ -30,7 +30,7 @@ public class RecoveryCertificatePdfGenerateRequestDtoMapper {
                 countryOfTestEn,
                 ISSUER,
                 DateHelper.calculateValidFrom(recoveryCertificateCreateDto.getDecodedCert().getRecoveryInfo().get(0).getDateOfFirstPositiveTestResult()),
-                DateHelper.calculateValidUntil(recoveryCertificateCreateDto.getDecodedCert().getRecoveryInfo().get(0).getDateOfFirstPositiveTestResult()),
+                DateHelper.calculateValidUntilForRecoveryCertificate(recoveryCertificateCreateDto.getDecodedCert().getRecoveryInfo().get(0).getDateOfFirstPositiveTestResult()),
                 recoveryCertificateCreateDto.getDecodedCert().getRecoveryInfo().get(0).getIdentifier());
     }
 }
