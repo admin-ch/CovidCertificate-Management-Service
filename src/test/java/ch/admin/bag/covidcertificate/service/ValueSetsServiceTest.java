@@ -36,7 +36,6 @@ import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestVa
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccine;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
-import static ch.admin.bag.covidcertificate.api.Constants.PCR_TYPE_CODE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.IT;
@@ -130,7 +129,7 @@ public class ValueSetsServiceTest {
 
             // @Todo: Mock the DB call to include expected at getIssuableRapidTests(), once DB is connected
 
-            var actual = service.getIssuableTestDto(PCR_TYPE_CODE, manufacturerCode);
+            var actual = service.getIssuableTestDto(TestType.PCR.typeCode, manufacturerCode);
 
             assertEquals(expected, actual);
         }
@@ -139,7 +138,7 @@ public class ValueSetsServiceTest {
         void shouldThrowCreateCertificateException_ifTypeCodeIsPCR_andManufacturerIsNotBlank() {
             var manufacturer = fixture.create(String.class);
             var actual = assertThrows(CreateCertificateException.class,
-                    () -> service.getIssuableTestDto(PCR_TYPE_CODE, manufacturer)
+                    () -> service.getIssuableTestDto(TestType.PCR.typeCode, manufacturer)
             );
 
             assertEquals(INVALID_TYP_OF_TEST, actual.getError());
