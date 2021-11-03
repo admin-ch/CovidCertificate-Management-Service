@@ -87,22 +87,10 @@ public class PdfCertificateGenerationService {
         context.setLocale(this.getLocale(data.getLanguage()));
         context.setVariable("isEvidence", false);
         context.setVariable("showWatermark", this.showWatermark);
-
-        // set data in correct type
-        if (data instanceof VaccinationCertificatePdf) {
-            context.setVariable("data", (VaccinationCertificatePdf) data);
-            context.setVariable("type", "vaccine");
-            context.setVariable("isEvidence",
-                    ((VaccinationCertificatePdf) data).getNumberOfDoses() < ((VaccinationCertificatePdf) data).getTotalNumberOfDoses()
-            );
-        } else if (data instanceof RecoveryCertificatePdf) {
-            context.setVariable("data", (RecoveryCertificatePdf) data);
-            context.setVariable("type", "recovery");
-        } else {
-            context.setVariable("data", (TestCertificatePdf) data);
-            context.setVariable("type", "test");
-            context.setVariable("dateTimeFormatter", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"));
-        }
+        context.setVariable("data", data);
+        context.setVariable("type", data.getType());
+        context.setVariable("dateTimeFormatter", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"));
+        context.setVariable("isEvidence", data.isEvidence());
         return context;
     }
 
