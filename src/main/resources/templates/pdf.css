@@ -108,7 +108,7 @@ body {
     width: 300px;
     height: 300px;
     margin-bottom: 0;
-    margin-left: 15px;
+    margin-left: -15px;
 }
 
 #health-data-header-row, #personal-data-header-row {
