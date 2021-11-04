@@ -1,8 +1,10 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.AntibodyCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
@@ -72,6 +74,18 @@ public class CovidCertificateGenerationController {
         return responseDto;
     }
 
+    @PostMapping("/antibody")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CovidCertificateCreateResponseDto createAntibodyCertificate(@Valid @RequestBody AntibodyCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
+        log.info("Call of Create for antibody certificate");
+        securityHelper.authorizeUser(request);
+        createDto.validate();
+        CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
+        log.debug(CREATE_LOG, responseDto.getUvci());
+        kpiLogService.logAntibodyCertificateGenerationKpi(responseDto.getUvci());
+        return responseDto;
+    }
+
     @PostMapping("/fromexisting/vaccination")
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto generateVaccinationPdfFromExistingCertificate(@Valid @RequestBody VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto, HttpServletRequest request) {
@@ -90,6 +104,13 @@ public class CovidCertificateGenerationController {
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto generateRecoveryPdfFromExistingCertificate(@Valid @RequestBody RecoveryCertificatePdfGenerateRequestDto pdfGenerateRequestDto, HttpServletRequest request) {
         log.info("Call of Create for recovery certificate");
+        return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+    }
+
+    @PostMapping("/fromexisting/antibody")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CovidCertificateCreateResponseDto generateAntibodyPdfFromExistingCertificate(@Valid @RequestBody AntibodyCertificatePdfGenerateRequestDto pdfGenerateRequestDto, HttpServletRequest request) {
+        log.info("Call of Create for antibody certificate");
         return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
     }
 }

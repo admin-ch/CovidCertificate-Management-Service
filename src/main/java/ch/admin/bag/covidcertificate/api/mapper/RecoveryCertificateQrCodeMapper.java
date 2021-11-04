@@ -39,7 +39,7 @@ public class RecoveryCertificateQrCodeMapper {
                 recoveryCertificateDataDto.getDateOfFirstPositiveTestResult(),
                 recoveryCertificateDataDto.getCountryOfTest(),
                 DateHelper.calculateValidFrom(recoveryCertificateDataDto.getDateOfFirstPositiveTestResult()),
-                DateHelper.calculateValidUntil(recoveryCertificateDataDto.getDateOfFirstPositiveTestResult()),
+                DateHelper.calculateValidUntilForRecoveryCertificate(recoveryCertificateDataDto.getDateOfFirstPositiveTestResult()),
                 ISSUER,
                 UVCI.generateUVCI(recoveryCertificateDataDto.toString())
         );

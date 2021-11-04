@@ -36,7 +36,7 @@ class DateHelperTest {
         void testCalculateValidUntil() {
             LocalDate date = LocalDate.of(2021, Month.FEBRUARY, 13);
 
-            LocalDate validUntil = DateHelper.calculateValidUntil(date);
+            LocalDate validUntil = DateHelper.calculateValidUntilForRecoveryCertificate(date);
 
             assertEquals(date.plusDays(RECOVERY_CERTIFICATE_VALIDITY_IN_DAYS), validUntil);
         }

@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api.mapper.pdfgeneration;
 
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
-import ch.admin.bag.covidcertificate.api.valueset.NegativeTestResult;
+import ch.admin.bag.covidcertificate.api.valueset.TestResult;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import com.flextrade.jfixture.JFixture;
@@ -76,7 +76,7 @@ public class TestCertificatePdfGenerateRequestDtoMapperTest {
     @Test
     public void mapsResult() {
         TestCertificatePdf actual = TestCertificatePdfGenerateRequestDtoMapper.toTestCertificatePdf(incoming, testValueSet, memberStateOfTest, memberStateOfTestEn);
-        assertEquals(NegativeTestResult.DISPLAY, actual.getResult());
+        assertEquals(TestResult.NEGATIVE.display, actual.getResult());
     }
 
     @Test

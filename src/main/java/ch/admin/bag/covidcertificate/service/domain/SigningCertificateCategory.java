@@ -4,7 +4,8 @@ public enum SigningCertificateCategory {
     VACCINATION("vaccination"),
     RECOVERY_CH("recovery_ch"),
     RECOVERY_NON_CH("recovery_non_ch"),
-    TEST("test");
+    TEST("test"),
+    ANTIBODY_CH("antibody_ch");
 
     public final String value;
 

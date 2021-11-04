@@ -32,7 +32,7 @@ public class RecoveryCertificatePdfMapper {
                 countryOfTestEn,
                 ISSUER,
                 DateHelper.calculateValidFrom(recoveryCertificateCreateDto.getRecoveryInfo().get(0).getDateOfFirstPositiveTestResult()),
-                DateHelper.calculateValidUntil(recoveryCertificateCreateDto.getRecoveryInfo().get(0).getDateOfFirstPositiveTestResult()),
+                DateHelper.calculateValidUntilForRecoveryCertificate(recoveryCertificateCreateDto.getRecoveryInfo().get(0).getDateOfFirstPositiveTestResult()),
                 qrCodeData.getRecoveryInfo().get(0).getIdentifier());
     }
 }

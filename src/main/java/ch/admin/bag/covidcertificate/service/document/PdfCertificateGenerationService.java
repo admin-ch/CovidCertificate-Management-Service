@@ -7,7 +7,9 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -21,6 +23,12 @@ import java.util.Objects;
 @Service
 @Slf4j
 public class PdfCertificateGenerationService {
+
+    @Autowired
+    private Environment environment;
+
+    @Value("${cc-management-service.pdf.show-watermark}")
+    private boolean showWatermark;
 
     private final PdfRendererBuilder pdfBuilder;
     private final PdfHtmlRenderer pdfHtmlRenderer;
@@ -45,7 +53,7 @@ public class PdfCertificateGenerationService {
     public byte[] generateCovidCertificate(AbstractCertificatePdf data, String barcodePayload, LocalDateTime issuedAt) {
         try {
             var templatePath = this.getClass().getClassLoader().getResource("templates/pdf.html");
-            var content = this.pdfHtmlRenderer.render(data, this.getBarcodeImage(barcodePayload), issuedAt);
+            var content = this.pdfHtmlRenderer.render(data, this.getBarcodeImage(barcodePayload), issuedAt, showWatermark);
 
             var os = new ByteArrayOutputStream();
             pdfBuilder.toStream(os);
