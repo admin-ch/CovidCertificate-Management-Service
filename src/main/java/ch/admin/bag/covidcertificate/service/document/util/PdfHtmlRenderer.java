@@ -36,7 +36,7 @@ public class PdfHtmlRenderer {
         return templateEngine;
     }
 
-    public String render(AbstractCertificatePdf data, String barcodeImage, LocalDateTime issuedAt, boolean showWatermark) {
+    public String render(AbstractCertificatePdf data, String barcodeImage, LocalDateTime issuedAt) {
         var context = this.getContext(data, barcodeImage, issuedAt, showWatermark);
         return templateEngine.process("pdf", context);
     }
