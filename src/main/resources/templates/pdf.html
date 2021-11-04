@@ -154,8 +154,10 @@
                         <p class="body-text no-padding" th:text="#{recovery.validUntil}"></p>
                         <p class="body-text-en" th:text="#{recovery.validUntil(${'en'})}"></p>
                     </td>
-                    <td class="body-text"
-                        th:text="${data.getValidUntil().format(dateFormatter)}"></td>
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:utext="#{recovery.countrySpecific}"></p>
+                        <p class="body-text-en" th:utext="#{recovery.countrySpecific(${'en'})}"></p>
+                    </td>
                 </tr>
                 <tr class="table-row">
                     <td class="table-row-padding">
@@ -262,45 +264,45 @@
             th:text="${birthdate}"></td>
     </tr>
 </table>
-<footer>
-    <div th:id="issuer">
-        <p class="body-text no-padding" th:text="#{issuer.title}"></p>
-        <p class="body-text-en" th:text="#{issuer.title(${'en'})}"></p>
-        <p th:text="#{issuer.issuer}" class="heading no-padding"></p>
-        <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
-    </div>
-    <div th:id="disclaimer">
-        <p class="body-text-small" th:text="#{info.info1}"></p>
-        <p class="body-text-small" th:text="#{info.info2}"></p>
-        <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
-        <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
-    </div>
-    <table th:id="app-info">
-        <tr>
-            <td th:unless="${isEvidence}">
-                <p th:text="#{footer.app}" class="body-text no-padding"></p>
-                <p th:text="#{footer.app(${'en'})}" class="body-text-en"></p>
-            </td>
-            <td th:if="${isEvidence}">
-                <p th:text="#{footer.evidence.app}" class="body-text no-padding"></p>
-                <p th:text="#{footer.evidence.app(${'en'})}" class="body-text-en"></p>
-            </td>
-            <td rowspan="2" class="table-center">
-                <img th:src="appicon.png" alt="covid certificate app icon" width="48"></img>
-                <p class="body-text-small no-padding">Covid Certificate</p>
-            </td>
-            <td class="table-center" style="display: block">
-                <img th:src="appstore.png" alt="app store icon" height="24"></img>
-            </td>
-        </tr>
-        <tr>
-            <td th:text="#{footer.infoline}" class="heading"></td>
-            <td class="table-center" style="display: block">
-                <img th:src="googleplay.png" alt="google play icon" height="24"></img>
-            </td>
-        </tr>
-    </table>
-</footer>
+<div th:id="issuer">
+    <p class="body-text no-padding" th:text="#{issuer.title}"></p>
+    <p class="body-text-en" th:text="#{issuer.title(${'en'})}"></p>
+    <p th:text="#{issuer.issuer}" class="heading no-padding"></p>
+    <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
+</div>
+<div th:id="disclaimer">
+    <p class="body-text-small" th:text="#{info.info1}"></p>
+    <p class="body-text-small" th:text="#{info.info2}"></p>
+    <p class="body-text-small" th:if="${type == 'recovery'} "th:utext="#{recovery.info}"></p>
+    <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
+    <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
+    <p class="body-text-small-en" th:if="${type == 'recovery'} "th:utext="#{recovery.info(${'en'})}"></p>
+</div>
+<table th:id="app-info">
+    <tr>
+        <td th:unless="${isEvidence}">
+            <p th:text="#{footer.app}" class="body-text no-padding"></p>
+            <p th:text="#{footer.app(${'en'})}" class="body-text-en"></p>
+        </td>
+        <td th:if="${isEvidence}">
+            <p th:text="#{footer.evidence.app}" class="body-text no-padding"></p>
+            <p th:text="#{footer.evidence.app(${'en'})}" class="body-text-en"></p>
+        </td>
+        <td rowspan="2" class="table-center">
+            <img th:src="appicon.png" alt="covid certificate app icon" width="48"></img>
+            <p class="body-text-small no-padding">Covid Certificate</p>
+        </td>
+        <td class="table-center" style="display: block">
+            <img th:src="appstore.png" alt="app store icon" height="24"></img>
+        </td>
+    </tr>
+    <tr>
+        <td th:text="#{footer.infoline}" class="heading"></td>
+        <td class="table-center" style="display: block">
+            <img th:src="googleplay.png" alt="google play icon" height="24"></img>
+        </td>
+    </tr>
+</table>
 <div th:if="${showWatermark}" th:id="watermark">DRAFT</div>
 </body>
 </html>

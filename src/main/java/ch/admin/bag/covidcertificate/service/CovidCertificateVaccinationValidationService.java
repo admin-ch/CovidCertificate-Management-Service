@@ -34,18 +34,13 @@ public class CovidCertificateVaccinationValidationService {
             }
             case ApiGateway:
             case CsvUpload: {
-                if (!isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
-                }
                 var issuableVaccine = retrieveProduct(productCode, valueSetsService.getApiGatewayIssuableVaccines());
-                throwExceptionIfIssuableIsViolated(true, issuableVaccine.getIssuable());
+                throwExceptionIfIssuableIsViolated(isCountryCH, issuableVaccine.getIssuable());
                 break;
             }
             case ApiPlatform: {
-                // this source requires foreign countries
-                if (isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
-                }
+                var issuableVaccine = retrieveProduct(productCode, valueSetsService.getApiPlatformIssuableVaccines());
+                throwExceptionIfIssuableIsViolated(isCountryCH, issuableVaccine.getIssuable());
                 break;
             }
             default:
@@ -55,7 +50,10 @@ public class CovidCertificateVaccinationValidationService {
 
     private IssuableVaccineDto retrieveProduct(String productCode, List<IssuableVaccineDto> issuableVaccineDtoList) {
         var issuableVaccinesOpt = issuableVaccineDtoList.stream()
-                .filter(issuableVaccine -> issuableVaccine.getProductCode().equals(productCode)).findFirst();
+                                                        .filter(issuableVaccine -> issuableVaccine.getProductCode()
+                                                                                                  .equalsIgnoreCase(
+                                                                                                          productCode))
+                                                        .findFirst();
         // the product is not available for this source
         if (issuableVaccinesOpt.isEmpty()) {
             throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);

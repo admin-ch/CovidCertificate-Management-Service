@@ -104,10 +104,10 @@ body {
 }
 
 #qr-code {
-    /* QR Code does have a different size when generated locally, because of this it looks too far left. On other environments it looks fine */
     width: 300px;
     height: 300px;
     margin-bottom: 0;
+    margin-left: 15px;
 }
 
 #health-data-header-row, #personal-data-header-row {
@@ -169,4 +169,15 @@ body {
     font-weight: 600;
     color: #eaeaea;
     transform: rotate(-45deg);
+}
+
+sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
 }
