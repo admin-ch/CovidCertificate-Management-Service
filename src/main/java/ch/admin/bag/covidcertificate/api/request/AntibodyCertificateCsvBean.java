@@ -17,14 +17,14 @@ public class AntibodyCertificateCsvBean extends CertificateCsvBean {
 
     @CsvBindByName(column = "sampleDate")
     private String sampleDate;
-    @CsvBindByName(column = "testingCentreOrFacility")
-    private String testingCentreOrFacility;
+    @CsvBindByName(column = "testingCenterOrFacility")
+    private String testingCenterOrFacility;
 
     @Override
     public AntibodyCertificateCreateDto mapToCreateDto() {
         AntibodyCertificateDataDto dataDto = new AntibodyCertificateDataDto(
                 DateHelper.parse(this.sampleDate, INVALID_SAMPLE_DATE_TIME),
-                testingCentreOrFacility
+                testingCenterOrFacility
         );
         return super.mapToCreateDto(dataDto);
     }
