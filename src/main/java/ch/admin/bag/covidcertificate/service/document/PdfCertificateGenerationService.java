@@ -53,7 +53,7 @@ public class PdfCertificateGenerationService {
     public byte[] generateCovidCertificate(AbstractCertificatePdf data, String barcodePayload, LocalDateTime issuedAt) {
         try {
             var templatePath = this.getClass().getClassLoader().getResource("templates/pdf.html");
-            var content = this.pdfHtmlRenderer.render(data, this.getBarcodeImage(barcodePayload), issuedAt, showWatermark);
+            var content = this.pdfHtmlRenderer.render(data, this.getBarcodeImage(barcodePayload), issuedAt);
 
             var os = new ByteArrayOutputStream();
             pdfBuilder.toStream(os);
