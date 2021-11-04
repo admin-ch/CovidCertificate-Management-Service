@@ -7,7 +7,7 @@
     <link th:href="@{pdf.css}" rel="stylesheet"/>
     <style>
         @page {
-            margin: 40px 50px 10px 30px;
+            margin: 1cm 1.3cm;
             size: A4;
         }
     </style>
@@ -243,7 +243,6 @@
             <p th:text="#{personalData.title}" class="heading no-padding"></p>
             <p th:text="#{personalData.title(${'en'})}" class="body-text-en"></p>
         </th>
-        <th></th>
     </tr>
     <tr class="table-row">
         <td class="table-row-padding">
@@ -251,8 +250,7 @@
             <p class="body-text-en" th:text="#{personalData.name.label(${'en'})}"></p>
         </td>
         <td>
-            <p class="body-text" th:text="${data.getGivenName()}"></p>
-            <p class="body-text" th:text="${data.getFamilyName()}"></p>
+            <p class="body-text">[[|${data.getGivenName()} ${data.getFamilyName()}|]]</p>
         </td>
     </tr>
     <tr class="table-row">
@@ -264,43 +262,45 @@
             th:text="${birthdate}"></td>
     </tr>
 </table>
-<div th:id="issuer">
-    <p class="body-text no-padding" th:text="#{issuer.title}"></p>
-    <p class="body-text-en" th:text="#{issuer.title(${'en'})}"></p>
-    <p th:text="#{issuer.issuer}" class="heading no-padding"></p>
-    <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
-</div>
-<div th:id="disclaimer">
-    <p class="body-text-small" th:text="#{info.info1}"></p>
-    <p class="body-text-small" th:text="#{info.info2}"></p>
-    <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
-    <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
-</div>
-<table th:id="footer">
-    <tr>
-        <td th:unless="${isEvidence}">
-            <p th:text="#{footer.app}" class="body-text no-padding"></p>
-            <p th:text="#{footer.app(${'en'})}" class="body-text-en"></p>
-        </td>
-        <td th:if="${isEvidence}">
-            <p th:text="#{footer.evidence.app}" class="body-text no-padding"></p>
-            <p th:text="#{footer.evidence.app(${'en'})}" class="body-text-en"></p>
-        </td>
-        <td rowspan="2" class="table-center">
-            <img th:src="appicon.png" alt="covid certificate app icon" width="48"></img>
-            <p class="body-text-small no-padding">Covid Certificate</p>
-        </td>
-        <td class="table-center" style="display: block">
-            <img th:src="appstore.png" alt="app store icon" height="24"></img>
-        </td>
-    </tr>
-    <tr>
-        <td th:text="#{footer.infoline}" class="heading"></td>
-        <td class="table-center" style="display: block">
-            <img th:src="googleplay.png" alt="google play icon" height="24"></img>
-        </td>
-    </tr>
-</table>
+<footer>
+    <div th:id="issuer">
+        <p class="body-text no-padding" th:text="#{issuer.title}"></p>
+        <p class="body-text-en" th:text="#{issuer.title(${'en'})}"></p>
+        <p th:text="#{issuer.issuer}" class="heading no-padding"></p>
+        <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
+    </div>
+    <div th:id="disclaimer">
+        <p class="body-text-small" th:text="#{info.info1}"></p>
+        <p class="body-text-small" th:text="#{info.info2}"></p>
+        <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
+        <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
+    </div>
+    <table th:id="app-info">
+        <tr>
+            <td th:unless="${isEvidence}">
+                <p th:text="#{footer.app}" class="body-text no-padding"></p>
+                <p th:text="#{footer.app(${'en'})}" class="body-text-en"></p>
+            </td>
+            <td th:if="${isEvidence}">
+                <p th:text="#{footer.evidence.app}" class="body-text no-padding"></p>
+                <p th:text="#{footer.evidence.app(${'en'})}" class="body-text-en"></p>
+            </td>
+            <td rowspan="2" class="table-center">
+                <img th:src="appicon.png" alt="covid certificate app icon" width="48"></img>
+                <p class="body-text-small no-padding">Covid Certificate</p>
+            </td>
+            <td class="table-center" style="display: block">
+                <img th:src="appstore.png" alt="app store icon" height="24"></img>
+            </td>
+        </tr>
+        <tr>
+            <td th:text="#{footer.infoline}" class="heading"></td>
+            <td class="table-center" style="display: block">
+                <img th:src="googleplay.png" alt="google play icon" height="24"></img>
+            </td>
+        </tr>
+    </table>
+</footer>
 <div th:if="${showWatermark}" th:id="watermark">DRAFT</div>
 </body>
 </html>

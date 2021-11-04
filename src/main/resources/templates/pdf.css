@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     padding: 0;
-    margin: 0 0 0 40px;
+    margin: 0;
 }
 
 .two-col-table {
@@ -80,7 +80,6 @@ body {
 
 #logo-bund {
     width: 210px;
-    margin-left: -42px;
     padding-top: 8px;
 }
 
@@ -131,7 +130,7 @@ body {
 }
 
 #personal-data td {
-    min-width: 130px;
+    min-width: 150px;
     vertical-align: top;
 }
 
@@ -154,7 +153,7 @@ body {
     font-size: 7pt;
 }
 
-#footer {
+#app-info {
     padding: 12px 0;
     width: 100%;
     margin: 0 0 0 -2px;
