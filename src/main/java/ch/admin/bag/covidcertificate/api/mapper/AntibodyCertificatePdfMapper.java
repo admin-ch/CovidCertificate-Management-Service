@@ -27,7 +27,7 @@ public class AntibodyCertificatePdfMapper {
                 diseaseOrAgentTargeted.getCode(),
                 diseaseOrAgentTargeted.getSystem(),
                 antibodyCertificateCreateDto.getAntibodyInfo().get(0).getSampleDate(),
-                antibodyCertificateCreateDto.getAntibodyInfo().get(0).getTestingCentreOrFacility(),
+                antibodyCertificateCreateDto.getAntibodyInfo().get(0).getTestingCenterOrFacility(),
                 countryOfTest,
                 countryOfTestEn,
                 ISSUER,

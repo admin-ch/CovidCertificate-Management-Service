@@ -19,13 +19,13 @@ public class AntibodyCertificateDataDto {
 
     @JsonDeserialize(using = DateDeserializer.class)
     private LocalDate sampleDate;
-    private String testingCentreOrFacility;
+    private String testingCenterOrFacility;
 
     public void validate(SystemSource systemSource) {
         if (sampleDate == null || sampleDate.isAfter(LocalDate.now())) {
             throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
         }
-        if (!StringUtils.hasText(testingCentreOrFacility) || testingCentreOrFacility.length() > MAX_STRING_LENGTH) {
+        if (!StringUtils.hasText(testingCenterOrFacility) || testingCenterOrFacility.length() > MAX_STRING_LENGTH) {
             throw new CreateCertificateException(INVALID_TEST_CENTER);
         }
 

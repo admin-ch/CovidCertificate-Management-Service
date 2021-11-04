@@ -43,7 +43,7 @@ public class AntibodyCertificateQrCodeMapper {
                 Constants.EMPTY_STRING,
                 antibodyCertificateDataDto.getSampleDate().atStartOfDay(ZoneId.systemDefault()),
                 TestResult.POSITIVE.code,
-                antibodyCertificateDataDto.getTestingCentreOrFacility(),
+                antibodyCertificateDataDto.getTestingCenterOrFacility(),
                 Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND,
                 ISSUER,
                 UVCI.generateUVCI(antibodyCertificateDataDto.toString())
