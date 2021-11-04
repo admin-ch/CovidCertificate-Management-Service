@@ -7,9 +7,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -23,9 +21,6 @@ import java.util.Objects;
 @Service
 @Slf4j
 public class PdfCertificateGenerationService {
-
-    @Autowired
-    private Environment environment;
 
     @Value("${cc-management-service.pdf.show-watermark}")
     private boolean showWatermark;
