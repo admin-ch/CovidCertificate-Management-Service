@@ -17,14 +17,13 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 @AllArgsConstructor
 public class CovidCertificatePersonNameDto {
 
+    private static final Pattern p = Pattern.compile("[!@#\\r\\n$%¶*\\\\()_:/+=|<>?{}\\[\\]~-]");
+
     private String familyName;
 
     private String givenName;
 
     public void validate() {
-        Pattern p = Pattern.compile("[!@#\\r\\n$%¶*\\\\()_:/+=|<>?{}\\[\\]~-]");
-
-
         if (!StringUtils.hasText(givenName) || givenName.length() > MAX_STRING_LENGTH) {
             throw new CreateCertificateException(INVALID_GIVEN_NAME);
         }
