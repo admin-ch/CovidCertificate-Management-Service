@@ -6,7 +6,6 @@ import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import ch.admin.bag.covidcertificate.util.DateHelper;
-import org.springframework.beans.factory.annotation.Value;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -22,11 +21,11 @@ public class PdfHtmlRenderer {
 
     private final TemplateEngine templateEngine;
 
-    @Value("${cc-management-service.pdf.show-watermark}")
-    private boolean showWatermark;
+    private final boolean showWatermark;
 
-    public PdfHtmlRenderer() {
+    public PdfHtmlRenderer(boolean showWatermark) {
         this.templateEngine = this.getTemplateEngine();
+        this.showWatermark = showWatermark;
     }
 
     private TemplateEngine getTemplateEngine() {

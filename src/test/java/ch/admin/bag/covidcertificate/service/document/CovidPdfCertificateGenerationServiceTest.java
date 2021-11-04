@@ -42,8 +42,7 @@ class CovidPdfCertificateGenerationServiceTest {
     @BeforeEach
     void setup() {
         service = new PdfCertificateGenerationService();
-        var pdfHtmlRenderer = new PdfHtmlRenderer();
-        ReflectionTestUtils.setField(pdfHtmlRenderer, "showWatermark", true);
+        var pdfHtmlRenderer = new PdfHtmlRenderer(true);
         ReflectionTestUtils.setField(service, "pdfHtmlRenderer", pdfHtmlRenderer);
     }
 
