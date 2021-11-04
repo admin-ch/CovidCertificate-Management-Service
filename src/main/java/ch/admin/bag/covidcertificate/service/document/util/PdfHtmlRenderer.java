@@ -17,9 +17,11 @@ import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
 public class PdfHtmlRenderer {
 
     private final TemplateEngine templateEngine;
+    private final boolean showWatermark;
 
-    public PdfHtmlRenderer() {
+    public PdfHtmlRenderer(boolean showWatermark) {
         this.templateEngine = this.getTemplateEngine();
+        this.showWatermark = showWatermark;
     }
 
     private TemplateEngine getTemplateEngine() {
