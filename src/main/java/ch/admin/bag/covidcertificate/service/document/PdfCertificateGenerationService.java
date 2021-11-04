@@ -7,9 +7,10 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -23,11 +24,18 @@ import java.util.Objects;
 public class PdfCertificateGenerationService {
 
     private final PdfRendererBuilder pdfBuilder;
-    private final PdfHtmlRenderer pdfHtmlRenderer;
+    private PdfHtmlRenderer pdfHtmlRenderer;
+
+    @Value("#{new Boolean('${cc-management-service.pdf.show-watermark}')}")
+    private boolean showWatermark;
 
     public PdfCertificateGenerationService() {
         this.pdfBuilder = getPdfBuilder();
-        this.pdfHtmlRenderer = new PdfHtmlRenderer();
+    }
+
+    @PostConstruct
+    public void postConstruct(){
+        this.pdfHtmlRenderer = new PdfHtmlRenderer(this.showWatermark);
     }
 
     private PdfRendererBuilder getPdfBuilder() {

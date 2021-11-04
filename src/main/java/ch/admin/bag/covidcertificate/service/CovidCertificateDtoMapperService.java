@@ -1,21 +1,13 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificatePdfMapper;
-import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificateQrCodeMapper;
-import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
-import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
-import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
-import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.*;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -76,5 +68,19 @@ public class CovidCertificateDtoMapperService {
         }
 
         return RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
+    }
+
+    public AntibodyCertificateQrCode toAntibodyCertificateQrCode(AntibodyCertificateCreateDto createDto) {
+        return AntibodyCertificateQrCodeMapper.toAntibodyCertificateQrCode(createDto);
+    }
+
+    public AntibodyCertificatePdf toAntibodyCertificatePdf(AntibodyCertificateCreateDto createDto, AntibodyCertificateQrCode qrCodeData) {
+        var countryCode = valueSetsService.getCountryCode(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND, createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+        if (countryCode == null || countryCodeEn == null) {
+            throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
+        }
+
+        return AntibodyCertificatePdfMapper.toAntibodyCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 }

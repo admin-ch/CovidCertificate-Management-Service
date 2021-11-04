@@ -1,5 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.Constants;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
@@ -17,18 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_COUNTRY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_CREATE_CERTIFICATE_SYSTEM_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_TEST;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
-import static ch.admin.bag.covidcertificate.api.Constants.USER_EXT_ID_CLAIM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
@@ -65,6 +56,11 @@ public class KpiDataService {
     @Transactional
     public void logRecoveryCertificateGenerationKpi(RecoveryCertificateCreateDto createDto, String uvci) {
         logCertificateGenerationKpi(KPI_TYPE_RECOVERY, uvci, null, createDto.getRecoveryInfo().get(0).getCountryOfTest());
+    }
+
+    @Transactional
+    public void logAntibodyCertificateGenerationKpi(String uvci) {
+        logCertificateGenerationKpi(KPI_TYPE_ANTIBODY, uvci, null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
 
     private void logCertificateGenerationKpi(String type, String uvci, String details, String country) {

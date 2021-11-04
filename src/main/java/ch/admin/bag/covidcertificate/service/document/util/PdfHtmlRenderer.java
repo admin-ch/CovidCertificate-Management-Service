@@ -2,11 +2,7 @@ package ch.admin.bag.covidcertificate.service.document.util;
 
 import ch.admin.bag.covidcertificate.service.document.CustomMessageResolver;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import ch.admin.bag.covidcertificate.util.DateHelper;
-import org.springframework.beans.factory.annotation.Value;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -21,12 +17,11 @@ import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
 public class PdfHtmlRenderer {
 
     private final TemplateEngine templateEngine;
+    private final boolean showWatermark;
 
-    @Value("${cc-management-service.pdf.show-watermark}")
-    private boolean showWatermark;
-
-    public PdfHtmlRenderer() {
+    public PdfHtmlRenderer(boolean showWatermark) {
         this.templateEngine = this.getTemplateEngine();
+        this.showWatermark = showWatermark;
     }
 
     private TemplateEngine getTemplateEngine() {
@@ -42,35 +37,24 @@ public class PdfHtmlRenderer {
     }
 
     public String render(AbstractCertificatePdf data, String barcodeImage, LocalDateTime issuedAt) {
-        var context = this.getContext(data, barcodeImage, issuedAt);
+        var context = this.getContext(data, barcodeImage, issuedAt, showWatermark);
         return templateEngine.process("pdf", context);
     }
 
-    private Context getContext(AbstractCertificatePdf data, String barcodeImage, LocalDateTime issuedAt) {
+    private Context getContext(AbstractCertificatePdf data, String barcodeImage, LocalDateTime issuedAt, boolean showWatermark) {
         var context = new Context();
         context.setLocale(this.getLocale(data.getLanguage()));
-        context.setVariable("isEvidence", false);
-        context.setVariable("showWatermark", this.showWatermark);
+        context.setVariable("data", data);
+        context.setVariable("isEvidence", data.isEvidence());
+        context.setVariable("showWatermark", showWatermark);
         context.setVariable("qrCode", barcodeImage);
         context.setVariable("dateFormatter", LOCAL_DATE_FORMAT);
         context.setVariable("creationDate", issuedAt.format(LOCAL_DATE_FORMAT));
         context.setVariable("creationTime", issuedAt.format(DateTimeFormatter.ofPattern("HH:mm")));
         context.setVariable("birthdate", DateHelper.formatDateOfBirth(data.getDateOfBirth()));
+        context.setVariable("dateTimeFormatter", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"));
+        context.setVariable("type", data.getType());
 
-        // set data in correct type
-        if (data instanceof VaccinationCertificatePdf) {
-            context.setVariable("data", (VaccinationCertificatePdf) data);
-            context.setVariable("type", "vaccine");
-            var isEvidence = ((VaccinationCertificatePdf) data).getNumberOfDoses() < ((VaccinationCertificatePdf) data).getTotalNumberOfDoses();
-            context.setVariable("isEvidence", isEvidence);
-        } else if (data instanceof RecoveryCertificatePdf) {
-            context.setVariable("data", (RecoveryCertificatePdf) data);
-            context.setVariable("type", "recovery");
-        } else {
-            context.setVariable("data", (TestCertificatePdf) data);
-            context.setVariable("type", "test");
-            context.setVariable("dateTimeFormatter", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"));
-        }
         return context;
     }
 

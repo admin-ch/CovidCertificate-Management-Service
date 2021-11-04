@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
@@ -18,12 +19,10 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PROD
 @RequiredArgsConstructor
 public class CovidCertificateVaccinationValidationService {
 
-    private static final String SWITZERLAND = "CH";
-
     private final ValueSetsService valueSetsService;
 
     public void validateProductAndCountry(VaccinationCertificateCreateDto createDto) {
-        final boolean isCountryCH = SWITZERLAND.equalsIgnoreCase(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
+        final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
         final String productCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
 
         switch (createDto.getSystemSource()) {

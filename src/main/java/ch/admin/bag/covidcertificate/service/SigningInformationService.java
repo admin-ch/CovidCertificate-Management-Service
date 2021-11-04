@@ -1,6 +1,8 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
@@ -12,8 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import static ch.admin.bag.covidcertificate.api.Constants.AMBIGUOUS_SIGNING_CERTIFICATE;
-import static ch.admin.bag.covidcertificate.api.Constants.SIGNING_CERTIFICATE_MISSING;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +60,7 @@ public class SigningInformationService {
     public SigningInformation getRecoverySigningInformation(RecoveryCertificateCreateDto createDto, LocalDate validAt){
         var countryOfTest = createDto.getRecoveryInfo().get(0).getCountryOfTest();
         var signingCertificateCategory = SigningCertificateCategory.RECOVERY_NON_CH.value;
-        if(Objects.equals(countryOfTest, "CH")) {
+        if(Objects.equals(countryOfTest, Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND)) {
             signingCertificateCategory = SigningCertificateCategory.RECOVERY_CH.value;
         }
         var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory, validAt);
@@ -69,6 +70,24 @@ public class SigningInformationService {
             throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
         }else if(signingInformationList.size() > 1){
             log.error("Ambiguous signing certificate. Multiple signing certificates were found for positive test in {}.", countryOfTest);
+            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
+        }
+        return signingInformationList.get(0);
+    }
+
+    public SigningInformation getAntibodySigningInformation(AntibodyCertificateCreateDto createDto){
+        return getAntibodySigningInformation(createDto, LocalDate.now());
+    }
+
+    public SigningInformation getAntibodySigningInformation(AntibodyCertificateCreateDto createDto, LocalDate validAt){
+        var signingCertificateCategory = SigningCertificateCategory.ANTIBODY_CH.value;
+        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory, validAt);
+
+        if(signingInformationList == null || signingInformationList.isEmpty()){
+            log.error("No signing certificate was found to sign the antibody certificate in {}.", ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+            throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
+        }else if(signingInformationList.size() > 1){
+            log.error("Ambiguous signing certificate. Multiple signing certificates were found to signe the antibody certificate in {}.", ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
             throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
         }
         return signingInformationList.get(0);

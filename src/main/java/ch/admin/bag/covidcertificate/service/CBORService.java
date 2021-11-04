@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import com.upokecenter.cbor.CBORObject;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.DecoderException;
@@ -22,7 +23,6 @@ public class CBORService {
     private static final Integer EXP_CLAIM_KEY = 4;
     private static final Integer HCERT_CLAIM_KEY = -260;
     private static final Integer HCERT_INNER_CLAIM_KEY = 1;
-    private static final String ISSUER = "CH";
     // Signature Data (Sig_structure)
     private static final String CONTEXT = "Signature1";
     private static final byte[] EXTERNAL_AAD = new byte[0];
@@ -46,7 +46,7 @@ public class CBORService {
         }
         CBORInstantConverter instantConverter = new CBORInstantConverter();
         CBORObject cborObject = CBORObject.NewMap();
-        cborObject.Add(ISS_CLAIM_KEY, CBORObject.FromObject(ISSUER));
+        cborObject.Add(ISS_CLAIM_KEY, CBORObject.FromObject(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND));
         cborObject.set(IAT_CLAIM_KEY, instantConverter.ToCBORObject(coseTime.getIssuedAt()));
         cborObject.set(EXP_CLAIM_KEY, instantConverter.ToCBORObject(coseTime.getExpiration()));
         CBORObject hcertMap = CBORObject.NewMap();

@@ -41,7 +41,7 @@ public class VaccinationCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language);
+        super(familyName, givenName, dateOfBirth, identifier, language, "vaccine");
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.vaccineProphylaxis = vaccineProphylaxis;
@@ -55,7 +55,7 @@ public class VaccinationCertificatePdf extends AbstractCertificatePdf {
         this.issuer = issuer;
     }
 
-    public boolean isPartialVaccination() {
+    public boolean isEvidence() {
         return this.numberOfDoses < this.totalNumberOfDoses;
     }
 
