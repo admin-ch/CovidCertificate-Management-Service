@@ -27,8 +27,12 @@ public class DateHelper {
         return dateOfFirstPositiveTestResult.plusDays(DAYS_UNTIL_RECOVERY_VALID);
     }
 
-    public static LocalDate calculateValidUntil(LocalDate dateOfFirstPositiveTestResult) {
+    public static LocalDate calculateValidUntilForRecoveryCertificate(LocalDate dateOfFirstPositiveTestResult) {
         return dateOfFirstPositiveTestResult.plusDays(RECOVERY_CERTIFICATE_VALIDITY_IN_DAYS);
+    }
+
+    public static LocalDate calculateValidUntilForAntibodyCertificate(LocalDate dateOfTestResult) {
+        return dateOfTestResult.plusDays(ANTIBODY_CERTIFICATE_VALIDITY_IN_DAYS);
     }
 
     public static LocalDate parse(String date, CreateCertificateError possibleError) {

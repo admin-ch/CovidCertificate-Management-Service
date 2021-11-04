@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api.mapper;
 
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
-import ch.admin.bag.covidcertificate.api.valueset.NegativeTestResult;
+import ch.admin.bag.covidcertificate.api.valueset.TestResult;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
@@ -33,7 +33,7 @@ public class TestCertificatePdfMapper {
                 issuableTestDto.getTestType().typeDisplay,
                 issuableTestDto.getDisplay(),
                 testCertificateCreateDto.getTestInfo().get(0).getSampleDateTime(),
-                NegativeTestResult.DISPLAY,
+                TestResult.NEGATIVE.display,
                 testCertificateCreateDto.getTestInfo().get(0).getTestingCentreOrFacility(),
                 memberStateOfTest,
                 memberStateOfTestEn,

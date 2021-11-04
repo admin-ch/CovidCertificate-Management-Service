@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api.mapper.pdfgeneration;
 
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
-import ch.admin.bag.covidcertificate.api.valueset.NegativeTestResult;
+import ch.admin.bag.covidcertificate.api.valueset.TestResult;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import lombok.AccessLevel;
@@ -31,7 +31,7 @@ public class TestCertificatePdfGenerateRequestDtoMapper {
                 rapidTestDto.getTestType().typeDisplay,
                 rapidTestDto.getDisplay(),
                 testCertificateCreateDto.getDecodedCert().getTestInfo().get(0).getSampleDateTime(),
-                NegativeTestResult.DISPLAY,
+                TestResult.NEGATIVE.display,
                 testCertificateCreateDto.getDecodedCert().getTestInfo().get(0).getTestingCentreOrFacility(),
                 memberStateOfTest,
                 memberStateOfTestEn,

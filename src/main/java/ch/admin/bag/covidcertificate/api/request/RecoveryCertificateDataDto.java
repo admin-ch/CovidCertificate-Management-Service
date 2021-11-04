@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.api.request;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.util.DateDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -16,8 +17,6 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_FIRST_
 @AllArgsConstructor
 public class RecoveryCertificateDataDto {
 
-    private static final String SWITZERLAND = "CH";
-
     @JsonDeserialize(using = DateDeserializer.class)
     private LocalDate dateOfFirstPositiveTestResult;
 
@@ -30,7 +29,7 @@ public class RecoveryCertificateDataDto {
         if (countryOfTest == null) {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
         }
-        final boolean isCountryCH = SWITZERLAND.equalsIgnoreCase(countryOfTest);
+        final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(countryOfTest);
         switch (systemSource) {
             case WebUI: {
                 break;

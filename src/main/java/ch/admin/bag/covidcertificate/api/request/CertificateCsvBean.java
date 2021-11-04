@@ -80,6 +80,16 @@ public abstract class CertificateCsvBean {
                 SystemSource.CsvUpload
         );
     }
+    protected AntibodyCertificateCreateDto mapToCreateDto(AntibodyCertificateDataDto dataDto) {
+        return new AntibodyCertificateCreateDto(
+                mapToPersonDto(),
+                List.of(dataDto),
+                getLanguage().trim().toLowerCase(),
+                mapToAddressDto(),
+                validateAppDeliveryCode(),
+                SystemSource.CsvUpload
+        );
+    }
 
     private CovidCertificatePersonDto mapToPersonDto() {
         return new CovidCertificatePersonDto(
