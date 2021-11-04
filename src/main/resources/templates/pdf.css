@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     padding: 0;
-    margin: 0 0 0 40px;
+    margin: 0;
 }
 
 .two-col-table {
@@ -30,6 +30,10 @@ body {
     color: black;
     margin: 0;
     padding: 0;
+}
+
+.body-text, .body-text-en {
+    line-height: 120%;
 }
 
 .heading {
@@ -80,7 +84,6 @@ body {
 
 #logo-bund {
     width: 210px;
-    margin-left: -42px;
     padding-top: 8px;
 }
 
@@ -108,7 +111,7 @@ body {
     width: 300px;
     height: 300px;
     margin-bottom: 0;
-    margin-left: -15px;
+    margin-left: -10px;
 }
 
 #health-data-header-row, #personal-data-header-row {
@@ -131,7 +134,7 @@ body {
 }
 
 #personal-data td {
-    min-width: 130px;
+    min-width: 150px;
     vertical-align: top;
 }
 
@@ -154,7 +157,7 @@ body {
     font-size: 7pt;
 }
 
-#footer {
+#app-info {
     padding: 12px 0;
     width: 100%;
     margin: 0 0 0 -2px;

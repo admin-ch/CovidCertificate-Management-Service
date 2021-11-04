@@ -7,7 +7,7 @@
     <link th:href="@{pdf.css}" rel="stylesheet"/>
     <style>
         @page {
-            margin: 40px 50px 10px 30px;
+            margin: 1cm 1.3cm;
             size: A4;
         }
     </style>
@@ -245,7 +245,6 @@
             <p th:text="#{personalData.title}" class="heading no-padding"></p>
             <p th:text="#{personalData.title(${'en'})}" class="body-text-en"></p>
         </th>
-        <th></th>
     </tr>
     <tr class="table-row">
         <td class="table-row-padding">
@@ -253,8 +252,7 @@
             <p class="body-text-en" th:text="#{personalData.name.label(${'en'})}"></p>
         </td>
         <td>
-            <p class="body-text" th:text="${data.getGivenName()}"></p>
-            <p class="body-text" th:text="${data.getFamilyName()}"></p>
+            <p class="body-text">[[|${data.getGivenName()} ${data.getFamilyName()}|]]</p>
         </td>
     </tr>
     <tr class="table-row">
@@ -280,7 +278,7 @@
     <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
     <p class="body-text-small-en" th:if="${type == 'recovery'} "th:utext="#{recovery.info(${'en'})}"></p>
 </div>
-<table th:id="footer">
+<table th:id="app-info">
     <tr>
         <td th:unless="${isEvidence}">
             <p th:text="#{footer.app}" class="body-text no-padding"></p>
