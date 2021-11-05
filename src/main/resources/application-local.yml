@@ -37,7 +37,13 @@ cc-management-service:
   allowed-origin: "*"
 
 cc-signing-service:
+  #When started as spring boot application
+#  url: "https://localhost:9090/sign"
+#  verify-url: "https://localhost:9090/sign/verify"
+#  kid-url: "https://localhost:9090/sign/configuration/kid"
+  #When started with tomcat
   url: "https://localhost:8443/cc-signing/sign"
+  verify-url: "https://localhost:8443/cc-signing/sign/verify"
   kid-url: "https://localhost:8443/cc-signing/sign/configuration/kid"
 
 cc-printing-service:

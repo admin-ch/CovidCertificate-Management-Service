@@ -178,7 +178,7 @@ class DefaultSigningClientTest {
         void makesRequestWithCorrectBody() {
             var body = fixture.create(byte[].class);
             var signingInformation =  fixture.create(SigningInformation.class);
-            var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(body), signingInformation.getAlias(), signingInformation.getCertificateAlias());
+            var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(body), signingInformation.getAlias());
 
             signingClient.createSignatureWithCertificateAlias(body, signingInformation);
 
