@@ -17,7 +17,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 @AllArgsConstructor
 public class CovidCertificatePersonNameDto {
 
-    private static final Pattern p = Pattern.compile("[!@#\\r\\n$%¶*\\\\()_:/+=|<>?{}\\[\\]~-]");
+    private static final Pattern p = Pattern.compile("[!@#\\r\\n$%¶*\\\\()_:/+=|<>?{}\\[\\]~]");
 
     private String familyName;
 
