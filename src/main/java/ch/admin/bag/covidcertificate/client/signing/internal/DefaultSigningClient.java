@@ -73,12 +73,20 @@ public class DefaultSigningClient implements SigningClient {
 
 
     protected byte[] createSignatureWithCertificateAlias(byte[] cosePayload, SigningInformation signingInformation) {
-        var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(cosePayload), signingInformation.getAlias(), signingInformation.getCertificateAlias());
+        var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(cosePayload),
+                                                      signingInformation.getAlias(),
+                                                      signingInformation.getCertificateAlias());
+        long start = System.currentTimeMillis();
         log.info("Call signing service with url {}", url);
         HttpHeaders headers = new HttpHeaders();
         headers.put("Content-Type", Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
         try {
-            ResponseEntity<byte[]> result = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(signingRequestDto, headers), byte[].class);
+            ResponseEntity<byte[]> result = restTemplate.exchange(url, HttpMethod.POST,
+                                                                  new HttpEntity<>(signingRequestDto, headers),
+                                                                  byte[].class);
+            long end = System.currentTimeMillis();
+            log.info("Call of signing service finished with result {} within {} ms.", result.getStatusCode(),
+                     end - start);
             return result.getBody();
         }catch (RestClientException e){
             log.error("Connection with signing service {} could not be established.", url, e);
@@ -89,10 +97,15 @@ public class DefaultSigningClient implements SigningClient {
     @Cacheable(KEY_IDENTIFIER_CACHE)
     public String getKeyIdentifier(String certificateAlias){
         var getKeyUrl = buildSigningUrl(kidUrl, certificateAlias);
+        long start = System.currentTimeMillis();
         log.info("Call signing service to retrieve key identifier for certificate {}.", certificateAlias);
 
         try {
-            ResponseEntity<String> result = restTemplate.exchange(getKeyUrl, HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), String.class);
+            ResponseEntity<String> result = restTemplate.exchange(getKeyUrl, HttpMethod.GET,
+                                                                  new HttpEntity<>(new HttpHeaders()), String.class);
+            long end = System.currentTimeMillis();
+            log.info("Call of signing service finished with result {} within {} ms.", result.getStatusCode(),
+                     end - start);
             return result.getBody();
         }catch (RestClientException e){
             log.error("Connection with signing service {} could not be established.", url, e);
