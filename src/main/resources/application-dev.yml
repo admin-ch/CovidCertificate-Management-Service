@@ -32,8 +32,7 @@ cc-management-service:
     prometheus:
       user: "prometheus"
       password: ${vcap.services.cc_prometheus.credentials.password}
-  pdf:
-    show-watermark: false
+
   allowed-origin: "https://www.covidcertificate-d.admin.ch"
 
   rapid-test-import:
