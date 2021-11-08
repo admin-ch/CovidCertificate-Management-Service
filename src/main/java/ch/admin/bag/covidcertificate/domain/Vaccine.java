@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -88,5 +89,13 @@ public class Vaccine {
         this.webUiSelectable = webUiSelectable;
         this.apiGatewaySelectable = apiGatewaySelectable;
         this.apiPlatformSelectable = apiPlatformSelectable;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Vaccine) {
+            return Objects.equals(this.code, ((Vaccine) obj).getCode());
+        }
+        return false;
     }
 }
