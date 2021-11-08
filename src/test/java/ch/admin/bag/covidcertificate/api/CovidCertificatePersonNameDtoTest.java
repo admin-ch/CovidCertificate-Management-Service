@@ -4,8 +4,6 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
@@ -41,6 +39,13 @@ public class CovidCertificatePersonNameDtoTest {
 
         testee = new CovidCertificatePersonNameDto(
                 familyName,
+                "g|venNameWith$pecialCh@racter&"
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_GIVEN_NAME, exception.getError());
+
+        testee = new CovidCertificatePersonNameDto(
+                familyName,
                 givenName
         );
         assertDoesNotThrow(testee::validate);
@@ -70,6 +75,13 @@ public class CovidCertificatePersonNameDtoTest {
 
         testee = new CovidCertificatePersonNameDto(
                 "leisiidkfkdjaösikijeifhdiaösiefidoöasidjfdkslaösdijfieaoöosihdafdlskdjfdkslasifjdoaifdisoahfdisoahfdisoaisdhfdiosahsdifhdsao",
+                givenName
+        );
+        exception = assertThrows(CreateCertificateException.class, testee::validate);
+        assertEquals(INVALID_FAMILY_NAME, exception.getError());
+
+        testee = new CovidCertificatePersonNameDto(
+                "fam|l{NameWith$pecialCh@racter&",
                 givenName
         );
         exception = assertThrows(CreateCertificateException.class, testee::validate);
