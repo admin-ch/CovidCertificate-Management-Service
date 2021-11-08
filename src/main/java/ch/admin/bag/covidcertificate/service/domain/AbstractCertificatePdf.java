@@ -28,4 +28,6 @@ public abstract class AbstractCertificatePdf {
     public boolean isEvidence() {
         return false;
     }
+
+    public boolean showValidOnlyInSwitzerland() { return false; }
 }

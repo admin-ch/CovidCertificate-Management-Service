@@ -42,4 +42,7 @@ public class AntibodyCertificatePdf extends AbstractCertificatePdf {
         this.countryOfTestEn = countryOfTestEn;
         this.issuer = issuer;
     }
+
+
+    public boolean showValidOnlyInSwitzerland() { return true; }
 }
