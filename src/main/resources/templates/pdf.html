@@ -36,12 +36,11 @@
             <!-- QR Code does have a different size when generated locally, because of this it looks too far left. On other environments it looks fine -->
             <img th:id="qr-code" th:src="|data:image/png;base64,${qrCode}|" alt="Barcode Zertifikat"/>
 
+            <p th:text="${data.getIdentifier()}" th:class="body-text"></p>
             <div th:id="ch-only-validity" th:if="${showValidOnlyInSwitzerland}">
                 <p class="body-text no-padding red" th:text="#{antibody.validInSwitzerlandOnly}"></p>
                 <p class="body-text-en red" th:text="#{antibody.validInSwitzerlandOnly(${'en'})}"></p>
             </div>
-
-            <p th:text="${data.getIdentifier()}" th:class="body-text"></p>
             <p th:text="#{qrCode.label(${creationDate}, ${creationTime})}" class="body-text-small"></p>
             <p th:text="#{qrCode.label(${creationDate}, ${creationTime}, ${'en'})}"
                class="body-text-small-en">
