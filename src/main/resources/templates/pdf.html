@@ -35,7 +35,12 @@
         <td th:id="qr-code-section" class="first-col">
             <!-- QR Code does have a different size when generated locally, because of this it looks too far left. On other environments it looks fine -->
             <img th:id="qr-code" th:src="|data:image/png;base64,${qrCode}|" alt="Barcode Zertifikat"/>
+
             <p th:text="${data.getIdentifier()}" th:class="body-text"></p>
+            <div th:id="ch-only-validity" th:if="${showValidOnlyInSwitzerland}">
+                <p class="body-text no-padding red" th:text="#{antibody.validInSwitzerlandOnly}"></p>
+                <p class="body-text-en red" th:text="#{antibody.validInSwitzerlandOnly(${'en'})}"></p>
+            </div>
             <p th:text="#{qrCode.label(${creationDate}, ${creationTime})}" class="body-text-small"></p>
             <p th:text="#{qrCode.label(${creationDate}, ${creationTime}, ${'en'})}"
                class="body-text-small-en">
@@ -272,6 +277,15 @@
 
                 <tr class="table-row">
                     <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{antibody.type.label}"></p>
+                        <p class="body-text-en" th:text="#{antibody.type.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="#{antibody.type.value}"></td>
+                </tr>
+
+                <tr class="table-row">
+                    <td class="table-row-padding">
                         <p class="body-text no-padding" th:text="#{test.conducted.label}"></p>
                         <p class="body-text-en" th:text="#{test.conducted.label(${'en'})}"></p>
                     </td>
@@ -288,10 +302,6 @@
                         th:text="${data.getCountryOfTest()}"></td>
                 </tr>
             </table>
-            <div th:id="issuer">
-                <p class="body-text no-padding" th:text="#{antibody.validInSwitzerlandOnly}"></p>
-                <p class="body-text-en" th:text="#{antibody.validInSwitzerlandOnly(${'en'})}"></p>
-            </div>
         </td>
     </tr>
 </table>
