@@ -45,6 +45,7 @@ public class PdfHtmlRenderer {
         var context = new Context();
         context.setLocale(this.getLocale(data.getLanguage()));
         context.setVariable("data", data);
+        context.setVariable("showValidOnlyInSwitzerland", data.showValidOnlyInSwitzerland());
         context.setVariable("isEvidence", data.isEvidence());
         context.setVariable("showWatermark", showWatermark);
         context.setVariable("qrCode", barcodeImage);
