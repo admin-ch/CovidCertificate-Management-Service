@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RevocationServiceTest {
+class RevocationServiceTest {
     private final JFixture jFixture = new JFixture();
     @Mock
     private RevocationRepository revocationRepository;

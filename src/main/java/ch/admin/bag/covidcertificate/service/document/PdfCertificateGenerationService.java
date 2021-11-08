@@ -15,7 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,7 +34,7 @@ public class PdfCertificateGenerationService {
     }
 
     @PostConstruct
-    public void postConstruct(){
+    public void postConstruct() {
         this.pdfHtmlRenderer = new PdfHtmlRenderer(this.showWatermark);
     }
 
@@ -68,7 +68,7 @@ public class PdfCertificateGenerationService {
 
     private String getBarcodeImage(String barcodeContent) throws IOException {
         // Create QR code object with error correction level "M" (up to 15% damage)
-        Map<EncodeHintType, Object> hints = new HashMap<>();
+        Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
         hints.put(EncodeHintType.MARGIN, 0);
         BarcodeQRCode qrCode = new BarcodeQRCode(barcodeContent, hints, 300, 300);

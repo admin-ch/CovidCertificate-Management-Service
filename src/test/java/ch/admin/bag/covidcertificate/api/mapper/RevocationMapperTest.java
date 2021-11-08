@@ -10,11 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class RevocationMapperTest {
+class RevocationMapperTest {
     private final JFixture jFixture = new JFixture();
 
     @Test
-    public void whenToRevocation_thenMapsUVCI() {
+    void whenToRevocation_thenMapsUVCI() {
         //given
         RevocationDto revocationDto = jFixture.create(RevocationDto.class);
         // when

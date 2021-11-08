@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @ExtendWith(MockitoExtension.class)
-public class CsvControllerTest {
+class CsvControllerTest {
     @InjectMocks
     private CsvController controller;
     @Mock
@@ -59,7 +59,7 @@ public class CsvControllerTest {
                 "file",
                 "hello.txt",
                 "text/csv",
-                "Hello, World!" .getBytes()
+                "Hello, World!".getBytes()
         );
         CsvResponseDto csvResponseDto = fixture.create(CsvResponseDto.class);
         when(csvService.handleCsvRequest(any(MultipartFile.class), any(String.class))).thenReturn(csvResponseDto);
@@ -85,13 +85,13 @@ public class CsvControllerTest {
                 "file",
                 "hello.txt",
                 "text/csv",
-                "Hello, World!" .getBytes()
+                "Hello, World!".getBytes()
         );
 
         mockMvc.perform(multipart(B_URL)
-                .file(file)
-                .header("Authorization", fixture.create(String.class))
-                .param("certificateType", CertificateType.recovery.name()))
+                        .file(file)
+                        .header("Authorization", fixture.create(String.class))
+                        .param("certificateType", CertificateType.recovery.name()))
                 .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
     }
 
@@ -102,13 +102,13 @@ public class CsvControllerTest {
                 "file",
                 "hello.txt",
                 "text/plain",
-                "Hello, World!" .getBytes()
+                "Hello, World!".getBytes()
         );
 
         mockMvc.perform(multipart(B_URL)
-                .file(file)
-                .header("Authorization", fixture.create(String.class))
-                .param("certificateType", CertificateType.recovery.name()))
+                        .file(file)
+                        .header("Authorization", fixture.create(String.class))
+                        .param("certificateType", CertificateType.recovery.name()))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(result -> assertEquals(NOT_A_CSV.toString(), result.getResponse().getContentAsString()));
     }

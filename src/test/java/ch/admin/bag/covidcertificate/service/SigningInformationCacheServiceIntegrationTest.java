@@ -76,7 +76,7 @@ class SigningInformationCacheServiceIntegrationTest {
 
             signingInformationCacheService.findSigningInformation(certificateType, validAt);
 
-            verify(signingInformationRepository).findSigningInformation(eq(certificateType), eq(validAt));
+            verify(signingInformationRepository).findSigningInformation(certificateType, validAt);
             assertEquals(signingInformationList, Objects.requireNonNull(getCache().get(new SimpleKey(certificateType, validAt))).get());
         }
 
