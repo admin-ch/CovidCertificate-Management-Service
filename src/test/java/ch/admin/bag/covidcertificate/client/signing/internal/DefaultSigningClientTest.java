@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.client.signing.internal;
 
 import ch.admin.bag.covidcertificate.client.signing.SigningRequestDto;
+import ch.admin.bag.covidcertificate.client.signing.VerifySignatureRequestDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +55,8 @@ class DefaultSigningClientTest {
     public void init(){
         String url = fixture.create(String.class);
         ReflectionTestUtils.setField(signingClient, "url", url);
+        String verifyUrl = fixture.create(String.class);
+        ReflectionTestUtils.setField(signingClient, "verifyUrl", verifyUrl);
         String kidUrl = fixture.create(String.class);
         ReflectionTestUtils.setField(signingClient, "kidUrl", kidUrl);
         ResponseEntity byteArrayResponseEntity = mock(ResponseEntity.class);
@@ -62,6 +65,9 @@ class DefaultSigningClientTest {
         ResponseEntity stringResponseEntity = mock(ResponseEntity.class);
         lenient().when(stringResponseEntity.getBody()).thenReturn(fixture.create(String.class));
         lenient().when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class))).thenReturn(stringResponseEntity);
+        ResponseEntity booleanResponseEntity = mock(ResponseEntity.class);
+        lenient().when(booleanResponseEntity.getBody()).thenReturn(fixture.create(boolean.class));
+        lenient().when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(boolean.class))).thenReturn(booleanResponseEntity);
     }
 
     @Nested
@@ -204,6 +210,57 @@ class DefaultSigningClientTest {
             when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenThrow(exception);
 
             var actual = assertThrows(RestClientException.class, () -> signingClient.createSignatureWithCertificateAlias(cosePayload, signingInformation));
+
+            assertEquals(exception, actual);
+        }
+    }
+
+    @Nested
+    class VerifySignature{
+        @Test
+        void makesRequestToCorrectUrl() {
+            var verifyUrl = fixture.create(String.class);
+            ReflectionTestUtils.setField(signingClient, "verifyUrl", verifyUrl);
+
+            signingClient.verifySignature(fixture.create(VerifySignatureRequestDto.class));
+
+            verify(restTemplate).exchange(eq(verifyUrl), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
+        }
+
+        @Test
+        void makesPostRequest() {
+            signingClient.verifySignature(fixture.create(VerifySignatureRequestDto.class));
+
+            verify(restTemplate).exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), any(Class.class));
+        }
+
+        @Test
+        void makesRequestWithCorrectBody() {
+            var verifySignatureRequestDto =  fixture.create(VerifySignatureRequestDto.class);
+
+            signingClient.verifySignature(verifySignatureRequestDto);
+
+            verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argThat(argument -> Objects.equals(argument.getBody(), verifySignatureRequestDto)) , any(Class.class));
+        }
+
+        @Test
+        void returnsResponseBody() {
+            ResponseEntity responseEntity = mock(ResponseEntity.class);
+            when(responseEntity.getBody()).thenReturn(fixture.create(boolean.class));
+            when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenReturn(responseEntity);
+
+            var actual = signingClient.verifySignature(fixture.create(VerifySignatureRequestDto.class));
+
+            assertEquals(responseEntity.getBody(), actual);
+        }
+
+        @Test
+        void throwsExceptionIfRequestThrowsException() {
+            var exception = fixture.create(RestClientException.class);
+            var verifySignagureRequestDto = fixture.create(VerifySignatureRequestDto.class);
+            when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenThrow(exception);
+
+            var actual = assertThrows(RestClientException.class, () -> signingClient.verifySignature(verifySignagureRequestDto));
 
             assertEquals(exception, actual);
         }

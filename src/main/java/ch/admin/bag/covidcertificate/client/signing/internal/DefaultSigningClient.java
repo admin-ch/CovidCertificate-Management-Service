@@ -78,8 +78,7 @@ public class DefaultSigningClient implements SigningClient {
 
     protected byte[] createSignatureWithCertificateAlias(byte[] cosePayload, SigningInformation signingInformation) {
         var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(cosePayload),
-                                                      signingInformation.getAlias(),
-                                                      signingInformation.getCertificateAlias());
+                                                      signingInformation.getAlias());
         long start = System.currentTimeMillis();
         log.info("Call signing service with url {}", url);
         HttpHeaders headers = new HttpHeaders();
