@@ -68,7 +68,7 @@ class SigningInformationCacheServiceIntegrationTest {
     @Nested
     class FindSigningInformationOnlyByCertificateType{
         @Test
-        void shouldCallRepositoryAndWriteResultInCache(){
+        void shouldCallRepositoryAndWriteResultInCache_ifNotInCache(){
             var certificateType = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
             var signingInformationList = Collections.singletonList(fixture.create(SigningInformation.class));
@@ -76,7 +76,7 @@ class SigningInformationCacheServiceIntegrationTest {
 
             signingInformationCacheService.findSigningInformation(certificateType, validAt);
 
-            verify(signingInformationRepository).findSigningInformation(eq(certificateType), eq(validAt));
+            verify(signingInformationRepository).findSigningInformation(certificateType, validAt);
             assertEquals(signingInformationList, Objects.requireNonNull(getCache().get(new SimpleKey(certificateType, validAt))).get());
         }
 
@@ -100,7 +100,7 @@ class SigningInformationCacheServiceIntegrationTest {
     @Nested
     class FindSigningInformation{
         @Test
-        void shouldCallRepositoryAndWriteResultInCache(){
+        void shouldCallRepositoryAndWriteResultInCache_ifNotInCache(){
             var certificateType = fixture.create(String.class);
             var code = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
