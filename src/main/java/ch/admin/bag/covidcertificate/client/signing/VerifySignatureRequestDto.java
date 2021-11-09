@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class SigningRequestDto {
-    private String dataToSign;
-    private String signingKeyAlias;
+public class VerifySignatureRequestDto {
+    private final String dataToSign;
+    private final String signature;
+    private final String certificateAlias;
 }

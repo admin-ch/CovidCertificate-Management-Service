@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.client.signing.internal;
 
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
 import ch.admin.bag.covidcertificate.client.signing.SigningRequestDto;
+import ch.admin.bag.covidcertificate.client.signing.VerifySignatureRequestDto;
 import ch.admin.bag.covidcertificate.config.ProfileRegistry;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,9 @@ public class DefaultSigningClient implements SigningClient {
 
     @Value("${cc-signing-service.url}")
     private String url;
+
+    @Value("${cc-signing-service.verify-url}")
+    private String verifyUrl;
 
     @Value("${cc-signing-service.kid-url}")
     private String kidUrl;
@@ -74,8 +78,7 @@ public class DefaultSigningClient implements SigningClient {
 
     protected byte[] createSignatureWithCertificateAlias(byte[] cosePayload, SigningInformation signingInformation) {
         var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(cosePayload),
-                                                      signingInformation.getAlias(),
-                                                      signingInformation.getCertificateAlias());
+                                                      signingInformation.getAlias());
         long start = System.currentTimeMillis();
         log.info("Call signing service with url {}", url);
         HttpHeaders headers = new HttpHeaders();
@@ -90,6 +93,19 @@ public class DefaultSigningClient implements SigningClient {
             return result.getBody();
         }catch (RestClientException e){
             log.error("Connection with signing service {} could not be established.", url, e);
+            throw e;
+        }
+    }
+
+    public boolean verifySignature(VerifySignatureRequestDto verifySignatureRequestDto) {
+        log.info("Call signing service with url {}", verifyUrl);
+        HttpHeaders headers = new HttpHeaders();
+        headers.put("Content-Type", Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
+        try {
+            ResponseEntity<Boolean> result = restTemplate.exchange(verifyUrl, HttpMethod.POST, new HttpEntity<>(verifySignatureRequestDto, headers), boolean.class);
+            return result.getBody();
+        }catch (RestClientException e){
+            log.error("Connection with signing service {} could not be established.", verifyUrl, e);
             throw e;
         }
     }
