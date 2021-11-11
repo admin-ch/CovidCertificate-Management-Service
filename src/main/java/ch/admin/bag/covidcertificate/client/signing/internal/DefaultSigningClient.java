@@ -47,36 +47,7 @@ public class DefaultSigningClient implements SigningClient {
         this.restTemplate = restTemplate;
     }
 
-
     public byte[] createSignature(byte[] cosePayload, SigningInformation signingInformation) {
-        if(signingInformation.getCertificateAlias() == null ||signingInformation.getCertificateAlias().isBlank()){
-            return createSignatureWithKeyIdentifier(cosePayload, signingInformation);
-        } else {
-            return createSignatureWithCertificateAlias(cosePayload, signingInformation);
-        }
-    }
-
-    //TODO: keyIdentifier should be deleted. It is deprecated and used only for backwards compatibility.
-    /*
-    * @deprecated This should be deleted and the createSignatureWithCertificateAlias should be used instead
-     */
-    @Deprecated(since = "2.7.0")
-    protected byte[] createSignatureWithKeyIdentifier(byte[] cosePayload, SigningInformation signingInformation) {
-        var signingUrl = buildSigningUrl(url, signingInformation.getAlias());
-        log.info("Call signing service with url {}", signingUrl);
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("Content-Type", Collections.singletonList(MediaType.APPLICATION_CBOR_VALUE));
-        try {
-            ResponseEntity<byte[]> result = restTemplate.exchange(signingUrl, HttpMethod.POST, new HttpEntity<>(cosePayload, headers), byte[].class);
-            return result.getBody();
-        }catch (RestClientException e){
-            log.error("Connection with signing service {} could not be established.", url, e);
-            throw e;
-        }
-    }
-
-
-    protected byte[] createSignatureWithCertificateAlias(byte[] cosePayload, SigningInformation signingInformation) {
         var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(cosePayload),
                                                       signingInformation.getAlias());
         long start = System.currentTimeMillis();
