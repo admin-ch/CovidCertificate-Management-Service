@@ -326,19 +326,33 @@
             th:text="${birthdate}"></td>
     </tr>
 </table>
-<div th:id="issuer">
-    <p class="body-text no-padding" th:text="#{issuer.title}"></p>
-    <p class="body-text-en" th:text="#{issuer.title(${'en'})}"></p>
-    <p th:text="#{issuer.issuer}" class="heading no-padding"></p>
-    <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
-</div>
+<table class="two-col-table" th:id="issuer-chOnlyMessage">
+    <tr>
+        <td th:id="issuer-section" style="width: 52%">
+            <div th:id="issuer">
+                <p class="body-text no-padding" th:text="#{issuer.title}"></p>
+                <p class="body-text-en" th:text="#{issuer.title(${'en'})}"></p>
+                <p th:text="#{issuer.issuer}" class="heading no-padding"></p>
+                <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
+            </div>
+        </td>
+
+        <td th:id="chOnlyMessage-section" style="width: 48%">
+            <div th:if="${showValidOnlyInSwitzerland}" class="ch-only-section">
+                <p class="body-text no-padding red-bold" th:text="#{antibody.validInSwitzerlandOnly}"></p>
+                <p class="body-text-en red" th:text="#{antibody.validInSwitzerlandOnly(${'en'})}"></p>
+            </div>
+        </td>
+    </tr>
+</table>
+
 <div th:id="disclaimer">
     <p class="body-text-small" th:text="#{info.info1}"></p>
     <p class="body-text-small" th:text="#{info.info2}"></p>
-    <p class="body-text-small" th:if="${type == 'recovery'} "th:utext="#{recovery.info}"></p>
+    <p class="body-text-small" th:if="${type == 'recovery'}" th:utext="#{recovery.info}"></p>
     <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
     <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
-    <p class="body-text-small-en" th:if="${type == 'recovery'} "th:utext="#{recovery.info(${'en'})}"></p>
+    <p class="body-text-small-en" th:if="${type == 'recovery'}" th:utext="#{recovery.info(${'en'})}"></p>
 </div>
 <table th:id="app-info">
     <tr>

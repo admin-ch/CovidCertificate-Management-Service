@@ -189,3 +189,19 @@ sub, sup {
 sup {
     top: -0.5em;
 }
+
+.ch-only-section {
+    border: 0.5px solid rgb(220, 0, 24);
+    border-radius: 7px;
+    vertical-align: middle;
+    padding: 18px;
+}
+
+.red {
+    color: rgb(220, 0, 24);
+}
+
+.red-bold {
+    color: rgb(220, 0, 24);
+    font-weight: 600;
+}
