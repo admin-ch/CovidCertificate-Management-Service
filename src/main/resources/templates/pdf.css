@@ -175,6 +175,10 @@ body {
     transform: rotate(-45deg);
 }
 
+.red {
+    color: rgb(220, 0, 24);
+}
+
 sub, sup {
     font-size: 75%;
     line-height: 0;

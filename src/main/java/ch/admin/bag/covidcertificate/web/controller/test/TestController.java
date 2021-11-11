@@ -6,6 +6,7 @@ import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
+import ch.admin.bag.covidcertificate.client.signing.VerifySignatureRequestDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import ch.admin.bag.covidcertificate.domain.SigningInformationRepository;
 import ch.admin.bag.covidcertificate.service.domain.SigningCertificateCategory;
@@ -27,6 +28,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,7 +56,15 @@ public class TestController {
 
             for (SigningInformation signingInformation : signingInformationList) {
                 try {
-                    signingClient.createSignature(UUID.randomUUID().toString().getBytes(), signingInformation);
+                    var messageBytes = UUID.randomUUID().toString().getBytes();
+                    var signatureBytes = signingClient.createSignature(messageBytes, signingInformation);
+                    var message = Base64.getEncoder().encodeToString(messageBytes);
+                    var signature = Base64.getEncoder().encodeToString(signatureBytes);
+                    var verifySignatureDto = new VerifySignatureRequestDto(message, signature, signingInformation.getCertificateAlias());
+                    var validSignature = signingClient.verifySignature(verifySignatureDto);
+                    if(!validSignature){
+                        errors.add(signingInformation);
+                    }
                 } catch (Exception e) {
                     errors.add(signingInformation);
                 }

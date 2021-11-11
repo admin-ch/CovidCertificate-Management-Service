@@ -37,6 +37,7 @@ cc-management-service:
 
 cc-signing-service:
   url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/sign"
+  verify-url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/sign/verify"
   kid-url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/sign/configuration/kid"
 
 cc-printing-service:
