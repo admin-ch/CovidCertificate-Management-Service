@@ -31,7 +31,7 @@ public class FixtureCustomization {
                 fixture.create(String.class), fixture.create(String.class),
                 fixture.create(String.class), fixture.create(String.class),
                 fixture.create(String.class), fixture.create(String.class),
-                fixture.create(Issuable.class)
+                fixture.create(Issuable.class), fixture.create(Boolean.class)
         ));
     }
 

@@ -49,7 +49,7 @@ class CovidPdfCertificateGenerationServiceTest {
     private void generateDocument_vaccine(VaccinationCertificateCreateDto createDto, String language, String familyName, String givenName, String fileName) throws Exception {
         IssuableVaccineDto vaccineDto = new IssuableVaccineDto("EU/1/20/1528", "Comirnaty", "1119349007",
                 "SARS-CoV-2 mRNA vaccine", "ORG-100030215",
-                "Biontech Manufacturing GmbH", Issuable.CH_ONLY);
+                "Biontech Manufacturing GmbH", Issuable.CH_ONLY, true);
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
         String country = "Schweiz";

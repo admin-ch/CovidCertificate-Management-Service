@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValueSetsResponseDtoMapper {
-        public static ValueSetsResponseDto create(ValueSetsDto valueSetsDto){
+    public static ValueSetsResponseDto create(ValueSetsDto valueSetsDto) {
         return new ValueSetsResponseDto(
                 valueSetsDto.getCountryCodes(),
                 valueSetsDto.getVaccinationSets(),

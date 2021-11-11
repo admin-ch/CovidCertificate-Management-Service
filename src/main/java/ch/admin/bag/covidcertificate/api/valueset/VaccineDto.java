@@ -16,9 +16,9 @@ public class VaccineDto extends IssuableVaccineDto {
 
     public VaccineDto(
             String productCode, String productDisplay, String prophylaxisCode, String prophylaxisDisplay,
-            String authHolderCode, String authHolderDisplay, Boolean active, Issuable issuable) {
+            String authHolderCode, String authHolderDisplay, Boolean active, Issuable issuable, boolean who) {
         super(productCode, productDisplay, prophylaxisCode, prophylaxisDisplay,
-              authHolderCode, authHolderDisplay, issuable);
+              authHolderCode, authHolderDisplay, issuable, who);
         this.active = active;
     }
 }
