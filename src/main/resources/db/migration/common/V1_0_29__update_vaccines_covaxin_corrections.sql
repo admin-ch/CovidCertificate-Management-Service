@@ -16,10 +16,10 @@ where id = 'fe39b8af-eccd-45de-acd7-ce7206052b00';
 
 update vaccines_covid_19_names
 set prophylaxis = '1ee3559a-ed64-4062-a10e-baeded624ae8'
-  , auth_holder = '279ad11e-f040-442d-8e97-1262423e3e0b'
+  , auth_holder = '8f910905-1c14-4f92-befd-6174c1aba905'
 where id = 'fe39b8af-eccd-45de-acd7-ce7206052b02';
 
 update vaccines_covid_19_names
 set prophylaxis = '1ee3559a-ed64-4062-a10e-baeded624ae8'
-  , auth_holder = '279ad11e-f040-442d-8e97-1262423e3e0b'
+  , auth_holder = '8f910905-1c14-4f92-befd-6174c1aba905'
 where id = 'fe39b8af-eccd-45de-acd7-ce7206052b00';
