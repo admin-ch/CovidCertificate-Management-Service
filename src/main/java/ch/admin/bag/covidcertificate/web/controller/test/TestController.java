@@ -58,12 +58,15 @@ public class TestController {
                 try {
                     var messageBytes = UUID.randomUUID().toString().getBytes();
                     var signatureBytes = signingClient.createSignature(messageBytes, signingInformation);
-                    var message = Base64.getEncoder().encodeToString(messageBytes);
-                    var signature = Base64.getEncoder().encodeToString(signatureBytes);
-                    var verifySignatureDto = new VerifySignatureRequestDto(message, signature, signingInformation.getCertificateAlias());
-                    var validSignature = signingClient.verifySignature(verifySignatureDto);
-                    if(!validSignature){
-                        errors.add(signingInformation);
+                    if(signingInformation.getCertificateAlias()!=null && !signingInformation.getCertificateAlias().isBlank()) {
+                        var message = Base64.getEncoder().encodeToString(messageBytes);
+                        var signature = Base64.getEncoder().encodeToString(signatureBytes);
+
+                        var verifySignatureDto = new VerifySignatureRequestDto(message, signature, signingInformation.getCertificateAlias());
+                        var validSignature = signingClient.verifySignature(verifySignatureDto);
+                        if (!validSignature) {
+                            errors.add(signingInformation);
+                        }
                     }
                 } catch (Exception e) {
                     errors.add(signingInformation);
