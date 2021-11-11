@@ -37,10 +37,18 @@
             <img th:id="qr-code" th:src="|data:image/png;base64,${qrCode}|" alt="Barcode Zertifikat"/>
 
             <p th:text="${data.getIdentifier()}" th:class="body-text"></p>
-            <p th:text="#{qrCode.label(${creationDate}, ${creationTime})}" class="body-text-small"></p>
-            <p th:text="#{qrCode.label(${creationDate}, ${creationTime}, ${'en'})}"
-               class="body-text-small-en">
-            </p>
+            <div th:unless="${isEvidence}">
+                <p th:text="#{qrCode.label(${creationDate}, ${creationTime})}" class="body-text-small"></p>
+                <p th:text="#{qrCode.label(${creationDate}, ${creationTime}, ${'en'})}"
+                   class="body-text-small-en">
+                </p>
+            </div>
+            <div th:if="${isEvidence}">
+                <p th:text="#{evidence.qrCode.label(${creationDate}, ${creationTime})}" class="body-text-small"></p>
+                <p th:text="#{evidence.qrCode.label(${creationDate}, ${creationTime}, ${'en'})}"
+                   class="body-text-small-en">
+                </p>
+            </div>
             <p th:text="#{qrCode.date.label}" th:class="body-text-small-en"></p>
         </td>
         <td th:switch="${type}" class="second-col">
@@ -328,7 +336,7 @@
 </table>
 <table class="two-col-table" th:id="issuer-chOnlyMessage">
     <tr>
-        <td th:id="issuer-section" style="width: 52%">
+        <td th:unless="${isEvidence}" th:id="issuer-section" style="width: 52%">
             <div th:id="issuer">
                 <p class="body-text no-padding" th:text="#{issuer.title}"></p>
                 <p class="body-text-en" th:text="#{issuer.title(${'en'})}"></p>
@@ -336,7 +344,14 @@
                 <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
             </div>
         </td>
-
+        <td th:if="${isEvidence}" th:id="issuer-section" style="width: 52%">
+            <div th:id="issuer">
+                <p class="body-text no-padding" th:text="#{evidence.issuer}"></p>
+                <p class="body-text-en" th:text="#{evidence.issuer(${'en'})}"></p>
+                <p th:text="#{issuer.issuer}" class="heading no-padding"></p>
+                <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
+            </div>
+        </td>
         <td th:id="chOnlyMessage-section" style="width: 48%">
             <div th:if="${showValidOnlyInSwitzerland}" class="ch-only-section">
                 <p class="body-text no-padding red-bold" th:text="#{antibody.validInSwitzerlandOnly}"></p>
@@ -347,12 +362,19 @@
 </table>
 
 <div th:id="disclaimer">
-    <p class="body-text-small" th:text="#{info.info1}"></p>
-    <p class="body-text-small" th:text="#{info.info2}"></p>
-    <p class="body-text-small" th:if="${type == 'recovery'}" th:utext="#{recovery.info}"></p>
-    <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
-    <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
-    <p class="body-text-small-en" th:if="${type == 'recovery'}" th:utext="#{recovery.info(${'en'})}"></p>
+    <th:block th:unless="${isEvidence}">
+        <p class="body-text-small" th:text="#{info.info1}"></p>
+        <p class="body-text-small" th:text="#{info.info2}"></p>
+        <p class="body-text-small" th:if="${type == 'recovery'}" th:utext="#{recovery.info}"></p>
+        <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
+        <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
+        <p class="body-text-small-en" th:if="${type == 'recovery'}" th:utext="#{recovery.info(${'en'})}"></p>
+    </th:block>
+
+    <th:block th:if="${isEvidence}">
+        <p class="body-text-small" th:text="#{evidence.info}"></p>
+        <p class="body-text-small-en" th:text="#{evidence.info(${'en'})}"></p>
+    </th:block>
 </div>
 <table th:id="app-info">
     <tr>
