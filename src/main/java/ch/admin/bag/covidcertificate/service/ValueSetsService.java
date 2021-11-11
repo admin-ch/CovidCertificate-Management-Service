@@ -1,12 +1,14 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.exception.ValueSetException;
 import ch.admin.bag.covidcertificate.api.mapper.IssuableRapidTestMapper;
 import ch.admin.bag.covidcertificate.api.mapper.IssuableVaccineMapper;
 import ch.admin.bag.covidcertificate.api.mapper.RapidTestMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccineMapper;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
+import ch.admin.bag.covidcertificate.api.valueset.CountryCodes;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestDto;
@@ -32,6 +34,7 @@ import java.util.Objects;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.UNSUPPORTED_LANGUAGE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.EN;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
@@ -87,6 +90,10 @@ public class ValueSetsService {
         return getRapidTestDto(this.getIssuableRapidTests(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
     }
 
+    public CountryCodes getCountryCodes() {
+        return countryCodesLoader.getCountryCodes();
+    }
+
     private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
         if (validPCRTest(testTypeCode, testCode)) {
             return new IssuableTestDto("", "PCR", TestType.PCR);
@@ -126,7 +133,7 @@ public class ValueSetsService {
                 .orElse(null);
     }
 
-    private List<CountryCode> getCountryCodesForLanguage(String language) {
+    public List<CountryCode> getCountryCodesForLanguage(String language) {
         var countryCodes = countryCodesLoader.getCountryCodes();
         List<CountryCode> result = Collections.emptyList();
         switch (language) {
@@ -146,7 +153,7 @@ public class ValueSetsService {
                 result = countryCodes.getEn();
                 break;
             default:
-                break;
+                throw new ValueSetException(UNSUPPORTED_LANGUAGE);
         }
         return result;
     }

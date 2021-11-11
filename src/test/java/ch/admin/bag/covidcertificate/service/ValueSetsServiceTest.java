@@ -40,6 +40,7 @@ import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.IT;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;
@@ -188,6 +189,20 @@ public class ValueSetsServiceTest {
 
     @Nested
     class GetCountryCode {
+        @Test
+        void shouldReturnCorrectCountryCodes() {
+            var countryCodes = fixture.create(CountryCodes.class);
+            when(countryCodesLoader.getCountryCodes()).thenReturn(countryCodes);
+
+            var actual = service.getCountryCodes();
+
+            assertDoesNotThrow(() -> ReflectionTestUtils.getField(actual, "de"));
+            assertDoesNotThrow(() -> ReflectionTestUtils.getField(actual, "fr"));
+            assertDoesNotThrow(() -> ReflectionTestUtils.getField(actual, "it"));
+            assertDoesNotThrow(() -> ReflectionTestUtils.getField(actual, "rm"));
+            assertDoesNotThrow(() -> ReflectionTestUtils.getField(actual, "en"));
+        }
+
         @Test
         void shouldReturnCorrectCountryCode_ifLanguageIsDE() {
             var countryShort = fixture.create(String.class);

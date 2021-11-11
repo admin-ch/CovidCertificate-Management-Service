@@ -2,6 +2,8 @@ package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.mapper.ValueSetsResponseDtoMapper;
 import ch.admin.bag.covidcertificate.api.response.ValueSetsResponseDto;
+import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
+import ch.admin.bag.covidcertificate.api.valueset.CountryCodes;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestDto;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -86,5 +89,23 @@ public class ValueSetsController {
         securityHelper.authorizeUser(request);
 
         return valueSetsService.getWebUiIssuableVaccines();
+    }
+
+    @GetMapping("/countries")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CountryCodes getCountryCodes(HttpServletRequest request) {
+        log.info("Call of getCountryCodes for value sets");
+        securityHelper.authorizeUser(request);
+
+        return valueSetsService.getCountryCodes();
+    }
+
+    @GetMapping("/countries/{language}")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public List<CountryCode> getCountryCodesByLanguage(@PathVariable final String language, HttpServletRequest request) {
+        log.info("Call of getCountryCodes by language for value sets");
+        securityHelper.authorizeUser(request);
+
+        return valueSetsService.getCountryCodesForLanguage(language);
     }
 }
