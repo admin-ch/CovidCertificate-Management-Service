@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -44,7 +45,7 @@ public class TestCertificatePdf extends AbstractCertificatePdf {
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.typeOfTest = typeOfTest;
         this.testNameAndManufacturer = testNameAndManufacturer;
-        this.sampleDateTime = sampleDateTime;
+        this.sampleDateTime = sampleDateTime.withZoneSameInstant(Constants.SWISS_TIMEZONE);
         this.result = result;
         this.testingCentreOrFacility = testingCentreOrFacility;
         this.memberStateOfTest = memberStateOfTest;
