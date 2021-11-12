@@ -19,13 +19,11 @@ body {
     width: 43%;
     max-width: 43%;
     padding-right: 4%;
-    border: 1px solid green;
 }
 
 .two-col-table .second-col {
     width: 53%;
     max-width: 53%;
-    border: 1px solid green;
 }
 
 .heading, .body-text, .body-text-en, .body-text-small, .body-text-small-en {
@@ -69,7 +67,6 @@ body {
 
 .table-row td {
     padding-bottom: 12px;
-    border: 1px solid red;
 }
 
 .table-row-padding {
