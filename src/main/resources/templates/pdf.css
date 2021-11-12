@@ -108,10 +108,10 @@ body {
 }
 
 #qr-code {
-    width: 300px;
-    height: 300px;
-    margin-bottom: 0;
-    margin-left: -10px;
+    width: 285px;
+    height: 285px;
+    margin-bottom: 8px;
+    margin-top: 20px;
 }
 
 #health-data-header-row, #personal-data-header-row {
