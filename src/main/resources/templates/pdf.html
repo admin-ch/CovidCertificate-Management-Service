@@ -173,8 +173,10 @@
                         <p class="body-text no-padding" th:text="#{recovery.countryOfTest.label}"></p>
                         <p class="body-text-en" th:text="#{recovery.countryOfTest.label(${'en'})}"></p>
                     </td>
-                    <td class="body-text"
-                        th:text="${data.getCountryOfTest()}"></td>
+                    <td>
+                        <p class="body-text no-padding" th:text="${data.getCountryOfTest()}"></p>
+                        <p class="body-text-en" th:text="${data.getCountryOfTestEn()}"></p>
+                    </td>
                 </tr>
             </table>
             <table th:case="'test'" class="two-col-table">
@@ -302,8 +304,10 @@
                         <p class="body-text no-padding" th:text="#{antibody.countryOfTest.label}"></p>
                         <p class="body-text-en" th:text="#{antibody.countryOfTest.label(${'en'})}"></p>
                     </td>
-                    <td class="body-text"
-                        th:text="${data.getCountryOfTest()}"></td>
+                    <td>
+                        <p class="body-text no-padding" th:text="${data.getCountryOfTest()}"></p>
+                        <p class="body-text-en" th:text="${data.getCountryOfTestEn()}"></p>
+                    </td>
                 </tr>
             </table>
         </td>
