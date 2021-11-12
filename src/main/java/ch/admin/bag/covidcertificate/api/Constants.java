@@ -102,5 +102,5 @@ public class Constants {
     public static final CreateCertificateError SIGNING_CERTIFICATE_MISSING = new CreateCertificateError(559, "No signing certificate was found.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError AMBIGUOUS_SIGNING_CERTIFICATE = new CreateCertificateError(560, "Ambiguous signing certificate. Multiple signing certificates were found.", HttpStatus.INTERNAL_SERVER_ERROR);
 
-    public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language is not supported.", HttpStatus.BAD_REQUEST);
+    public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language does not match any of the supported languages: de, it, fr, rm, en!", HttpStatus.BAD_REQUEST);
 }

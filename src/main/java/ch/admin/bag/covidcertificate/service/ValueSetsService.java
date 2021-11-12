@@ -136,7 +136,7 @@ public class ValueSetsService {
     public List<CountryCode> getCountryCodesForLanguage(String language) {
         var countryCodes = countryCodesLoader.getCountryCodes();
         List<CountryCode> result = Collections.emptyList();
-        switch (language) {
+        switch (language.toLowerCase()) {
             case DE:
                 result = countryCodes.getDe();
                 break;

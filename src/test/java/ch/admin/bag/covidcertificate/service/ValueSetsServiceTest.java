@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.exception.ValueSetException;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCodes;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
@@ -36,6 +37,7 @@ import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestVa
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccine;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.UNSUPPORTED_LANGUAGE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.IT;
@@ -201,6 +203,74 @@ public class ValueSetsServiceTest {
             assertDoesNotThrow(() -> ReflectionTestUtils.getField(actual, "it"));
             assertDoesNotThrow(() -> ReflectionTestUtils.getField(actual, "rm"));
             assertDoesNotThrow(() -> ReflectionTestUtils.getField(actual, "en"));
+        }
+
+        @Test
+        void shouldReturnCorrectCountryCodesByLanguage_ifLanguageIsDE() {
+            var countryCodes = fixture.create(CountryCodes.class);
+            when(countryCodesLoader.getCountryCodes()).thenReturn(countryCodes);
+
+            var actual = service.getCountryCodesForLanguage("de");
+
+            assertEquals(countryCodes.getDe(), actual);
+        }
+
+        @Test
+        void shouldReturnCorrectCountryCodesByLanguage_ifLanguageIsFR() {
+            var countryCodes = fixture.create(CountryCodes.class);
+            when(countryCodesLoader.getCountryCodes()).thenReturn(countryCodes);
+
+            var actual = service.getCountryCodesForLanguage("fr");
+
+            assertEquals(countryCodes.getFr(), actual);
+        }
+
+        @Test
+        void shouldReturnCorrectCountryCodesByLanguage_ifLanguageIsIT() {
+            var countryCodes = fixture.create(CountryCodes.class);
+            when(countryCodesLoader.getCountryCodes()).thenReturn(countryCodes);
+
+            var actual = service.getCountryCodesForLanguage("it");
+
+            assertEquals(countryCodes.getIt(), actual);
+        }
+
+        @Test
+        void shouldReturnCorrectCountryCodesByLanguage_ifLanguageIsRM() {
+            var countryCodes = fixture.create(CountryCodes.class);
+            when(countryCodesLoader.getCountryCodes()).thenReturn(countryCodes);
+
+            var actual = service.getCountryCodesForLanguage("rm");
+
+            assertEquals(countryCodes.getRm(), actual);
+        }
+
+        @Test
+        void shouldReturnCorrectCountryCodesByLanguage_ifLanguageIsEN() {
+            var countryCodes = fixture.create(CountryCodes.class);
+            when(countryCodesLoader.getCountryCodes()).thenReturn(countryCodes);
+
+            var actual = service.getCountryCodesForLanguage("en");
+
+            assertEquals(countryCodes.getEn(), actual);
+        }
+
+        @Test
+        void shouldReturnCorrectCountryCodesByLanguage_ifLanguageIsUpperCase() {
+            var countryCodes = fixture.create(CountryCodes.class);
+            when(countryCodesLoader.getCountryCodes()).thenReturn(countryCodes);
+
+            var actual = service.getCountryCodesForLanguage("dE");
+
+            assertEquals(countryCodes.getDe(), actual);
+        }
+
+        @Test
+        void shouldThrowValueSetException_ifLanguageIsNotSupported() {
+            var actual = assertThrows(ValueSetException.class,
+                    () -> service.getCountryCodesForLanguage("dexxxxx"));
+
+            assertEquals(UNSUPPORTED_LANGUAGE, actual.getError());
         }
 
         @Test
