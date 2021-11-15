@@ -112,6 +112,7 @@ body {
     height: 285px;
     margin-bottom: 8px;
     margin-top: 20px;
+    margin-left: -3px;
 }
 
 #health-data-header-row, #personal-data-header-row {
