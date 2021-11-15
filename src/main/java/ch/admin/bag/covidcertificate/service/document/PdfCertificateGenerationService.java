@@ -71,7 +71,7 @@ public class PdfCertificateGenerationService {
         Map<EncodeHintType, Object> hints = new HashMap<>();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
         hints.put(EncodeHintType.MARGIN, 0);
-        BarcodeQRCode qrCode = new BarcodeQRCode(barcodeContent, hints);
+        BarcodeQRCode qrCode = new BarcodeQRCode(barcodeContent, hints, 1000, 1000);
 
         return qrCode.getBase64Barcode();
     }
