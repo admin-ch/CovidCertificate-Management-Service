@@ -55,6 +55,8 @@ public class ValueSetsService {
     private static final String API_PLATFORM_ISSUABLE_VACCINE_CACHE_NAME = "apiPlatformIssuableVaccines";
     private static final String RAPID_TEST_CACHE_NAME = "rapidTests";
     private static final String ISSUABLE_TEST_CACHE_NAME = "issuableTests";
+    private static final String COUNTRY_CODES_CACHE_NAME = "countryCodes";
+    private static final String COUNTRY_CODES_FOR_LANGUAGE_CACHE_NAME = "countryCodesForLanguage";
 
     private final CountryCodesLoader countryCodesLoader;
     private final VaccineRepository vaccineRepository;
@@ -90,6 +92,7 @@ public class ValueSetsService {
         return getRapidTestDto(this.getIssuableRapidTests(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
     }
 
+    @Cacheable(COUNTRY_CODES_CACHE_NAME)
     public CountryCodes getCountryCodes() {
         return countryCodesLoader.getCountryCodes();
     }
@@ -133,6 +136,7 @@ public class ValueSetsService {
                 .orElse(null);
     }
 
+    @Cacheable(COUNTRY_CODES_FOR_LANGUAGE_CACHE_NAME)
     public List<CountryCode> getCountryCodesForLanguage(String language) {
         var countryCodes = countryCodesLoader.getCountryCodes();
         List<CountryCode> result = Collections.emptyList();
