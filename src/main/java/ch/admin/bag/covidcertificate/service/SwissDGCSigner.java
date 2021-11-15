@@ -13,14 +13,14 @@ public class SwissDGCSigner implements DGCSigner {
 
     private final COSEService coseService;
 
-    public byte[] sign(byte[] dgcCBOR, SigningInformation signingInformation) {
-        return coseService.getCOSESign1(dgcCBOR, signingInformation);
+    public byte[] sign(byte[] dgcCBOR, SigningInformation signingInformation, Instant expiredAt) {
+        return coseService.getCOSESign1(dgcCBOR, signingInformation, expiredAt);
     }
 
     // Parameter expiration is not used! We have to support it because of the interface signature.
     @Override
     public byte[] sign(byte[] dgcCBOR, Instant expiration) {
-        return coseService.getCOSESign1(dgcCBOR, null);
+        return coseService.getCOSESign1(dgcCBOR, null, expiration);
     }
 
     @Override

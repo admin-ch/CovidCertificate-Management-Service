@@ -87,7 +87,7 @@ class CBORServiceTest {
         }
         @Test
         void writesCorrectIssuerInThePayload() {
-            byte[] result = cborService.getPayload(createHCert());
+            byte[] result = cborService.getPayload(createHCert(), fixture.create(Instant.class));
 
             assertNotNull(result);
             CBORObject resultCBORObject = CBORObject.DecodeFromBytes(result);
@@ -100,7 +100,7 @@ class CBORServiceTest {
             Instant issuedAt = fixture.create(Instant.class).truncatedTo(ChronoUnit.SECONDS);
             when(coseTime.getIssuedAt()).thenReturn(issuedAt);
 
-            byte[] result = cborService.getPayload(createHCert());
+            byte[] result = cborService.getPayload(createHCert(), fixture.create(Instant.class));
 
             assertNotNull(result);
             CBORObject resultCBORObject = CBORObject.DecodeFromBytes(result);
@@ -111,9 +111,8 @@ class CBORServiceTest {
         void writesCorrectExpirationTimestampInThePayload() {
             CBORInstantConverter instantConverter = new CBORInstantConverter();
             Instant expiration = fixture.create(Instant.class).truncatedTo(ChronoUnit.SECONDS);
-            when(coseTime.getExpiration()).thenReturn(expiration);
 
-            byte[] result = cborService.getPayload(createHCert());
+            byte[] result = cborService.getPayload(createHCert(), expiration);
 
             assertNotNull(result);
             CBORObject resultCBORObject = CBORObject.DecodeFromBytes(result);
@@ -124,7 +123,7 @@ class CBORServiceTest {
         void writesCorrectHCertInThePayload() {
             byte[] hcert = createHCert();
             // when
-            byte[] result = cborService.getPayload(hcert);
+            byte[] result = cborService.getPayload(hcert, fixture.create(Instant.class));
             // then
             assertNotNull(result);
             CBORObject resultCBORObject = CBORObject.DecodeFromBytes(result);
@@ -134,17 +133,19 @@ class CBORServiceTest {
         @ParameterizedTest
         @NullAndEmptySource
         void throwsIllegalArgumentException_ifHCertIsNullOrEmpty(byte[] hcert) {
+            var expiredAt = fixture.create(Instant.class);
             // when then
             var exception = assertThrows(IllegalArgumentException.class,
-                    () -> cborService.getPayload(hcert));
+                    () -> cborService.getPayload(hcert, expiredAt));
             assertTrue(exception.getMessage().toLowerCase().contains("hcert"));
         }
 
         @Test
         void throwsCBORException_ifHCertIsNotAValidCborObject() {
             var hcert = fixture.create(byte[].class);
+            var expiredAt = fixture.create(Instant.class);
             var exception = assertThrows(CBORException.class,
-                    () -> cborService.getPayload(hcert));
+                    () -> cborService.getPayload(hcert, expiredAt));
         }
     }
 
