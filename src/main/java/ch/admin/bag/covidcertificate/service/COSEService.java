@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_PAYLOAD_FAILED;
 import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_PROTECTED_HEADER_FAILED;
 import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_SIGN1_FAILED;
@@ -20,9 +22,9 @@ public class COSEService {
     private final CBORService cborService;
     private final SigningClient signingClient;
 
-    public byte[] getCOSESign1(byte[] dgcCBOR, SigningInformation signingInformation) {
+    public byte[] getCOSESign1(byte[] dgcCBOR, SigningInformation signingInformation, Instant expiredAt) {
         byte[] protectedHeader = getProtectedHeader(signingInformation);
-        byte[] payload = getPayload(dgcCBOR);
+        byte[] payload = getPayload(dgcCBOR, expiredAt);
         byte[] signatureData = getSignatureData(protectedHeader, payload);
         byte[] signature = getSignature(signatureData, signingInformation);
         return getCOSESign1(protectedHeader, payload, signature);
@@ -41,9 +43,9 @@ public class COSEService {
         }
     }
 
-    private byte[] getPayload(byte[] hcert) {
+    private byte[] getPayload(byte[] hcert, Instant expiredAt) {
         try {
-            return cborService.getPayload(hcert);
+            return cborService.getPayload(hcert, expiredAt);
         } catch (Exception e) {
             throw new CreateCertificateException(CREATE_COSE_PAYLOAD_FAILED);
         }
