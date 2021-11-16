@@ -15,13 +15,13 @@ import static org.mockito.Mockito.times;
 class CovidCertificateAddressDtoTest {
 
     @Test
-    public void createsAddressDto__ifAllValid() {
+    void createsAddressDto__ifAllValid() {
         var addressDto = new CovidCertificateAddressDto("streetAndNr", 1000, "city", "BE");
         assertDoesNotThrow(addressDto::validate);
     }
 
     @Test
-    public void throwsCertificateCreateException__onEmptyStreet() {
+    void throwsCertificateCreateException__onEmptyStreet() {
         var addressDto = new CovidCertificateAddressDto(null, 1000, "city", "BE");
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, addressDto::validate);
         assertEquals(INVALID_ADDRESS, exception.getError());
@@ -36,7 +36,7 @@ class CovidCertificateAddressDtoTest {
     }
 
     @Test
-    public void throwsCertificateCreateException__ifStreetTooLong() {
+    void throwsCertificateCreateException__ifStreetTooLong() {
         String street = RandomStringUtils.random(129, true, true);
         var addressDto = new CovidCertificateAddressDto(street, 1000, "city", "BE");
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, addressDto::validate);
@@ -44,14 +44,14 @@ class CovidCertificateAddressDtoTest {
     }
 
     @Test
-    public void createsAddressDto__ifStreetLengthOk() {
+    void createsAddressDto__ifStreetLengthOk() {
         String street = RandomStringUtils.random(128, true, true);
         var addressDto = new CovidCertificateAddressDto(street, 1000, "city", "BE");
         assertDoesNotThrow(addressDto::validate);
     }
 
     @Test
-    public void throwsCertificateCreateException__onEmptyCity() {
+    void throwsCertificateCreateException__onEmptyCity() {
         var addressDto = new CovidCertificateAddressDto("streetAndNr", 1000, null, "BE");
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, addressDto::validate);
         assertEquals(INVALID_ADDRESS, exception.getError());
@@ -66,7 +66,7 @@ class CovidCertificateAddressDtoTest {
     }
 
     @Test
-    public void throwsCertificateCreateException__ifCityTooLong() {
+    void throwsCertificateCreateException__ifCityTooLong() {
         String city = RandomStringUtils.random(129, true, true);
         var addressDto = new CovidCertificateAddressDto("streetAndNr", 1000, city, "BE");
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, addressDto::validate);
@@ -74,14 +74,14 @@ class CovidCertificateAddressDtoTest {
     }
 
     @Test
-    public void createsAddressDto__ifCityLengthOk() {
+    void createsAddressDto__ifCityLengthOk() {
         String city = RandomStringUtils.random(128, true, true);
         var addressDto = new CovidCertificateAddressDto("streetAndNr", 1000, city, "BE");
         assertDoesNotThrow(addressDto::validate);
     }
 
     @Test
-    public void throwsCertificateCreateException__onInvalidZipCode() {
+    void throwsCertificateCreateException__onInvalidZipCode() {
         // test low
         var addressDto = new CovidCertificateAddressDto("streetAndNr", 999, "city", "BE");
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, addressDto::validate);
@@ -94,7 +94,7 @@ class CovidCertificateAddressDtoTest {
     }
 
     @Test
-    public void createsAddressDto__onZipCodeValid() {
+    void createsAddressDto__onZipCodeValid() {
         // test low
         var addressDto = new CovidCertificateAddressDto("streetAndNr", 1000, "city", "BE");
         assertDoesNotThrow(addressDto::validate);
@@ -105,7 +105,7 @@ class CovidCertificateAddressDtoTest {
     }
 
     @Test
-    public void throwsCertificateCreateException__onInvalidCantonCode() {
+    void throwsCertificateCreateException__onInvalidCantonCode() {
         try (MockedStatic<AllowedSenders> allowedCantonsMock = Mockito.mockStatic(AllowedSenders.class)) {
             var addressDto = new CovidCertificateAddressDto("streetAndNr", 1000, "city", "TT");
             allowedCantonsMock.when(() -> AllowedSenders.isAccepted(any())).thenReturn(false);

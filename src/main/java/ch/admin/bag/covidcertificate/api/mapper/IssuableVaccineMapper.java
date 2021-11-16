@@ -7,6 +7,7 @@ import ch.admin.bag.covidcertificate.domain.Vaccine;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class IssuableVaccineMapper {
 
     public static List<IssuableVaccineDto> fromVaccines(List<Vaccine> issuableVaccines) {
         if(issuableVaccines == null) {
-            return null;
+            return Collections.emptyList();
         }
         return issuableVaccines.stream().map(IssuableVaccineMapper::fromVaccine).collect(Collectors.toList());
     }

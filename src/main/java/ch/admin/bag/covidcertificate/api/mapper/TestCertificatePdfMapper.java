@@ -22,7 +22,6 @@ public class TestCertificatePdfMapper {
             String memberStateOfTestEn
     ) {
         CovidCertificateDiseaseOrAgentTargeted diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
-        // @Todo update type of test and manufacturer
         return new TestCertificatePdf(
                 testCertificateCreateDto.getPersonData().getName().getFamilyName(),
                 testCertificateCreateDto.getPersonData().getName().getGivenName(),

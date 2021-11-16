@@ -30,10 +30,10 @@ public class PdfHtmlRenderer {
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
 
-        var templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-        templateEngine.setMessageResolver(new CustomMessageResolver());
-        return templateEngine;
+        var newTemplateEngine = new TemplateEngine();
+        newTemplateEngine.setTemplateResolver(templateResolver);
+        newTemplateEngine.setMessageResolver(new CustomMessageResolver());
+        return newTemplateEngine;
     }
 
     public String render(AbstractCertificatePdf data, String barcodeImage, LocalDateTime issuedAt) {

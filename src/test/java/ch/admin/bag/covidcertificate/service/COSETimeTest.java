@@ -15,21 +15,21 @@ import java.time.temporal.ChronoUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class COSETimeTest {
+class COSETimeTest {
     private static final ZoneId ZONE_ID = ZoneId.of("Europe/Zurich");
     private final JFixture jFixture = new JFixture();
     private Instant instant;
     private COSETime coseTime;
 
     @BeforeEach
-    public void init() {
+    void init() {
         // given
         instant = jFixture.create(Instant.class);
         coseTime = new COSETime(Clock.fixed(instant, ZONE_ID));
     }
 
     @Test
-    public void whenGetIssuedAt_thenOk() {
+    void whenGetIssuedAt_thenOk() {
         // when
         Instant result = coseTime.getIssuedAt();
         // then
@@ -37,12 +37,12 @@ public class COSETimeTest {
     }
 
     @Test
-    public void whenGetExpiration_thenOk() {
+    void whenGetExpiration_thenOk() {
         // when
         Instant result = coseTime.getExpiration();
         // then
         long diff = ChronoUnit.MONTHS.between(getLocalDateTime(instant), getLocalDateTime(result));
-        assertEquals(diff, 24);
+        assertEquals(24, diff);
     }
 
     private LocalDateTime getLocalDateTime(Instant instant) {

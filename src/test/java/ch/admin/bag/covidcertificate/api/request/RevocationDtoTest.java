@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class RevocationDtoTest {
+class RevocationDtoTest {
     @Test
-    public void whenValidate_thenOk() {
+    void whenValidate_thenOk() {
         //given
         String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
         RevocationDto revocationDto = new RevocationDto(uvci);
@@ -31,7 +31,7 @@ public class RevocationDtoTest {
             "urn:uvci:01:CH:97ÜAB5E31B589AF3CAE2F53E",
             "urn:uvci:01:CH:97uAB5E31B589AF3CAE2F53E",
             "urn:uvci:01:CH:97,AB5E31B589AF3CAE2F53E"})
-    public void givenUVCIHasInvalidFormat_whenValidate_thenThrowsRevocationException(String uvci) {
+    void givenUVCIHasInvalidFormat_whenValidate_thenThrowsRevocationException(String uvci) {
         // given to short, to long, invalid start, invalid character, lowercase character, special character.
         // when
         RevocationDto revocationDto = new RevocationDto(uvci);

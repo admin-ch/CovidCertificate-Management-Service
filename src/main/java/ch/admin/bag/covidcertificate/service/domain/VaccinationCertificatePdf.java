@@ -55,6 +55,7 @@ public class VaccinationCertificatePdf extends AbstractCertificatePdf {
         this.issuer = issuer;
     }
 
+    @Override
     public boolean isEvidence() {
         return this.numberOfDoses < this.totalNumberOfDoses;
     }
