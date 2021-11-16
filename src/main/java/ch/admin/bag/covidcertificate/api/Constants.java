@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.RevocationError;
+import ch.admin.bag.covidcertificate.api.exception.ValueSetError;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -100,4 +101,6 @@ public class Constants {
     public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558, "App delivery failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError SIGNING_CERTIFICATE_MISSING = new CreateCertificateError(559, "No signing certificate was found.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError AMBIGUOUS_SIGNING_CERTIFICATE = new CreateCertificateError(560, "Ambiguous signing certificate. Multiple signing certificates were found.", HttpStatus.INTERNAL_SERVER_ERROR);
+
+    public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language does not match any of the supported languages: de, it, fr, rm, en!", HttpStatus.BAD_REQUEST);
 }
