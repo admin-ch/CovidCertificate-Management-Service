@@ -55,6 +55,8 @@ public class Vaccine {
 
     private boolean apiPlatformSelectable;
 
+    private boolean whoEul;
+
     private LocalDateTime modifiedAt;
 
     @ManyToOne
@@ -76,9 +78,9 @@ public class Vaccine {
             int vaccineOrder,
             boolean webUiSelectable,
             boolean apiGatewaySelectable,
-            boolean apiPlatformSelectable
+            boolean apiPlatformSelectable,
+            boolean whoEul
     ) {
-
         this.code = code;
         this.display = display;
         this.active = active;
@@ -88,5 +90,6 @@ public class Vaccine {
         this.webUiSelectable = webUiSelectable;
         this.apiGatewaySelectable = apiGatewaySelectable;
         this.apiPlatformSelectable = apiPlatformSelectable;
+        this.whoEul = whoEul;
     }
 }

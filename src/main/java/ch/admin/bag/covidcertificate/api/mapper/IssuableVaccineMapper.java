@@ -17,7 +17,9 @@ public class IssuableVaccineMapper {
         IssuableVaccineDto issuableVaccineDto = new IssuableVaccineDto(
                 vaccine.getCode(),
                 vaccine.getDisplay(),
-                vaccine.getIssuable());
+                vaccine.getIssuable(),
+                vaccine.isWhoEul()
+        );
         Prophylaxis prophylaxis = vaccine.getProphylaxis();
         if (prophylaxis != null) {
             issuableVaccineDto.addProphylaxisInfo(prophylaxis);
