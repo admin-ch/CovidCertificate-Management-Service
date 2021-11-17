@@ -22,16 +22,10 @@ import java.util.Objects;
 @Slf4j
 public class PdfCertificateGenerationService {
 
-    private final PdfRendererBuilder pdfBuilder;
-
     @Value("#{new Boolean('${cc-management-service.pdf.show-watermark}')}")
     private boolean showWatermark;
 
-    public PdfCertificateGenerationService() {
-        this.pdfBuilder = getPdfBuilder();
-    }
-
-    private PdfRendererBuilder getPdfBuilder() {
+    private PdfRendererBuilder createPdfBuilder() {
         var classLoader = this.getClass().getClassLoader();
         var builder = new PdfRendererBuilder();
         builder.useFastMode();
@@ -50,6 +44,7 @@ public class PdfCertificateGenerationService {
             var content = pdfHtmlRenderer.render(data, this.getBarcodeImage(barcodePayload), issuedAt);
 
             var os = new ByteArrayOutputStream();
+            PdfRendererBuilder pdfBuilder = createPdfBuilder();
             pdfBuilder.toStream(os);
             pdfBuilder.withHtmlContent(content, Objects.requireNonNull(templatePath).toString());
             pdfBuilder.run();
@@ -57,6 +52,9 @@ public class PdfCertificateGenerationService {
             return os.toByteArray();
         } catch (Exception e) {
             throw new IllegalStateException(e);
+        }
+        finally {
+
         }
     }
 
