@@ -79,5 +79,4 @@ public class PdfHtmlRenderer {
                 return Locale.GERMAN;
         }
     }
-
 }
