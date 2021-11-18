@@ -1,5 +1,7 @@
 package ch.admin.bag.covidcertificate.service.document.util;
 
+import ch.admin.bag.covidcertificate.api.Constants;
+import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.service.document.CustomMessageResolver;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.util.DateHelper;
@@ -44,7 +46,8 @@ public class PdfHtmlRenderer {
         String result = templateEngine.process("pdf", context);
 
         if (hashBefore != data.hashCode()) {
-            log.error("Hash of rendered data before does not match hash after !!!");
+            log.error("Hash of rendered data before does not match hash after!");
+            throw new CreateCertificateException(Constants.CREATE_PDF_FAILED);
         }
         return result;
     }
