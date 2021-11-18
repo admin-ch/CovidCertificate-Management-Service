@@ -53,9 +53,6 @@ public class PdfCertificateGenerationService {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        finally {
-
-        }
     }
 
     private String getBarcodeImage(String barcodeContent) throws IOException {

@@ -1,6 +1,11 @@
 package ch.admin.bag.covidcertificate.service.document;
 
-import ch.admin.bag.covidcertificate.api.mapper.*;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
@@ -8,8 +13,13 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
-import ch.admin.bag.covidcertificate.service.document.util.PdfHtmlRenderer;
-import ch.admin.bag.covidcertificate.service.domain.*;
+import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +31,9 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static ch.admin.bag.covidcertificate.TestModelProvider.*;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
 
 @ExtendWith(MockitoExtension.class)
 class CovidPdfCertificateGenerationServiceTest {
@@ -42,8 +54,7 @@ class CovidPdfCertificateGenerationServiceTest {
     @BeforeEach
     void setup() {
         service = new PdfCertificateGenerationService();
-        var pdfHtmlRenderer = new PdfHtmlRenderer(true);
-        ReflectionTestUtils.setField(service, "pdfHtmlRenderer", pdfHtmlRenderer);
+        ReflectionTestUtils.setField(service, "showWatermark", true);
     }
 
     private void generateDocument_vaccine(VaccinationCertificateCreateDto createDto, String language, String familyName, String givenName, String fileName) throws Exception {
@@ -136,7 +147,6 @@ class CovidPdfCertificateGenerationServiceTest {
     void doTest(AbstractCertificatePdf pdfData, String filename, String language) throws Exception {
 
         var barcodePayload = "HC1:NCFOXNYTSFDHJI8-.O0:A%1W RI%.BI06%BF1WG21QKP85NPV*JVH5QWKIW18WA%NE/P3F/8X*G3M9FQH+4JZW4V/AY73CIBVQFSA36238FNB939PJ*KN%DJ3239L7BRNHKBWINEV40AT0C7LS4AZKZ73423ZQT-EJEG3LS4JXITAFK1HG%8SC91Z8YA7-TIP+PQE1W9L $N3-Q-*OGF2F%M RFUS2CPA-DG:A3AGJLC1788M7DD-I/2DBAJDAJCNB-439Y4.$SINOPK3.T4RZ4E%5MK9QM9DB9E%5:I9YHQ1FDIV4RB4VIOTNPS46UDBQEAJJKHHGQA8EL4QN9J9E6LF6JC1A5N11+N1X*8O13E20ZO8%3";
-
 
         byte[] document = service.generateCovidCertificate(pdfData, barcodePayload, LocalDateTime.now());
 
