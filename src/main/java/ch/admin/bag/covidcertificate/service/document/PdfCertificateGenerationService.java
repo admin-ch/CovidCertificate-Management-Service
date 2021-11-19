@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -23,22 +22,10 @@ import java.util.Objects;
 @Slf4j
 public class PdfCertificateGenerationService {
 
-    private final PdfRendererBuilder pdfBuilder;
-    private PdfHtmlRenderer pdfHtmlRenderer;
-
     @Value("#{new Boolean('${cc-management-service.pdf.show-watermark}')}")
     private boolean showWatermark;
 
-    public PdfCertificateGenerationService() {
-        this.pdfBuilder = getPdfBuilder();
-    }
-
-    @PostConstruct
-    public void postConstruct() {
-        this.pdfHtmlRenderer = new PdfHtmlRenderer(this.showWatermark);
-    }
-
-    private PdfRendererBuilder getPdfBuilder() {
+    private PdfRendererBuilder createPdfBuilder() {
         var classLoader = this.getClass().getClassLoader();
         var builder = new PdfRendererBuilder();
         builder.useFastMode();
@@ -53,9 +40,11 @@ public class PdfCertificateGenerationService {
     public byte[] generateCovidCertificate(AbstractCertificatePdf data, String barcodePayload, LocalDateTime issuedAt) {
         try {
             var templatePath = this.getClass().getClassLoader().getResource("templates/pdf.html");
-            var content = this.pdfHtmlRenderer.render(data, this.getBarcodeImage(barcodePayload), issuedAt);
+            PdfHtmlRenderer pdfHtmlRenderer = new PdfHtmlRenderer(this.showWatermark);
+            var content = pdfHtmlRenderer.render(data, this.getBarcodeImage(barcodePayload), issuedAt);
 
             var os = new ByteArrayOutputStream();
+            PdfRendererBuilder pdfBuilder = createPdfBuilder();
             pdfBuilder.toStream(os);
             pdfBuilder.withHtmlContent(content, Objects.requireNonNull(templatePath).toString());
             pdfBuilder.run();

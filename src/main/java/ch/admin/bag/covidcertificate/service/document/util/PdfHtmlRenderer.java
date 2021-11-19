@@ -1,8 +1,11 @@
 package ch.admin.bag.covidcertificate.service.document.util;
 
+import ch.admin.bag.covidcertificate.api.Constants;
+import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.service.document.CustomMessageResolver;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.util.DateHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -14,6 +17,7 @@ import java.util.Locale;
 
 import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
 
+@Slf4j
 public class PdfHtmlRenderer {
 
     private final TemplateEngine templateEngine;
@@ -38,7 +42,14 @@ public class PdfHtmlRenderer {
 
     public String render(AbstractCertificatePdf data, String barcodeImage, LocalDateTime issuedAt) {
         var context = this.getContext(data, barcodeImage, issuedAt, showWatermark);
-        return templateEngine.process("pdf", context);
+        int hashBefore = data.hashCode();
+        String result = templateEngine.process("pdf", context);
+
+        if (hashBefore != data.hashCode()) {
+            log.error("Hash of rendered data before does not match hash after!");
+            throw new CreateCertificateException(Constants.CREATE_PDF_FAILED);
+        }
+        return result;
     }
 
     private Context getContext(AbstractCertificatePdf data, String barcodeImage, LocalDateTime issuedAt, boolean showWatermark) {
@@ -71,5 +82,4 @@ public class PdfHtmlRenderer {
                 return Locale.GERMAN;
         }
     }
-
 }
