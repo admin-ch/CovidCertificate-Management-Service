@@ -103,4 +103,7 @@ public class Constants {
     public static final CreateCertificateError AMBIGUOUS_SIGNING_CERTIFICATE = new CreateCertificateError(560, "Ambiguous signing certificate. Multiple signing certificates were found.", HttpStatus.INTERNAL_SERVER_ERROR);
 
     public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language does not match any of the supported languages: de, it, fr, rm, en!", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError CREATE_PDF_FAILED = new CreateCertificateError(561, "Creating PDF failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_UVCI_FAILED = new CreateCertificateError(562, "Creating UVCI failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+
 }

@@ -134,6 +134,7 @@ public class CovidCertificateGenerationService {
         var pdf = pdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
 
         var responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
+        responseDto.validate();
         if (createDto.sendToPrint()) {
             printQueueClient.sendPrintJob(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
         } else if (createDto.sendToApp()) {
