@@ -78,6 +78,7 @@ public class Constants {
     public static final CreateCertificateError INVALID_PRINT_FOR_TEST = new CreateCertificateError(488, "Print is not available for test certificates", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_DATE_OF_BIRTH_IN_FUTURE = new CreateCertificateError(489, "Invalid dateOfBirth! Date cannot be in the future", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_ANTIBODY_DATA = new CreateCertificateError(490, "No antibody data specified", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_ANTIBODY_SAMPLE_DATE_TIME = new CreateCertificateError(491, "Date of sample collection must not be before 16.11.2021", HttpStatus.BAD_REQUEST);
 
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
