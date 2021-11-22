@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.request.Issuable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -56,7 +57,13 @@ public class Vaccine {
 
     private boolean apiPlatformSelectable;
 
+    private boolean swissMedic;
+
+    private boolean emea;
+
     private boolean whoEul;
+
+    private String analogVaccine;
 
     private LocalDateTime modifiedAt;
 
@@ -80,7 +87,10 @@ public class Vaccine {
             boolean webUiSelectable,
             boolean apiGatewaySelectable,
             boolean apiPlatformSelectable,
-            boolean whoEul
+            boolean swissMedic,
+            boolean emea,
+            boolean whoEul,
+            String analogVaccine
     ) {
         this.code = code;
         this.display = display;
@@ -91,7 +101,10 @@ public class Vaccine {
         this.webUiSelectable = webUiSelectable;
         this.apiGatewaySelectable = apiGatewaySelectable;
         this.apiPlatformSelectable = apiPlatformSelectable;
+        this.swissMedic = swissMedic;
+        this.emea = emea;
         this.whoEul = whoEul;
+        this.analogVaccine = analogVaccine;
     }
 
     @Override
@@ -100,5 +113,9 @@ public class Vaccine {
             return Objects.equals(this.code, ((Vaccine) obj).getCode());
         }
         return false;
+    }
+
+    public boolean isTouristVaccine() {
+        return isWhoEul() && !isEmea() && StringUtils.hasText(getAnalogVaccine());
     }
 }

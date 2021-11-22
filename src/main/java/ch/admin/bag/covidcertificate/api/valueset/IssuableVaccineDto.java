@@ -30,14 +30,15 @@ public class IssuableVaccineDto {
     private String authHolderDisplay;
     @Setter
     private Issuable issuable;
-    @Schema(type = "boolean")
-    private boolean who;
 
-    public IssuableVaccineDto(String productCode, String productDisplay, Issuable issuable, boolean who) {
+    @Schema(type = "boolean")
+    private boolean touristVaccine;
+
+    public IssuableVaccineDto(String productCode, String productDisplay, Issuable issuable, boolean touristVaccine) {
         this.productCode = productCode;
         this.productDisplay = productDisplay;
         this.issuable = issuable;
-        this.who = who;
+        this.touristVaccine = touristVaccine;
     }
 
     public void addProphylaxisInfo(Prophylaxis prophylaxis) {
