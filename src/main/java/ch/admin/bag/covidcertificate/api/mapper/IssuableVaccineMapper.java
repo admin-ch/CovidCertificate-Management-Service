@@ -19,7 +19,7 @@ public class IssuableVaccineMapper {
                 vaccine.getCode(),
                 vaccine.getDisplay(),
                 vaccine.getIssuable(),
-                vaccine.isWhoEul()
+                vaccine.isTouristVaccine()
         );
         Prophylaxis prophylaxis = vaccine.getProphylaxis();
         if (prophylaxis != null) {
