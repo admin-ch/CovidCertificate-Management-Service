@@ -56,7 +56,7 @@ public class CovidCertificateVaccinationValidationService {
 
         // TODO:mofobo: should the vaccination date also be validated: date >= featureEnableDate
         // Only WHO vaccines can be used for the generation of Vaccination Tourist Certificates
-        if (!issuableVaccine.isWho()) throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
+        if (!issuableVaccine.isTouristVaccine()) throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
         // Vaccination Tourist Certificates cannot be be generated for vaccinations in Switzerland
         if (isCountryCH) throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
     }
