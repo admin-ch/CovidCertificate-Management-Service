@@ -51,7 +51,6 @@ public class CovidCertificateVaccinationValidationService {
     public void validateProductAndCountryForVaccinationTourist(VaccinationTouristCertificateCreateDto createDto) {
         final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
         final String productCode = createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode();
-        // TODO:mofobo: from which query should we retrieve the vaccines?
         final IssuableVaccineDto issuableVaccine = retrieveProduct(productCode, valueSetsService.getApiGatewayIssuableVaccines());
 
         // TODO:mofobo: should the vaccination date also be validated: date >= featureEnableDate
