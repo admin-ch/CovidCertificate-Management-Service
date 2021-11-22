@@ -45,4 +45,7 @@ public class AntibodyCertificatePdf extends AbstractCertificatePdf {
 
 
     public boolean showValidOnlyInSwitzerland() { return true; }
+
+    @Override
+    public boolean showSwitzerlandOnlyInfo() { return true; }
 }
