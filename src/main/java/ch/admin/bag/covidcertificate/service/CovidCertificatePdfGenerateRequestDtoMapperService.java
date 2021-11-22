@@ -1,18 +1,22 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.AntibodyCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.RecoveryCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.TestCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.VaccinationCertificatePdfGenerateRequestDtoMapper;
+import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.AntibodyCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,12 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 public class CovidCertificatePdfGenerateRequestDtoMapperService {
     private final ValueSetsService valueSetsService;
 
+    private static String removeSuffixIfExists(String key, String suffix) {
+        return key.endsWith(suffix)
+                ? key.substring(0, key.length() - suffix.length())
+                : key;
+    }
+
     public VaccinationCertificatePdf toVaccinationCertificatePdf(VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
         var vaccinationValueSet = valueSetsService.getVaccinationValueSet(pdfGenerateRequestDto.getDecodedCert().getVaccinationInfo().get(0).getMedicinalProduct());
         var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getVaccinationInfo().get(0).getCountryOfVaccination(), pdfGenerateRequestDto.getLanguage());
@@ -33,6 +43,17 @@ public class CovidCertificatePdfGenerateRequestDtoMapperService {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
         }
         return VaccinationCertificatePdfGenerateRequestDtoMapper.toVaccinationCertificatePdf(pdfGenerateRequestDto, vaccinationValueSet, countryCode.getDisplay(), countryCodeEn.getDisplay());
+    }
+
+    public VaccinationTouristCertificatePdf toVaccinationTouristCertificatePdf(VaccinationTouristCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
+        var medicinalProductWithoutSuffix=removeSuffixIfExists(pdfGenerateRequestDto.getDecodedCert().getVaccinationTouristInfo().get(0).getMedicinalProduct(), VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX);
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(medicinalProductWithoutSuffix);
+        var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getVaccinationTouristInfo().get(0).getCountryOfVaccination(), pdfGenerateRequestDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(pdfGenerateRequestDto.getDecodedCert().getVaccinationTouristInfo().get(0).getCountryOfVaccination());
+        if (countryCode == null || countryCodeEn == null) {
+            throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+        }
+        return VaccinationTouristCertificatePdfGenerateRequestDtoMapper.toVaccinationTouristCertificatePdf(pdfGenerateRequestDto, vaccinationValueSet, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
     public TestCertificatePdf toTestCertificatePdf(TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {

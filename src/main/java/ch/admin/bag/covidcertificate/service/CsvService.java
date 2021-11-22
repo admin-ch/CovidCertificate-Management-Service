@@ -74,6 +74,8 @@ public class CsvService {
                 return new CsvResponseDto(handleCsvRequest(file, TestCertificateCsvBean.class));
             case vaccination:
                 return new CsvResponseDto(handleCsvRequest(file, VaccinationCertificateCsvBean.class));
+            case vaccination_tourist:
+                return new CsvResponseDto(handleCsvRequest(file, VaccinationTouristCertificateCsvBean.class));
             case antibody:
                 return new CsvResponseDto(handleCsvRequest(file, AntibodyCertificateCsvBean.class));
             default:

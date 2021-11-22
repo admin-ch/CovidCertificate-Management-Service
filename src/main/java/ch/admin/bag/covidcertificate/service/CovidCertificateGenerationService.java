@@ -7,6 +7,7 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.AntibodyCertifica
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import se.digg.dgc.encoding.BarcodeException;
 import se.digg.dgc.encoding.impl.DefaultBarcodeCreator;
 
+import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -52,6 +54,14 @@ public class CovidCertificateGenerationService {
                 pdfGenerateRequestDto.getHcert(),
                 pdfGenerateRequestDto.getIssuedAt(),
                 pdfGenerateRequestDto.getDecodedCert().getVaccinationInfo().get(0).getIdentifier());
+    }
+
+    public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(VaccinationTouristCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
+        var pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationTouristCertificatePdf(pdfGenerateRequestDto);
+        return generateFromExistingCovidCertificate(pdfData,
+                pdfGenerateRequestDto.getHcert(),
+                pdfGenerateRequestDto.getIssuedAt(),
+                pdfGenerateRequestDto.getDecodedCert().getVaccinationTouristInfo().get(0).getIdentifier());
     }
 
     public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
@@ -101,6 +111,13 @@ public class CovidCertificateGenerationService {
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
+    public CovidCertificateCreateResponseDto generateCovidCertificate(VaccinationTouristCertificateCreateDto createDto) throws JsonProcessingException {
+        var qrCodeData = covidCertificateDtoMapperService.toVaccinationTouristCertificateQrCode(createDto);
+        var pdfData = covidCertificateDtoMapperService.toVaccinationTouristCertificatePdf(createDto, qrCodeData);
+        var signingInformation = signingInformationService.getVaccinationTouristSigningInformation();
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationTouristInfo().get(0).getIdentifier(), createDto, signingInformation);
+    }
+
     public CovidCertificateCreateResponseDto generateCovidCertificate(TestCertificateCreateDto createDto) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toTestCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toTestCertificatePdf(createDto, qrCodeData);
@@ -129,6 +146,7 @@ public class CovidCertificateGenerationService {
                                                                        SigningInformation signingInformation) throws JsonProcessingException {
         var contents = objectMapper.writer().writeValueAsString(qrCodeData);
         log.info("Create barcode");
+        // TODO:mofobo: call the createBarcode with expiration time now plus 30 days for the vaccination-tourist
         var code = barcodeService.createBarcode(contents, signingInformation);
         log.info("Create certificate pdf");
         var pdf = pdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
