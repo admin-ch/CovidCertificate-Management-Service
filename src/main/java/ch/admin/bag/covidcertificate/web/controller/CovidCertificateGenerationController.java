@@ -4,10 +4,12 @@ import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.AntibodyCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
@@ -47,6 +49,19 @@ public class CovidCertificateGenerationController {
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
         kpiLogService.logVaccinationCertificateGenerationKpi(createDto, responseDto.getUvci());
+        return responseDto;
+    }
+
+    @PostMapping("/vaccination-tourist")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CovidCertificateCreateResponseDto createVaccinationTouristCertificate(@Valid @RequestBody VaccinationTouristCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
+        log.info("Call of Create for vaccination tourist certificate");
+        securityHelper.authorizeUser(request);
+        createDto.validate();
+        covidCertificateVaccinationValidationService.validateProductAndCountryForVaccinationTourist(createDto);
+        CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
+        log.debug(CREATE_LOG, responseDto.getUvci());
+        kpiLogService.logVaccinationTouristCertificateGenerationKpi(createDto, responseDto.getUvci());
         return responseDto;
     }
 
@@ -90,6 +105,13 @@ public class CovidCertificateGenerationController {
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto generateVaccinationPdfFromExistingCertificate(@Valid @RequestBody VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto, HttpServletRequest request) {
         log.info("Call of Create for vaccination certificate");
+        return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
+    }
+
+    @PostMapping("/fromexisting/vaccination-tourist")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CovidCertificateCreateResponseDto generateVaccinationTouristPdfFromExistingCertificate(@Valid @RequestBody VaccinationTouristCertificatePdfGenerateRequestDto pdfGenerateRequestDto, HttpServletRequest request) {
+        log.info("Call of Create for vaccination-tourist certificate");
         return covidCertificateGenerationService.generateFromExistingCovidCertificate(pdfGenerateRequestDto);
     }
 
