@@ -30,6 +30,4 @@ public abstract class AbstractCertificatePdf {
     }
 
     public boolean showValidOnlyInSwitzerland() { return false; }
-
-    public boolean showSwitzerlandOnlyInfo() { return false; }
 }

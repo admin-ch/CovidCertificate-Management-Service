@@ -62,7 +62,4 @@ public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
 
     @Override
     public boolean showValidOnlyInSwitzerland() { return true; }
-
-    @Override
-    public boolean showSwitzerlandOnlyInfo() { return true; }
 }
