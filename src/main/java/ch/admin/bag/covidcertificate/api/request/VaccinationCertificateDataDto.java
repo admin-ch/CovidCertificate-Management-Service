@@ -3,11 +3,17 @@ package ch.admin.bag.covidcertificate.api.request;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.util.DateDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_VACCINATION;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DOSES;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_VACCINATION_DATE;
 
 @Getter
 @ToString

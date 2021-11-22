@@ -24,11 +24,11 @@ public class PdfHtmlRenderer {
     private final boolean showWatermark;
 
     public PdfHtmlRenderer(boolean showWatermark) {
-        this.templateEngine = this.getTemplateEngine();
+        this.templateEngine = this.createTemplateEngine();
         this.showWatermark = showWatermark;
     }
 
-    private TemplateEngine getTemplateEngine() {
+    private TemplateEngine createTemplateEngine() {
         var templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setPrefix("templates/");
         templateResolver.setSuffix(".html");
