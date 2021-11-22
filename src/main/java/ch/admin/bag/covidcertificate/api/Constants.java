@@ -29,6 +29,7 @@ public class Constants {
 
     // KPI Logs constants
     public static final String KPI_TYPE_VACCINATION = "v";
+    public static final String KPI_TYPE_VACCINATION_TOURIST = "vt";
     public static final String KPI_TYPE_TEST = "t";
     public static final String KPI_TYPE_RECOVERY = "r";
     public static final String KPI_TYPE_ANTIBODY = "a";
@@ -105,5 +106,6 @@ public class Constants {
     public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language does not match any of the supported languages: de, it, fr, rm, en!", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError CREATE_PDF_FAILED = new CreateCertificateError(561, "Creating PDF failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_UVCI_FAILED = new CreateCertificateError(562, "Creating UVCI failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-
+    // TODO:mofobo: check with UBIQUE if the got the same specification
+    public static final String VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX = "_T";
 }
