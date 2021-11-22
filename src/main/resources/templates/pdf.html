@@ -445,14 +445,10 @@
         <p class="body-text-small" th:text="#{info.info1}"></p>
         <p class="body-text-small" th:text="#{info.info2}"></p>
         <p class="body-text-small" th:if="${type == 'recovery'}" th:utext="#{recovery.info}"></p>
-        <p class="body-text-small" th:if="${showValidOnlyInSwitzerland}" th:utext="#{switzerlandonly.info1}"></p>
-        <p class="body-text-small" th:if="${showValidOnlyInSwitzerland}" th:utext="#{switzerlandonly.info2}"></p>
         <p></p><!-- Keep this to separate the languages -->
         <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
         <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
         <p class="body-text-small-en" th:if="${type == 'recovery'}" th:utext="#{recovery.info(${'en'})}"></p>
-        <p class="body-text-small" th:if="${showValidOnlyInSwitzerland}" th:utext="#{switzerlandonly.info1(${'en'})}"></p>
-        <p class="body-text-small" th:if="${showValidOnlyInSwitzerland}" th:utext="#{switzerlandonly.info2(${'en'})}"></p>
     </th:block>
 
     <th:block th:if="${isEvidence}">
