@@ -41,7 +41,7 @@ public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language, "vaccine");
+        super(familyName, givenName, dateOfBirth, identifier, language, "vaccination-tourist");
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.vaccineProphylaxis = vaccineProphylaxis;
@@ -60,5 +60,9 @@ public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
         return this.numberOfDoses < this.totalNumberOfDoses;
     }
 
+    @Override
     public boolean showValidOnlyInSwitzerland() { return true; }
+
+    @Override
+    public boolean showSwitzerlandOnlyInfo() { return true; }
 }

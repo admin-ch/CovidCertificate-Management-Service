@@ -127,6 +127,81 @@
                     </td>
                 </tr>
             </table>
+            <table th:case="'vaccination-tourist'" class="two-col-table">
+                <tr class="table-row">
+                    <th th:id="health-data-header-row" th:unless="${isEvidence}">
+                        <p th:text="#{vaccination.title}" class="heading no-padding"></p>
+                        <p th:text="#{vaccination.title(${'en'})}" th:class="body-text-en"></p>
+                    </th>
+                    <th th:id="health-data-header-row" th:if="${isEvidence}">
+                        <p th:text="#{evidence.title}" class="heading no-padding"></p>
+                        <p th:text="#{evidence.title(${'en'})}" th:class="body-text-en"></p>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.disease.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.disease.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text" th:text="#{vaccination.disease}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.dosis.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.dosis.label(${'en'})}"></p>
+                    </td>
+                    <td>
+                        <span class="body-text"
+                              th:text="${data.getNumberOfDoses()}"></span>
+                        /
+                        <span class="body-text"
+                              th:text="${data.getTotalNumberOfDoses()}"></span>
+                    </td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.type.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.type.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getVaccineProphylaxis()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.product.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.product.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getMedicinalProduct()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.manufacturer.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.manufacturer.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getMarketingAuthorizationHolder()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.date.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.date.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getVaccinationDate().format(dateFormatter)}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.country.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.country.label(${'en'})}"></p>
+                    </td>
+                    <td>
+                        <p class="body-text no-padding" th:text="${data.getCountryOfVaccination()}"></p>
+                        <p class="body-text-en" th:text="${data.getCountryOfVaccinationEn()}"></p>
+                    </td>
+                </tr>
+            </table>
             <table th:case="'recovery'" class="two-col-table">
                 <tr class="table-row">
                     <th th:id="health-data-header-row">
