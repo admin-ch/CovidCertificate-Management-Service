@@ -13,6 +13,7 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
+import ch.admin.bag.covidcertificate.service.document.util.PdfHtmlRenderer;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
@@ -23,6 +24,7 @@ import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -39,6 +41,7 @@ import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCert
 class CovidPdfCertificateGenerationServiceTest {
 
     private PdfCertificateGenerationService service;
+    private PdfHtmlRenderer pdfHtmlRenderer;
 
     private final String countryEn = "Switzerland";
 
@@ -51,10 +54,13 @@ class CovidPdfCertificateGenerationServiceTest {
     private final String familyNameSmall = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
     private final String givenNameSmall = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
 
+
     @BeforeEach
     void setup() {
         service = new PdfCertificateGenerationService();
+        pdfHtmlRenderer = new PdfHtmlRenderer(true);;
         ReflectionTestUtils.setField(service, "showWatermark", true);
+        service.postConstruct();
     }
 
     private void generateDocument_vaccine(VaccinationCertificateCreateDto createDto, String language, String familyName, String givenName, String fileName) throws Exception {
