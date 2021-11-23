@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
@@ -40,6 +41,7 @@ import se.digg.dgc.encoding.impl.DefaultBarcodeCreator;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.SignatureException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -87,12 +89,14 @@ class CovidCertificateGenerationServiceTest {
     private InAppDeliveryClient inAppDeliveryClient;
     @Mock
     private SigningInformationService signingInformationService;
+    @Mock
+    private COSETime coseTime;
 
     private final JFixture fixture = new JFixture();
 
     @BeforeEach
     public void setUp() throws IOException {
-        lenient().when(barcodeService.createBarcode(any(), any())).thenReturn(fixture.create(Barcode.class));
+        lenient().when(barcodeService.createBarcode(any(), any(), any())).thenReturn(fixture.create(Barcode.class));
         lenient().when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(fixture.create(byte[].class));
 
         lenient().when(covidCertificateDtoMapperService.toVaccinationCertificateQrCode(any())).thenReturn(fixture.create(VaccinationCertificateQrCode.class));
@@ -101,6 +105,9 @@ class CovidCertificateGenerationServiceTest {
         lenient().when(covidCertificateDtoMapperService.toTestCertificatePdf(any(), any())).thenReturn(fixture.create(TestCertificatePdf.class));
         lenient().when(covidCertificateDtoMapperService.toRecoveryCertificateQrCode(any())).thenReturn(fixture.create(RecoveryCertificateQrCode.class));
         lenient().when(covidCertificateDtoMapperService.toRecoveryCertificatePdf(any(), any())).thenReturn(fixture.create(RecoveryCertificatePdf.class));
+
+        lenient().when(coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS)).thenReturn(fixture.create(Instant.class));
+        lenient().when(coseTime.calculateExpirationInstantPlusDays(Constants.EXPIRATION_PERIOD_30_DAYS)).thenReturn(fixture.create(Instant.class));
 
         ObjectWriter objectWriter = mock(ObjectWriter.class);
         lenient().when(objectMapper.writer()).thenReturn(objectWriter);
@@ -498,7 +505,7 @@ class CovidCertificateGenerationServiceTest {
 
             service.generateCovidCertificate(createDto);
 
-            verify(barcodeService).createBarcode(eq(contents), any());
+            verify(barcodeService).createBarcode(eq(contents), any(), any());
         }
 
         @Test
@@ -509,7 +516,7 @@ class CovidCertificateGenerationServiceTest {
 
             service.generateCovidCertificate(createDto);
 
-            verify(barcodeService).createBarcode(any(), eq(signingInformation));
+            verify(barcodeService).createBarcode(any(), eq(signingInformation), any());
         }
 
         @Test
@@ -519,7 +526,7 @@ class CovidCertificateGenerationServiceTest {
             var barcode = fixture.create(Barcode.class);
             var now = LocalDateTime.now();
             when(covidCertificateDtoMapperService.toVaccinationCertificatePdf(any(), any())).thenReturn(vaccinationPdf);
-            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -533,7 +540,7 @@ class CovidCertificateGenerationServiceTest {
         void shouldReturnBarcode() throws IOException {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var barcode = fixture.create(Barcode.class);
-            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -576,7 +583,7 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
-            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
@@ -697,7 +704,7 @@ class CovidCertificateGenerationServiceTest {
 
             service.generateCovidCertificate(createDto);
 
-            verify(barcodeService).createBarcode(eq(contents), any());
+            verify(barcodeService).createBarcode(eq(contents), any(), any());
         }
 
         @Test
@@ -708,7 +715,7 @@ class CovidCertificateGenerationServiceTest {
 
             service.generateCovidCertificate(createDto);
 
-            verify(barcodeService).createBarcode(any(), eq(signingInformation));
+            verify(barcodeService).createBarcode(any(), eq(signingInformation), any());
         }
 
         @Test
@@ -718,7 +725,7 @@ class CovidCertificateGenerationServiceTest {
             var barcode = fixture.create(Barcode.class);
             var now = LocalDateTime.now();
             when(covidCertificateDtoMapperService.toTestCertificatePdf(any(), any())).thenReturn(TestPdf);
-            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -733,7 +740,7 @@ class CovidCertificateGenerationServiceTest {
         void shouldReturnBarcode() throws IOException {
             var createDto = getTestCertificateCreateDto(null, "1833", "de");
             var barcode = fixture.create(Barcode.class);
-            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -776,7 +783,7 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getTestCertificateCreateDto(null, "1833", "de", "BITBITBIT");
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
-            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
@@ -866,7 +873,7 @@ class CovidCertificateGenerationServiceTest {
 
             service.generateCovidCertificate(createDto);
 
-            verify(barcodeService).createBarcode(eq(contents), any());
+            verify(barcodeService).createBarcode(eq(contents), any(), any());
         }
 
         @Test
@@ -877,7 +884,7 @@ class CovidCertificateGenerationServiceTest {
 
             service.generateCovidCertificate(createDto);
 
-            verify(barcodeService).createBarcode(any(), eq(signingInformation));
+            verify(barcodeService).createBarcode(any(), eq(signingInformation), any());
         }
 
         @Test
@@ -887,7 +894,7 @@ class CovidCertificateGenerationServiceTest {
             var barcode = fixture.create(Barcode.class);
             var now = LocalDateTime.now();
             when(covidCertificateDtoMapperService.toRecoveryCertificatePdf(any(), any())).thenReturn(RecoveryPdf);
-            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -902,7 +909,7 @@ class CovidCertificateGenerationServiceTest {
         void shouldReturnBarcode() throws IOException {
             var createDto = getRecoveryCertificateCreateDto("de");
             var barcode = fixture.create(Barcode.class);
-            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -945,7 +952,7 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryCertificateCreateDto("de", "BITBITBIT");
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
-            when(barcodeService.createBarcode(any(), any())).thenReturn(barcode);
+            when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 

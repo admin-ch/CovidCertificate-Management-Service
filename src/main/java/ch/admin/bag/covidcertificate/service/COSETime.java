@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class COSETime {
-    private static final Integer EXPIRATION_PERIOD = 24;
 
     private final Clock clock;
 
@@ -18,8 +17,12 @@ public class COSETime {
         return getInstant(LocalDateTime.now(clock));
     }
 
-    public Instant getExpiration() {
-        return getInstant(LocalDateTime.now(clock).plusMonths(EXPIRATION_PERIOD));
+    public Instant calculateExpirationInstantPlusMonths(Integer months) {
+        return getInstant(LocalDateTime.now(clock).plusMonths(months));
+    }
+
+    public Instant calculateExpirationInstantPlusDays(long days) {
+        return getInstant(LocalDateTime.now(clock).plusDays(days));
     }
 
     private Instant getInstant(LocalDateTime localDateTime) {

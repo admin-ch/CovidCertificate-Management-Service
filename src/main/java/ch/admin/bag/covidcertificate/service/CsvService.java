@@ -63,7 +63,7 @@ public class CsvService {
     public CsvResponseDto handleCsvRequest(MultipartFile file, String certificateType) throws IOException {
         CertificateType validCertificateType;
         try {
-            validCertificateType = CertificateType.valueOf(certificateType);
+            validCertificateType = CertificateType.fromString(certificateType);
         } catch (IllegalArgumentException e) {
             throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
         }

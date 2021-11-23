@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service.test;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
@@ -42,6 +43,7 @@ public class TestCovidCertificateGenerationService {
     private final CovidCertificateDtoMapperService covidCertificateDtoMapperService;
     private final CertificatePrintRequestDtoMapper certificatePrintRequestDtoMapper;
     private final SigningInformationService signingInformationService;
+    private final COSETime coseTime;
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(VaccinationCertificateCreateDto createDto, LocalDate validAt) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto);
@@ -54,7 +56,8 @@ public class TestCovidCertificateGenerationService {
         var qrCodeData = covidCertificateDtoMapperService.toVaccinationTouristCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toVaccinationTouristCertificatePdf(createDto, qrCodeData);
         var signingInformation = signingInformationService.getVaccinationTouristSigningInformation(validAt);
-        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationTouristInfo().get(0).getIdentifier(), createDto, signingInformation);
+        var expiration30Days = coseTime.calculateExpirationInstantPlusDays(Constants.EXPIRATION_PERIOD_30_DAYS);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationTouristInfo().get(0).getIdentifier(), createDto, signingInformation, expiration30Days);
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(TestCertificateCreateDto createDto, LocalDate validAt) throws JsonProcessingException {
@@ -83,9 +86,19 @@ public class TestCovidCertificateGenerationService {
                                                                        String uvci,
                                                                        CertificateCreateDto createDto,
                                                                        SigningInformation signingInformation) throws JsonProcessingException {
+        var expiration24Months = coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS);
+        return this.generateCovidCertificate(qrCodeData, pdfData, uvci, createDto, signingInformation, expiration24Months);
+    }
+
+    private CovidCertificateCreateResponseDto generateCovidCertificate(AbstractCertificateQrCode qrCodeData,
+                                                                       AbstractCertificatePdf pdfData,
+                                                                       String uvci,
+                                                                       CertificateCreateDto createDto,
+                                                                       SigningInformation signingInformation,
+                                                                       Instant expiration) throws JsonProcessingException {
         var contents = objectMapper.writer().writeValueAsString(qrCodeData);
         log.info("Create barcode");
-        var code = barcodeService.createBarcode(contents, signingInformation);
+        var code = barcodeService.createBarcode(contents, signingInformation, expiration);
         log.info("Create certificate pdf");
         var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
 
