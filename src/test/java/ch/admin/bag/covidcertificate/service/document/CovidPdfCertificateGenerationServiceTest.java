@@ -41,7 +41,6 @@ import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCert
 class CovidPdfCertificateGenerationServiceTest {
 
     private PdfCertificateGenerationService service;
-    private PdfHtmlRenderer pdfHtmlRenderer;
 
     private final String countryEn = "Switzerland";
 
@@ -58,9 +57,7 @@ class CovidPdfCertificateGenerationServiceTest {
     @BeforeEach
     void setup() {
         service = new PdfCertificateGenerationService();
-        pdfHtmlRenderer = new PdfHtmlRenderer(true);;
         ReflectionTestUtils.setField(service, "showWatermark", true);
-        service.postConstruct();
     }
 
     private void generateDocument_vaccine(VaccinationCertificateCreateDto createDto, String language, String familyName, String givenName, String fileName) throws Exception {

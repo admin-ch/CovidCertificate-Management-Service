@@ -12,17 +12,17 @@ public enum CertificateType {
         this.text = text;
     }
 
-    @Override
-    public String toString() {
-        return text;
-    }
-
     public static CertificateType fromString(String text) {
         for (CertificateType certificateType : CertificateType.values()) {
             if (certificateType.text.equalsIgnoreCase(text)) {
                 return certificateType;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Text " + text + " is not a valid value.");
+    }
+
+    @Override
+    public String toString() {
+        return text;
     }
 }
