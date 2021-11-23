@@ -108,4 +108,7 @@ public class Constants {
     public static final CreateCertificateError CREATE_UVCI_FAILED = new CreateCertificateError(562, "Creating UVCI failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     // TODO:mofobo: check with UBIQUE if the got the same specification
     public static final String VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX = "_T";
+
+    public static final Integer EXPIRATION_PERIOD_24_MONTHS = 24;
+    public static final Integer EXPIRATION_PERIOD_30_DAYS = 30;
 }

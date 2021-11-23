@@ -21,7 +21,6 @@ import static ch.admin.bag.covidcertificate.api.Constants.CREATE_BARCODE_FAILED;
 public class BarcodeService {
 
     private final SwissDGCBarcodeEncoder dgcBarcodeEncoder;
-    private final COSETime coseTime;
 
     public Barcode createBarcode(String dgcJSON, SigningInformation signingInformation, Instant expiredAt) {
         try {
@@ -29,9 +28,5 @@ public class BarcodeService {
         } catch (BarcodeException | IOException | SignatureException e) {
             throw new CreateCertificateException(CREATE_BARCODE_FAILED);
         }
-    }
-
-    public Barcode createBarcode(String dgcJSON, SigningInformation signingInformation) {
-        return createBarcode(dgcJSON, signingInformation, coseTime.getExpiration());
     }
 }
