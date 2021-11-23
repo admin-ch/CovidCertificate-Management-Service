@@ -7,6 +7,7 @@ import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.service.domain.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,21 @@ public class CovidCertificateDtoMapperService {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
         }
         return VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(createDto, vaccinationValueSet, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
+    }
+
+    public VaccinationTouristCertificateQrCode toVaccinationTouristCertificateQrCode(VaccinationTouristCertificateCreateDto createDto) {
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode());
+        return  VaccinationTouristCertificateQrCodeMapper.toVaccinationTouristCertificateQrCode(createDto, vaccinationValueSet);
+    }
+
+    public VaccinationTouristCertificatePdf toVaccinationTouristCertificatePdf(VaccinationTouristCertificateCreateDto createDto, VaccinationTouristCertificateQrCode qrCodeData){
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode());
+        var countryCode = valueSetsService.getCountryCode(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
+        if (countryCode == null || countryCodeEn == null) {
+            throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+        }
+        return VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(createDto, vaccinationValueSet, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
     public TestCertificateQrCode toTestCertificateQrCode(TestCertificateCreateDto createDto) {

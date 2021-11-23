@@ -39,7 +39,7 @@ class COSETimeTest {
     @Test
     void whenGetExpiration_thenOk() {
         // when
-        Instant result = coseTime.getExpiration();
+        Instant result = coseTime.calculateExpirationInstantPlusMonths(24);
         // then
         long diff = ChronoUnit.MONTHS.between(getLocalDateTime(instant), getLocalDateTime(result));
         assertEquals(24, diff);

@@ -11,7 +11,11 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.StringUtils;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_DELIVERY_METHOD;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_APP_CODE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_LANGUAGE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_PRINT_FOR_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
 
 @Getter
 @ToString
@@ -57,20 +61,20 @@ public abstract class CertificateCreateDto {
     }
 
     private void validateDeliveryMethod() {
-        if (this.address != null && StringUtils.hasText(this.appCode)) {
+        if (this.sendToPrint() && StringUtils.hasText(this.appCode)) {
             throw new CreateCertificateException(DUPLICATE_DELIVERY_METHOD);
-        } else {
-
-            if (this.address != null) {
-                if (this instanceof TestCertificateCreateDto) {
-                    throw new CreateCertificateException(INVALID_PRINT_FOR_TEST);
-                }
-                this.address.validate();
+        } else if (this.sendToPrint()) {
+            if (!this.isDeliverablePerPost()) {
+                throw new CreateCertificateException(INVALID_PRINT_FOR_TEST);
             }
-            if (this.appCode != null && !org.apache.commons.lang3.StringUtils.isAlphanumeric(this.appCode)) {
-                throw new CreateCertificateException(INVALID_APP_CODE);
-            }
+            this.address.validate();
+        } else if (this.sendToApp() && !org.apache.commons.lang3.StringUtils.isAlphanumeric(this.appCode)) {
+            throw new CreateCertificateException(INVALID_APP_CODE);
         }
+    }
+
+    public boolean isDeliverablePerPost() {
+        return true;
     }
 }
 

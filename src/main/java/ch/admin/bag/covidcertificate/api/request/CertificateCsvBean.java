@@ -59,6 +59,17 @@ public abstract class CertificateCsvBean {
         );
     }
 
+    protected VaccinationTouristCertificateCreateDto mapToCreateDto(VaccinationTouristCertificateDataDto dataDto) {
+        return new VaccinationTouristCertificateCreateDto(
+                mapToPersonDto(),
+                List.of(dataDto),
+                getLanguage().trim().toLowerCase(),
+                mapToAddressDto(),
+                validateAppDeliveryCode(),
+                SystemSource.CsvUpload
+        );
+    }
+
     protected TestCertificateCreateDto mapToCreateDto(TestCertificateDataDto dataDto) {
         return new TestCertificateCreateDto(
                 mapToPersonDto(),

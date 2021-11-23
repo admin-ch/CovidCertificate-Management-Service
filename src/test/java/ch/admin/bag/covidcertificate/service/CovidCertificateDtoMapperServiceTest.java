@@ -5,6 +5,7 @@ import ch.admin.bag.covidcertificate.api.mapper.*;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
@@ -278,6 +279,234 @@ class CovidCertificateDtoMapperServiceTest {
         }
     }
 
+    @Nested
+    class ToVaccinationTouristCertificateQrCode {
+        @Test
+        void shouldLoadVaccinationTouristValueSet() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            service.toVaccinationTouristCertificateQrCode(createDto);
+            verify(valueSetsService).getVaccinationValueSet(createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode());
+        }
+
+        @Test
+        void throwsCreateCertificateException_ifValueSetServiceThrowsCreateCertificateException() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            var expected = fixture.create(CreateCertificateException.class);
+            lenient().when(valueSetsService.getVaccinationValueSet(any())).thenThrow(expected);
+
+            CreateCertificateException exception = assertThrows(CreateCertificateException.class,
+                    () -> service.toVaccinationTouristCertificateQrCode(createDto)
+            );
+
+            assertEquals(expected.getError(), exception.getError());
+        }
+
+        @Test
+        void shouldMapToVaccinationTouristCertificateQrCode_withCorrectCertificateCreateDto() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            try (MockedStatic<VaccinationTouristCertificateQrCodeMapper> vaccinationTouristCertificateQrMapperMock =
+                         Mockito.mockStatic(VaccinationTouristCertificateQrCodeMapper.class)) {
+                vaccinationTouristCertificateQrMapperMock
+                        .when(() -> VaccinationTouristCertificateQrCodeMapper.toVaccinationTouristCertificateQrCode(any(), any()))
+                        .thenReturn(fixture.create(VaccinationTouristCertificateQrCode.class));
+                service.toVaccinationTouristCertificateQrCode(createDto);
+
+                vaccinationTouristCertificateQrMapperMock.verify(() ->
+                        VaccinationTouristCertificateQrCodeMapper.toVaccinationTouristCertificateQrCode(eq(createDto), any()));
+            }
+        }
+
+        @Test
+        void shouldMapToVaccinationTouristCertificateQrCode_withCorrectVaccinationValueSet() {
+            var vaccineDto = fixture.create(IssuableVaccineDto.class);
+            when(valueSetsService.getVaccinationValueSet(any())).thenReturn(vaccineDto);
+            try (MockedStatic<VaccinationTouristCertificateQrCodeMapper> vaccinationTouristCertificateQrMapperMock =
+                         Mockito.mockStatic(VaccinationTouristCertificateQrCodeMapper.class)) {
+                vaccinationTouristCertificateQrMapperMock
+                        .when(() -> VaccinationTouristCertificateQrCodeMapper.toVaccinationTouristCertificateQrCode(any(), any()))
+                        .thenReturn(fixture.create(VaccinationTouristCertificateQrCode.class));
+                service.toVaccinationTouristCertificateQrCode(fixture.create(VaccinationTouristCertificateCreateDto.class));
+
+                vaccinationTouristCertificateQrMapperMock.verify(() ->
+                        VaccinationTouristCertificateQrCodeMapper.toVaccinationTouristCertificateQrCode(any(), eq(vaccineDto)));
+            }
+        }
+
+        @Test
+        void shouldReturnVaccinationTouristCertificateQrCode() {
+            var vaccinationTouristCertificateQrCode = fixture.create(VaccinationTouristCertificateQrCode.class);
+            try (MockedStatic<VaccinationTouristCertificateQrCodeMapper> vaccinationTouristCertificateQrMapperMock =
+                         Mockito.mockStatic(VaccinationTouristCertificateQrCodeMapper.class)) {
+                vaccinationTouristCertificateQrMapperMock
+                        .when(() -> VaccinationTouristCertificateQrCodeMapper.toVaccinationTouristCertificateQrCode(any(), any()))
+                        .thenReturn(vaccinationTouristCertificateQrCode);
+                var actual = service.toVaccinationTouristCertificateQrCode(fixture.create(VaccinationTouristCertificateCreateDto.class));
+
+                assertEquals(vaccinationTouristCertificateQrCode, actual);
+            }
+        }
+    }
+
+    @Nested
+    class ToVaccinationTouristCertificatePdf {
+        @Test
+        void shouldLoadVaccinationTouristValueSet() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            var qrCodeData = fixture.create(VaccinationTouristCertificateQrCode.class);
+            service.toVaccinationTouristCertificatePdf(createDto, qrCodeData);
+            verify(valueSetsService).getVaccinationValueSet(createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode());
+        }
+
+        @Test
+        void shouldLoadCountryCodeValueSetForSelectedLanguage() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            var qrCodeData = fixture.create(VaccinationTouristCertificateQrCode.class);
+            service.toVaccinationTouristCertificatePdf(createDto, qrCodeData);
+            verify(valueSetsService).getCountryCode(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination(), createDto.getLanguage());
+        }
+
+        @Test
+        void shouldLoadCountryCodeEnValueSet() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            var qrCodeData = fixture.create(VaccinationTouristCertificateQrCode.class);
+            service.toVaccinationTouristCertificatePdf(createDto, qrCodeData);
+            verify(valueSetsService).getCountryCodeEn(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
+        }
+
+        @Test
+        void throwsCreateCertificateException_ifValueSetServiceThrowsCreateCertificateException() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            var qrCodeData = fixture.create(VaccinationTouristCertificateQrCode.class);
+            var expected = fixture.create(CreateCertificateException.class);
+            lenient().when(valueSetsService.getVaccinationValueSet(any())).thenThrow(expected);
+
+            CreateCertificateException exception = assertThrows(CreateCertificateException.class,
+                    () -> service.toVaccinationTouristCertificatePdf(createDto, qrCodeData)
+            );
+
+            assertEquals(expected.getError(), exception.getError());
+        }
+
+        @Test
+        void throwsInvalidCountryOfVaccinationTourist_ifCountryCodeValueSetIsNull() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            var qrCodeData = fixture.create(VaccinationTouristCertificateQrCode.class);
+            when(valueSetsService.getCountryCode(any(), any())).thenReturn(null);
+
+            CreateCertificateException exception = assertThrows(CreateCertificateException.class,
+                    () -> service.toVaccinationTouristCertificatePdf(createDto, qrCodeData)
+            );
+
+            assertEquals(INVALID_COUNTRY_OF_VACCINATION, exception.getError());
+        }
+
+        @Test
+        void throwsInvalidCountryOfVaccinationTourist_ifCountryCodeEnValueSetIsNull() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            var qrCodeData = fixture.create(VaccinationTouristCertificateQrCode.class);
+            when(valueSetsService.getCountryCodeEn(any())).thenReturn(null);
+
+            CreateCertificateException exception = assertThrows(CreateCertificateException.class,
+                    () -> service.toVaccinationTouristCertificatePdf(createDto, qrCodeData)
+            );
+
+            assertEquals(INVALID_COUNTRY_OF_VACCINATION, exception.getError());
+        }
+
+        @Test
+        void shouldMapToVaccinationTouristCertificatePdf_withCorrectCertificateCreateDto() {
+            var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
+            try (MockedStatic<VaccinationTouristCertificatePdfMapper> vaccinationTouristCertificatePdfMapperMock =
+                         Mockito.mockStatic(VaccinationTouristCertificatePdfMapper.class)) {
+                vaccinationTouristCertificatePdfMapperMock
+                        .when(() -> VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), any(), any(), any(), any()))
+                        .thenReturn(fixture.create(VaccinationTouristCertificatePdf.class));
+                service.toVaccinationTouristCertificatePdf(createDto, fixture.create(VaccinationTouristCertificateQrCode.class));
+
+                vaccinationTouristCertificatePdfMapperMock.verify(() ->
+                        VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(eq(createDto), any(), any(), any(), any()));
+            }
+        }
+
+        @Test
+        void shouldMapToVaccinationTouristCertificatePdf_withCorrectVaccinationTouristValueSet() {
+            var vaccineDto = fixture.create(IssuableVaccineDto.class);
+            when(valueSetsService.getVaccinationValueSet(any())).thenReturn(vaccineDto);
+            try (MockedStatic<VaccinationTouristCertificatePdfMapper> vaccinationTouristCertificatePdfMapperMock =
+                         Mockito.mockStatic(VaccinationTouristCertificatePdfMapper.class)) {
+                vaccinationTouristCertificatePdfMapperMock
+                        .when(() -> VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), any(), any(), any(), any()))
+                        .thenReturn(fixture.create(VaccinationTouristCertificatePdf.class));
+                service.toVaccinationTouristCertificatePdf(fixture.create(VaccinationTouristCertificateCreateDto.class), fixture.create(VaccinationTouristCertificateQrCode.class));
+
+                vaccinationTouristCertificatePdfMapperMock.verify(() ->
+                        VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), eq(vaccineDto), any(), any(), any()));
+            }
+        }
+
+        @Test
+        void shouldMapToVaccinationTouristCertificatePdf_withCorrectQrCodeData() {
+            var qrCodeData = fixture.create(VaccinationTouristCertificateQrCode.class);
+            try (MockedStatic<VaccinationTouristCertificatePdfMapper> vaccinationTouristCertificatePdfMapperMock =
+                         Mockito.mockStatic(VaccinationTouristCertificatePdfMapper.class)) {
+                vaccinationTouristCertificatePdfMapperMock
+                        .when(() -> VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), any(), any(), any(), any()))
+                        .thenReturn(fixture.create(VaccinationTouristCertificatePdf.class));
+                service.toVaccinationTouristCertificatePdf(fixture.create(VaccinationTouristCertificateCreateDto.class), qrCodeData);
+
+                vaccinationTouristCertificatePdfMapperMock.verify(() ->
+                        VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), any(), eq(qrCodeData), any(), any()));
+            }
+        }
+
+        @Test
+        void shouldMapToVaccinationTouristCertificatePdf_withCorrectCountryValueSet() {
+            var countryValueSet = fixture.create(CountryCode.class);
+            when(valueSetsService.getCountryCode(any(), any())).thenReturn(countryValueSet);
+            try (MockedStatic<VaccinationTouristCertificatePdfMapper> vaccinationTouristCertificatePdfMapperMock =
+                         Mockito.mockStatic(VaccinationTouristCertificatePdfMapper.class)) {
+                vaccinationTouristCertificatePdfMapperMock
+                        .when(() -> VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), any(), any(), any(), any()))
+                        .thenReturn(fixture.create(VaccinationTouristCertificatePdf.class));
+                service.toVaccinationTouristCertificatePdf(fixture.create(VaccinationTouristCertificateCreateDto.class), fixture.create(VaccinationTouristCertificateQrCode.class));
+
+                vaccinationTouristCertificatePdfMapperMock.verify(() ->
+                        VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), any(), any(), eq(countryValueSet.getDisplay()), any()));
+            }
+        }
+
+        @Test
+        void shouldMapToVaccinationTouristCertificatePdf_withCorrectCountryEnValueSet() {
+            var countryEnValueSet = fixture.create(CountryCode.class);
+            when(valueSetsService.getCountryCodeEn(any())).thenReturn(countryEnValueSet);
+            try (MockedStatic<VaccinationTouristCertificatePdfMapper> vaccinationTouristCertificatePdfMapperMock =
+                         Mockito.mockStatic(VaccinationTouristCertificatePdfMapper.class)) {
+                vaccinationTouristCertificatePdfMapperMock
+                        .when(() -> VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), any(), any(), any(), any()))
+                        .thenReturn(fixture.create(VaccinationTouristCertificatePdf.class));
+                service.toVaccinationTouristCertificatePdf(fixture.create(VaccinationTouristCertificateCreateDto.class), fixture.create(VaccinationTouristCertificateQrCode.class));
+
+                vaccinationTouristCertificatePdfMapperMock.verify(() ->
+                        VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), any(), any(), any(), eq(countryEnValueSet.getDisplay())));
+            }
+        }
+
+        @Test
+        void shouldReturnVaccinationTouristCertificatePdf() {
+            var vaccinationTouristCertificatePdf = fixture.create(VaccinationTouristCertificatePdf.class);
+            var countryEnValueSet = fixture.create(CountryCode.class);
+            when(valueSetsService.getCountryCodeEn(any())).thenReturn(countryEnValueSet);
+            try (MockedStatic<VaccinationTouristCertificatePdfMapper> vaccinationTouristCertificatePdfMapperMock =
+                         Mockito.mockStatic(VaccinationTouristCertificatePdfMapper.class)) {
+                vaccinationTouristCertificatePdfMapperMock
+                        .when(() -> VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(any(), any(), any(), any(), any()))
+                        .thenReturn(vaccinationTouristCertificatePdf);
+                var actual = service.toVaccinationTouristCertificatePdf(fixture.create(VaccinationTouristCertificateCreateDto.class), fixture.create(VaccinationTouristCertificateQrCode.class));
+
+                assertEquals(vaccinationTouristCertificatePdf, actual);
+            }
+        }
+    }
 
     @Nested
     class ToTestCertificateQrCode {

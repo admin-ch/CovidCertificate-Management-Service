@@ -1,12 +1,19 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.AntibodyCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
@@ -45,6 +52,7 @@ public class CovidCertificateGenerationService {
     private final CovidCertificatePdfGenerateRequestDtoMapperService covidCertificatePdfGenerateRequestDtoMapperService;
     private final CertificatePrintRequestDtoMapper certificatePrintRequestDtoMapper;
     private final SigningInformationService signingInformationService;
+    private final COSETime coseTime;
 
     public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
         var pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationCertificatePdf(pdfGenerateRequestDto);
@@ -52,6 +60,14 @@ public class CovidCertificateGenerationService {
                 pdfGenerateRequestDto.getHcert(),
                 pdfGenerateRequestDto.getIssuedAt(),
                 pdfGenerateRequestDto.getDecodedCert().getVaccinationInfo().get(0).getIdentifier());
+    }
+
+    public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(VaccinationTouristCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
+        var pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toVaccinationTouristCertificatePdf(pdfGenerateRequestDto);
+        return generateFromExistingCovidCertificate(pdfData,
+                pdfGenerateRequestDto.getHcert(),
+                pdfGenerateRequestDto.getIssuedAt(),
+                pdfGenerateRequestDto.getDecodedCert().getVaccinationTouristInfo().get(0).getIdentifier());
     }
 
     public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
@@ -101,6 +117,14 @@ public class CovidCertificateGenerationService {
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
+    public CovidCertificateCreateResponseDto generateCovidCertificate(VaccinationTouristCertificateCreateDto createDto) throws JsonProcessingException {
+        var qrCodeData = covidCertificateDtoMapperService.toVaccinationTouristCertificateQrCode(createDto);
+        var pdfData = covidCertificateDtoMapperService.toVaccinationTouristCertificatePdf(createDto, qrCodeData);
+        var signingInformation = signingInformationService.getVaccinationTouristSigningInformation();
+        var expiration30Days = coseTime.calculateExpirationInstantPlusDays(Constants.EXPIRATION_PERIOD_30_DAYS);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getVaccinationTouristInfo().get(0).getIdentifier(), createDto, signingInformation, expiration30Days);
+    }
+
     public CovidCertificateCreateResponseDto generateCovidCertificate(TestCertificateCreateDto createDto) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toTestCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toTestCertificatePdf(createDto, qrCodeData);
@@ -127,9 +151,19 @@ public class CovidCertificateGenerationService {
                                                                        String uvci,
                                                                        CertificateCreateDto createDto,
                                                                        SigningInformation signingInformation) throws JsonProcessingException {
+        var expiration24Months = coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS);
+        return this.generateCovidCertificate(qrCodeData, pdfData, uvci, createDto, signingInformation, expiration24Months);
+    }
+
+    private CovidCertificateCreateResponseDto generateCovidCertificate(AbstractCertificateQrCode qrCodeData,
+                                                                       AbstractCertificatePdf pdfData,
+                                                                       String uvci,
+                                                                       CertificateCreateDto createDto,
+                                                                       SigningInformation signingInformation,
+                                                                       Instant expiration) throws JsonProcessingException {
         var contents = objectMapper.writer().writeValueAsString(qrCodeData);
         log.info("Create barcode");
-        var code = barcodeService.createBarcode(contents, signingInformation);
+        var code = barcodeService.createBarcode(contents, signingInformation, expiration);
         log.info("Create certificate pdf");
         var pdf = pdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
 

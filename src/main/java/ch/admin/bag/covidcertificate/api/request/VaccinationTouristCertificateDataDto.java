@@ -19,7 +19,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_VACCINATION_DA
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class VaccinationCertificateDataDto {
+public class VaccinationTouristCertificateDataDto {
 
     private static final int MAX_NB_OF_DOSES = 9;
 

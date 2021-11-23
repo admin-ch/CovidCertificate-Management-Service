@@ -2,7 +2,12 @@ package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.valueset.AllowedSenders;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.apache.commons.lang3.Range;
 import org.springframework.util.StringUtils;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ADDRESS;
@@ -13,6 +18,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ADDRESS;
 @AllArgsConstructor
 public class CovidCertificateAddressDto {
     private static final int MAX_FIELD_LENGTH = 128;
+    private static final Range<Integer> ZIPCODE_VALUE_RANGE=Range.between(1000, 9999);
 
     private String streetAndNr;
     private int zipCode;
@@ -20,13 +26,11 @@ public class CovidCertificateAddressDto {
     private String cantonCodeSender;
 
     public void validate() {
-        if (this.hasInvalidLength(streetAndNr) || this.hasInvalidLength(city)) {
-            throw new CreateCertificateException(INVALID_ADDRESS);
-        }
-        if (zipCode < 1000 || zipCode > 9999) {
-            throw new CreateCertificateException(INVALID_ADDRESS);
-        }
-        if (!AllowedSenders.isAccepted(this.cantonCodeSender)) {
+        if (this.hasInvalidLength(streetAndNr) ||
+                this.hasInvalidLength(city) ||
+                !ZIPCODE_VALUE_RANGE.contains(zipCode) ||
+                !AllowedSenders.isAccepted(this.cantonCodeSender)
+        ) {
             throw new CreateCertificateException(INVALID_ADDRESS);
         }
     }
