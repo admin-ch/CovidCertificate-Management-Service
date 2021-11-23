@@ -163,8 +163,6 @@ public class CovidCertificateGenerationService {
                                                                        Instant expiration) throws JsonProcessingException {
         var contents = objectMapper.writer().writeValueAsString(qrCodeData);
         log.info("Create barcode");
-        // TODO:mofobo: call the createBarcode with expiration time now plus 30 days for the vaccination-tourist
-
         var code = barcodeService.createBarcode(contents, signingInformation, expiration);
         log.info("Create certificate pdf");
         var pdf = pdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
