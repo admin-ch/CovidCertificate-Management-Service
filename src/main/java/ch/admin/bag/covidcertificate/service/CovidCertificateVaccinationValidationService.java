@@ -52,8 +52,6 @@ public class CovidCertificateVaccinationValidationService {
         final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
         final String productCode = createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode();
         final IssuableVaccineDto issuableVaccine = retrieveProduct(productCode, valueSetsService.getApiGatewayIssuableVaccines());
-
-        // TODO:mofobo: should the vaccination date also be validated: date >= featureEnableDate
         // Only WHO vaccines can be used for the generation of Vaccination Tourist Certificates
         if (!issuableVaccine.isTouristVaccine()) throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
         // Vaccination Tourist Certificates cannot be be generated for vaccinations in Switzerland
