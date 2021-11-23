@@ -56,7 +56,7 @@ public class KpiDataService {
 
     @Transactional
     public void logVaccinationTouristCertificateGenerationKpi(VaccinationTouristCertificateCreateDto createDto, String uvci) {
-        logCertificateGenerationKpi(KPI_TYPE_VACCINATION, uvci, createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode(), createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
+        logCertificateGenerationKpi(KPI_TYPE_VACCINATION_TOURIST, uvci, createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode(), createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
     }
 
     @Transactional
