@@ -21,9 +21,14 @@ public class AntibodyCertificateDataDto {
     private LocalDate sampleDate;
     private String testingCenterOrFacility;
 
+    private static final LocalDate ANTIBODY_MIN_DATE = LocalDate.of(2021, 11, 16);
+
     public void validate(SystemSource systemSource) {
         if (sampleDate == null || sampleDate.isAfter(LocalDate.now())) {
             throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
+        }
+        if (sampleDate.isBefore(ANTIBODY_MIN_DATE)) {
+            throw new CreateCertificateException(INVALID_ANTIBODY_SAMPLE_DATE_TIME);
         }
         if (!StringUtils.hasText(testingCenterOrFacility) || testingCenterOrFacility.length() > MAX_STRING_LENGTH) {
             throw new CreateCertificateException(INVALID_TEST_CENTER);
