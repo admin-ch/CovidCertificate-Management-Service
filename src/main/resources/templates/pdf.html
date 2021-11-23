@@ -443,11 +443,13 @@
 <div th:id="disclaimer">
     <th:block th:unless="${isEvidence}">
         <p class="body-text-small" th:text="#{info.info1}"></p>
-        <p class="body-text-small" th:text="#{info.info2}"></p>
+        <p class="body-text-small" th:unless="${showValidOnlyInSwitzerland}" th:text="#{info.info2}"></p>
+        <p class="body-text-small" th:if="${showValidOnlyInSwitzerland}" th:text="#{info.info3}"></p>
         <p class="body-text-small" th:if="${type == 'recovery'}" th:utext="#{recovery.info}"></p>
         <p></p><!-- Keep this to separate the languages -->
         <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
-        <p class="body-text-small-en" th:text="#{info.info2(${'en'})}"></p>
+        <p class="body-text-small-en" th:unless="${showValidOnlyInSwitzerland}" th:text="#{info.info2(${'en'})}"></p>
+        <p class="body-text-small-en" th:if="${showValidOnlyInSwitzerland}" th:text="#{info.info3(${'en'})}"></p>
         <p class="body-text-small-en" th:if="${type == 'recovery'}" th:utext="#{recovery.info(${'en'})}"></p>
     </th:block>
 
