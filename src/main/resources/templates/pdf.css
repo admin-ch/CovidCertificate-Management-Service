@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     padding: 0;
-    margin: 0;
+    margin: 0 0 0 40px;
 }
 
 .two-col-table {
@@ -16,14 +16,14 @@ body {
 }
 
 .two-col-table .first-col {
-    width: 43%;
-    max-width: 43%;
-    padding-right: 4%;
+    width: 42%;
+    max-width: 42%;
 }
 
 .two-col-table .second-col {
-    width: 53%;
-    max-width: 53%;
+    width: 52%;
+    max-width: 52%;
+    padding-left: 8px;
 }
 
 .heading, .body-text, .body-text-en, .body-text-small, .body-text-small-en {
@@ -85,6 +85,7 @@ body {
 #logo-bund {
     width: 210px;
     padding-top: 8px;
+    margin-left: -40px;
 }
 
 #title {
