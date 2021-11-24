@@ -43,7 +43,7 @@ public class RevocationController {
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "201", description = "CREATED")
     public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto, HttpServletRequest request) {
-        log.info("Call of create revocation.");
+        log.info("Call of create revocation for uvci {}.", revocationDto.getUvci());
         securityHelper.authorizeUser(request);
         revocationDto.validate();
         revocationService.createRevocation(revocationDto);
