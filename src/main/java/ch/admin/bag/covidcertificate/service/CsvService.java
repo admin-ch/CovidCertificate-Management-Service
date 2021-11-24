@@ -279,7 +279,16 @@ public class CsvService {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
             covidCertificateVaccinationValidationService.validateProductAndCountry((VaccinationCertificateCreateDto) createDto);
-        } else if (createDto instanceof AntibodyCertificateCreateDto) {
+        }
+        else if (createDto instanceof VaccinationTouristCertificateCreateDto) {
+            var dataDto = ((VaccinationTouristCertificateCreateDto) createDto).getVaccinationTouristInfo().get(0);
+            var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(), createDto.getLanguage());
+            if (countryCode == null) {
+                throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+            }
+            covidCertificateVaccinationValidationService.validateProductAndCountryForVaccinationTourist((VaccinationTouristCertificateCreateDto) createDto);
+        }
+        else if (createDto instanceof AntibodyCertificateCreateDto) {
             // no validation
         }
     }
