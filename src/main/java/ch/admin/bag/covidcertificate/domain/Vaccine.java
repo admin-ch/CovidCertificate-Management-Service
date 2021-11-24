@@ -116,6 +116,6 @@ public class Vaccine {
     }
 
     public boolean isTouristVaccine() {
-        return isWhoEul() && !isEmea() && !isSwissMedic() && StringUtils.hasText(getAnalogVaccine());
+        return isWhoEul() && !isEmea() && !isSwissMedic() && !StringUtils.hasText(getAnalogVaccine());
     }
 }
