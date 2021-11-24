@@ -8,6 +8,7 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCr
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,21 +50,37 @@ public class CovidCertificateVaccinationValidationService {
     }
 
     public void validateProductAndCountryForVaccinationTourist(VaccinationTouristCertificateCreateDto createDto) {
-        final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
+        validateCountryIsNotSwitzerland(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
+        // Vaccination Tourist Certificates cannot be be generated for vaccinations in Switzerland
         final String productCode = createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode();
         final IssuableVaccineDto issuableVaccine = retrieveProduct(productCode, valueSetsService.getApiGatewayIssuableVaccines());
         // Only WHO vaccines can be used for the generation of Vaccination Tourist Certificates
         if (!issuableVaccine.isTouristVaccine()) throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
-        // Vaccination Tourist Certificates cannot be be generated for vaccinations in Switzerland
-        if (isCountryCH) throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
     }
+
+    /**
+     * Validate that a given string is not blank and does not represent the Switzerland country code (case-insensitive).
+     *
+     * @param isoCountryCode the ISO 3166-1 Alpha-2 Code of a country
+     * @throws CreateCertificateException if country code is blank or equal to {@value ch.admin.bag.covidcertificate.api.Constants#ISO_3166_1_ALPHA_2_CODE_SWITZERLAND}.
+     */
+    public void validateCountryIsNotSwitzerland(String isoCountryCode) {
+        if (StringUtils.isBlank(isoCountryCode)) {
+            throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+        }
+        final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(isoCountryCode);
+        if (isCountryCH) {
+            throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+        }
+    }
+
 
     private IssuableVaccineDto retrieveProduct(String productCode, List<IssuableVaccineDto> issuableVaccineDtoList) {
         var issuableVaccinesOpt = issuableVaccineDtoList.stream()
-                                                        .filter(issuableVaccine -> issuableVaccine.getProductCode()
-                                                                                                  .equalsIgnoreCase(
-                                                                                                          productCode))
-                                                        .findFirst();
+                .filter(issuableVaccine -> issuableVaccine.getProductCode()
+                        .equalsIgnoreCase(
+                                productCode))
+                .findFirst();
         // the product is not available for this source
         if (issuableVaccinesOpt.isEmpty()) {
             throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
@@ -72,7 +89,7 @@ public class CovidCertificateVaccinationValidationService {
     }
 
     private void throwExceptionIfIssuableIsViolated(boolean isCountryCH, Issuable issuable) {
-        switch(issuable) {
+        switch (issuable) {
             case CH_ONLY: {
                 if (!isCountryCH) {
                     // a product issueable only in switzerland has been used
