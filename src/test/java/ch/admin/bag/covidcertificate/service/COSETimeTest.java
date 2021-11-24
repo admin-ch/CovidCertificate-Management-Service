@@ -51,7 +51,7 @@ class COSETimeTest {
     @DisplayName("Given the calculateExpirationInstantPlusDays, when called, it should return an Instant ending now + 'days' at the end of the day '23:59:59'")
     void calculateExpirationInstantPlusDays() {
         Instant result = coseTime.calculateExpirationInstantPlusDays(30);
-       LocalDateTime resultLocalDateTime = LocalDateTime.ofInstant(result, ZoneOffset.systemDefault());
+        LocalDateTime resultLocalDateTime = LocalDateTime.ofInstant(result, ZoneOffset.systemDefault());
         assertEquals(LocalDateTime.now().plusDays(30).toLocalDate(), resultLocalDateTime.toLocalDate());
         assertEquals(23, resultLocalDateTime.getHour());
         assertEquals(59, resultLocalDateTime.getMinute());

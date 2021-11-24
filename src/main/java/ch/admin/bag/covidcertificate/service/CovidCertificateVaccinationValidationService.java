@@ -65,9 +65,13 @@ public class CovidCertificateVaccinationValidationService {
      * @throws CreateCertificateException if country code is blank or equal to {@value ch.admin.bag.covidcertificate.api.Constants#ISO_3166_1_ALPHA_2_CODE_SWITZERLAND}.
      */
     public void validateCountryIsNotSwitzerland(String isoCountryCode) {
-        if (StringUtils.isBlank(isoCountryCode)) throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+        if (StringUtils.isBlank(isoCountryCode)) {
+            throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+        }
         final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(isoCountryCode);
-        if (isCountryCH) throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+        if (isCountryCH) {
+            throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
+        }
     }
 
 
