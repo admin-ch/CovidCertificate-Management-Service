@@ -70,6 +70,8 @@ public class Constants {
     public static final CreateCertificateError INVALID_COUNTRY_OF_TEST = new CreateCertificateError(467, "Invalid country of test", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_LANGUAGE = new CreateCertificateError(469, "The given language does not match any of the supported languages: de, it, fr, rm!", HttpStatus.BAD_REQUEST);
     public static final RevocationError INVALID_UVCI = new RevocationError(470, "Invalid UVCI format.", HttpStatus.BAD_REQUEST);
+    public static final RevocationError INVALID_SIZE_OF_UVCI_LIST = new RevocationError(472, "Invalid size of UVCI List.", HttpStatus.BAD_REQUEST);
+    public static final RevocationError INVALID_UVCI_LIST = new RevocationError(473, "Invalid UVCI List due to errors.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ADDRESS = new CreateCertificateError(474, "Paper-based delivery requires a valid address.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError DUPLICATE_DELIVERY_METHOD = new CreateCertificateError(475, "Delivery method can either be InApp or print, but not both.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError UNKNOWN_APP_CODE = new CreateCertificateError(476, "Unknown app code.", HttpStatus.NOT_FOUND);
