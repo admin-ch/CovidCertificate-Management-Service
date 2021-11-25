@@ -94,6 +94,7 @@ public class ValueSetsService {
 
     @Cacheable(COUNTRY_CODES_CACHE_NAME)
     public CountryCodes getCountryCodes() {
+        log.info("Loading country codes");
         return countryCodesLoader.getCountryCodes();
     }
 
@@ -138,6 +139,7 @@ public class ValueSetsService {
 
     @Cacheable(COUNTRY_CODES_FOR_LANGUAGE_CACHE_NAME)
     public List<CountryCode> getCountryCodesForLanguage(String language) {
+        log.info("Loading country codes for language");
         var countryCodes = countryCodesLoader.getCountryCodes();
         List<CountryCode> result = Collections.emptyList();
         switch (language.toLowerCase()) {
@@ -250,6 +252,18 @@ public class ValueSetsService {
     @CacheEvict(value = ISSUABLE_TEST_DTO_CACHE_NAME, allEntries = true)
     public void cleanIssuableTestDtoCache() {
         log.info("Cleaning cache of issuable test dto");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = COUNTRY_CODES_CACHE_NAME, allEntries = true)
+    public void cleanCountryCodesCache() {
+        log.info("Cleaning cache of country codes");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = COUNTRY_CODES_FOR_LANGUAGE_CACHE_NAME, allEntries = true)
+    public void cleanCountryCodeByLanguageCache() {
+        log.info("Cleaning cache of country code by language list");
     }
 
 }
