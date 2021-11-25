@@ -199,6 +199,10 @@ sup {
     padding: 16px;
 }
 
+#issuer-section, #chOnlyMessage-section {
+    width: 50%;
+}
+
 .red {
     color: rgb(220, 0, 24);
 }
