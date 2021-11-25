@@ -415,7 +415,7 @@
 </table>
 <table class="two-col-table" th:id="issuer-chOnlyMessage">
     <tr>
-        <td th:unless="${isEvidence}" th:id="issuer-section" style="width: 52%">
+        <td th:unless="${isEvidence}" th:id="issuer-section">
             <div th:id="issuer">
                 <p class="body-text no-padding" th:text="#{issuer.title}"></p>
                 <p class="body-text-en" th:text="#{issuer.title(${'en'})}"></p>
@@ -423,7 +423,7 @@
                 <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
             </div>
         </td>
-        <td th:if="${isEvidence}" th:id="issuer-section" style="width: 52%">
+        <td th:if="${isEvidence}" th:id="issuer-section">
             <div th:id="issuer">
                 <p class="body-text no-padding" th:text="#{evidence.issuer}"></p>
                 <p class="body-text-en" th:text="#{evidence.issuer(${'en'})}"></p>
@@ -431,7 +431,7 @@
                 <p th:text="#{issuer.issuer(${'en'})}" class="body-text-en"></p>
             </div>
         </td>
-        <td th:id="chOnlyMessage-section" style="width: 48%">
+        <td th:id="chOnlyMessage-section">
             <div th:if="${showValidOnlyInSwitzerland}" class="ch-only-section">
                 <p class="body-text no-padding red-bold" th:text="#{antibody.validInSwitzerlandOnly}"></p>
                 <p class="body-text-en red" th:text="#{antibody.validInSwitzerlandOnly(${'en'})}"></p>
