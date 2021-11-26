@@ -17,7 +17,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 @AllArgsConstructor
 public class CovidCertificatePersonNameDto {
 
-    private static final Pattern p = Pattern.compile("[!@#\\r\\n$%¶*\\\\()_:/+=|<>?{}\\[\\]~]");
+    private static final Pattern invalidCharactersRegex = Pattern.compile("[!@#\\r\\n$%¶*\\\\()_:/+=|<>?{}\\[\\]~]");
 
     private String familyName;
 
@@ -31,12 +31,12 @@ public class CovidCertificatePersonNameDto {
             throw new CreateCertificateException(INVALID_FAMILY_NAME);
         }
 
-        Matcher givenNameMatcher = p.matcher(givenName);
+        Matcher givenNameMatcher = invalidCharactersRegex.matcher(givenName);
         if(givenNameMatcher.find()) {
             throw new CreateCertificateException(INVALID_GIVEN_NAME);
         }
 
-        Matcher familyNameMatcher = p.matcher(familyName);
+        Matcher familyNameMatcher = invalidCharactersRegex.matcher(familyName);
         if(familyNameMatcher.find()) {
             throw new CreateCertificateException(INVALID_FAMILY_NAME);
         }
