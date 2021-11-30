@@ -52,7 +52,7 @@ public class CovidCertificatePersonNameDtoTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"!", "@", "#", "$", "%", "¶", "*", "(", ")", "_", ":", "/", "+", "=", "|", "<", ">", "?", "{", "}", "[", "]", "~"})
+        @ValueSource(strings = {"!", "@", "#", "\r", "\n", "\\", "$", "%", "¶", "*", "(", ")", "_", ":", "/", "+", "=", "|", "<", ">", "?", "{", "}", "[", "]", "~"})
         @DisplayName("Given 'familyName' contain an invalid character, when validated, it should throw an INVALID_FAMILY_NAME error (CreateCertificateException).")
         void validationTest2(String invalidChar) {
             var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName.concat(invalidChar), validGivenName);
@@ -90,7 +90,7 @@ public class CovidCertificatePersonNameDtoTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"!", "@", "#", "$", "%", "¶", "*", "(", ")", "_", ":", "/", "+", "=", "|", "<", ">", "?", "{", "}", "[", "]", "~"})
+        @ValueSource(strings = {"!", "@", "#", "\r", "\n", "\\", "$", "%", "¶", "*", "(", ")", "_", ":", "/", "+", "=", "|", "<", ">", "?", "{", "}", "[", "]", "~"})
         @DisplayName("Given 'givenName' contain an invalid character, when validated, it should throw an INVALID_GIVEN_NAME error (CreateCertificateException).")
         void validationTest4(String invalidChar) {
             var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName, validGivenName.concat(invalidChar));
