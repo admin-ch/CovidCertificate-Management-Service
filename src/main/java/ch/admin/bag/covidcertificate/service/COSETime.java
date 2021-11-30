@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class COSETime {
     }
 
     public Instant calculateExpirationInstantPlusDays(long days) {
-        return getInstant(LocalDateTime.now(clock).plusDays(days));
+        return getInstant(LocalDateTime.now(clock).with(LocalTime.MAX).plusDays(days));
     }
 
     private Instant getInstant(LocalDateTime localDateTime) {

@@ -196,7 +196,11 @@ sup {
     border: 0.5px solid rgb(220, 0, 24);
     border-radius: 7px;
     vertical-align: middle;
-    padding: 18px;
+    padding: 16px;
+}
+
+#issuer-section, #chOnlyMessage-section {
+    width: 50%;
 }
 
 .red {
