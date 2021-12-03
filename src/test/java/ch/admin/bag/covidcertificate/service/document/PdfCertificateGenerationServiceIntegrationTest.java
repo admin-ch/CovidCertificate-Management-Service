@@ -1,25 +1,35 @@
 package ch.admin.bag.covidcertificate.service.document;
 
+import ch.admin.bag.covidcertificate.api.mapper.AntibodyCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.AntibodyCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificateQrCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -32,9 +42,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
+import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateCreateDto;
+
 
 class PdfCertificateGenerationServiceIntegrationTest {
 
@@ -44,9 +57,6 @@ class PdfCertificateGenerationServiceIntegrationTest {
 
     private static final String familyNameBig = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
     private static final String givenNameBig = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
-
-    private static final String familyNameMiddle = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
-    private static final String givenNameMiddle = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
 
     private static final String familyNameSmall = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
     private static final String givenNameSmall = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
@@ -73,7 +83,25 @@ class PdfCertificateGenerationServiceIntegrationTest {
                 countryEn);
 
         doTest(pdfData, fileName, language);
+    }
 
+    private void generateDocument_vaccineTourist(VaccinationTouristCertificateCreateDto createDto, String language, String familyName, String givenName, String fileName) throws Exception {
+        IssuableVaccineDto vaccineDto = new IssuableVaccineDto("EU/1/20/1528", "Comirnaty", "1119349007",
+                "SARS-CoV-2 mRNA vaccine", "ORG-100030215",
+                "Biontech Manufacturing GmbH", Issuable.CH_ONLY, false);
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
+        String country = "Schweiz";
+
+        VaccinationTouristCertificateQrCode qrCodeData = VaccinationTouristCertificateQrCodeMapper.toVaccinationTouristCertificateQrCode(
+                createDto, vaccineDto);
+        VaccinationTouristCertificatePdf pdfData = VaccinationTouristCertificatePdfMapper.toVaccinationTouristCertificatePdf(createDto,
+                vaccineDto,
+                qrCodeData,
+                country,
+                countryEn);
+
+        doTest(pdfData, fileName, language);
     }
 
     private void generateDocument_vaccine(String language, String familyName, String givenName) throws Exception {
@@ -87,6 +115,11 @@ class PdfCertificateGenerationServiceIntegrationTest {
         this.generateDocument_vaccine(createDto, language, familyName, givenName, "partial-vaccine");
     }
 
+    private void generateDocument_vaccineTourist(String language, String familyName, String givenName) throws Exception {
+        VaccinationTouristCertificateCreateDto createDto = getVaccinationTouristCertificateCreateDto("1119349007", language);
+        this.generateDocument_vaccineTourist(createDto, language, familyName, givenName, "vaccine-tourist");
+    }
+
     private void generateDocument_test(String language, String familyName, String givenName) throws Exception {
         TestCertificateCreateDto createDto = getTestCertificateCreateDto("test", "test", language);
         IssuableTestDto testValueSet = new IssuableTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", TestType.RAPID_TEST);
@@ -98,7 +131,6 @@ class PdfCertificateGenerationServiceIntegrationTest {
         TestCertificatePdf pdfData = TestCertificatePdfMapper.toTestCertificatePdf(createDto, testValueSet, qrCodeData, country, countryEn);
 
         doTest(pdfData, "test", language);
-
     }
 
     private void generateDocument_recovery(String language, String familyName, String givenName) throws Exception {
@@ -109,13 +141,25 @@ class PdfCertificateGenerationServiceIntegrationTest {
 
         RecoveryCertificateQrCode qrCodeData = RecoveryCertificateQrCodeMapper.toRecoveryCertificateQrCode(createDto);
         RecoveryCertificatePdf pdfData = RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(createDto, qrCodeData, country, countryEn);
-        doTest(pdfData, "recovery", language);
 
+        doTest(pdfData, "recovery", language);
+    }
+
+    private void generateDocument_antibody(String language, String familyName, String givenName) throws Exception {
+        AntibodyCertificateCreateDto createDto = getAntibodyCertificateCreateDto(language);
+        String country = "Schweiz";
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
+
+        AntibodyCertificateQrCode qrCodeData = AntibodyCertificateQrCodeMapper.toAntibodyCertificateQrCode(createDto);
+        AntibodyCertificatePdf pdfData = AntibodyCertificatePdfMapper.toAntibodyCertificatePdf(createDto, qrCodeData, country, countryEn);
+
+        doTest(pdfData, "antibody", language);
     }
 
     @ParameterizedTest
     @MethodSource("testConfiguration")
-    void generateRecoverylDocuments(String language, String familyName, String givenName) throws Exception {
+    void generateRecoveryDocuments(String language, String familyName, String givenName) throws Exception {
         generateDocument_recovery(language, familyName, givenName);
     }
 
@@ -125,18 +169,28 @@ class PdfCertificateGenerationServiceIntegrationTest {
         generateDocument_vaccine(language, familyName, givenName);
     }
 
-
     @ParameterizedTest
     @MethodSource("testConfiguration")
     void generatePartialVaccinationDocuments(String language, String familyName, String givenName) throws Exception {
         generateDocument_partialVaccination(language, familyName, givenName);
     }
 
+    @ParameterizedTest
+    @MethodSource("testConfiguration")
+    void generateVaccinationTouristDocuments(String language, String familyName, String givenName) throws Exception {
+        generateDocument_vaccineTourist(language, familyName, givenName);
+    }
 
     @ParameterizedTest
     @MethodSource("testConfiguration")
     void generateTestDocuments(String language, String familyName, String givenName) throws Exception {
         generateDocument_test(language, familyName, givenName);
+    }
+
+    @ParameterizedTest
+    @MethodSource("testConfiguration")
+    void generateAntibodyDocuments(String language, String familyName, String givenName) throws Exception {
+        generateDocument_antibody(language, familyName, givenName);
     }
 
     void doTest(AbstractCertificatePdf pdfData, String filename, String language) throws Exception {
@@ -159,7 +213,6 @@ class PdfCertificateGenerationServiceIntegrationTest {
         return Stream.of("de", "fr", "it", "rm").
                 flatMap(language -> Stream.of(
                         Arguments.of(language, familyNameSmall, givenNameSmall),
-                        Arguments.of(language, familyNameMiddle, givenNameMiddle),
                         Arguments.of(language, familyNameBig, givenNameBig)
                 ));
     }
