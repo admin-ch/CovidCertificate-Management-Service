@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.api.mapper;
 
-import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.domain.Revocation;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.Test;
@@ -16,10 +15,10 @@ class RevocationMapperTest {
     @Test
     void whenToRevocation_thenMapsUVCI() {
         //given
-        RevocationDto revocationDto = jFixture.create(RevocationDto.class);
+        String uvci = jFixture.create(String.class);
         // when
-        Revocation result = RevocationMapper.toRevocation(revocationDto);
+        Revocation result = RevocationMapper.toRevocation(uvci);
         // then
-        assertEquals(revocationDto.getUvci(), result.getUvci());
+        assertEquals(uvci, result.getUvci());
     }
 }

@@ -7,6 +7,7 @@ import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
+import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
@@ -28,6 +29,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 
@@ -138,6 +141,14 @@ public class FixtureCustomization {
 
     public static void customizeRevocationDto(JFixture fixture) {
         fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI()));
+    }
+
+    public static void customizeRevocationListDto(JFixture fixture) {
+        List<String> uvcis = new LinkedList();
+        uvcis.add(createUVCI());
+        uvcis.add(createUVCI());
+        uvcis.add(createUVCI());
+        fixture.customise().lazyInstance(RevocationListDto.class, () -> new RevocationListDto(uvcis));
     }
 
     private static String createUVCI() {

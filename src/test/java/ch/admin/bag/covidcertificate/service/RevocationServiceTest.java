@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
+import ch.admin.bag.covidcertificate.domain.KpiDataRepository;
 import ch.admin.bag.covidcertificate.domain.Revocation;
 import ch.admin.bag.covidcertificate.domain.RevocationRepository;
 import com.flextrade.jfixture.JFixture;
@@ -13,8 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,29 +25,20 @@ class RevocationServiceTest {
     private final JFixture jFixture = new JFixture();
     @Mock
     private RevocationRepository revocationRepository;
+    @Mock
+    private KpiDataRepository kpiDataRepository;
     @InjectMocks
     private RevocationService revocationService;
 
     @Test
     void whenCreateRevocation_thenOk() {
         // given
-        RevocationDto revocationDto = jFixture.create(RevocationDto.class);
-        when(revocationRepository.saveAndFlush(any(Revocation.class))).thenReturn(any(Revocation.class));
+        String uvci = jFixture.create(String.class);
+        when(revocationRepository.save(any(Revocation.class))).thenReturn(any(Revocation.class));
         // when
-        revocationService.createRevocation(revocationDto);
+        revocationService.createRevocation(uvci);
         // then
-        verify(revocationRepository).saveAndFlush(any(Revocation.class));
-    }
-
-    @Test
-    void givenUVCIExists_whenCreateRevocation_thenThrowsRevocationException() {
-        // given
-        RevocationDto revocationDto = jFixture.create(RevocationDto.class);
-        when(revocationRepository.findByUvci(any(String.class))).thenReturn(new Revocation());
-        // when then
-        RevocationException exception = assertThrows(RevocationException.class,
-                () -> revocationService.createRevocation(revocationDto));
-        assertEquals(DUPLICATE_UVCI, exception.getError());
+        verify(revocationRepository).save(any(Revocation.class));
     }
 
     @Test
@@ -54,9 +46,10 @@ class RevocationServiceTest {
         // given
         RevocationDto revocationDto = jFixture.create(RevocationDto.class);
         RuntimeException exception = jFixture.create(RuntimeException.class);
-        when(revocationRepository.saveAndFlush(any(Revocation.class))).thenThrow(exception);
+        when(revocationRepository.save(any(Revocation.class))).thenThrow(exception);
         // when then
-        Exception result = assertThrows(Exception.class, () -> revocationService.createRevocation(revocationDto));
+        Exception result = assertThrows(Exception.class,
+                                        () -> revocationService.createRevocation(revocationDto.getUvci()));
         assertEquals(exception, result);
     }
 

@@ -13,7 +13,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flextrade.jfixture.JFixture;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,11 +33,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationDto;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -187,9 +194,12 @@ class RevocationControllerSecurityTest {
 
     @BeforeEach
     void setupMocks() {
-        lenient().when(revocationService.getRevocations()).thenReturn(fixture.collections().createCollection(List.class, String.class));
-        lenient().doNothing().when(revocationService).createRevocation(any(RevocationDto.class));
-        lenient().when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(fixture.create(JeapAuthenticationToken.class));    }
+        lenient().when(revocationService.getRevocations())
+                 .thenReturn(fixture.collections().createCollection(List.class, String.class));
+        lenient().doNothing().when(revocationService).createRevocation(anyString());
+        lenient().when(jeapAuthorization.getJeapAuthenticationToken())
+                 .thenReturn(fixture.create(JeapAuthenticationToken.class));
+    }
 
     @AfterAll
     static void teardown() {
@@ -200,20 +210,22 @@ class RevocationControllerSecurityTest {
     class Create {
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
+            when(revocationService.doesUvciExist(anyString())).thenReturn(true);
+            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
             callGetValueSetsWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.CREATED);
-            Mockito.verify(revocationService, times(1)).createRevocation(any(RevocationDto.class));
+            Mockito.verify(revocationService, times(1)).createRevocation(anyString());
         }
 
         @Test
         void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
             callGetValueSetsWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
-            Mockito.verify(revocationService, times(0)).createRevocation(any(RevocationDto.class));
+            Mockito.verify(revocationService, times(0)).createRevocation(anyString());
         }
 
         @Test
         void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
             callGetValueSetsWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(revocationService, times(0)).createRevocation(any(RevocationDto.class));
+            Mockito.verify(revocationService, times(0)).createRevocation(anyString());
         }
     }
 

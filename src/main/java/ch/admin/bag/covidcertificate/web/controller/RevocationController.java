@@ -4,9 +4,9 @@ import ch.admin.bag.covidcertificate.api.exception.RevocationError;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
+import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
-import ch.admin.bag.covidcertificate.domain.Revocation;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import ch.admin.bag.covidcertificate.service.RevocationService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +27,16 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.ERROR_SAVING_REVOCATION;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SIZE_OF_UVCI_LIST;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
+import static ch.admin.bag.covidcertificate.api.Constants.NON_EXISTING_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.USER_EXT_ID_CLAIM_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RestController
@@ -40,26 +49,21 @@ public class RevocationController {
     private final RevocationService revocationService;
     private final KpiDataService kpiLogService;
 
-    public class RevocationErrorItem {
-        private  RevocationError revocationError;
-        private String errorMessage = "";
-        private String errorUvci = "";
-
-        public RevocationErrorItem(String message, String uvci) {
-            errorMessage = message;
-            errorUvci = uvci;
-            revocationError = INVALID_UVCI;
-        }
-    }
-
     @PostMapping
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "201", description = "CREATED")
     public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto, HttpServletRequest request) {
-        log.info("Call of create revocation for uvci {}.", revocationDto.getUvci());
+        final String uvci = revocationDto.getUvci();
+        log.info("Call of create revocation for uvci {}.", uvci);
         securityHelper.authorizeUser(request);
         revocationDto.validate();
-        revocationService.createRevocation(revocationDto);
+        if (!revocationService.doesUvciExist(uvci)) {
+            throw new RevocationException(NON_EXISTING_UVCI);
+        }
+        if (revocationService.isAlreadyRevoked(uvci)) {
+            throw new RevocationException(DUPLICATE_UVCI);
+        }
+        revocationService.createRevocation(revocationDto.getUvci());
         logKpi(revocationDto.getUvci());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -67,66 +71,81 @@ public class RevocationController {
     @PostMapping("/uvcilist/check")
     @PreAuthorize("hasAnyRole('bag-cc-superuser')")
     @ApiResponse(responseCode = "202", description = "CHECKED")
-    public ResponseEntity<HttpStatus> check(@Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) throws Exception {
-        log.info("Call of check uvci list.");
+    public CheckRevocationListResponseDto check(
+            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
+        log.info("Call of check uvci list with {}.", revocationListDto.getUvcis());
         securityHelper.authorizeUser(request);
 
         if (revocationListDto.getUvcis().size() > 100) {
             throw new RevocationException(INVALID_SIZE_OF_UVCI_LIST);
         }
+        revocationListDto.validateList();
 
-        List<RevocationErrorItem> revocationErrorList = new LinkedList();
-        List<Revocation> revocationList = new LinkedList();
-
-        try {
-            revocationListDto.validateList();
-            for (String uvci : revocationListDto.getUvcis()) {
-                try {
-                    revocationService.checkListRevocation(revocationListDto);
-                    logKpi(uvci);
-                    revocationList.add(new Revocation(uvci)); // TODO what we do with revocationList
-                } catch (Exception revocationException) {
-                    RevocationErrorItem item = new RevocationErrorItem(revocationException.getMessage(), uvci); // maybe the RevocationErrorItem class is an overkill
-                    revocationErrorList.add(item);
-                    if (revocationErrorList.size() > 1) {
-                        throw new Exception("The provided list has too UVCI Errors");
-                    }
-                }
+        List<String> revocationList = new LinkedList<>();
+        String failingUvci = null;
+        RevocationError error = null;
+        for (String uvci : revocationListDto.getUvcis()) {
+            if (!revocationService.doesUvciExist(uvci)) {
+                failingUvci = uvci;
+                error = NON_EXISTING_UVCI;
+                break;
             }
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception validationListException) {
-            throw new RevocationException(INVALID_UVCI_LIST);
+            if (revocationService.isAlreadyRevoked(uvci)) {
+                failingUvci = uvci;
+                error = DUPLICATE_UVCI;
+                break;
+            }
+            try {
+                revocationService.createRevocation(uvci);
+                logKpi(uvci);
+                revocationList.add(uvci);
+            } catch (Exception ex) {
+                log.error(String.format("Create revocation for %s failed.", uvci), ex);
+                failingUvci = uvci;
+                error = ERROR_SAVING_REVOCATION;
+                break;
+            }
+        }
+        if (error != null) {
+            return new CheckRevocationListResponseDto(error, revocationList, failingUvci);
+        } else {
+            return new CheckRevocationListResponseDto(null, revocationList, null);
         }
     }
 
     @PostMapping("/uvcilist/revoke")
     @PreAuthorize("hasAnyRole('bag-cc-superuser')")
-    @ApiResponse(responseCode = "202", description = "REVOKED")
-    public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) throws Exception {
-        log.info("Call of revocate uvci list.");
+    @ApiResponse(responseCode = "201", description = "CREATED")
+    public CheckRevocationListResponseDto create(
+            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) throws Exception {
+        log.info("Call of revoke uvci list with {}.", revocationListDto.getUvcis());
         securityHelper.authorizeUser(request);
 
-        List<RevocationErrorItem> revocationErrorList = new LinkedList<>();
-        List<Revocation> revocationList = new LinkedList<>();
+        if (revocationListDto.getUvcis().size() > 100) {
+            throw new RevocationException(INVALID_SIZE_OF_UVCI_LIST);
+        }
+        revocationListDto.validateList();
 
-        try {
-            revocationListDto.validateList();
-            for (String uvci : revocationListDto.getUvcis()) {
-                try {
-                    revocationService.createListRevocation(revocationListDto);
-                    logKpi(uvci);
-                    revocationList.add(new Revocation(uvci)); // TODO what we do with revocationList
-                } catch (Exception revocationException) {
-                    RevocationErrorItem item = new RevocationErrorItem(revocationException.getMessage(), uvci); // maybe the RevocationErrorItem class is an overkill
-                    revocationErrorList.add(item);
-                    if (revocationErrorList.size() > 1) {
-                        throw new Exception("The provided list has too UVCI Errors");
-                    }
-                }
+        List<String> revocationList = new LinkedList<>();
+        String failingUvci = null;
+        RevocationError error = null;
+        for (String uvci : revocationListDto.getUvcis()) {
+            if (!revocationService.doesUvciExist(uvci)) {
+                failingUvci = uvci;
+                error = NON_EXISTING_UVCI;
+                break;
             }
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception validationListException) {
-            throw new RevocationException(INVALID_UVCI_LIST);
+            if (revocationService.isAlreadyRevoked(uvci)) {
+                failingUvci = uvci;
+                error = DUPLICATE_UVCI;
+                break;
+            }
+            revocationList.add(uvci);
+        }
+        if (error != null) {
+            return new CheckRevocationListResponseDto(error, revocationList, failingUvci);
+        } else {
+            return new CheckRevocationListResponseDto(null, revocationList, null);
         }
     }
 

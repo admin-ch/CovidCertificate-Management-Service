@@ -16,9 +16,8 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
 @AllArgsConstructor
 @Slf4j
 public class RevocationListDto {
-
-    // TODO Initialization
     private static final String REGEX_UVCI = "^urn:uvci:01:CH:[A-Z0-9]{24}$";
+
     private List<String> uvcis;
 
     public void validateList() {
