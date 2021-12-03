@@ -1,11 +1,35 @@
 package ch.admin.bag.covidcertificate.service.document;
 
-import ch.admin.bag.covidcertificate.api.mapper.*;
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.mapper.AntibodyCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.AntibodyCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.Issuable;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
-import ch.admin.bag.covidcertificate.service.domain.*;
+import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificateQrCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,7 +42,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
-import static ch.admin.bag.covidcertificate.TestModelProvider.*;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateCreateDto;
+
 
 class PdfCertificateGenerationServiceIntegrationTest {
 
