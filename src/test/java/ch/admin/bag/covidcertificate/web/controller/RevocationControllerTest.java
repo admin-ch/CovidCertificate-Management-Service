@@ -135,14 +135,13 @@ class RevocationControllerTest {
             var createDto = fixture.create(RevocationListDto.class);
             when(revocationService.doesUvciExist(anyString())).thenReturn(true);
             when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
-            doNothing().when(revocationService).createRevocation(anyString());
 
             mockMvc.perform(post(REVOCATION_LIST_CHECK_URL)
                                     .accept(MediaType.ALL_VALUE)
                                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                                     .header("Authorization", fixture.create(String.class))
                                     .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().isCreated());
+                   .andExpect(status().isAccepted());
 
         }
 
@@ -192,7 +191,7 @@ class RevocationControllerTest {
                                      .contentType(MediaType.APPLICATION_JSON_VALUE)
                                      .header("Authorization", fixture.create(String.class))
                                      .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().isOk()).andReturn().getResponse();
+                    .andExpect(status().isCreated()).andReturn().getResponse();
             String result = response.getContentAsString();
             assertThat(result).isNotNull();
         }

@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,9 +69,10 @@ public class RevocationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/uvcilist/check")
+    @PostMapping("/uvcilist/revoke")
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('bag-cc-superuser')")
-    @ApiResponse(responseCode = "202", description = "CHECKED")
+    @ApiResponse(responseCode = "201", description = "CREATED")
     public CheckRevocationListResponseDto check(
             @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
         log.info("Call of check uvci list with {}.", revocationListDto.getUvcis());
@@ -113,9 +115,10 @@ public class RevocationController {
         }
     }
 
-    @PostMapping("/uvcilist/revoke")
+    @PostMapping("/uvcilist/check")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAnyRole('bag-cc-superuser')")
-    @ApiResponse(responseCode = "201", description = "CREATED")
+    @ApiResponse(responseCode = "202", description = "CHECKED")
     public CheckRevocationListResponseDto create(
             @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) throws Exception {
         log.info("Call of revoke uvci list with {}.", revocationListDto.getUvcis());
