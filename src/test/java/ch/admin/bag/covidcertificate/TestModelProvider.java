@@ -34,7 +34,6 @@ public class TestModelProvider {
         );
     }
 
-
     public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
@@ -91,6 +90,28 @@ public class TestModelProvider {
         );
     }
 
+    public static AntibodyCertificateCreateDto getAntibodyCertificateCreateDto(String language) {
+        return new AntibodyCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getAntibodyCertificateDataDto()),
+                language,
+                null,
+                null,
+                SystemSource.WebUI
+        );
+    }
+
+    public static VaccinationTouristCertificateCreateDto getVaccinationTouristCertificateCreateDto(String medicalProductCode, String language) {
+        return new VaccinationTouristCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getVaccinationTouristCertificateDataDto(medicalProductCode)),
+                language,
+                null,
+                null,
+                SystemSource.WebUI
+        );
+    }
+
     public static RecoveryCertificateDataDto getRecoveryCertificateDataDto() {
         return new RecoveryCertificateDataDto(
                 LocalDate.of(2021, Month.MAY, 2),
@@ -131,6 +152,24 @@ public class TestModelProvider {
                 typeCode,
                 ZonedDateTime.of(LocalDateTime.of(2021, Month.APRIL, 4, 16, 25, 12, 354), SWISS_TIMEZONE),
                 "Test Center",
+                "CH"
+        );
+    }
+
+    public static AntibodyCertificateDataDto getAntibodyCertificateDataDto() {
+        return new AntibodyCertificateDataDto(
+                LocalDate.of(2021, Month.APRIL, 4),
+                "Test Center"
+
+        );
+    }
+
+    public static VaccinationTouristCertificateDataDto getVaccinationTouristCertificateDataDto(String medicalProductCode) {
+        return new VaccinationTouristCertificateDataDto(
+                medicalProductCode,
+                2,
+                2,
+                LocalDate.of(2021, Month.APRIL, 29),
                 "CH"
         );
     }
