@@ -1,0 +1,1 @@
+ALTER TABLE signing_information DROP CONSTRAINT IF EXISTS uq_signing_information_certificate_type_code;
