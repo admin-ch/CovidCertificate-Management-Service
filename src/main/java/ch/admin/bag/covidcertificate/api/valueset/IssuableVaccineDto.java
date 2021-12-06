@@ -31,10 +31,14 @@ public class IssuableVaccineDto {
     @Setter
     private Issuable issuable;
 
-    public IssuableVaccineDto(String productCode, String productDisplay, Issuable issuable) {
+    @Schema(type = "boolean")
+    private boolean touristVaccine;
+
+    public IssuableVaccineDto(String productCode, String productDisplay, Issuable issuable, boolean touristVaccine) {
         this.productCode = productCode;
         this.productDisplay = productDisplay;
         this.issuable = issuable;
+        this.touristVaccine = touristVaccine;
     }
 
     public void addProphylaxisInfo(Prophylaxis prophylaxis) {

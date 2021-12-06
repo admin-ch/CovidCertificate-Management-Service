@@ -47,7 +47,7 @@ class SigningInformationCacheServiceTest {
 
             signingInformationCacheService.findSigningInformation(certificateType, validAt);
 
-            verify(signingInformationRepository).findSigningInformation(eq(certificateType), eq(validAt));
+            verify(signingInformationRepository).findSigningInformation(certificateType, validAt);
         }
 
         @Test

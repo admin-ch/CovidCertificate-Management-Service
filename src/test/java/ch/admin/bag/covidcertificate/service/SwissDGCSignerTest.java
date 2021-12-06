@@ -1,6 +1,9 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import com.flextrade.jfixture.JFixture;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +15,9 @@ import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,26 +30,53 @@ class SwissDGCSignerTest {
     @InjectMocks
     private SwissDGCSigner swissDGCSigner;
 
-    @Test
-    void whenSign_thenOk() {
-        // given
-        byte[] dgcCBOR = fixture.create(byte[].class);
-        when(coseService.getCOSESign1(any(byte[].class), any())).thenReturn(dgcCBOR);
-        // when
-        byte[] result = swissDGCSigner.sign(fixture.create(byte[].class), Instant.now());
-        // then
-        assertEquals(dgcCBOR, result);
+    @BeforeEach
+    private void init(){
+        lenient().when(coseService.getCOSESign1(any(), any(), any())).thenReturn(fixture.create(byte[].class));
     }
 
-    @Test
-    void whenGetSignerExpiration_thenThrowsUnsupportedOperationException() {
-        // when then
-        assertThrows(UnsupportedOperationException.class, () -> swissDGCSigner.getSignerExpiration());
+    @Nested
+    class Sign{
+        @Test
+        void callsCoseServiceWithCorrectCbor() {
+            var dgcCBOR = fixture.create(byte[].class);
+            swissDGCSigner.sign(dgcCBOR, fixture.create(SigningInformation.class), fixture.create(Instant.class));
+            verify(coseService).getCOSESign1(eq(dgcCBOR), any(), any());
+        }
+
+        @Test
+        void callsCoseServiceWithCorrectSigningInformation() {
+            var signingInformation = fixture.create(SigningInformation.class);
+            byte[] result = swissDGCSigner.sign(fixture.create(byte[].class), signingInformation, fixture.create(Instant.class));
+            verify(coseService).getCOSESign1(any(), eq(signingInformation), any());
+        }
+
+        @Test
+        void callsCoseServiceWithCorrectExpirationInstant() {
+            var expirationInstant = fixture.create(Instant.class);
+            byte[] result = swissDGCSigner.sign(fixture.create(byte[].class), fixture.create(SigningInformation.class), expirationInstant);
+            verify(coseService).getCOSESign1(any(), any(), eq(expirationInstant));
+        }
+
+        @Test
+        void returnsCoseObject() {
+            var dgcCBOR = fixture.create(byte[].class);
+            when(coseService.getCOSESign1(any(byte[].class), any(), any(Instant.class))).thenReturn(dgcCBOR);
+
+            var result = swissDGCSigner.sign(fixture.create(byte[].class), Instant.now());
+
+            assertEquals(dgcCBOR, result);
+        }
+
+        @Test
+        void whenGetSignerExpiration_thenThrowsUnsupportedOperationException() {
+            assertThrows(UnsupportedOperationException.class, () -> swissDGCSigner.getSignerExpiration());
+        }
+
+        @Test
+        void whenGetSignerCountry_thenThrowsUnsupportedOperationException() {
+            assertThrows(UnsupportedOperationException.class, () -> swissDGCSigner.getSignerCountry());
+        }
     }
 
-    @Test
-    void whenGetSignerCountry_thenThrowsUnsupportedOperationException() {
-        // when then
-        assertThrows(UnsupportedOperationException.class, () -> swissDGCSigner.getSignerCountry());
-    }
 }

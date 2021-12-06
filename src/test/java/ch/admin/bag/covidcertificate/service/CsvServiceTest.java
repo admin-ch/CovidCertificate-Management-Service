@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CsvServiceTest {
+class CsvServiceTest {
     @InjectMocks
     private CsvService service;
 
@@ -70,7 +70,7 @@ public class CsvServiceTest {
     }
 
     @BeforeEach
-    public void setUp() throws IOException {
+    void setUp() throws IOException {
         lenient().when(valueSetsService.getCountryCode(anyString(), anyString())).thenReturn(fixture.create(CountryCode.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(TestCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
@@ -79,7 +79,7 @@ public class CsvServiceTest {
     }
 
     @Test
-    public void testInvalidCertificateType() {
+    void testInvalidCertificateType() {
         var file = Mockito.mock(MultipartFile.class);
         var exception = assertThrows(CreateCertificateException.class,
                 () -> service.handleCsvRequest(file, "blub"));
@@ -87,19 +87,20 @@ public class CsvServiceTest {
     }
 
     @Test
-    public void testEmptyCsv() throws Exception {
+    void testEmptyCsv() throws Exception {
         var file = Mockito.mock(MultipartFile.class);
         var inputStream = new FileInputStream(emptyCsv);
         var inputStream2 = new FileInputStream(emptyCsv);
         var inputStream3 = new FileInputStream(emptyCsv);
         when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
+        var recoveryName = CertificateType.recovery.name();
         var exception = assertThrows(CreateCertificateException.class,
-                () -> service.handleCsvRequest(file, CertificateType.recovery.name()));
+                () -> service.handleCsvRequest(file, recoveryName));
         assertEquals(INVALID_CSV_SIZE, exception.getError());
     }
 
     @Test
-    public void testInvalidCsv() throws Exception {
+    void testInvalidCsv() throws Exception {
         var file = Mockito.mock(MultipartFile.class);
         var inputStream = new FileInputStream(invalidCsv);
         var inputStream2 = new FileInputStream(invalidCsv);
@@ -111,14 +112,15 @@ public class CsvServiceTest {
     }
 
     @Test
-    public void testMultipleInvalidCsv() throws Exception {
+    void testMultipleInvalidCsv() throws Exception {
         var file = Mockito.mock(MultipartFile.class);
         var inputStream = new FileInputStream(invalidMultipleCsv);
         var inputStream2 = new FileInputStream(invalidMultipleCsv);
         var inputStream3 = new FileInputStream(invalidMultipleCsv);
         when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
+        var vaccinationNamme = CertificateType.vaccination.name();
         var exception = assertThrows(CsvException.class,
-                () -> service.handleCsvRequest(file, CertificateType.vaccination.name()));
+                () -> service.handleCsvRequest(file, vaccinationNamme));
         assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
     }
 
@@ -216,8 +218,9 @@ public class CsvServiceTest {
             var inputStream2 = new FileInputStream(invalidTestFile);
             var inputStream3 = new FileInputStream(invalidTestFile);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
+            var testName = CertificateType.test.name();
             var exception = assertThrows(CsvException.class,
-                    () -> service.handleCsvRequest(file, CertificateType.test.name()));
+                    () -> service.handleCsvRequest(file, testName));
             assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
         }
 

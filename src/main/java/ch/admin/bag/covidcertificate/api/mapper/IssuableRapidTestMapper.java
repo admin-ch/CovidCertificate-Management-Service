@@ -6,6 +6,7 @@ import ch.admin.bag.covidcertificate.domain.RapidTest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,7 @@ public class IssuableRapidTestMapper {
 
     public static List<IssuableTestDto> fromRapidTests(List<RapidTest> rapidTests) {
         if(rapidTests == null) {
-            return null;
+            return Collections.emptyList();
         }
         return rapidTests.stream().map(IssuableRapidTestMapper::fromRapidTest).collect(Collectors.toList());
     }

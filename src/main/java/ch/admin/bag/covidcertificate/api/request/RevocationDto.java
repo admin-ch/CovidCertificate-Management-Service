@@ -19,7 +19,7 @@ public class RevocationDto {
     private String uvci;
 
     public void validate() {
-        if (!uvci.matches(REGEX_UVCI)) {
+        if (uvci == null || !uvci.matches(REGEX_UVCI)) {
             log.info("Validate revocation for {} failed.", uvci);
             throw new RevocationException(INVALID_UVCI);
         }

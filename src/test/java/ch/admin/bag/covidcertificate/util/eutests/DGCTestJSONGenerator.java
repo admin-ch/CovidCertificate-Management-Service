@@ -5,11 +5,7 @@ import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.Result;
+import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.upokecenter.cbor.CBORObject;
@@ -39,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 @Ignore("Util for automated JSON file generation for EU tests.")
 @Disabled("Util for automated JSON file generation for EU tests.")
 @ExtendWith(MockitoExtension.class)
-public class DGCTestJSONGenerator {
+class DGCTestJSONGenerator {
     private static final String PATH = "target/dgc-testdata/";
     private static final String PNG = ".png";
     private static final String JSON = ".json";
@@ -54,7 +50,7 @@ public class DGCTestJSONGenerator {
     private static final String IDENTIFIER_RECOVERY = "\"r\":";
 
     @Test
-    public void createJSONFiles() {
+    void createJSONFiles() {
         assertDoesNotThrow(() -> {
             for (String qrCodeFilename : Objects.requireNonNull(new File(PATH).list())) {
                 if (qrCodeFilename.endsWith(PNG)) {

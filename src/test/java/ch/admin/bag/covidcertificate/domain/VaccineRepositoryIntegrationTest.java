@@ -51,7 +51,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         // when
         List<Vaccine> result = vaccineRepository.findAllGatewayApiActive();
         // then
@@ -79,7 +84,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0002",
                        "Test not active",
                        false,
@@ -93,7 +103,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
 
         persistVaccine("EU/1/20/0003",
                        "Test not active",
@@ -108,7 +123,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
 
         persistVaccine("EU/1/20/0004",
                        "Test not active",
@@ -123,7 +143,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
 
         // when
         List<Vaccine> result = vaccineRepository.findAllGatewayApiActive();
@@ -148,7 +173,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        false,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0006",
                        "Test active",
                        true,
@@ -162,7 +192,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0007",
                        "Test active",
                        true,
@@ -176,7 +211,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        false,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0008",
                        "Test active",
                        true,
@@ -190,7 +230,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        false,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         // when
         List<Vaccine> result = vaccineRepository.findAllGatewayApiActive();
         // then
@@ -219,7 +264,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         // when
         List<Vaccine> result = vaccineRepository.findAll();
         // then
@@ -246,7 +296,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0002",
                        "Test not active 02",
                        false,
@@ -260,7 +315,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0003",
                        "Test not active 03",
                        false,
@@ -274,7 +334,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0004",
                        "Test not active 04",
                        false,
@@ -288,7 +353,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         // when
         List<Vaccine> result = vaccineRepository.findAll();
         // then
@@ -332,7 +402,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0006",
                        "Test active 06",
                        true,
@@ -346,7 +421,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0007",
                        "Test active 07",
                        true,
@@ -360,7 +440,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/0008",
                        "Test active 08",
                        true,
@@ -374,7 +459,12 @@ class VaccineRepositoryIntegrationTest {
                        200,
                        false,
                        true,
-                       false);
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         // when
         List<Vaccine> result = vaccineRepository.findAll();
         // then
@@ -406,62 +496,82 @@ class VaccineRepositoryIntegrationTest {
     void findAllWebUiActive_ok_in_correct_order() {
         // given
         persistVaccine("Covishield",
-                "Covishield (ChAdOx1_nCoV-19)",
-                true,
-                true,
-                "1119349007",
-                "SARS-CoV-2 mRNA vaccine",
-                true,
-                "ORG-100030215",
-                "Biontech Manufacturing GmbH",
-                true,
-                50,
-                true,
-                false,
-                true);
+                       "Covishield (ChAdOx1_nCoV-19)",
+                       true,
+                       true,
+                       "1119349007",
+                       "SARS-CoV-2 mRNA vaccine",
+                       true,
+                       "ORG-100030215",
+                       "Biontech Manufacturing GmbH",
+                       true,
+                       50,
+                       true,
+                       false,
+                       true,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/1528",
-                "Comirnaty",
-                true,
-                true,
-                "1119349007",
-                "SARS-CoV-2 mRNA vaccine",
-                true,
-                "ORG-100030215",
-                "Biontech Manufacturing GmbH",
-                true,
-                10,
-                true,
-                false,
-                false);
+                       "Comirnaty",
+                       true,
+                       true,
+                       "1119349007",
+                       "SARS-CoV-2 mRNA vaccine",
+                       true,
+                       "ORG-100030215",
+                       "Biontech Manufacturing GmbH",
+                       true,
+                       10,
+                       true,
+                       false,
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         persistVaccine("EU/1/20/1507",
-                "Spikevax (previously COVID-19 Vaccine Moderna)",
-                true,
-                true,
-                "1119349007",
-                "SARS-CoV-2 mRNA vaccine",
-                true,
-                "ORG-100030215",
-                "Biontech Manufacturing GmbH",
-                true,
-                20,
-                true,
-                false,
-                false);
+                       "Spikevax (previously COVID-19 Vaccine Moderna)",
+                       true,
+                       true,
+                       "1119349007",
+                       "SARS-CoV-2 mRNA vaccine",
+                       true,
+                       "ORG-100030215",
+                       "Biontech Manufacturing GmbH",
+                       true,
+                       20,
+                       true,
+                       false,
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
 
         persistVaccine("EU/1/20/1528",
-                "Sputnik-V",
-                true,
-                false,
-                "1119349007",
-                "SARS-CoV-2 mRNA vaccine",
-                true,
-                "ORG-100030215",
-                "Biontech Manufacturing GmbH",
-                true,
-                200,
-                false,
-                false,
-                false);
+                       "Sputnik-V",
+                       true,
+                       false,
+                       "1119349007",
+                       "SARS-CoV-2 mRNA vaccine",
+                       true,
+                       "ORG-100030215",
+                       "Biontech Manufacturing GmbH",
+                       true,
+                       200,
+                       false,
+                       false,
+                       false,
+                       false,
+                       false,
+                       false,
+                       null
+        );
         // when
         List<Vaccine> result = vaccineRepository.findAllWebUiActive();
         List<Integer> uiOrder = result.stream().map(Vaccine::getVaccineOrder).collect(Collectors.toList());
@@ -490,7 +600,12 @@ class VaccineRepositoryIntegrationTest {
             int vaccineOrder,
             boolean webUiSelectable,
             boolean apiGatewaySelectable,
-            boolean apiPlatformSelectable) {
+            boolean apiPlatformSelectable,
+            boolean swissMedic,
+            boolean emea,
+            boolean whoEul,
+            String analogVaccine
+    ) {
 
         Vaccine vaccine = new Vaccine(
                 code,
@@ -501,7 +616,12 @@ class VaccineRepositoryIntegrationTest {
                 vaccineOrder,
                 webUiSelectable,
                 apiGatewaySelectable,
-                apiPlatformSelectable);
+                apiPlatformSelectable,
+                swissMedic,
+                emea,
+                whoEul,
+                analogVaccine
+        );
         Prophylaxis prophylaxis = new Prophylaxis(
                 prophylaxisCode,
                 prophylaxisDisplayName,

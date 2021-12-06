@@ -8,6 +8,8 @@ import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Service;
 import se.digg.dgc.signatures.cwt.support.CBORInstantConverter;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 public class CBORService {
@@ -40,7 +42,7 @@ public class CBORService {
         return protectedHeaderMap.EncodeToBytes();
     }
 
-    public byte[] getPayload(byte[] hcert) {
+    public byte[] getPayload(byte[] hcert, Instant expiredAt) {
         if (hcert == null || hcert.length == 0) {
             throw new IllegalArgumentException("Hcert must not be empty.");
         }
@@ -48,7 +50,7 @@ public class CBORService {
         CBORObject cborObject = CBORObject.NewMap();
         cborObject.Add(ISS_CLAIM_KEY, CBORObject.FromObject(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND));
         cborObject.set(IAT_CLAIM_KEY, instantConverter.ToCBORObject(coseTime.getIssuedAt()));
-        cborObject.set(EXP_CLAIM_KEY, instantConverter.ToCBORObject(coseTime.getExpiration()));
+        cborObject.set(EXP_CLAIM_KEY, instantConverter.ToCBORObject(expiredAt));
         CBORObject hcertMap = CBORObject.NewMap();
         hcertMap.set(HCERT_INNER_CLAIM_KEY, CBORObject.DecodeFromBytes(hcert));
         cborObject.Add(HCERT_CLAIM_KEY, hcertMap);

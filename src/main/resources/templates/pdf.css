@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     padding: 0;
-    margin: 0;
+    margin: 0 0 0 40px;
 }
 
 .two-col-table {
@@ -16,14 +16,14 @@ body {
 }
 
 .two-col-table .first-col {
-    width: 43%;
-    max-width: 43%;
-    padding-right: 4%;
+    width: 42%;
+    max-width: 42%;
 }
 
 .two-col-table .second-col {
-    width: 53%;
-    max-width: 53%;
+    width: 52%;
+    max-width: 52%;
+    padding-left: 8px;
 }
 
 .heading, .body-text, .body-text-en, .body-text-small, .body-text-small-en {
@@ -85,6 +85,7 @@ body {
 #logo-bund {
     width: 210px;
     padding-top: 8px;
+    margin-left: -40px;
 }
 
 #title {
@@ -108,14 +109,15 @@ body {
 }
 
 #qr-code {
-    width: 300px;
-    height: 300px;
-    margin-bottom: 0;
-    margin-left: -10px;
+    width: 285px;
+    height: 285px;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    margin-left: -3px;
 }
 
 #health-data-header-row, #personal-data-header-row {
-    padding-top: 12px;
+    padding-top: 20px;
     padding-bottom: 16px;
 }
 
@@ -188,4 +190,24 @@ sub, sup {
 
 sup {
     top: -0.5em;
+}
+
+.ch-only-section {
+    border: 0.5px solid rgb(220, 0, 24);
+    border-radius: 7px;
+    vertical-align: middle;
+    padding: 16px;
+}
+
+#issuer-section, #chOnlyMessage-section {
+    width: 50%;
+}
+
+.red {
+    color: rgb(220, 0, 24);
+}
+
+.red-bold {
+    color: rgb(220, 0, 24);
+    font-weight: 600;
 }

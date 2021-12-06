@@ -18,76 +18,76 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TestCertificateQrCodeMapperTest {
+class TestCertificateQrCodeMapperTest {
 
     private final JFixture fixture = new JFixture();
     private TestCertificateCreateDto incoming;
     private IssuableTestDto testValueSet;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         customizeTestValueSet(fixture);
         incoming = fixture.create(TestCertificateCreateDto.class);
         testValueSet = fixture.create(IssuableTestDto.class);
     }
 
     @Test
-    public void mapsFamilyName() {
+    void mapsFamilyName() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
         assertEquals(incoming.getPersonData().getName().getFamilyName(), actual.getPersonData().getName().getFamilyName());
     }
 
     @Test
-    public void mapsGivenName() {
+    void mapsGivenName() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
         assertEquals(incoming.getPersonData().getName().getGivenName(), actual.getPersonData().getName().getGivenName());
     }
 
     @Test
-    public void mapsDateOfBirth() {
+    void mapsDateOfBirth() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
         assertEquals(incoming.getPersonData().getDateOfBirth(), actual.getPersonData().getDateOfBirth());
     }
 
     @Test
-    public void mapsTypeOfTest() {
+    void mapsTypeOfTest() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
         assertEquals(testValueSet.getTestType().typeCode, actual.getTestInfo().get(0).getTypeOfTest());
     }
 
     @Test
-    public void mapsSampleDateTime() {
+    void mapsSampleDateTime() {
         ZonedDateTime sampleDateTime = ZonedDateTime.of(LocalDateTime.of(2021, Month.APRIL, 4, 16, 25, 12), SWISS_TIMEZONE);
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(getTestCertificateCreateDto("", "", "de"), testValueSet);
         assertEquals(sampleDateTime, actual.getTestInfo().get(0).getSampleDateTime());
     }
 
     @Test
-    public void mapsTestingCentreOrFacility() {
+    void mapsTestingCentreOrFacility() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
         assertEquals(incoming.getTestInfo().get(0).getTestingCentreOrFacility(), actual.getTestInfo().get(0).getTestingCentreOrFacility());
     }
 
     @Test
-    public void mapsMemberStateOfTest() {
+    void mapsMemberStateOfTest() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
         assertEquals(incoming.getTestInfo().get(0).getMemberStateOfTest(), actual.getTestInfo().get(0).getMemberStateOfTest());
     }
 
     @Test
-    public void mapsVersion() {
+    void mapsVersion() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
         assertEquals(VERSION, actual.getVersion());
     }
 
     @Test
-    public void mapsIssuer() {
+    void mapsIssuer() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
         assertEquals(ISSUER, actual.getTestInfo().get(0).getIssuer());
     }
 
     @Test
-    public void mapsIdentifier() {
+    void mapsIdentifier() {
         TestCertificateQrCode actual = TestCertificateQrCodeMapper.toTestCertificateQrCode(incoming, testValueSet);
         assertNotNull(actual.getTestInfo().get(0).getIdentifier());
     }

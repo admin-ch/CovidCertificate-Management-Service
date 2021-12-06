@@ -23,7 +23,8 @@ public class ZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
         } catch(Exception e) {
             try {
                 String dateAsString = jsonparser.getText();
-                return ZonedDateTime.parse(dateAsString);
+                var test = ZonedDateTime.parse(dateAsString);
+                return test;
             } catch (DateTimeParseException dateTimeParseException) {
                 String origin = jsonparser.getParsingContext().getCurrentValue().getClass().getSimpleName();
                 if (testCertificate.equals(origin)) {

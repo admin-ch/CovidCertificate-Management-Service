@@ -20,7 +20,6 @@ public class TestCertificatePdfGenerateRequestDtoMapper {
             String memberStateOfTestEn
     ) {
         var diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
-        // @Todo update type of test and manufacturer
         return new TestCertificatePdf(
                 testCertificateCreateDto.getDecodedCert().getPersonData().getName().getFamilyName(),
                 testCertificateCreateDto.getDecodedCert().getPersonData().getName().getGivenName(),

@@ -11,6 +11,7 @@ import se.digg.dgc.encoding.BarcodeException;
 
 import java.io.IOException;
 import java.security.SignatureException;
+import java.time.Instant;
 
 import static ch.admin.bag.covidcertificate.api.Constants.CREATE_BARCODE_FAILED;
 
@@ -21,9 +22,9 @@ public class BarcodeService {
 
     private final SwissDGCBarcodeEncoder dgcBarcodeEncoder;
 
-    public Barcode createBarcode(String dgcJSON, SigningInformation signingInformation) {
+    public Barcode createBarcode(String dgcJSON, SigningInformation signingInformation, Instant expiredAt) {
         try {
-            return dgcBarcodeEncoder.encodeToBarcode(CBORObject.FromJSONString(dgcJSON).EncodeToBytes(), signingInformation);
+            return dgcBarcodeEncoder.encodeToBarcode(CBORObject.FromJSONString(dgcJSON).EncodeToBytes(), signingInformation, expiredAt);
         } catch (BarcodeException | IOException | SignatureException e) {
             throw new CreateCertificateException(CREATE_BARCODE_FAILED);
         }

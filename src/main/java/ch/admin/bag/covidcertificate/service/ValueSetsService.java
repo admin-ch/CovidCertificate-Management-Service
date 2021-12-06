@@ -1,12 +1,14 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.exception.ValueSetException;
 import ch.admin.bag.covidcertificate.api.mapper.IssuableRapidTestMapper;
 import ch.admin.bag.covidcertificate.api.mapper.IssuableVaccineMapper;
 import ch.admin.bag.covidcertificate.api.mapper.RapidTestMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccineMapper;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
+import ch.admin.bag.covidcertificate.api.valueset.CountryCodes;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestDto;
@@ -32,6 +34,7 @@ import java.util.Objects;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEDICINAL_PRODUCT;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.UNSUPPORTED_LANGUAGE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.EN;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
@@ -52,6 +55,8 @@ public class ValueSetsService {
     private static final String API_PLATFORM_ISSUABLE_VACCINE_CACHE_NAME = "apiPlatformIssuableVaccines";
     private static final String RAPID_TEST_CACHE_NAME = "rapidTests";
     private static final String ISSUABLE_TEST_CACHE_NAME = "issuableTests";
+    private static final String COUNTRY_CODES_CACHE_NAME = "countryCodes";
+    private static final String COUNTRY_CODES_FOR_LANGUAGE_CACHE_NAME = "countryCodesForLanguage";
 
     private final CountryCodesLoader countryCodesLoader;
     private final VaccineRepository vaccineRepository;
@@ -85,6 +90,12 @@ public class ValueSetsService {
     @Cacheable(ISSUABLE_TEST_DTO_CACHE_NAME)
     public IssuableTestDto getIssuableTestDto(TestCertificateDataDto testCertificateDataDto) {
         return getRapidTestDto(this.getIssuableRapidTests(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
+    }
+
+    @Cacheable(COUNTRY_CODES_CACHE_NAME)
+    public CountryCodes getCountryCodes() {
+        log.info("Loading country codes");
+        return countryCodesLoader.getCountryCodes();
     }
 
     private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
@@ -126,10 +137,12 @@ public class ValueSetsService {
                 .orElse(null);
     }
 
-    private List<CountryCode> getCountryCodesForLanguage(String language) {
+    @Cacheable(COUNTRY_CODES_FOR_LANGUAGE_CACHE_NAME)
+    public List<CountryCode> getCountryCodesForLanguage(String language) {
+        log.info("Loading country codes for language");
         var countryCodes = countryCodesLoader.getCountryCodes();
         List<CountryCode> result = Collections.emptyList();
-        switch (language) {
+        switch (language.toLowerCase()) {
             case DE:
                 result = countryCodes.getDe();
                 break;
@@ -146,7 +159,7 @@ public class ValueSetsService {
                 result = countryCodes.getEn();
                 break;
             default:
-                break;
+                throw new ValueSetException(UNSUPPORTED_LANGUAGE);
         }
         return result;
     }
@@ -239,6 +252,18 @@ public class ValueSetsService {
     @CacheEvict(value = ISSUABLE_TEST_DTO_CACHE_NAME, allEntries = true)
     public void cleanIssuableTestDtoCache() {
         log.info("Cleaning cache of issuable test dto");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = COUNTRY_CODES_CACHE_NAME, allEntries = true)
+    public void cleanCountryCodesCache() {
+        log.info("Cleaning cache of country codes");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = COUNTRY_CODES_FOR_LANGUAGE_CACHE_NAME, allEntries = true)
+    public void cleanCountryCodeByLanguageCache() {
+        log.info("Cleaning cache of country code by language list");
     }
 
 }

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
-public class RevocationRepositoryIntegrationTest {
+class RevocationRepositoryIntegrationTest {
     @Autowired
     private RevocationRepository revocationRepository;
     @PersistenceContext

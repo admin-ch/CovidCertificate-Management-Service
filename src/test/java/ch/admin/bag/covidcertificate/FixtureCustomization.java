@@ -17,10 +17,16 @@ import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.domain.RapidTest;
 import ch.admin.bag.covidcertificate.domain.Vaccine;
+import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
 import com.flextrade.jfixture.JFixture;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
@@ -31,7 +37,7 @@ public class FixtureCustomization {
                 fixture.create(String.class), fixture.create(String.class),
                 fixture.create(String.class), fixture.create(String.class),
                 fixture.create(String.class), fixture.create(String.class),
-                fixture.create(Issuable.class)
+                fixture.create(Issuable.class), fixture.create(Boolean.class)
         ));
     }
 
@@ -144,6 +150,51 @@ public class FixtureCustomization {
             var covidCertificateCreateResponseDto = helperFixture.create(CovidCertificateCreateResponseDto.class);
             ReflectionTestUtils.setField(covidCertificateCreateResponseDto, "appDeliveryError", null);
             return covidCertificateCreateResponseDto;
+        });
+    }
+
+    public static void customizeVaccinationCertificatePdf(JFixture fixture) {
+        fixture.customise().lazyInstance(VaccinationCertificatePdf.class, () -> {
+            var helperFixture = new JFixture();
+            var pdf = helperFixture.create(VaccinationCertificatePdf.class);
+            ReflectionTestUtils.setField(pdf, "dateOfBirth", LocalDate.now().minusYears(5).toString());
+            return pdf;
+        });
+    }
+
+    public static void customizeTestCertificatePdf(JFixture fixture) {
+        fixture.customise().lazyInstance(TestCertificatePdf.class, () -> {
+            var helperFixture = new JFixture();
+            var pdf = helperFixture.create(TestCertificatePdf.class);
+            ReflectionTestUtils.setField(pdf, "dateOfBirth", LocalDate.now().minusYears(5).toString());
+            return pdf;
+        });
+    }
+
+    public static void customizeRecoveryCertificatePdf(JFixture fixture) {
+        fixture.customise().lazyInstance(RecoveryCertificatePdf.class, () -> {
+            var helperFixture = new JFixture();
+            var pdf = helperFixture.create(RecoveryCertificatePdf.class);
+            ReflectionTestUtils.setField(pdf, "dateOfBirth", LocalDate.now().minusYears(5).toString());
+            return pdf;
+        });
+    }
+
+    public static void customizeAntibodyCertificatePdf(JFixture fixture) {
+        fixture.customise().lazyInstance(AntibodyCertificatePdf.class, () -> {
+            var helperFixture = new JFixture();
+            var pdf = helperFixture.create(AntibodyCertificatePdf.class);
+            ReflectionTestUtils.setField(pdf, "dateOfBirth", LocalDate.now().minusYears(5).toString());
+            return pdf;
+        });
+    }
+
+    public static void customizeVaccinationTouristCertificatePdf(JFixture fixture) {
+        fixture.customise().lazyInstance(VaccinationTouristCertificatePdf.class, () -> {
+            var helperFixture = new JFixture();
+            var pdf = helperFixture.create(VaccinationTouristCertificatePdf.class);
+            ReflectionTestUtils.setField(pdf, "dateOfBirth", LocalDate.now().minusYears(5).toString());
+            return pdf;
         });
     }
 }

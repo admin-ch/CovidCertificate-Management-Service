@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.RevocationError;
+import ch.admin.bag.covidcertificate.api.exception.ValueSetError;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class Constants {
 
     // KPI Logs constants
     public static final String KPI_TYPE_VACCINATION = "v";
+    public static final String KPI_TYPE_VACCINATION_TOURIST = "vt";
     public static final String KPI_TYPE_TEST = "t";
     public static final String KPI_TYPE_RECOVERY = "r";
     public static final String KPI_TYPE_ANTIBODY = "a";
@@ -77,6 +79,7 @@ public class Constants {
     public static final CreateCertificateError INVALID_PRINT_FOR_TEST = new CreateCertificateError(488, "Print is not available for test certificates", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_DATE_OF_BIRTH_IN_FUTURE = new CreateCertificateError(489, "Invalid dateOfBirth! Date cannot be in the future", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_ANTIBODY_DATA = new CreateCertificateError(490, "No antibody data specified", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_ANTIBODY_SAMPLE_DATE_TIME = new CreateCertificateError(491, "Date of sample collection must not be before 16.11.2021", HttpStatus.BAD_REQUEST);
 
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
@@ -100,4 +103,13 @@ public class Constants {
     public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558, "App delivery failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError SIGNING_CERTIFICATE_MISSING = new CreateCertificateError(559, "No signing certificate was found.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError AMBIGUOUS_SIGNING_CERTIFICATE = new CreateCertificateError(560, "Ambiguous signing certificate. Multiple signing certificates were found.", HttpStatus.INTERNAL_SERVER_ERROR);
+
+    public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language does not match any of the supported languages: de, it, fr, rm, en!", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError CREATE_PDF_FAILED = new CreateCertificateError(561, "Creating PDF failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_UVCI_FAILED = new CreateCertificateError(562, "Creating UVCI failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    // TODO:mofobo: check with UBIQUE if the got the same specification
+    public static final String VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX = "_T";
+
+    public static final Integer EXPIRATION_PERIOD_24_MONTHS = 24;
+    public static final Integer EXPIRATION_PERIOD_30_DAYS = 30;
 }

@@ -39,4 +39,10 @@ public class TestCertificateCreateDto extends CertificateCreateDto {
             testInfo.forEach(TestCertificateDataDto::validate);
         }
     }
+
+    @Override
+    public boolean isDeliverablePerPost()
+    {
+        return false;
+    }
 }

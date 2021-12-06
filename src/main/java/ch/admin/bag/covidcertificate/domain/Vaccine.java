@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.request.Issuable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -55,6 +57,14 @@ public class Vaccine {
 
     private boolean apiPlatformSelectable;
 
+    private boolean swissMedic;
+
+    private boolean emea;
+
+    private boolean whoEul;
+
+    private String analogVaccine;
+
     private LocalDateTime modifiedAt;
 
     @ManyToOne
@@ -76,9 +86,12 @@ public class Vaccine {
             int vaccineOrder,
             boolean webUiSelectable,
             boolean apiGatewaySelectable,
-            boolean apiPlatformSelectable
+            boolean apiPlatformSelectable,
+            boolean swissMedic,
+            boolean emea,
+            boolean whoEul,
+            String analogVaccine
     ) {
-
         this.code = code;
         this.display = display;
         this.active = active;
@@ -88,5 +101,21 @@ public class Vaccine {
         this.webUiSelectable = webUiSelectable;
         this.apiGatewaySelectable = apiGatewaySelectable;
         this.apiPlatformSelectable = apiPlatformSelectable;
+        this.swissMedic = swissMedic;
+        this.emea = emea;
+        this.whoEul = whoEul;
+        this.analogVaccine = analogVaccine;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Vaccine) {
+            return Objects.equals(this.code, ((Vaccine) obj).getCode());
+        }
+        return false;
+    }
+
+    public boolean isTouristVaccine() {
+        return isWhoEul() && !isEmea() && !isSwissMedic() && !StringUtils.hasText(getAnalogVaccine());
     }
 }
