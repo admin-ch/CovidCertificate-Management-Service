@@ -122,7 +122,7 @@ class PdfCertificateGenerationServiceIntegrationTest {
 
     private void generateDocument_test(String language, String familyName, String givenName) throws Exception {
         TestCertificateCreateDto createDto = getTestCertificateCreateDto("test", "test", language);
-        IssuableTestDto testValueSet = new IssuableTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", TestType.RAPID_TEST);
+        IssuableTestDto testValueSet = new IssuableTestDto("1341", "Qingdao Hightop Biotech Co., Ltd, SARS-CoV-2 Antigen Rapid Test (Immunochromatography)", TestType.RAPID_TEST, null);
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
         ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
         String country = "Schweiz";
