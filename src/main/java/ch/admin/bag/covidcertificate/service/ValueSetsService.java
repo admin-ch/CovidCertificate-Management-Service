@@ -100,7 +100,7 @@ public class ValueSetsService {
 
     private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
         if (validPCRTest(testTypeCode, testCode)) {
-            return new IssuableTestDto("", "PCR", TestType.PCR);
+            return new IssuableTestDto("", "PCR", TestType.PCR, null);
         } else if (validRapidTest(testTypeCode, testCode)) {
             var testValueSet = testValueSets
                     .stream()

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class IssuableRapidTestMapper {
 
     public static IssuableTestDto fromRapidTest(RapidTest rapidTest) {
-        return new IssuableTestDto(rapidTest.getCode(), rapidTest.getDisplay(), TestType.RAPID_TEST);
+        return new IssuableTestDto(rapidTest.getCode(), rapidTest.getDisplay(), TestType.RAPID_TEST, rapidTest.getValidUntil());
     }
 
     public static List<IssuableTestDto> fromRapidTests(List<RapidTest> rapidTests) {
