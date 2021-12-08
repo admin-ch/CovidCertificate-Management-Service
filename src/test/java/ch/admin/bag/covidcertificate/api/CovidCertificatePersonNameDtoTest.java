@@ -30,15 +30,7 @@ public class CovidCertificatePersonNameDtoTest {
         assertEquals("Invalid family name! Must not exceed 80 chars and/or not contain any invalid chars", exception.getError().getErrorMessage());
         assertEquals(INVALID_FAMILY_NAME, exception.getError());
     }
-
-    private void assertInvalidMaher(CovidCertificatePersonNameDto covidCertificatePersonNameDto) {
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, covidCertificatePersonNameDto::validate);
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getError().getHttpStatus());
-        assertEquals(459, exception.getError().getErrorCode());
-        assertEquals("Invalid family name! Must not exceed 80 chars and/or not contain any invalid chars", exception.getError().getErrorMessage());
-        assertEquals(INVALID_FAMILY_NAME, exception.getError());
-    }
-
+    
     private void assertInvalidGivenName(CovidCertificatePersonNameDto covidCertificatePersonNameDto) {
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, covidCertificatePersonNameDto::validate);
         assertEquals(HttpStatus.BAD_REQUEST, exception.getError().getHttpStatus());
