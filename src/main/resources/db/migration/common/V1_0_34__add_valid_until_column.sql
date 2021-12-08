@@ -1,0 +1,1 @@
+ALTER TABLE covid_19_lab_test_manufacturer_and_name ADD COLUMN valid_until TIMESTAMP WITH TIME ZONE DEFAULT NULL;

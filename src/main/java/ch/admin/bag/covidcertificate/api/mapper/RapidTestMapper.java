@@ -14,13 +14,14 @@ public class RapidTestMapper {
 
     public static TestDto fromRapidTest(RapidTest rapidTest) {
         return new TestDto(rapidTest.getCode(),
-                           rapidTest.getDisplay(),
-                           null,
-                           rapidTest.isActive());
+                rapidTest.getDisplay(),
+                null,
+                rapidTest.isActive(),
+                rapidTest.getValidUntil());
     }
 
     public static List<TestDto> fromRapidTests(List<RapidTest> rapidTests) {
-        if(rapidTests == null) {
+        if (rapidTests == null) {
             return Collections.emptyList();
         }
         return rapidTests.stream().map(RapidTestMapper::fromRapidTest).collect(Collectors.toList());
