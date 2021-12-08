@@ -32,13 +32,10 @@ cc-management-service:
     prometheus:
       user: "prometheus"
       password: ${vcap.services.cc_prometheus.credentials.password}
-  pdf:
-    show-watermark: false
 
   allowed-origin: "https://www.covidcertificate-d.admin.ch"
-
   rapid-test-import:
-    cron: "0 0 8,10,12,14,16 * * *"
+    cron: "0 0 */1 * * ?" ## Every hour
 
 cc-signing-service:
   url: "https://covidcertificate-signing-d.bag.admin.ch/bag-vaccinecer-webapp/sign"

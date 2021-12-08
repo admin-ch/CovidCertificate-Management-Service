@@ -17,6 +17,6 @@ public class MockValueSetsClient implements ValueSetsClient {
     @Override
     public Map<String, ValueSetDto> getValueSets(String valueSetId) {
         log.info("Call the mock getValueSets service");
-        return Map.of("1", new ValueSetDto("test", true));
+        return Map.of("1", new ValueSetDto("test", true, null));
     }
 }

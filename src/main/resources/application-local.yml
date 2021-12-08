@@ -35,6 +35,8 @@ cc-management-service:
       user: "prometheus"
       password: "{noop}secret"
   allowed-origin: "*"
+  rapid-test-import:
+    cron: "0 * * * * *" ## Every minute
 
 cc-signing-service:
   #When started as spring boot application
