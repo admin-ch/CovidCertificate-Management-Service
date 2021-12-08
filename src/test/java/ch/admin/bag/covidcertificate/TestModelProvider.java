@@ -1,6 +1,19 @@
 package ch.admin.bag.covidcertificate;
 
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,7 +25,8 @@ import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 
 public class TestModelProvider {
 
-    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(String medicalProductCode, String language) {
+    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(
+            String medicalProductCode, String language) {
         return new VaccinationCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
@@ -23,7 +37,8 @@ public class TestModelProvider {
         );
     }
 
-    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(String medicalProductCode, String language, String inAppCode) {
+    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(
+            String medicalProductCode, String language, String inAppCode) {
         return new VaccinationCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
@@ -34,7 +49,8 @@ public class TestModelProvider {
         );
     }
 
-    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language) {
+    public static TestCertificateCreateDto getTestCertificateCreateDto(
+            String typeCode, String manufacturerCode, String language) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
@@ -45,7 +61,8 @@ public class TestModelProvider {
         );
     }
 
-    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language, String inAppCode) {
+    public static TestCertificateCreateDto getTestCertificateCreateDto(
+            String typeCode, String manufacturerCode, String language, String inAppCode) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
@@ -55,18 +72,6 @@ public class TestModelProvider {
                 SystemSource.WebUI
         );
     }
-
-    public static AntibodyCertificateCreateDto getAntibodyCertificateCreateDto(String language) {
-        return new AntibodyCertificateCreateDto(
-                getCovidCertificatePersonDto(),
-                List.of(getAntibodyCertificateDataDto()),
-                language,
-                null,
-                null,
-                SystemSource.WebUI
-        );
-    }
-
 
     public static String getVaccinationCertificateJSONWithInvalidVaccinationDate() {
         return "{\"name\":{\"familyName\":\"2eaf462f-3b6a-4088-9892-fe4461dda8a3\",\"givenName\":\"1c2828d9-9ed3-4f60-b843-4d4b4eec9dc9\"},\"dateOfBirth\":\"0c511a7c-dcc7-42d1-848c-b88159f036a4\",\"language\":\"de\",\"address\":{\"streetAndNr\":\"b8463a54-d9c9-4594-b2df-efafa4926c79\",\"zipCode\":86,\"city\":\"04cab8fc-0beb-4011-8109-e6a0e034c307\",\"cantonCodeSender\":\"3bedd305-9301-48e3-9473-26e8188b01f6\"},\"appCode\":\"DB1E7078-1E31-46FD-8605-F67105907D46\",\"systemSource\":\"ApiGateway\",\"vaccinationInfo\":[{\"medicinalProductCode\":\"7dc3e1c9-9ca9-4180-b407-0741549ba898\",\"numberOfDoses\":4,\"totalNumberOfDoses\":6,\"vaccinationDate\":\"2010--0202\",\"countryOfVaccination\":\"16ebd49a-de13-407b-984e-7e2cb9611dd5\"},{\"medicinalProductCode\":\"8b306ac9-1f87-4b09-9a3c-d38a211f14f8\",\"numberOfDoses\":7,\"totalNumberOfDoses\":8,\"vaccinationDate\":[2021,10,15],\"countryOfVaccination\":\"ea06cb48-e2cc-4a53-9f86-6e7221734728\"},{\"medicinalProductCode\":\"aedecc6e-a6ca-4149-8d72-e0d188f8d66d\",\"numberOfDoses\":7,\"totalNumberOfDoses\":8,\"vaccinationDate\":[2021,10,15],\"countryOfVaccination\":\"dfa035fc-21f0-447b-b8ee-ddcc651c8cd3\"}]}";
@@ -113,7 +118,8 @@ public class TestModelProvider {
         );
     }
 
-    public static VaccinationTouristCertificateCreateDto getVaccinationTouristCertificateCreateDto(String medicalProductCode, String language) {
+    public static VaccinationTouristCertificateCreateDto getVaccinationTouristCertificateCreateDto(
+            String medicalProductCode, String language) {
         return new VaccinationTouristCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationTouristCertificateDataDto(medicalProductCode)),
@@ -155,14 +161,6 @@ public class TestModelProvider {
         );
     }
 
-    public static AntibodyCertificateDataDto getAntibodyCertificateDataDto(
-    ) {
-        return new AntibodyCertificateDataDto(
-                LocalDate.of(2021, Month.APRIL, 4),
-                "Test Center"
-        );
-    }
-
     public static TestCertificateDataDto getTestCertificateDataDto(
             String typeCode,
             String manufacturerCode
@@ -184,7 +182,8 @@ public class TestModelProvider {
         );
     }
 
-    public static VaccinationTouristCertificateDataDto getVaccinationTouristCertificateDataDto(String medicalProductCode) {
+    public static VaccinationTouristCertificateDataDto getVaccinationTouristCertificateDataDto(
+            String medicalProductCode) {
         return new VaccinationTouristCertificateDataDto(
                 medicalProductCode,
                 2,
