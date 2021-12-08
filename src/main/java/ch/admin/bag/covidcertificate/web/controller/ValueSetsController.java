@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.mapper.ValueSetsResponseDtoMapper;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.response.ValueSetsResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCodes;
@@ -66,29 +67,30 @@ public class ValueSetsController {
 
     @GetMapping("/issuable-vaccines")
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<IssuableVaccineDto> getApiIssuableVaccines(HttpServletRequest request) {
-        log.info("Call of getApiIssuableVaccines for value sets");
+    public List<IssuableVaccineDto> getIssuableVaccines(HttpServletRequest request) {
         securityHelper.authorizeUser(request);
 
+        log.info("Call of getIssuableVaccines for value sets with systemSource {}", SystemSource.ApiGateway);
         return valueSetsService.getApiGatewayIssuableVaccines();
     }
 
-    @GetMapping("/api-platform-issuable-vaccines")
+    @GetMapping("/issuable-vaccines/{systemSource}")
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<IssuableVaccineDto> getApiPlatformIssuableVaccines(HttpServletRequest request) {
-        log.info("Call of getApiPlatformIssuableVaccines for value sets");
+    public List<IssuableVaccineDto> getIssuableVaccines(@PathVariable String systemSource, HttpServletRequest request) {
         securityHelper.authorizeUser(request);
 
-        return valueSetsService.getApiPlatformIssuableVaccines();
-    }
-
-    @GetMapping("/web-ui-issuable-vaccines")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<IssuableVaccineDto> getWebUiIssuableVaccines(HttpServletRequest request) {
-        log.info("Call of getWebUiIssuableVaccines for value sets");
-        securityHelper.authorizeUser(request);
-
-        return valueSetsService.getWebUiIssuableVaccines();
+        SystemSource localSystemSource = SystemSource.valueOf(systemSource);
+        log.info("Call of getIssuableVaccines for value sets with systemSource {}", localSystemSource);
+        switch (localSystemSource) {
+            case WebUI:
+                return valueSetsService.getWebUiIssuableVaccines();
+            case CsvUpload:
+            case ApiGateway:
+                return valueSetsService.getApiGatewayIssuableVaccines();
+            case ApiPlatform:
+                return valueSetsService.getApiPlatformIssuableVaccines();
+        }
+        return valueSetsService.getApiGatewayIssuableVaccines();
     }
 
     @GetMapping("/countries")
