@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestValueSet;
@@ -54,7 +55,7 @@ class AntibodyCertificateQrCodeMapperTest {
 
     @Test
     void mapsSampleDateTime() {
-        ZonedDateTime sampleDateTime = ZonedDateTime.of(LocalDateTime.of(2021, Month.APRIL, 4, 0, 0, 0), SWISS_TIMEZONE);
+        ZonedDateTime sampleDateTime = ZonedDateTime.of(LocalDateTime.of(2021, Month.APRIL, 4, 0, 0, 0), ZoneId.systemDefault());
         AntibodyCertificateQrCode actual = AntibodyCertificateQrCodeMapper.toAntibodyCertificateQrCode(getAntibodyCertificateCreateDto("de"));
 //        AntibodyCertificateQrCode actual = AntibodyCertificateQrCodeMapper.toAntibodyCertificateQrCode(incoming);
         assertEquals(sampleDateTime, actual.getAntibodyInfo().get(0).getSampleDateTime());
