@@ -47,9 +47,11 @@ import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
 public class ValueSetsService {
 
     private static final String VALUE_SETS_CACHE_NAME = "valueSets";
+    private static final String EXTENDED_VALUE_SETS_CACHE_NAME = "valueSetsExtended";
     private static final String ISSUABLE_VACCINE_DTO_CACHE_NAME = "issuableVaccineDto";
     private static final String ISSUABLE_TEST_DTO_CACHE_NAME = "issuableTestDto";
     private static final String VACCINE_CACHE_NAME = "vaccines";
+    private static final String ISSUABLE_VACCINE_NAME = "issuableVaccines";
     private static final String API_GATEWAY_ISSUABLE_VACCINE_CACHE_NAME = "apiGatewayIssuableVaccines";
     private static final String WEB_UI_ISSUABLE_VACCINE_CACHE_NAME = "webUiIssuableVaccines";
     private static final String API_PLATFORM_ISSUABLE_VACCINE_CACHE_NAME = "apiPlatformIssuableVaccines";
@@ -68,9 +70,15 @@ public class ValueSetsService {
         return new ValueSetsDto(countryCodes, this.getWebUiIssuableVaccines(), this.getIssuableRapidTests());
     }
 
+    @Cacheable(EXTENDED_VALUE_SETS_CACHE_NAME)
+    public ValueSetsDto getExtendedValueSets() {
+        var countryCodes = countryCodesLoader.getCountryCodes();
+        return new ValueSetsDto(countryCodes, this.getIssuableVaccines(), this.getIssuableRapidTests());
+    }
+
     @Cacheable(ISSUABLE_VACCINE_DTO_CACHE_NAME)
     public IssuableVaccineDto getVaccinationValueSet(String productCode) {
-        var vaccinationValueSet = this.getValueSets()
+        var vaccinationValueSet = this.getExtendedValueSets()
                                       .getVaccinationSets()
                                       .stream()
                                       .filter(valueSet -> valueSet.getProductCode().equalsIgnoreCase(productCode))
@@ -100,7 +108,7 @@ public class ValueSetsService {
 
     private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
         if (validPCRTest(testTypeCode, testCode)) {
-            return new IssuableTestDto("", "PCR", TestType.PCR);
+            return new IssuableTestDto("", "PCR", TestType.PCR, null);
         } else if (validRapidTest(testTypeCode, testCode)) {
             var testValueSet = testValueSets
                     .stream()
@@ -185,6 +193,13 @@ public class ValueSetsService {
         return VaccineMapper.uniqueVaccines(vaccines);
     }
 
+    @Cacheable(ISSUABLE_VACCINE_NAME)
+    public List<IssuableVaccineDto> getIssuableVaccines() {
+        log.info("Loading all issuable vaccines");
+        List<Vaccine> vaccines = this.vaccineRepository.findAll();
+        return IssuableVaccineMapper.fromVaccines(vaccines);
+    }
+
     @Cacheable(API_GATEWAY_ISSUABLE_VACCINE_CACHE_NAME)
     public List<IssuableVaccineDto> getApiGatewayIssuableVaccines() {
         log.info("Loading api gateway issuable vaccines");
@@ -225,6 +240,12 @@ public class ValueSetsService {
     }
 
     @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = ISSUABLE_VACCINE_NAME, allEntries = true)
+    public void cleanIssuableVaccinesCache() {
+        log.info("Cleaning cache of issuable vaccines");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
     @CacheEvict(value = API_GATEWAY_ISSUABLE_VACCINE_CACHE_NAME, allEntries = true)
     public void cleanApiIssuableVaccinesCache() {
         log.info("Cleaning cache of api issuable vaccines");
@@ -240,6 +261,12 @@ public class ValueSetsService {
     @CacheEvict(value = VALUE_SETS_CACHE_NAME, allEntries = true)
     public void cleanValueSetsCache() {
         log.info("Cleaning cache of value sets");
+    }
+
+    @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
+    @CacheEvict(value = EXTENDED_VALUE_SETS_CACHE_NAME, allEntries = true)
+    public void cleanExtendedValueSetsCache() {
+        log.info("Cleaning cache of extended value sets");
     }
 
     @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")

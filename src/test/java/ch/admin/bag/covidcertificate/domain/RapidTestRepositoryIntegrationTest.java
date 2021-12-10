@@ -130,12 +130,12 @@ class RapidTestRepositoryIntegrationTest {
     }
 
     private void persistRapidTest(String code, boolean active, LocalDateTime modifiedAt) {
-        RapidTest rapidTest = new RapidTest(code, "test", active, modifiedAt);
+        RapidTest rapidTest = new RapidTest(code, "test", active, modifiedAt, null);
         entityManager.persist(rapidTest);
     }
 
     private void persistRapidTest(String code, boolean active, LocalDateTime modifiedAt, boolean chIssuable) {
-        RapidTest rapidTest = new RapidTest(code, "test", active, modifiedAt);
+        RapidTest rapidTest = new RapidTest(code, "test", active, modifiedAt, null);
         rapidTest.chIssuable = chIssuable;
         entityManager.persist(rapidTest);
     }

@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Entity
@@ -30,18 +31,22 @@ public class RapidTest {
 
     LocalDateTime modifiedAt;
 
-    public RapidTest(String code, String display, boolean active, LocalDateTime modifiedAt) {
+    ZonedDateTime validUntil;
+
+    public RapidTest(String code, String display, boolean active, LocalDateTime modifiedAt, ZonedDateTime validUntil) {
         this.code = code;
         this.display = display;
         this.active = active;
         this.chIssuable = true;
         this.modifiedAt = modifiedAt;
+        this.validUntil = validUntil;
     }
 
-    public void update(String display, boolean active, LocalDateTime modifiedAt) {
+    public void update(String display, boolean active, LocalDateTime modifiedAt, ZonedDateTime validUntil) {
         this.display = display;
         this.active = active;
         this.modifiedAt = modifiedAt;
+        this.validUntil = validUntil;
     }
 
     public void deactivate(LocalDateTime modifiedAt) {

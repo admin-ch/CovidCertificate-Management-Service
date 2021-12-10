@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,4 +18,6 @@ public class IssuableTestDto {
     private String display;
     @JsonIgnore
     private TestType testType;
+
+    ZonedDateTime validUntil;
 }
