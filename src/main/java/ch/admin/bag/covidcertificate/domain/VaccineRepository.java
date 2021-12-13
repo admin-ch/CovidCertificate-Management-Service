@@ -17,6 +17,7 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "and a.active = true " +
             "and p.active = true " +
             "and v.apiGatewaySelectable = true " +
+            "and CURRENT_TIMESTAMP between v.validFrom and v.validTo " +
             "order by v.display asc")
     List<Vaccine> findAllGatewayApiActive();
 
@@ -25,6 +26,7 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "join Prophylaxis p on p.id = v.prophylaxis.id " +
             "where v.active = true " +
             "and v.webUiSelectable = true " +
+            "and CURRENT_TIMESTAMP between v.validFrom and v.validTo " +
             "order by v.vaccineOrder asc")
     List<Vaccine> findAllWebUiActive();
 
@@ -33,6 +35,7 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "join Prophylaxis p on p.id = v.prophylaxis.id " +
             "where v.active = true " +
             "and v.apiPlatformSelectable = true " +
+            "and CURRENT_TIMESTAMP between v.validFrom and v.validTo " +
             "order by v.display asc")
     List<Vaccine> findAllPlatformApiActive();
 

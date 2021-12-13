@@ -28,9 +28,7 @@ public class Vaccine {
     private UUID id;
 
     private String code;
-
     private String display;
-
     private boolean active;
 
     /**
@@ -52,20 +50,20 @@ public class Vaccine {
     private int vaccineOrder;
 
     private boolean webUiSelectable;
-
     private boolean apiGatewaySelectable;
-
     private boolean apiPlatformSelectable;
 
     private boolean swissMedic;
-
     private boolean emea;
-
     private boolean whoEul;
 
     private String analogVaccine;
 
+    // these attributes are featured on the table
+    // but used only for query/document purposes
     private LocalDateTime modifiedAt;
+    private LocalDateTime validFrom;
+    private LocalDateTime validTo;
 
     @ManyToOne
     @JoinColumn(name = "auth_holder")
