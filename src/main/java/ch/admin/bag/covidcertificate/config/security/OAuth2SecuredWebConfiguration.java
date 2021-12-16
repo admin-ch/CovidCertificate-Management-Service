@@ -6,9 +6,9 @@ import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenti
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.config.security.validation.ContextIssuerJwtValidator;
 import ch.admin.bag.covidcertificate.config.security.validation.JeapJwtDecoderFactory;
-import com.nimbusds.oauth2.sdk.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
