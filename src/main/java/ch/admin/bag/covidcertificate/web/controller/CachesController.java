@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
+import ch.admin.bag.covidcertificate.api.exception.CacheNotFoundException;
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
 import ch.admin.bag.covidcertificate.service.SigningInformationCacheService;
 import ch.admin.bag.covidcertificate.service.ValueSetsService;
@@ -15,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/caches")
@@ -28,35 +28,34 @@ public class CachesController {
     public final ValueSetsService valueSetsService;
 
     /**
-     *
      * Endpoint to either clear all or selected caches.
      *
      * @param only OPTIONAL list or single String seperated by "," of caches
-     * @return Information about how many and which caches have been cleared
      */
     @PostMapping("/clear")
     @PreAuthorize("hasAnyRole('bag-cc-superuser')")
-    public String clear(@RequestParam(required = false) Optional<List<String>> only) {
+    public void clear(@RequestParam(required = false) Optional<List<String>> only) {
         log.info("Call of clear all caches.");
 
-        List<Cache> caches = only
-                .map(cachesArray ->
-                        cachesArray.stream()
-                                .flatMap(cache -> Arrays.stream(cache.split(",")))
-                                .map(String::strip)
-                                .map(String::toUpperCase)
-                                .map(Cache::sneakyValueOf)
-                                .filter(Objects::nonNull)
-                )
-                .orElseGet(() -> Arrays.stream(Cache.values()))
-                .collect(Collectors.toList());
+        try {
+            only
+                    .map(cachesArray ->
+                            cachesArray.stream()
+                                    .flatMap(cache -> Arrays.stream(cache.split(",")))
+                                    .map(String::strip)
+                                    .map(String::toUpperCase)
+                                    .map(Cache::valueOf)
+                    )
+                    .orElseGet(() -> Arrays.stream(Cache.values()))
+                    .forEach(this::cleanCacheFor);
 
-        caches.forEach(this::cleanCacheFor);
-
-
-        String returnInfo = String.format("%d Caches are cleared: %s", caches.size(), caches);
-        log.info(returnInfo);
-        return returnInfo;
+            log.info("Following caches have been reseted: {}",
+                    only.map(Objects::toString)
+                            .orElseGet(() -> Arrays.toString(Cache.values()))
+            );
+        } catch (IllegalArgumentException e) {
+            throw new CacheNotFoundException(e);
+        }
     }
 
 
@@ -108,7 +107,7 @@ public class CachesController {
         }
     }
 
-    private enum Cache {
+    public enum Cache {
         KEYIDENTIFIER,
         SIGNINGINFORMATION,
         RAPIDTESTS,
@@ -122,15 +121,7 @@ public class CachesController {
         ISSUABLEVACCINEDTO,
         ISSUABLETESTDTO,
         COUNTRYCODES,
-        COUNTRYCODEBYLANGUAGE;
+        COUNTRYCODEBYLANGUAGE
 
-
-        private static Cache sneakyValueOf(String name) {
-            try {
-                return Cache.valueOf(name);
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
-        }
     }
 }
