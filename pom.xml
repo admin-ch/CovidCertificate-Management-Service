@@ -17,7 +17,7 @@
 	<properties>
 		<java.version>11</java.version>
 
-		<cc-backend-logging.version>1.0.1</cc-backend-logging.version>
+		<cc-backend-logging.version>1.0.2</cc-backend-logging.version>
 		<com.github.tomakehurst.version>2.16.0</com.github.tomakehurst.version>
 		<com.openhtmltopdf.version>1.0.10</com.openhtmltopdf.version>
 		<com.squareup.okhttp3.version>4.9.3</com.squareup.okhttp3.version>
@@ -39,8 +39,8 @@
 		<spring-cloud-starter-sleuth.version>3.0.4</spring-cloud-starter-sleuth.version>
 		<spring-cloud.version>2020.0.4</spring-cloud.version>
 		<springdoc.version>1.5.13</springdoc.version>
-		<maven.javadoc.skip>true</maven.javadoc.skip>
 
+		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<log4j2.version>2.16.0</log4j2.version>
 
 		<sonar.exclusions>
