@@ -42,7 +42,7 @@ public class KeyPairTestUtil {
                 .keyUse(KeyUse.SIGNATURE)
                 .algorithm(JWSAlgorithm.RS256)
                 .keyID(KEY_ID);
-        return new JWKSet(builder.build()).toJSONObject().toJSONString();
+        return new JWKSet(builder.build()).toString();
     }
 
     private KeyPair getKeyPair() throws NoSuchAlgorithmException {
