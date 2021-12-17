@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.config.security;
 
-import com.nimbusds.oauth2.sdk.util.StringUtils;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Configuration properties to configure the authorization server that the OAuth2 resource server will accept tokens from.
