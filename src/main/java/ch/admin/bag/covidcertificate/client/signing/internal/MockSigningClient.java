@@ -35,4 +35,9 @@ public class MockSigningClient implements SigningClient {
         new HexEncoder().encode(UUID.randomUUID().toString().getBytes(), 0, 8, outputStream);
         return outputStream.toString();
     }
+
+    @Override
+    public void cleanKeyIdentifierCache() {
+        log.info("Mocking Cache Cleanup");
+    }
 }

@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.exception.ValueSetException;
+import ch.admin.bag.covidcertificate.api.exception.CacheNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +62,12 @@ public class ResponseStatusExceptionHandler {
     @ExceptionHandler(value = {ValueSetException.class})
     protected ResponseEntity<Object> handleValueSetException(ValueSetException e) {
         return new ResponseEntity<>(e.getError(), e.getError().getHttpStatus());
+    }
+
+    @ExceptionHandler(value = {CacheNotFoundException.class})
+    protected ResponseEntity<Object> handleCacheNotFoundException(CacheNotFoundException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = {Exception.class})
