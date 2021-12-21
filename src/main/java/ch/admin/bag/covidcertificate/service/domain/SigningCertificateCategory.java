@@ -6,7 +6,9 @@ public enum SigningCertificateCategory {
     RECOVERY_CH("recovery_ch"),
     RECOVERY_NON_CH("recovery_non_ch"),
     TEST("test"),
-    ANTIBODY_CH("antibody_ch");
+    ANTIBODY_CH("antibody_ch"),
+    // mofobo: TBD
+    EXCEPTIONAL_CH("exceptional_ch");
 
     public final String value;
 

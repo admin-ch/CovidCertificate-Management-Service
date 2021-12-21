@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.*;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
@@ -98,5 +99,19 @@ public class CovidCertificateDtoMapperService {
         }
 
         return AntibodyCertificatePdfMapper.toAntibodyCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
+    }
+
+    public ExceptionalCertificateQrCode toExceptionalCertificateQrCode(ExceptionalCertificateCreateDto createDto) {
+        return ExceptionalCertificateQrCodeMapper.toExceptionalCertificateQrCode(createDto);
+    }
+
+    public ExceptionalCertificatePdf toExceptionalCertificatePdf(ExceptionalCertificateCreateDto createDto,ExceptionalCertificateQrCode qrCodeData) {
+        var countryCode = valueSetsService.getCountryCode(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND, createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+        if (countryCode == null || countryCodeEn == null) {
+            throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
+        }
+
+        return ExceptionalCertificatePdfMapper.toExceptionalCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 }

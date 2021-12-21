@@ -69,6 +69,11 @@ public class KpiDataService {
         logCertificateGenerationKpi(KPI_TYPE_ANTIBODY, uvci, null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
 
+    @Transactional
+    public void logExceptionalCertificateGenerationKpi(String uvci) {
+        logCertificateGenerationKpi(KPI_TYPE_EXCEPTIONAL, uvci, null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+    }
+
     private void logCertificateGenerationKpi(String type, String uvci, String details, String country) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {

@@ -33,6 +33,7 @@ public class Constants {
     public static final String KPI_TYPE_TEST = "t";
     public static final String KPI_TYPE_RECOVERY = "r";
     public static final String KPI_TYPE_ANTIBODY = "a";
+    public static final String KPI_TYPE_EXCEPTIONAL = "me";
     public static final String KPI_TYPE_INAPP_DELIVERY = "ad";
     public static final String USER_EXT_ID_CLAIM_KEY = "userExtId";
     public static final String KPI_UUID_KEY = "uuid";
@@ -80,7 +81,14 @@ public class Constants {
     public static final CreateCertificateError INVALID_DATE_OF_BIRTH_IN_FUTURE = new CreateCertificateError(489, "Invalid dateOfBirth! Date cannot be in the future", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_ANTIBODY_DATA = new CreateCertificateError(490, "No antibody data specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ANTIBODY_SAMPLE_DATE_TIME = new CreateCertificateError(491, "Date of sample collection must not be before 16.11.2021", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError NO_EXCEPTIONAL_INFO = new CreateCertificateError(492, "No exceptional data specified", HttpStatus.BAD_REQUEST);
 
+    public static final CreateCertificateError MISSING_PROPERTY = new CreateCertificateError(493, "Property %s is missing!", HttpStatus.BAD_REQUEST);
+
+    public static final CreateCertificateError DATE_CANT_BE_BEFORE = new CreateCertificateError(494, "Date can't be before %s!", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError DATE_CANT_BE_AFTER = new CreateCertificateError(495, "Date can't be after %s!", HttpStatus.BAD_REQUEST);
+
+    public static final CreateCertificateError TEXT_INVALID_LENGTH = new CreateCertificateError(496, "Length of property '%s'(string) can't exceed %d characters!", HttpStatus.BAD_REQUEST);
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
@@ -107,7 +115,6 @@ public class Constants {
     public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language does not match any of the supported languages: de, it, fr, rm, en!", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError CREATE_PDF_FAILED = new CreateCertificateError(561, "Creating PDF failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_UVCI_FAILED = new CreateCertificateError(562, "Creating UVCI failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    // TODO:mofobo: check with UBIQUE if the got the same specification
     public static final String VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX = "_T";
 
     public static final Integer EXPIRATION_PERIOD_24_MONTHS = 24;
