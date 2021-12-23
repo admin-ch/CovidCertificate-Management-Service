@@ -42,8 +42,7 @@ public class ExceptionalCertificateQrCodeMapper {
                 TestType.EXCEPTIONAL_TEST.typeCode,
                 Constants.EMPTY_STRING,
                 exceptionalCertificateDataDto.getValidFrom().atStartOfDay(ZoneId.systemDefault()),
-                // mofobo: TBD if negative or positive
-                TestResult.NEGATIVE.code,
+                Constants.EMPTY_STRING,
                 exceptionalCertificateDataDto.getAttestationIssuer(),
                 Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND,
                 ISSUER,
