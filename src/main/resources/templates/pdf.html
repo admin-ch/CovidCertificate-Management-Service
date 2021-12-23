@@ -504,8 +504,8 @@
             <span th:text="#{info.keepPaperDocument}"></span></p>
         <p th:if="${isEvidence}" class="body-text-small" th:text="#{evidence.info}"></p>
         <p th:unless="${isEvidence}"></p><!-- Keep this to separate the languages -->
-        <p th:unless="${isEvidence}" class="body-text-small" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
-        <p th:unless="${isEvidence}" class="body-text-small"> 
+        <p th:unless="${isEvidence}"  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p th:unless="${isEvidence}"  class="body-text-small-en">
             <span th:text="#{info.notTravelDocument(${'en'})}"></span> 
             <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span> 
             <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
@@ -520,8 +520,8 @@
             <span th:text="#{info.keepPaperDocument}"></span> 
         </p>
         <p></p><!-- Keep this to separate the languages -->
-        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
-        <p class="body-text-small"> <span th:text="#{info.notTravelDocument(${'en'})}"></span> 
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en"> <span th:text="#{info.notTravelDocument(${'en'})}"></span>
             <span th:text="#{info.limitedTimeValidity(${'en'})}"></span> 
             <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span> 
             <span th:text="#{info.keepPaperDocument(${'en'})}"></span> 
@@ -535,11 +535,11 @@
             <span th:text="#{info.keepPaperDocument}"></span></p>
         <p class="body-text-small" th:utext="#{recovery.info}"></p>
         <p></p><!-- Keep this to separate the languages -->
-        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
-        <p class="body-text-small"> <span th:text="#{info.notTravelDocument(${'en'})}"></span> 
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en"> <span th:text="#{info.notTravelDocument(${'en'})}"></span>
             <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span> 
             <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
-        <p class="body-text-small" th:utext="#{recovery.info(${'en'})}"></p>
+        <p  class="body-text-small-en" th:utext="#{recovery.info(${'en'})}"></p>
     </th:block>
 
     <th:block th:case="'test'">
@@ -548,8 +548,8 @@
             <span th:text="#{info.getInformationBeforeTravel}"></span> 
             <span th:text="#{info.keepPaperDocument}"></span></p>
         <p></p><!-- Keep this to separate the languages -->
-        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
-        <p class="body-text-small"> <span th:text="#{info.notTravelDocument(${'en'})}"></span> 
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en"> <span th:text="#{info.notTravelDocument(${'en'})}"></span>
             <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span> 
             <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
     </th:block>
@@ -562,8 +562,8 @@
             <span th:text="#{info.keepPaperDocument}"></span> 
         </p>
         <p></p><!-- Keep this to separate the languages -->
-        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
-        <p class="body-text-small"> <span th:text="#{info.notTravelDocument(${'en'})}"></span> 
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en"> <span th:text="#{info.notTravelDocument(${'en'})}"></span>
             <span th:text="#{info.limitedTimeValidity(${'en'})}"></span> 
             <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span> 
             <span th:text="#{info.keepPaperDocument(${'en'})}"></span> 
@@ -577,8 +577,8 @@
             <span th:text="#{info.faceMaskMayBeRequired}"></span> 
             <span th:text="#{info.keepPaperDocument}"></span></p>
         <p></p><!-- Keep this to separate the languages -->
-        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
-        <p class="body-text-small"><span th:text="#{info.limitedTimeValidity(${'en'})}"></span> 
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en"><span th:text="#{info.limitedTimeValidity(${'en'})}"></span>
             <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span> 
             <span th:text="#{info.faceMaskMayBeRequired(${'en'})}"></span> 
             <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
