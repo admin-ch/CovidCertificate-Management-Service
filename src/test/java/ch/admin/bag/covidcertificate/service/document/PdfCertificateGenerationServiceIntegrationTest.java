@@ -224,7 +224,7 @@ class PdfCertificateGenerationServiceIntegrationTest {
 
         byte[] document = service.generateCovidCertificate(pdfData, barcodePayload, LocalDateTime.now());
 
-        boolean storeDocument = true;
+        boolean storeDocument = false;
 
         if (storeDocument) {
             OutputStream out = new FileOutputStream("/home/dev/Downloads/certificate-" + filename + "-" + language + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss")) + ".pdf");
@@ -234,7 +234,7 @@ class PdfCertificateGenerationServiceIntegrationTest {
     }
 
     private static Stream<Arguments> testConfiguration() {
-        return Stream.of("de").
+        return Stream.of("de","fr","it","rm").
                 flatMap(language -> Stream.of(
                         Arguments.of(language, familyNameSmall, givenNameSmall),
                         Arguments.of(language, familyNameBig, givenNameBig)

@@ -404,15 +404,6 @@
 
                 <tr class="table-row">
                     <td class="table-row-padding">
-                        <p class="body-text no-padding" th:text="#{antibody.type.label}"></p>
-                        <p class="body-text-en" th:text="#{antibody.type.label(${'en'})}"></p>
-                    </td>
-                    <td class="body-text"
-                        th:text="#{antibody.type.value}"></td>
-                </tr>
-
-                <tr class="table-row">
-                    <td class="table-row-padding">
                         <p class="body-text no-padding" th:text="#{exceptional.validFrom}"></p>
                         <p class="body-text-en" th:text="#{exceptional.validFrom(${'en'})}"></p>
                     </td>
@@ -572,13 +563,17 @@
 
     <th:block th:case="'exceptional'">
         <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
-        <p class="body-text-small"><span th:text="#{info.limitedTimeValidity}"></span> 
+        <p class="body-text-small">
+            <span th:text="#{info.notTravelDocument}"></span>
+            <span th:text="#{info.limitedTimeValidity}"></span>
             <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp}"></span> 
             <span th:text="#{info.faceMaskMayBeRequired}"></span> 
             <span th:text="#{info.keepPaperDocument}"></span></p>
         <p></p><!-- Keep this to separate the languages -->
         <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
-        <p  class="body-text-small-en"><span th:text="#{info.limitedTimeValidity(${'en'})}"></span>
+        <p  class="body-text-small-en">
+            <span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.limitedTimeValidity(${'en'})}"></span>
             <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span> 
             <span th:text="#{info.faceMaskMayBeRequired(${'en'})}"></span> 
             <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
