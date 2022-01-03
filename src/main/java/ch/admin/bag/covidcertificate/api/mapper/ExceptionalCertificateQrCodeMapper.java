@@ -5,9 +5,9 @@ import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestResult;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
+import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificateData;
 import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -40,9 +40,9 @@ public class ExceptionalCertificateQrCodeMapper {
         return new ExceptionalCertificateData(
                 CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
                 TestType.EXCEPTIONAL_TEST.typeCode,
-                Constants.EMPTY_STRING,
+                Constants.HYPHEN,
                 exceptionalCertificateDataDto.getValidFrom().atStartOfDay(ZoneId.systemDefault()),
-                Constants.EMPTY_STRING,
+                TestResult.NEGATIVE.code,
                 exceptionalCertificateDataDto.getAttestationIssuer(),
                 Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND,
                 ISSUER,

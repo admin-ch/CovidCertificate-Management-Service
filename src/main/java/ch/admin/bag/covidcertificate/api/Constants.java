@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class Constants {
     // Utils
     public static final String EMPTY_STRING = "";
+    public static final String HYPHEN = "-";
 
     public static final String VERSION = "1.3.0";
     public static final String DEFAULT_DISEASE_OR_AGENT_TARGETED = "840539006";
