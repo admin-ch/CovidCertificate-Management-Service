@@ -40,9 +40,8 @@ public class ExceptionalCertificateQrCodeMapper {
         return new ExceptionalCertificateData(
                 CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
                 TestType.EXCEPTIONAL_TEST.typeCode,
-                Constants.HYPHEN,
                 exceptionalCertificateDataDto.getValidFrom().atStartOfDay(ZoneId.systemDefault()),
-                TestResult.NEGATIVE.code,
+                TestResult.POSITIVE.code,
                 exceptionalCertificateDataDto.getAttestationIssuer(),
                 Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND,
                 ISSUER,

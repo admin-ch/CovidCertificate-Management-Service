@@ -19,9 +19,6 @@ public class ExceptionalCertificateData {
     private String diseaseOrAgentTargeted;
     @JsonProperty("tt")
     private String typeOfTest;
-    @JsonProperty("ma")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private String testManufacturer;
     @JsonProperty("sc")
     private ZonedDateTime sampleDateTime;
     @JsonProperty("tr")
