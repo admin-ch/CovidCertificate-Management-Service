@@ -20,8 +20,6 @@ public class ExceptionalCertificateHcertDecodedDataDto {
     private String typeOfTest;
     @JsonProperty("nm")
     private String testName;
-    @JsonProperty("ma")
-    private String testManufacturer;
     @JsonProperty("sc")
     private ZonedDateTime validFrom;
     @JsonProperty("tr")
