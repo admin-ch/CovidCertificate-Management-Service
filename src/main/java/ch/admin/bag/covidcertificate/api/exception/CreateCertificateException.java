@@ -7,8 +7,8 @@ import org.springframework.core.NestedRuntimeException;
 public class CreateCertificateException extends NestedRuntimeException {
     private final CreateCertificateError error;
 
-    public CreateCertificateException(CreateCertificateError error) {
-        super(error.getErrorMessage());
-        this.error = error;
+    public CreateCertificateException(CreateCertificateError error, Object... objects) {
+        super(String.format(error.getErrorMessage(), objects));
+        this.error = new CreateCertificateError(error.getErrorCode(), String.format(error.getErrorMessage(), objects), error.getHttpStatus());
     }
 }

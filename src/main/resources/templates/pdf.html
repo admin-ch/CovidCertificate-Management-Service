@@ -385,6 +385,52 @@
                     </td>
                 </tr>
             </table>
+            <table th:case="'exceptional'" class="two-col-table">
+                <tr class="table-row">
+                    <th th:id="health-data-header-row">
+                        <p th:text="#{exceptional.title}" class="heading no-padding"></p>
+                        <p th:text="#{exceptional.title(${'en'})}" class="body-text-en"></p>
+                    </th>
+                    <th></th>
+                </tr>
+
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{antibody.disease.label}"></p>
+                        <p class="body-text-en" th:text="#{antibody.disease.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text" th:text="#{antibody.disease}"></td>
+                </tr>
+
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{exceptional.validFrom}"></p>
+                        <p class="body-text-en" th:text="#{exceptional.validFrom(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getValidFrom().format(dateFormatter)}"></td>
+                </tr>
+
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{exceptional.attestationIssuer}"></p>
+                        <p class="body-text-en" th:text="#{exceptional.attestationIssuer(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getAttestationIssuer()}"></td>
+                </tr>
+
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{exceptional.country}"></p>
+                        <p class="body-text-en" th:text="#{exceptional.country(${'en'})}"></p>
+                    </td>
+                    <td>
+                        <p class="body-text no-padding" th:text="${data.getCountry()}"></p>
+                        <p class="body-text-en" th:text="${data.getCountryEn()}"></p>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
@@ -440,22 +486,97 @@
     </tr>
 </table>
 
-<div th:id="disclaimer">
-    <th:block th:unless="${isEvidence}">
-        <p class="body-text-small" th:text="#{info.info1}"></p>
-        <p class="body-text-small" th:unless="${showValidOnlyInSwitzerland}" th:text="#{info.info2}"></p>
-        <p class="body-text-small" th:if="${showValidOnlyInSwitzerland}" th:text="#{info.info3}"></p>
-        <p class="body-text-small" th:if="${type == 'recovery'}" th:utext="#{recovery.info}"></p>
-        <p></p><!-- Keep this to separate the languages -->
-        <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
-        <p class="body-text-small-en" th:unless="${showValidOnlyInSwitzerland}" th:text="#{info.info2(${'en'})}"></p>
-        <p class="body-text-small-en" th:if="${showValidOnlyInSwitzerland}" th:text="#{info.info3(${'en'})}"></p>
-        <p class="body-text-small-en" th:if="${type == 'recovery'}" th:utext="#{recovery.info(${'en'})}"></p>
+<div th:id="disclaimer" th:switch="${type}">
+    <th:block th:case="'vaccine'">
+        <p th:unless="${isEvidence}" class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p th:unless="${isEvidence}" class="body-text-small"> 
+            <span th:text="#{info.notTravelDocument}"></span> 
+            <span th:text="#{info.getInformationBeforeTravel}"></span> 
+            <span th:text="#{info.keepPaperDocument}"></span></p>
+        <p th:if="${isEvidence}" class="body-text-small" th:text="#{evidence.info}"></p>
+        <p th:unless="${isEvidence}"></p><!-- Keep this to separate the languages -->
+        <p th:unless="${isEvidence}"  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p th:unless="${isEvidence}"  class="body-text-small-en">
+            <span th:text="#{info.notTravelDocument(${'en'})}"></span> 
+            <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span> 
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
+        <p th:if="${isEvidence}" class="body-text-small-en" th:text="#{evidence.info(${'en'})}"></p>
     </th:block>
 
-    <th:block th:if="${isEvidence}">
-        <p class="body-text-small" th:text="#{evidence.info}"></p>
-        <p class="body-text-small-en" th:text="#{evidence.info(${'en'})}"></p>
+    <th:block th:case="'vaccination-tourist'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small"> <span th:text="#{info.notTravelDocument}"></span> 
+            <span th:text="#{info.limitedTimeValidity}"></span> 
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp}"></span> 
+            <span th:text="#{info.keepPaperDocument}"></span> 
+        </p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en"> <span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.limitedTimeValidity(${'en'})}"></span> 
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span> 
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span> 
+        </p>
+    </th:block>
+
+    <th:block th:case="'recovery'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small"> <span th:text="#{info.notTravelDocument}"></span> 
+            <span th:text="#{info.getInformationBeforeTravel}"></span> 
+            <span th:text="#{info.keepPaperDocument}"></span></p>
+        <p class="body-text-small" th:utext="#{recovery.info}"></p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en"> <span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span> 
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
+        <p  class="body-text-small-en" th:utext="#{recovery.info(${'en'})}"></p>
+    </th:block>
+
+    <th:block th:case="'test'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small"> <span th:text="#{info.notTravelDocument}"></span> 
+            <span th:text="#{info.getInformationBeforeTravel}"></span> 
+            <span th:text="#{info.keepPaperDocument}"></span></p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en"> <span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span> 
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
+    </th:block>
+
+    <th:block th:case="'antibody'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small"> <span th:text="#{info.notTravelDocument}"></span> 
+            <span th:text="#{info.limitedTimeValidity}"></span> 
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp}"></span> 
+            <span th:text="#{info.keepPaperDocument}"></span> 
+        </p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en"> <span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.limitedTimeValidity(${'en'})}"></span> 
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span> 
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span> 
+        </p>
+    </th:block>
+
+    <th:block th:case="'exceptional'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small">
+            <span th:text="#{info.notTravelDocument}"></span>
+            <span th:text="#{info.limitedTimeValidity}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp}"></span> 
+            <span th:text="#{info.faceMaskMayBeRequired}"></span> 
+            <span th:text="#{info.keepPaperDocument}"></span></p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p  class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p  class="body-text-small-en">
+            <span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.limitedTimeValidity(${'en'})}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span> 
+            <span th:text="#{info.faceMaskMayBeRequired(${'en'})}"></span> 
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
     </th:block>
 </div>
 <table th:id="app-info">

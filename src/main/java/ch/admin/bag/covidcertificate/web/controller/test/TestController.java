@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller.test;
 
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
@@ -111,6 +112,16 @@ public class TestController {
     public CovidCertificateCreateResponseDto createAntibodyCertificate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody AntibodyCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
+        securityHelper.authorizeUser(request);
+        createDto.validate();
+        return testCovidCertificateGenerationService.generateCovidCertificate(createDto, validAt);
+    }
+
+    @PostMapping("/exceptional/{validAt}")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
+    public CovidCertificateCreateResponseDto createExceptionalCertificate(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
+            @Valid @RequestBody ExceptionalCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
         securityHelper.authorizeUser(request);
         createDto.validate();
         return testCovidCertificateGenerationService.generateCovidCertificate(createDto, validAt);

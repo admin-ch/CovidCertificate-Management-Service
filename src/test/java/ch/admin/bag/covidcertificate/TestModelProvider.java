@@ -5,6 +5,8 @@ import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
@@ -130,6 +132,17 @@ public class TestModelProvider {
         );
     }
 
+    public static ExceptionalCertificateCreateDto getExceptionalCertificateCreateDto(String language) {
+        return new ExceptionalCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getExceptionalCertificateDataDto()),
+                language,
+                null,
+                null,
+                SystemSource.WebUI
+        );
+    }
+
     public static RecoveryCertificateDataDto getRecoveryCertificateDataDto() {
         return new RecoveryCertificateDataDto(
                 LocalDate.of(2021, Month.MAY, 2),
@@ -190,6 +203,13 @@ public class TestModelProvider {
                 2,
                 LocalDate.of(2021, Month.APRIL, 29),
                 "CH"
+        );
+    }
+
+    public static ExceptionalCertificateDataDto getExceptionalCertificateDataDto() {
+        return new ExceptionalCertificateDataDto(
+                LocalDate.of(2021, Month.APRIL, 29),
+                "Testing center"
         );
     }
 

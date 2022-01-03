@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 public enum CertificateType {
-    recovery("recovery"), test("test"), vaccination("vaccination"), vaccination_tourist("vaccination-tourist"), antibody("antibody");
+    recovery("recovery"), test("test"), vaccination("vaccination"), vaccination_tourist("vaccination-tourist"), antibody("antibody"), exceptional("exceptional");
 
     private final String text;
 
