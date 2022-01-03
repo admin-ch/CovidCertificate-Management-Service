@@ -1,11 +1,7 @@
 package ch.admin.bag.covidcertificate.api.request.validator;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 
-import javax.validation.constraints.NotBlank;
-
-import static ch.admin.bag.covidcertificate.api.Constants.DATE_CANT_BE_AFTER;
 import static ch.admin.bag.covidcertificate.api.Constants.MISSING_PROPERTY;
 import static ch.admin.bag.covidcertificate.api.Constants.TEXT_INVALID_LENGTH;
 

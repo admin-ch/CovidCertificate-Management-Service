@@ -1,15 +1,13 @@
 package ch.admin.bag.covidcertificate.api.request.validator;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
-import static ch.admin.bag.covidcertificate.api.Constants.MISSING_PROPERTY;
-import static ch.admin.bag.covidcertificate.api.Constants.DATE_CANT_BE_BEFORE;
 import static ch.admin.bag.covidcertificate.api.Constants.DATE_CANT_BE_AFTER;
+import static ch.admin.bag.covidcertificate.api.Constants.DATE_CANT_BE_BEFORE;
 import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
+import static ch.admin.bag.covidcertificate.api.Constants.MISSING_PROPERTY;
 
 public class LocalDateValidator {
 
