@@ -32,6 +32,7 @@ public class ExceptionalCertificateDataDto {
     private String attestationIssuer;
 
     public void validate(SystemSource systemSource) {
+        validateDateIsNotInTheFuture(validFrom,"validFrom");
         validateDateIsNotBeforeLimitDate(validFrom, "validFrom", LIMIT_MIN_DATE);
         validateTextIsNotBlankAndLengthIsNotBiggerThanMaxLength(attestationIssuer,"attestationIssuer",MAX_STRING_LENGTH);
 
