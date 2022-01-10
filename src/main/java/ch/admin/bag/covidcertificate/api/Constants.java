@@ -37,6 +37,7 @@ public class Constants {
     public static final String KPI_TYPE_EXCEPTIONAL = "me";
     public static final String KPI_TYPE_INAPP_DELIVERY = "ad";
     public static final String USER_EXT_ID_CLAIM_KEY = "userExtId";
+    public static final String PREFERRED_USERNAME_CLAIM_KEY = "preferred_username";
     public static final String KPI_UUID_KEY = "uuid";
     public static final String KPI_TIMESTAMP_KEY = "ts";
     public static final String KPI_TYPE_KEY = "type";

@@ -76,10 +76,10 @@ public class KpiDataService {
 
     private void logCertificateGenerationKpi(String type, String uvci, String details, String country) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
+        if (token != null && token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY) != null) {
             var kpiTimestamp = LocalDateTime.now();
             writeKpiInLog(type, details, country, kpiTimestamp, token);
-            saveKpiData(new KpiData(kpiTimestamp, type, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), uvci, details, country));
+            saveKpiData(new KpiData(kpiTimestamp, type, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), uvci, details, country));
         }
     }
 
@@ -89,7 +89,7 @@ public class KpiDataService {
         var kpiTypeKVPair =kv(KPI_TYPE_KEY, type);
         var kpiDetailsKVPair = kv(KPI_DETAILS, details);
         var kpiCountryKVPair = kv(KPI_COUNTRY, country);
-        var uuidKVPair = kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY));
+        var uuidKVPair = kv(KPI_UUID_KEY, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY));
 
         if(details == null){
             log.info("kpi: {} {} {} {} {}", timestampKVPair, systemKVPair, kpiTypeKVPair, uuidKVPair, kpiCountryKVPair);
