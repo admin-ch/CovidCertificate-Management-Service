@@ -26,7 +26,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
-import static ch.admin.bag.covidcertificate.api.Constants.USER_EXT_ID_CLAIM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RestController
@@ -53,10 +53,10 @@ public class RevocationController {
 
     private void logKpi(String uvci) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
+        if (token != null && token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY) != null) {
             LocalDateTime kpiTimestamp = LocalDateTime.now();
-            log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY)));
-            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), uvci, null, null));
+            log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)));
+            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), uvci, null, null));
         }
     }
 }

@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.config.security.authentication;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static ch.admin.bag.covidcertificate.api.Constants.USER_EXT_ID_CLAIM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
 
 /**
  * This class provides methods to support authorization needs based on the current security context for Spring WebMvc applications.
@@ -27,7 +27,7 @@ public class ServletJeapAuthorization {
         var authentication = (JeapAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         var jwt = authentication.getToken();
         if (jwt != null) {
-            return jwt.getClaimAsString(USER_EXT_ID_CLAIM_KEY);
+            return jwt.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY);
         }
         return null;
     }
