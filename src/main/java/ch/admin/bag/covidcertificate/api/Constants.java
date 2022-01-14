@@ -56,6 +56,8 @@ public class Constants {
     public static final DateTimeFormatter LOG_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     public static final ZoneId SWISS_TIMEZONE = ZoneId.of("Europe/Zurich");
 
+    public static final CreateCertificateError MISSING_PROPERTY = new CreateCertificateError(432, "Property %s is missing!", HttpStatus.BAD_REQUEST);
+
     public static final CreateCertificateError NO_VACCINATION_DATA = new CreateCertificateError(451, "No vaccination data was specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_PERSON_DATA = new CreateCertificateError(452, "No person data was specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_DATE_OF_BIRTH = new CreateCertificateError(453, "Invalid dateOfBirth! Must be younger than 1900-01-01", HttpStatus.BAD_REQUEST);
@@ -86,8 +88,6 @@ public class Constants {
     public static final CreateCertificateError NO_ANTIBODY_DATA = new CreateCertificateError(490, "No antibody data specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ANTIBODY_SAMPLE_DATE_TIME = new CreateCertificateError(491, "Date of sample collection must not be before 16.11.2021", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_EXCEPTIONAL_INFO = new CreateCertificateError(492, "No exceptional data specified", HttpStatus.BAD_REQUEST);
-
-    public static final CreateCertificateError MISSING_PROPERTY = new CreateCertificateError(493, "Property %s is missing!", HttpStatus.BAD_REQUEST);
 
     public static final CreateCertificateError DATE_CANT_BE_BEFORE = new CreateCertificateError(494, "Date can't be before %s!", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError DATE_CANT_BE_AFTER = new CreateCertificateError(495, "Date can't be after %s!", HttpStatus.BAD_REQUEST);
