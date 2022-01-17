@@ -66,8 +66,8 @@ public class KpiDataService {
     }
 
     @Transactional
-    public void logExceptionalCertificateGenerationKpi(String uvci) {
-        logCertificateGenerationKpi(KPI_TYPE_EXCEPTIONAL, uvci, null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+    public void logExceptionalCertificateGenerationKpi(ExceptionalCertificateCreateDto createDto, String uvci) {
+        logCertificateGenerationKpi(KPI_TYPE_EXCEPTIONAL, uvci, createDto.getSystemSource(), createDto.getUserExtId(), null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
 
     private void logCertificateGenerationKpi(String type, String uvci, SystemSource systemSource, String userExtId, String details, String country) {

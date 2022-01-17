@@ -111,7 +111,7 @@ public class CovidCertificateGenerationController {
         createDto.validate();
         CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
         log.debug(CREATE_LOG, responseDto.getUvci());
-        kpiLogService.logExceptionalCertificateGenerationKpi(responseDto.getUvci());
+        kpiLogService.logExceptionalCertificateGenerationKpi(createDto, responseDto.getUvci());
         return responseDto;
     }
 

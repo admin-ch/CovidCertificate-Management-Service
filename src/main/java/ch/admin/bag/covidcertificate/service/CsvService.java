@@ -205,7 +205,7 @@ public class CsvService {
             CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logExceptionalCertificateGenerationKpi(responseDto.getUvci());
+            kpiLogService.logExceptionalCertificateGenerationKpi(createDto, responseDto.getUvci());
         }
         return responseDtos;
     }
