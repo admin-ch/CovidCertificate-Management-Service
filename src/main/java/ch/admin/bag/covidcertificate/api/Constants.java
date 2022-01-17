@@ -43,6 +43,10 @@ public class Constants {
     public static final String KPI_CREATE_CERTIFICATE_SYSTEM_KEY = "cc";
     public static final String KPI_SYSTEM_UI = "ui";
     public static final String KPI_REVOKE_CERTIFICATE_SYSTEM_KEY = "re";
+    public static final String KPI_TYPE_MASS_REVOCATION_CHECK = "mre-c";
+    public static final String KPI_TYPE_MASS_REVOCATION_SUCCESS = "mre-s";
+    public static final String KPI_TYPE_MASS_REVOCATION_FAILURE = "mre-f";
+    public static final String KPI_TYPE_MASS_REVOCATION_REDUNDANT = "mre-r";
     public static final String KPI_OTP_SYSTEM_KEY = "otp";
 
     public static final LocalDate MIN_DATE_OF_BIRTH = LocalDate.of(1900, Month.JANUARY, 1);
@@ -64,118 +68,51 @@ public class Constants {
     public static final CreateCertificateError INVALID_MEMBER_STATE_OF_TEST = new CreateCertificateError(461, "Invalid member state of test", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_TYP_OF_TEST = new CreateCertificateError(462, "Invalid type of test and manufacturer code combination! Must either be a PCR Test type and no manufacturer code or give a manufacturer code and the antigen test type code.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_TEST_CENTER = new CreateCertificateError(463, "Invalid testing center or facility", HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_SAMPLE_DATE_TIME = new CreateCertificateError(464,
-                                                                                                     "Invalid sample date time! Sample date must be before current date time",
-                                                                                                     HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError NO_RECOVERY_DATA = new CreateCertificateError(465,
-                                                                                             "No recovery data specified",
-                                                                                             HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT = new CreateCertificateError(
-            466, "Invalid date of first positive test result", HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_COUNTRY_OF_TEST = new CreateCertificateError(467,
-                                                                                                    "Invalid country of test",
-                                                                                                    HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_LANGUAGE = new CreateCertificateError(469,
-                                                                                             "The given language does not match any of the supported languages: de, it, fr, rm!",
-                                                                                             HttpStatus.BAD_REQUEST);
-    public static final RevocationError INVALID_UVCI = new RevocationError(470, "Invalid UVCI format.",
-                                                                           HttpStatus.BAD_REQUEST);
-    public static final RevocationError INVALID_SIZE_OF_UVCI_LIST = new RevocationError(472,
-                                                                                        "Invalid size of UVCI List.",
-                                                                                        HttpStatus.BAD_REQUEST);
-    public static final RevocationError INVALID_UVCI_LIST = new RevocationError(473, "Invalid UVCI List due to errors.",
-                                                                                HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_ADDRESS = new CreateCertificateError(474,
-                                                                                            "Paper-based delivery requires a valid address.",
-                                                                                            HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError DUPLICATE_DELIVERY_METHOD = new CreateCertificateError(475,
-                                                                                                      "Delivery method can either be InApp or print, but not both.",
-                                                                                                      HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError UNKNOWN_APP_CODE = new CreateCertificateError(476, "Unknown app code.",
-                                                                                             HttpStatus.NOT_FOUND);
-    public static final CreateCertificateError INVALID_STANDARDISED_GIVEN_NAME = new CreateCertificateError(477,
-                                                                                                            "Invalid given name! The standardised given name exceeds 80 chars",
-                                                                                                            HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_STANDARDISED_FAMILY_NAME = new CreateCertificateError(478,
-                                                                                                             "Invalid family name! The standardised family name exceeds 80 chars",
-                                                                                                             HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_APP_CODE = new CreateCertificateError(479,
-                                                                                             "App code is in an invalid format.",
-                                                                                             HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_PRINT_FOR_TEST = new CreateCertificateError(488,
-                                                                                                   "Print is not available for test certificates",
-                                                                                                   HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_DATE_OF_BIRTH_IN_FUTURE = new CreateCertificateError(489,
-                                                                                                            "Invalid dateOfBirth! Date cannot be in the future",
-                                                                                                            HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError NO_ANTIBODY_DATA = new CreateCertificateError(490,
-                                                                                             "No antibody data specified",
-                                                                                             HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_ANTIBODY_SAMPLE_DATE_TIME = new CreateCertificateError(491,
-                                                                                                              "Date of sample collection must not be before 16.11.2021",
-                                                                                                              HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_SAMPLE_DATE_TIME = new CreateCertificateError(464, "Invalid sample date time! Sample date must be before current date time", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError NO_RECOVERY_DATA = new CreateCertificateError(465, "No recovery data specified", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT = new CreateCertificateError(466, "Invalid date of first positive test result", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_COUNTRY_OF_TEST = new CreateCertificateError(467, "Invalid country of test", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_LANGUAGE = new CreateCertificateError(469, "The given language does not match any of the supported languages: de, it, fr, rm!", HttpStatus.BAD_REQUEST);
+    public static final RevocationError INVALID_UVCI = new RevocationError(470, "Invalid UVCI format.", HttpStatus.BAD_REQUEST);
+    public static final RevocationError INVALID_SIZE_OF_UVCI_LIST = new RevocationError(472, "Invalid size of UVCI List.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_ADDRESS = new CreateCertificateError(474, "Paper-based delivery requires a valid address.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError DUPLICATE_DELIVERY_METHOD = new CreateCertificateError(475, "Delivery method can either be InApp or print, but not both.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError UNKNOWN_APP_CODE = new CreateCertificateError(476, "Unknown app code.", HttpStatus.NOT_FOUND);
+    public static final CreateCertificateError INVALID_STANDARDISED_GIVEN_NAME = new CreateCertificateError(477, "Invalid given name! The standardised given name exceeds 80 chars", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_STANDARDISED_FAMILY_NAME = new CreateCertificateError(478, "Invalid family name! The standardised family name exceeds 80 chars", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_APP_CODE = new CreateCertificateError(479, "App code is in an invalid format.", HttpStatus.BAD_REQUEST);
 
-    public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.",
-                                                                             HttpStatus.CONFLICT);
-    public static final RevocationError NON_EXISTING_UVCI = new RevocationError(481, "Non existing UVCI.",
-                                                                                HttpStatus.BAD_REQUEST);
-    public static final RevocationError ERROR_SAVING_REVOCATION = new RevocationError(501, "Create revocation failed.",
-                                                                                      HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
-    public static final CreateCertificateError INVALID_CSV = new CreateCertificateError(481, "The CSV can not be read!",
-                                                                                        HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_CSV_SIZE = new CreateCertificateError(482,
-                                                                                             "The CSV has an ivalid size! Must contain 1 to 100 entries.",
-                                                                                             HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError NOT_A_CSV = new CreateCertificateError(483,
-                                                                                      "The sent file is not a CSV file.",
-                                                                                      HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_CERTIFICATE_TYPE = new CreateCertificateError(484,
-                                                                                                     "Invalid certificate type! 'vaccination', 'test', and 'recovery' are allowed",
-                                                                                                     HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_CREATE_REQUESTS = new CreateCertificateError(485,
-                                                                                                    "One or more of the requests in the CSV contain invalid data. For more detailed error messages check the returned CSV",
-                                                                                                    HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_APP_CODE_CHECKSUM = new CreateCertificateError(486,
-                                                                                                      "Invalid app code, check input.",
-                                                                                                      HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError INVALID_APP_CODE_LENGTH = new CreateCertificateError(487,
-                                                                                                    "Incorrect input, the code consists of 9 characters.",
-                                                                                                    HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_CSV = new CreateCertificateError(481, "The CSV can not be read!", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_CSV_SIZE = new CreateCertificateError(482, "The CSV has an ivalid size! Must contain 1 to 100 entries.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError NOT_A_CSV = new CreateCertificateError(483, "The sent file is not a CSV file.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_CERTIFICATE_TYPE = new CreateCertificateError(484, "Invalid certificate type! 'vaccination', 'test', and 'recovery' are allowed", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_CREATE_REQUESTS = new CreateCertificateError(485, "One or more of the requests in the CSV contain invalid data. For more detailed error messages check the returned CSV", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_APP_CODE_CHECKSUM = new CreateCertificateError(486, "Invalid app code, check input.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_APP_CODE_LENGTH = new CreateCertificateError(487, "Incorrect input, the code consists of 9 characters.", HttpStatus.BAD_REQUEST);
 
-    public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550,
-                                                                                                                "Creating COSE protected header failed.",
-                                                                                                                HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_COSE_PAYLOAD_FAILED = new CreateCertificateError(551,
-                                                                                                       "Creating COSE payload failed.",
-                                                                                                       HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_COSE_SIGNATURE_DATA_FAILED = new CreateCertificateError(552,
-                                                                                                              "Creating COSE signature data failed.",
-                                                                                                              HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_SIGNATURE_FAILED = new CreateCertificateError(553,
-                                                                                                    "Creating signature failed.",
-                                                                                                    HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_COSE_SIGN1_FAILED = new CreateCertificateError(554,
-                                                                                                     "Creating COSE_Sign1 failed.",
-                                                                                                     HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555,
-                                                                                                  "Creating barcode failed.",
-                                                                                                  HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556,
-                                                                                            "Printing failed due to a technical error.",
-                                                                                            HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557,
-                                                                                                      "Writing CSV failed.",
-                                                                                                      HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558,
-                                                                                                "App delivery failed due to a technical error.",
-                                                                                                HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError SIGNING_CERTIFICATE_MISSING = new CreateCertificateError(559,
-                                                                                                        "No signing certificate was found.",
-                                                                                                        HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError AMBIGUOUS_SIGNING_CERTIFICATE = new CreateCertificateError(560,
-                                                                                                          "Ambiguous signing certificate. Multiple signing certificates were found.",
-                                                                                                          HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError INVALID_PRINT_FOR_TEST = new CreateCertificateError(488, "Print is not available for test certificates", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_DATE_OF_BIRTH_IN_FUTURE = new CreateCertificateError(489, "Invalid dateOfBirth! Date cannot be in the future", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError NO_ANTIBODY_DATA = new CreateCertificateError(490, "No antibody data specified", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError INVALID_ANTIBODY_SAMPLE_DATE_TIME = new CreateCertificateError(491, "Date of sample collection must not be before 16.11.2021", HttpStatus.BAD_REQUEST);
+
+
+    public static final RevocationError UNKNOWN_UVCI = new RevocationError(495, "Uvci is not known.", HttpStatus.BAD_REQUEST);
+    public static final RevocationError ALREADY_REVOKED_UVCI = new RevocationError(496, "Uvci is already revoked.", HttpStatus.BAD_REQUEST);
+
+
+    public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550, "Creating COSE protected header failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_COSE_PAYLOAD_FAILED = new CreateCertificateError(551, "Creating COSE payload failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_COSE_SIGNATURE_DATA_FAILED = new CreateCertificateError(552, "Creating COSE signature data failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_SIGNATURE_FAILED = new CreateCertificateError(553, "Creating signature failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_COSE_SIGN1_FAILED = new CreateCertificateError(554, "Creating COSE_Sign1 failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555, "Creating barcode failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556, "Printing failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557, "Writing CSV failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558, "App delivery failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError SIGNING_CERTIFICATE_MISSING = new CreateCertificateError(559, "No signing certificate was found.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError AMBIGUOUS_SIGNING_CERTIFICATE = new CreateCertificateError(560, "Ambiguous signing certificate. Multiple signing certificates were found.", HttpStatus.INTERNAL_SERVER_ERROR);
 
     public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language does not match any of the supported languages: de, it, fr, rm, en!", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError CREATE_PDF_FAILED = new CreateCertificateError(561, "Creating PDF failed.", HttpStatus.INTERNAL_SERVER_ERROR);

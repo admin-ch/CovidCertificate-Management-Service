@@ -2,15 +2,7 @@ package ch.admin.bag.covidcertificate;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
-import ch.admin.bag.covidcertificate.api.request.Issuable;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RevocationDto;
-import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
@@ -18,11 +10,7 @@ import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.domain.RapidTest;
 import ch.admin.bag.covidcertificate.domain.Vaccine;
-import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.*;
 import com.flextrade.jfixture.JFixture;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -140,18 +128,18 @@ public class FixtureCustomization {
     }
 
     public static void customizeRevocationDto(JFixture fixture) {
-        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI()));
+        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), null));
     }
 
     public static void customizeRevocationListDto(JFixture fixture) {
-        List<String> uvcis = new LinkedList();
+        List<String> uvcis = new LinkedList<>();
         uvcis.add(createUVCI());
         uvcis.add(createUVCI());
         uvcis.add(createUVCI());
-        fixture.customise().lazyInstance(RevocationListDto.class, () -> new RevocationListDto(uvcis));
+        fixture.customise().lazyInstance(RevocationListDto.class, () -> new RevocationListDto(uvcis, fixture.create(String.class)));
     }
 
-    private static String createUVCI() {
+    public static String createUVCI() {
         return "urn:uvci:01:CH:" + RandomStringUtils.randomAlphanumeric(24).toUpperCase();
     }
 

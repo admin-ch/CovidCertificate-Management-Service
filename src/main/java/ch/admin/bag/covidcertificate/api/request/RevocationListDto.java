@@ -9,23 +9,19 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SIZE_OF_UVCI_LIST;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Slf4j
 public class RevocationListDto {
-    private static final String REGEX_UVCI = "^urn:uvci:01:CH:[A-Z0-9]{24}$";
-
     private List<String> uvcis;
+    private String userExtId;
 
     public void validateList() {
-        for (String uvci : uvcis) {
-            if (!uvci.matches(REGEX_UVCI)) {
-                log.info("Validate revocation for {} failed.", uvci);
-                throw new RevocationException(INVALID_UVCI);
-            }
+        if (uvcis.size() > 100) {
+            throw new RevocationException(INVALID_SIZE_OF_UVCI_LIST);
         }
     }
 }

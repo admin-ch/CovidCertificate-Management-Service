@@ -10,8 +10,7 @@ import java.util.Map;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class CheckRevocationListResponseDto {
-    private Map<String, String> uvciToErrorMessage;
-    private Map<String, String> uvciToWarningMessage;
-    private List<String> revocableUvcis;
+public class RevocationListResponseDto {
+    private Map<String, String> uvcisToErrorMessage;
+    private List<String> revokedUvcis;
 }

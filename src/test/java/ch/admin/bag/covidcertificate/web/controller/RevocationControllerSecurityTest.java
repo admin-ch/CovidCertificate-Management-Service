@@ -6,6 +6,7 @@ import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenti
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import ch.admin.bag.covidcertificate.service.RevocationService;
+import ch.admin.bag.covidcertificate.testutil.JeapAuthenticationTestTokenBuilder;
 import ch.admin.bag.covidcertificate.testutil.JwtTestUtil;
 import ch.admin.bag.covidcertificate.testutil.KeyPairTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,11 +14,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flextrade.jfixture.JFixture;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -33,14 +31,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationDto;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -212,6 +206,11 @@ class RevocationControllerSecurityTest {
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             when(revocationService.doesUvciExist(anyString())).thenReturn(true);
             when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            Jwt jwt = mock(Jwt.class);
+            when(jwt.getClaimAsString(anyString())).thenReturn("test");
+            JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).build();
+            when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
+
             callGetValueSetsWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.CREATED);
             Mockito.verify(revocationService, times(1)).createRevocation(anyString());
         }
