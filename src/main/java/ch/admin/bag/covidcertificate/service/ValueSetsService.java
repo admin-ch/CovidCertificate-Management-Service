@@ -40,6 +40,7 @@ import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.EN;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.IT;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
+import static ch.admin.bag.covidcertificate.api.valueset.TestType.PCR;
 
 @Service
 @RequiredArgsConstructor
@@ -79,11 +80,11 @@ public class ValueSetsService {
     @Cacheable(ISSUABLE_VACCINE_DTO_CACHE_NAME)
     public IssuableVaccineDto getVaccinationValueSet(String productCode) {
         var vaccinationValueSet = this.getExtendedValueSets()
-                                      .getVaccinationSets()
-                                      .stream()
-                                      .filter(valueSet -> valueSet.getProductCode().equalsIgnoreCase(productCode))
-                                      .findFirst()
-                                      .orElse(null);
+                .getVaccinationSets()
+                .stream()
+                .filter(valueSet -> valueSet.getProductCode().equalsIgnoreCase(productCode))
+                .findFirst()
+                .orElse(null);
         if (vaccinationValueSet == null) {
             throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
         }
@@ -106,31 +107,37 @@ public class ValueSetsService {
         return countryCodesLoader.getCountryCodes();
     }
 
-    private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
-        if (validPCRTest(testTypeCode, testCode)) {
-            return new IssuableTestDto("", "PCR", TestType.PCR, null);
-        } else if (validRapidTest(testTypeCode, testCode)) {
-            var testValueSet = testValueSets
-                    .stream()
-                    .filter(issuableTestDto -> (issuableTestDto.getCode().equals(testCode)))
-                    .findFirst()
-                    .orElse(null);
-
-            if (testValueSet != null) {
-                return testValueSet;
-            }
-        }
-        throw new CreateCertificateException(INVALID_TYP_OF_TEST);
-    }
-
-    private boolean validPCRTest(String testTypeCode, String testCode) {
-        return Objects.equals(testTypeCode, TestType.PCR.typeCode) && !StringUtils.hasText(testCode);
-    }
-
-    private boolean validRapidTest(String testTypeCode, String testCode) {
-        return (Objects.equals(testTypeCode, TestType.RAPID_TEST.typeCode)
+    private TestType evaluateTestType(String testTypeCode, String testCode) {
+        if (PCR.typeCode.equals(testTypeCode) && !StringUtils.hasText(testCode)) {
+            return PCR;
+        } else if ((TestType.RAPID_TEST.typeCode.equals(testTypeCode)
                 || !StringUtils.hasText(testTypeCode))
-                && StringUtils.hasText(testCode);
+                && StringUtils.hasText(testCode)) {
+            return TestType.RAPID_TEST;
+
+        } else {
+            return TestType.valueOf(testTypeCode);
+        }
+    }
+
+    private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
+        try {
+            switch (evaluateTestType(testTypeCode, testCode)) {
+                case PCR:
+                    return new IssuableTestDto("", "PCR", PCR, null);
+
+                case RAPID_TEST:
+                    return testValueSets
+                            .stream()
+                            .filter(issuableTestDto -> (issuableTestDto.getCode().equals(testCode)))
+                            .findFirst()
+                            .orElseThrow(() -> new CreateCertificateException(INVALID_TYP_OF_TEST));
+                default:
+                    throw new CreateCertificateException(INVALID_TYP_OF_TEST);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new CreateCertificateException(INVALID_TYP_OF_TEST);
+        }
     }
 
     public CountryCode getCountryCodeEn(String countryShort) {
@@ -149,7 +156,7 @@ public class ValueSetsService {
     public List<CountryCode> getCountryCodesForLanguage(String language) {
         log.info("Loading country codes for language");
         var countryCodes = countryCodesLoader.getCountryCodes();
-        List<CountryCode> result = Collections.emptyList();
+        List<CountryCode> result;
         switch (language.toLowerCase()) {
             case DE:
                 result = countryCodes.getDe();

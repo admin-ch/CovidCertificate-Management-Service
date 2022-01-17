@@ -6,6 +6,8 @@ import ch.admin.bag.covidcertificate.api.mapper.*;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
@@ -85,6 +87,24 @@ public class CovidCertificateDtoMapperService {
         }
 
         return RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
+    }
+
+    public RecoveryRatCertificateQrCode toRecoveryRatCertificateQrCode(RecoveryRatCertificateCreateDto createDto) {
+        RecoveryRatCertificateDataDto recoveryDataInfo = createDto.getTestInfo().get(0);
+        var testValueSet = valueSetsService.getIssuableTestDto(recoveryDataInfo.getTypeCode(), recoveryDataInfo.getManufacturerCode());
+        return RecoveryRatCertificateQrCodeMapper.toRecoveryRatCertificateQrCode(createDto, testValueSet);
+    }
+
+    public RecoveryRatCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificateCreateDto createDto, RecoveryRatCertificateQrCode qrCodeData) {
+        RecoveryRatCertificateDataDto recoveryDataInfo = createDto.getTestInfo().get(0);
+        var testValueSet = valueSetsService.getIssuableTestDto(recoveryDataInfo.getTypeCode(), recoveryDataInfo.getManufacturerCode());
+        var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
+        if (countryCode == null || countryCodeEn == null) {
+            throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
+        }
+
+        return RecoveryRatCertificatePdfMapper.toRecoveryRatCertificatePdf(createDto, testValueSet, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
     public AntibodyCertificateQrCode toAntibodyCertificateQrCode(AntibodyCertificateCreateDto createDto) {
