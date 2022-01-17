@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -52,9 +53,9 @@ public class RapidTestImportScheduler {
 
         if (byCode.isPresent()){
             log.debug("Updating {} with {}", byCode.get(), valueSet);
-            byCode.get().update(valueSet.getDisplay(), valueSet.isActive(), jobDateTime);
+            byCode.get().update(valueSet.getDisplay(), valueSet.isActive(), jobDateTime, valueSet.getValidUntil());
         } else {
-            var rapidTest = repository.saveAndFlush(new RapidTest(code, valueSet.getDisplay(), valueSet.isActive(), jobDateTime));
+            var rapidTest = repository.saveAndFlush(new RapidTest(code, valueSet.getDisplay(), valueSet.isActive(), jobDateTime, valueSet.getValidUntil()));
             log.debug("Saved {}", rapidTest);
         }
     }

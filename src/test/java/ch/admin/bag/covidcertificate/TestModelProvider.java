@@ -1,6 +1,21 @@
 package ch.admin.bag.covidcertificate;
 
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,7 +27,8 @@ import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 
 public class TestModelProvider {
 
-    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(String medicalProductCode, String language) {
+    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(
+            String medicalProductCode, String language) {
         return new VaccinationCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
@@ -23,7 +39,8 @@ public class TestModelProvider {
         );
     }
 
-    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(String medicalProductCode, String language, String inAppCode) {
+    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(
+            String medicalProductCode, String language, String inAppCode) {
         return new VaccinationCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getVaccinationCertificateDataDto(medicalProductCode)),
@@ -34,8 +51,8 @@ public class TestModelProvider {
         );
     }
 
-
-    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language) {
+    public static TestCertificateCreateDto getTestCertificateCreateDto(
+            String typeCode, String manufacturerCode, String language) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
@@ -46,7 +63,8 @@ public class TestModelProvider {
         );
     }
 
-    public static TestCertificateCreateDto getTestCertificateCreateDto(String typeCode, String manufacturerCode, String language, String inAppCode) {
+    public static TestCertificateCreateDto getTestCertificateCreateDto(
+            String typeCode, String manufacturerCode, String language, String inAppCode) {
         return new TestCertificateCreateDto(
                 getCovidCertificatePersonDto(),
                 List.of(getTestCertificateDataDto(typeCode, manufacturerCode)),
@@ -87,6 +105,40 @@ public class TestModelProvider {
                 language,
                 null,
                 inAppCode,
+                SystemSource.WebUI
+        );
+    }
+
+    public static AntibodyCertificateCreateDto getAntibodyCertificateCreateDto(String language) {
+        return new AntibodyCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getAntibodyCertificateDataDto()),
+                language,
+                null,
+                null,
+                SystemSource.WebUI
+        );
+    }
+
+    public static VaccinationTouristCertificateCreateDto getVaccinationTouristCertificateCreateDto(
+            String medicalProductCode, String language) {
+        return new VaccinationTouristCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getVaccinationTouristCertificateDataDto(medicalProductCode)),
+                language,
+                null,
+                null,
+                SystemSource.WebUI
+        );
+    }
+
+    public static ExceptionalCertificateCreateDto getExceptionalCertificateCreateDto(String language) {
+        return new ExceptionalCertificateCreateDto(
+                getCovidCertificatePersonDto(),
+                List.of(getExceptionalCertificateDataDto()),
+                language,
+                null,
+                null,
                 SystemSource.WebUI
         );
     }
@@ -132,6 +184,32 @@ public class TestModelProvider {
                 ZonedDateTime.of(LocalDateTime.of(2021, Month.APRIL, 4, 16, 25, 12, 354), SWISS_TIMEZONE),
                 "Test Center",
                 "CH"
+        );
+    }
+
+    public static AntibodyCertificateDataDto getAntibodyCertificateDataDto() {
+        return new AntibodyCertificateDataDto(
+                LocalDate.of(2021, Month.APRIL, 4),
+                "Test Center"
+
+        );
+    }
+
+    public static VaccinationTouristCertificateDataDto getVaccinationTouristCertificateDataDto(
+            String medicalProductCode) {
+        return new VaccinationTouristCertificateDataDto(
+                medicalProductCode,
+                2,
+                2,
+                LocalDate.of(2021, Month.APRIL, 29),
+                "CH"
+        );
+    }
+
+    public static ExceptionalCertificateDataDto getExceptionalCertificateDataDto() {
+        return new ExceptionalCertificateDataDto(
+                LocalDate.of(2021, Month.APRIL, 29),
+                "Testing center"
         );
     }
 

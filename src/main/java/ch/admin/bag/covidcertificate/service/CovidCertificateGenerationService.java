@@ -5,11 +5,13 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.AntibodyCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.ExceptionalCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
@@ -94,6 +96,14 @@ public class CovidCertificateGenerationService {
                 pdfGenerateRequestDto.getDecodedCert().getAntibodyInfo().get(0).getIdentifier());
     }
 
+    public CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(ExceptionalCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
+        var pdfData = covidCertificatePdfGenerateRequestDtoMapperService.toExceptionalCertificatePdf(pdfGenerateRequestDto);
+        return generateFromExistingCovidCertificate(pdfData,
+                pdfGenerateRequestDto.getHcert(),
+                pdfGenerateRequestDto.getIssuedAt(),
+                pdfGenerateRequestDto.getDecodedCert().getExceptionalInfo().get(0).getIdentifier());
+    }
+
     private CovidCertificateCreateResponseDto generateFromExistingCovidCertificate(AbstractCertificatePdf pdfData, String hcert, long issuedAtMillis, String uvci) {
         try {
             var issuedAt = getLocalDateTimeFromEpochMillis(issuedAtMillis);
@@ -144,6 +154,13 @@ public class CovidCertificateGenerationService {
         var pdfData = covidCertificateDtoMapperService.toAntibodyCertificatePdf(createDto, qrCodeData);
         var signingInformation = signingInformationService.getAntibodySigningInformation(createDto);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getAntibodyInfo().get(0).getIdentifier(), createDto, signingInformation);
+    }
+
+    public CovidCertificateCreateResponseDto generateCovidCertificate(ExceptionalCertificateCreateDto createDto) throws JsonProcessingException {
+        var qrCodeData = covidCertificateDtoMapperService.toExceptionalCertificateQrCode(createDto);
+        var pdfData = covidCertificateDtoMapperService.toExceptionalCertificatePdf(createDto, qrCodeData);
+        var signingInformation = signingInformationService.getExceptionalSigningInformation(createDto);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getExceptionalInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
     private CovidCertificateCreateResponseDto generateCovidCertificate(AbstractCertificateQrCode qrCodeData,

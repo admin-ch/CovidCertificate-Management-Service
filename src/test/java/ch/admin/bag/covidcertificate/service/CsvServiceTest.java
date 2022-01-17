@@ -2,7 +2,11 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateType;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
@@ -10,10 +14,15 @@ import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenti
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
@@ -25,18 +34,43 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CERTIFICATE_TYPE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CREATE_REQUESTS;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV_SIZE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+
+@Tag("CsvServiceTest")
+@DisplayName("Tests for the CsvService")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 class CsvServiceTest {
+    private final JFixture fixture = new JFixture();
+    private final File validRecoveryFile;
+    private final File validTestFile;
+    private final File invalidTestFile;
+    private final File validVaccinationFile;
+    private final File emptyCsv;
+    private final File invalidCsv;
+    private final File invalidMultipleCsv;
+    private final File validMultipleCsv;
     @InjectMocks
     private CsvService service;
-
     @Mock
     private CovidCertificateGenerationService covidCertificateGenerationService;
     @Mock
@@ -48,16 +82,6 @@ class CsvServiceTest {
     @Mock
     private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
-    private final JFixture fixture = new JFixture();
-    private final File validRecoveryFile;
-    private final File validTestFile;
-    private final File invalidTestFile;
-    private final File validVaccinationFile;
-    private final File emptyCsv;
-    private final File invalidCsv;
-    private final File invalidMultipleCsv;
-    private final File validMultipleCsv;
-
     public CsvServiceTest() {
         validRecoveryFile = new File("src/test/resources/csv/recovery_csv_valid.csv");
         validTestFile = new File("src/test/resources/csv/test_csv_valid.csv");
@@ -67,6 +91,23 @@ class CsvServiceTest {
         invalidCsv = new File("src/test/resources/csv/recovery_csv_invalid.csv");
         invalidMultipleCsv = new File("src/test/resources/csv/vaccination_csv_multiple_invalid.csv");
         validMultipleCsv = new File("src/test/resources/csv/vaccination_csv_multiple_valid.csv");
+    }
+
+    private static List<Path> readFiles(String folderPath) throws IOException {
+        List<Path> result;
+        try (Stream<Path> walk = Files.walk(Paths.get(folderPath))) {
+            result = walk.filter(Files::isRegularFile)
+                    .collect(Collectors.toList());
+        }
+        return result;
+    }
+
+    private static Stream<Arguments> validVaccinationCsv() throws IOException {
+        return readFiles("src/test/resources/csv/vaccination/doses/valid").stream().map(path -> Arguments.of(path.toString()));
+    }
+
+    private static Stream<Arguments> invalidVaccinationCsv() throws IOException {
+        return readFiles("src/test/resources/csv/vaccination/doses/invalid").stream().map(path -> Arguments.of(path.toString()));
     }
 
     @BeforeEach
@@ -124,25 +165,6 @@ class CsvServiceTest {
         assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
     }
 
-    private static class CertificateCreateDtoFamilyNameMatcher<T extends CertificateCreateDto> implements ArgumentMatcher<T> {
-        private final String familyName;
-
-        private CertificateCreateDtoFamilyNameMatcher(String familyName) {
-            this.familyName = familyName;
-        }
-
-        @Override
-        public boolean matches(T t) {
-            if (t == null) return false;
-            var actual = t.getPersonData().getName().getFamilyName();
-            return familyName.equals(actual);
-        }
-
-        public String toString() {
-            return String.format("with familyName=%s", familyName);
-        }
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"src/test/resources/csv/recovery_ansi.csv",
             "src/test/resources/csv/recovery_utf8.csv"})
@@ -160,6 +182,25 @@ class CsvServiceTest {
 
         inputStream.close();
         inputStream2.close();
+    }
+
+    private static class CertificateCreateDtoFamilyNameMatcher<T extends CertificateCreateDto> implements ArgumentMatcher<T> {
+        private final String familyName;
+
+        private CertificateCreateDtoFamilyNameMatcher(String familyName) {
+            this.familyName = familyName;
+        }
+
+        @Override
+        public boolean matches(T t) {
+            if (t == null) return false;
+            var actual = t.getPersonData().getName().getFamilyName();
+            return familyName.equals(actual);
+        }
+
+        public String toString() {
+            return String.format("with familyName=%s", familyName);
+        }
     }
 
     @Nested
@@ -286,5 +327,40 @@ class CsvServiceTest {
             inputStream.close();
         }
 
+    }
+
+    @Nested
+    @Tag("Vaccination.csv")
+    @DisplayName("Tests for 'Vaccination' CSV.")
+    class VaccinationCsvTests {
+
+        @ParameterizedTest
+        @MethodSource("ch.admin.bag.covidcertificate.service.CsvServiceTest#validVaccinationCsv")
+        @DisplayName("Given a valid vaccination CSV, when validated, it should not return errors.")
+        void validVaccinationCsvTest(String validCsvFilePath) throws IOException {
+            var file = Mockito.mock(MultipartFile.class);
+            var inputStream = new FileInputStream(validCsvFilePath);
+            var inputStream2 = new FileInputStream(validCsvFilePath);
+            var inputStream3 = new FileInputStream(validCsvFilePath);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
+
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.vaccination.name());
+            assertNotNull(response.getZip());
+            inputStream.close();
+        }
+
+        @ParameterizedTest
+        @MethodSource("ch.admin.bag.covidcertificate.service.CsvServiceTest#invalidVaccinationCsv")
+        @DisplayName("Given a invalid vaccination CSV, when validated, it should not return errors.")
+        void invalidVaccinationCsvTest(String validCsvFilePath) throws IOException {
+            var file = Mockito.mock(MultipartFile.class);
+            var inputStream = new FileInputStream(validCsvFilePath);
+            var inputStream2 = new FileInputStream(validCsvFilePath);
+            var inputStream3 = new FileInputStream(validCsvFilePath);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
+
+            var exception = assertThrows(CsvException.class, () -> service.handleCsvRequest(file, CertificateType.vaccination.name()));
+            assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
+        }
     }
 }

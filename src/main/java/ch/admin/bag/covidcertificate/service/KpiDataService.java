@@ -65,8 +65,14 @@ public class KpiDataService {
         logCertificateGenerationKpi(KPI_TYPE_ANTIBODY, uvci, createDto.getSystemSource(), createDto.getUserExtId(), null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
 
+    @Transactional
+    public void logExceptionalCertificateGenerationKpi(String uvci) {
+        logCertificateGenerationKpi(KPI_TYPE_EXCEPTIONAL, uvci, null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+    }
+
     private void logCertificateGenerationKpi(String type, String uvci, SystemSource systemSource, String userExtId, String details, String country) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
+        // TODO: PREFERRED_USERNAME_CLAIM_KEY required?
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
 
         var kpiTimestamp = LocalDateTime.now();
@@ -75,6 +81,7 @@ public class KpiDataService {
         writeKpiInLog(type, details, country, kpiTimestamp, systemSource, relevantUserExtId);
         saveKpiData(new KpiData(kpiTimestamp, type, relevantUserExtId, uvci, details, country));
     }
+
 
     private void writeKpiInLog(String type, String details, String country, LocalDateTime kpiTimestamp, SystemSource systemSource, String userExtId) {
         var timestampKVPair = kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT));

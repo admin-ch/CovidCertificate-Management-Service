@@ -126,6 +126,7 @@ public class RevocationController {
 
     private void logRevocationKpi(String kpiType, String uvci, String userExtId) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
+        // PREFERRED_USERNAME_CLAIM_KEY required?
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, null);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
         log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, uvci), kv(USER_EXT_ID_CLAIM_KEY, relevantUserExtId));

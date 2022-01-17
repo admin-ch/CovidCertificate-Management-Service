@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
@@ -79,6 +80,13 @@ public class TestCovidCertificateGenerationService {
         var pdfData = covidCertificateDtoMapperService.toAntibodyCertificatePdf(createDto, qrCodeData);
         var signingInformation = signingInformationService.getAntibodySigningInformation(createDto, validAt);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getAntibodyInfo().get(0).getIdentifier(), createDto, signingInformation);
+    }
+
+    public CovidCertificateCreateResponseDto generateCovidCertificate(ExceptionalCertificateCreateDto createDto, LocalDate validAt) throws JsonProcessingException {
+        var qrCodeData = covidCertificateDtoMapperService.toExceptionalCertificateQrCode(createDto);
+        var pdfData = covidCertificateDtoMapperService.toExceptionalCertificatePdf(createDto, qrCodeData);
+        var signingInformation = signingInformationService.getExceptionalSigningInformation(createDto, validAt);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getExceptionalInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
     private CovidCertificateCreateResponseDto generateCovidCertificate(AbstractCertificateQrCode qrCodeData,

@@ -17,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class FixtureCustomization {
     }
 
     public static void customizeTestValueSet(JFixture fixture) {
-        fixture.customise().lazyInstance(IssuableTestDto.class, () -> new IssuableTestDto(fixture.create(String.class), fixture.create(String.class), fixture.create(TestType.class)));
+        fixture.customise().lazyInstance(IssuableTestDto.class, () -> new IssuableTestDto(fixture.create(String.class), fixture.create(String.class), fixture.create(TestType.class), fixture.create(ZonedDateTime.class)));
     }
 
     public static void customizeCountryCode(JFixture fixture) {
@@ -67,7 +68,8 @@ public class FixtureCustomization {
                     fixture.create(String.class),
                     fixture.create(String.class),
                     fixture.create(Boolean.class),
-                    fixture.create(LocalDateTime.class)
+                    fixture.create(LocalDateTime.class),
+                    null
             );
         });
     }

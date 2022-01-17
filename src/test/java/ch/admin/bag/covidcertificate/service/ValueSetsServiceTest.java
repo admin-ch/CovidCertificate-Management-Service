@@ -84,15 +84,15 @@ public class ValueSetsServiceTest {
 
     @Nested
     class GetVaccinationValueSet {
-        @Disabled("see todo")
         @Test
         void shouldReturnVaccinationValueSet_ifMedicinalProductCodeExists() {
-            var valueSetsDto = fixture.create(ValueSetsDto.class);
-            var expected = valueSetsDto.getVaccinationSets().stream().findFirst().or(Assertions::fail).get();
+            var vaccines = fixture.collections().createCollection(List.class, Vaccine.class);
+            var vaccine = (Vaccine) vaccines.stream().findFirst().or(Assertions::fail).get();
+            var expected = vaccine.getCode();
 
-            // @Todo: Mock the DB call to include expected at getIssuableVaccines(), once DB is connected
+            lenient().when(vaccineRepository.findAll()).thenReturn(vaccines);
 
-            var actual = service.getVaccinationValueSet(expected.getProductCode());
+            var actual = service.getVaccinationValueSet(expected).getProductCode();
 
             assertEquals(expected, actual);
         }
