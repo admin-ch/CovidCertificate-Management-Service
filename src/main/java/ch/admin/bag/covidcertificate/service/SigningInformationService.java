@@ -5,6 +5,7 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import ch.admin.bag.covidcertificate.service.domain.SigningCertificateCategory;
@@ -90,6 +91,24 @@ public class SigningInformationService {
             throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
         } else if (signingInformationList.size() > 1) {
             log.error("Ambiguous signing certificate. Multiple signing certificates were found for positive test in {}.", countryOfTest);
+            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
+        }
+        return signingInformationList.get(0);
+    }
+
+    public SigningInformation getRecoveryRatSigningInformation() {
+        return getRecoveryRatSigningInformation(LocalDate.now());
+    }
+
+    public SigningInformation getRecoveryRatSigningInformation(LocalDate validAt) {
+        var signingCertificateCategory = SigningCertificateCategory.RECOVERY_RAT_CH.value;
+        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory, validAt);
+
+        if (signingInformationList == null || signingInformationList.isEmpty()) {
+            log.error("No signing certificate was found to sign the recovery-rat certificate in {}.", ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+            throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
+        } else if (signingInformationList.size() > 1) {
+            log.error("Ambiguous signing certificate. Multiple signing certificates were found to sign the recovery-rat certificate in {}.", ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
             throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
         }
         return signingInformationList.get(0);
