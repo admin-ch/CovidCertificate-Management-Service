@@ -1,10 +1,9 @@
 ALTER TABLE kpi
-    ADD COLUMN IF NOT EXISTS system_source VARCHAR(10);
+    ADD COLUMN IF NOT EXISTS system_source VARCHAR(3);
 
 UPDATE kpi
-    SET system_source = 'UI'
-    WHERE system_source is null;
+    SET system_source = 'UI';
 
 ALTER TABLE kpi
-    ADD COLUMN IF NOT EXISTS original_id VARCHAR(36);
+    ADD COLUMN IF NOT EXISTS api_gateway_id VARCHAR(36);
 

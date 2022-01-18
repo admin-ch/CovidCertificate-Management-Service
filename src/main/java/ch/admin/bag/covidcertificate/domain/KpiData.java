@@ -22,7 +22,7 @@ public class KpiData {
     String details;
     String country;
     String systemSource;
-    String originalId;
+    String apiGatewayId;
 
     public KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country) {
         this.timestamp = timestamp;
