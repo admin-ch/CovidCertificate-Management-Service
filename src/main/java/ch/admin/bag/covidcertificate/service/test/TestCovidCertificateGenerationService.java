@@ -86,14 +86,14 @@ public class TestCovidCertificateGenerationService {
     public CovidCertificateCreateResponseDto generateCovidCertificate(AntibodyCertificateCreateDto createDto, LocalDate validAt) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toAntibodyCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toAntibodyCertificatePdf(createDto, qrCodeData);
-        var signingInformation = signingInformationService.getAntibodySigningInformation(createDto, validAt);
+        var signingInformation = signingInformationService.getAntibodySigningInformation(validAt);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getAntibodyInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(ExceptionalCertificateCreateDto createDto, LocalDate validAt) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toExceptionalCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toExceptionalCertificatePdf(createDto, qrCodeData);
-        var signingInformation = signingInformationService.getExceptionalSigningInformation(createDto, validAt);
+        var signingInformation = signingInformationService.getExceptionalSigningInformation(validAt);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getExceptionalInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
