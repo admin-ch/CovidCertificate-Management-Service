@@ -30,6 +30,7 @@ public class KpiData {
         this.type = type;
         this.uvci = uvci;
         this.details = details;
+        this.country = country;
         this.systemSource = "UI";
     }
 
