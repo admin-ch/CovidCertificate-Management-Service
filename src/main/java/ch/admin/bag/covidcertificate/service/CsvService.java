@@ -8,10 +8,10 @@ import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
-import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
@@ -84,6 +84,8 @@ public class CsvService {
         switch (validCertificateType) {
             case recovery:
                 return new CsvResponseDto(handleCsvRequest(file, RecoveryCertificateCsvBean.class));
+            case recovery_rat:
+                return new CsvResponseDto(handleCsvRequest(file, RecoveryRatCertificateCsvBean.class));
             case test:
                 return new CsvResponseDto(handleCsvRequest(file, TestCertificateCsvBean.class));
             case vaccination:
@@ -92,8 +94,6 @@ public class CsvService {
                 return new CsvResponseDto(handleCsvRequest(file, VaccinationTouristCertificateCsvBean.class));
             case antibody:
                 return new CsvResponseDto(handleCsvRequest(file, AntibodyCertificateCsvBean.class));
-            case exceptional:
-                return new CsvResponseDto(handleCsvRequest(file, ExceptionalCertificateCsvBean.class));
             default:
                 throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
         }
@@ -116,6 +116,8 @@ public class CsvService {
     private List<CovidCertificateCreateResponseDto> createCertificates(List<CertificateCreateDto> createDtos, Class<?> csvBeanClass) throws JsonProcessingException {
         if (csvBeanClass == RecoveryCertificateCsvBean.class) {
             return createRecoveryCertificates(createDtos.stream().map(RecoveryCertificateCreateDto.class::cast).collect(Collectors.toList()));
+        } else if (csvBeanClass == RecoveryRatCertificateCsvBean.class) {
+            return createRecoveryRatCertificates(createDtos.stream().map(RecoveryRatCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else if (csvBeanClass == TestCertificateCsvBean.class) {
             return createTestCertificates(createDtos.stream().map(TestCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else if (csvBeanClass == VaccinationCertificateCsvBean.class) {
@@ -124,8 +126,6 @@ public class CsvService {
             return createVaccinationTouristCertificates(createDtos.stream().map(VaccinationTouristCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else if (csvBeanClass == AntibodyCertificateCsvBean.class) {
             return createAntibodyCertificates(createDtos.stream().map(AntibodyCertificateCreateDto.class::cast).collect(Collectors.toList()));
-        } else if (csvBeanClass == ExceptionalCertificateCsvBean.class) {
-            return createExceptionalCertificates(createDtos.stream().map(ExceptionalCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else {
             throw new CreateCertificateException(INVALID_CSV);
         }
@@ -146,6 +146,18 @@ public class CsvService {
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
             kpiLogService.logRecoveryCertificateGenerationKpi(createDto, responseDto.getUvci());
+        }
+        return responseDtos;
+    }
+
+    private List<CovidCertificateCreateResponseDto> createRecoveryRatCertificates(List<RecoveryRatCertificateCreateDto> createDtos) throws JsonProcessingException {
+        List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
+        for (RecoveryRatCertificateCreateDto createDto : createDtos) {
+            log.info("Call of create for recovery-rat certificate");
+            CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
+            responseDtos.add(responseDto);
+            logUvci(responseDto.getUvci());
+            kpiLogService.logRecoveryRatCertificateGenerationKpi(createDto, responseDto.getUvci());
         }
         return responseDtos;
     }
@@ -194,18 +206,6 @@ public class CsvService {
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
             kpiLogService.logAntibodyCertificateGenerationKpi(responseDto.getUvci());
-        }
-        return responseDtos;
-    }
-
-    private List<CovidCertificateCreateResponseDto> createExceptionalCertificates(List<ExceptionalCertificateCreateDto> createDtos) throws JsonProcessingException {
-        List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
-        for (ExceptionalCertificateCreateDto createDto : createDtos) {
-            log.info("Call of Create for exceptional certificate");
-            CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
-            responseDtos.add(responseDto);
-            logUvci(responseDto.getUvci());
-            kpiLogService.logExceptionalCertificateGenerationKpi(responseDto.getUvci());
         }
         return responseDtos;
     }
@@ -283,6 +283,13 @@ public class CsvService {
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
             }
+        } else if (createDto instanceof RecoveryRatCertificateCreateDto) {
+            var dataDto = ((RecoveryRatCertificateCreateDto) createDto).getTestInfo().get(0);
+            var countryCode = valueSetsService.getCountryCode(dataDto.getMemberStateOfTest(), createDto.getLanguage());
+            if (countryCode == null) {
+                throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
+            }
+            valueSetsService.getIssuableTestDto(dataDto.getTypeCode(), dataDto.getManufacturerCode());
         } else if (createDto instanceof TestCertificateCreateDto) {
             var dataDto = ((TestCertificateCreateDto) createDto).getTestInfo().get(0);
             var countryCode = valueSetsService.getCountryCode(dataDto.getMemberStateOfTest(), createDto.getLanguage());
@@ -304,10 +311,6 @@ public class CsvService {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
             covidCertificateVaccinationValidationService.validateProductAndCountryForVaccinationTourist((VaccinationTouristCertificateCreateDto) createDto);
-        } else if (createDto instanceof AntibodyCertificateCreateDto) {
-            // no validation
-        } else if (createDto instanceof ExceptionalCertificateCreateDto) {
-            // no validation
         }
     }
 

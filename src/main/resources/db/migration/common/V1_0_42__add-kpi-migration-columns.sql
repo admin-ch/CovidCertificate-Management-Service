@@ -1,0 +1,6 @@
+ALTER TABLE kpi
+    ADD COLUMN IF NOT EXISTS system_source VARCHAR(3);
+
+ALTER TABLE kpi
+    ADD COLUMN IF NOT EXISTS api_gateway_id VARCHAR(36);
+
