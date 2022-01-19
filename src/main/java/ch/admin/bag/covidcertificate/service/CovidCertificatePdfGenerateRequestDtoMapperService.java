@@ -5,18 +5,21 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.AntibodyCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.ExceptionalCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.RecoveryCertificatePdfGenerateRequestDtoMapper;
+import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.RecoveryRatCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.TestCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.VaccinationCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.AntibodyCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.ExceptionalCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryRatCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryRatCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
@@ -78,6 +81,16 @@ public class CovidCertificatePdfGenerateRequestDtoMapperService {
         }
 
         return RecoveryCertificatePdfGenerateRequestDtoMapper.toRecoveryCertificatePdf(pdfGenerateRequestDto, countryCode.getDisplay(), countryCodeEn.getDisplay());
+    }
+
+    public RecoveryRatCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
+        var issuableTestDto = valueSetsService.getIssuableTestDto(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest(), pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer());
+        var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest(), pdfGenerateRequestDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest());
+        if (countryCode == null || countryCodeEn == null) {
+            throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
+        }
+        return RecoveryRatCertificatePdfGenerateRequestDtoMapper.toRecoveryRatCertificatePdf(pdfGenerateRequestDto, issuableTestDto, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
     public AntibodyCertificatePdf toAntibodyCertificatePdf(AntibodyCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {

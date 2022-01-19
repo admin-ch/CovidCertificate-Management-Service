@@ -92,6 +92,17 @@ public abstract class CertificateCsvBean {
         );
     }
 
+    protected RecoveryRatCertificateCreateDto mapToCreateDto(RecoveryRatCertificateDataDto dataDto) {
+        return new RecoveryRatCertificateCreateDto(
+                mapToPersonDto(),
+                List.of(dataDto),
+                getLanguage().trim().toLowerCase(),
+                mapToAddressDto(),
+                validateAppDeliveryCode(),
+                SystemSource.CsvUpload
+        );
+    }
+
     protected AntibodyCertificateCreateDto mapToCreateDto(AntibodyCertificateDataDto dataDto) {
         return new AntibodyCertificateCreateDto(
                 mapToPersonDto(),

@@ -79,11 +79,11 @@ public class ValueSetsService {
     @Cacheable(ISSUABLE_VACCINE_DTO_CACHE_NAME)
     public IssuableVaccineDto getVaccinationValueSet(String productCode) {
         var vaccinationValueSet = this.getExtendedValueSets()
-                                      .getVaccinationSets()
-                                      .stream()
-                                      .filter(valueSet -> valueSet.getProductCode().equalsIgnoreCase(productCode))
-                                      .findFirst()
-                                      .orElse(null);
+                .getVaccinationSets()
+                .stream()
+                .filter(valueSet -> valueSet.getProductCode().equalsIgnoreCase(productCode))
+                .findFirst()
+                .orElse(null);
         if (vaccinationValueSet == null) {
             throw new CreateCertificateException(INVALID_MEDICINAL_PRODUCT);
         }
@@ -92,12 +92,12 @@ public class ValueSetsService {
 
     @Cacheable(ISSUABLE_TEST_DTO_CACHE_NAME)
     public IssuableTestDto getIssuableTestDto(String testTypeCode, String testCode) {
-        return getRapidTestDto(this.getIssuableRapidTests(), testTypeCode, testCode);
+        return getIssuableTestDto(this.getIssuableRapidTests(), testTypeCode, testCode);
     }
 
     @Cacheable(ISSUABLE_TEST_DTO_CACHE_NAME)
     public IssuableTestDto getIssuableTestDto(TestCertificateDataDto testCertificateDataDto) {
-        return getRapidTestDto(this.getIssuableRapidTests(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
+        return getIssuableTestDto(this.getIssuableRapidTests(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
     }
 
     @Cacheable(COUNTRY_CODES_CACHE_NAME)
@@ -106,7 +106,7 @@ public class ValueSetsService {
         return countryCodesLoader.getCountryCodes();
     }
 
-    private IssuableTestDto getRapidTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
+    private IssuableTestDto getIssuableTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
         if (validPCRTest(testTypeCode, testCode)) {
             return new IssuableTestDto("", "PCR", TestType.PCR, null);
         } else if (validRapidTest(testTypeCode, testCode)) {
