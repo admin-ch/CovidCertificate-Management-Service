@@ -10,8 +10,6 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
-import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
-import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +22,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,8 +57,9 @@ import static org.mockito.Mockito.when;
 
 @Tag("CsvServiceTest")
 @DisplayName("Tests for the CsvService")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 class CsvServiceTest {
     private final JFixture fixture = new JFixture();
     private final File validRecoveryFile;
@@ -73,8 +74,6 @@ class CsvServiceTest {
     private CsvService service;
     @Mock
     private CovidCertificateGenerationService covidCertificateGenerationService;
-    @Mock
-    private ServletJeapAuthorization jeapAuthorization;
     @Mock
     private KpiDataService kpiLogService;
     @Mock
@@ -102,21 +101,23 @@ class CsvServiceTest {
         return result;
     }
 
+    //Used in parameterized test
     private static Stream<Arguments> validVaccinationCsv() throws IOException {
         return readFiles("src/test/resources/csv/vaccination/doses/valid").stream().map(path -> Arguments.of(path.toString()));
     }
 
+    //Used in parameterized test
     private static Stream<Arguments> invalidVaccinationCsv() throws IOException {
         return readFiles("src/test/resources/csv/vaccination/doses/invalid").stream().map(path -> Arguments.of(path.toString()));
     }
 
     @BeforeEach
     void setUp() throws IOException {
+        Mockito.clearInvocations(covidCertificateGenerationService, kpiLogService,valueSetsService, covidCertificateVaccinationValidationService );
         lenient().when(valueSetsService.getCountryCode(anyString(), anyString())).thenReturn(fixture.create(CountryCode.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(TestCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(VaccinationCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
-        lenient().when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(fixture.create(JeapAuthenticationToken.class));
     }
 
     @Test
@@ -182,6 +183,7 @@ class CsvServiceTest {
 
         inputStream.close();
         inputStream2.close();
+        inputStream3.close();
     }
 
     private static class CertificateCreateDtoFamilyNameMatcher<T extends CertificateCreateDto> implements ArgumentMatcher<T> {
