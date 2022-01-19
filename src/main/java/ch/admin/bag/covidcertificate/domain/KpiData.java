@@ -21,6 +21,8 @@ public class KpiData {
     String uvci;
     String details;
     String country;
+    String systemSource;
+    String apiGatewayId;
 
     public KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country) {
         this.timestamp = timestamp;
@@ -29,11 +31,13 @@ public class KpiData {
         this.uvci = uvci;
         this.details = details;
         this.country = country;
+        this.systemSource = "UI";
     }
 
     public KpiData(LocalDateTime timestamp, String type, String value) {
         this.timestamp = timestamp;
         this.type = type;
         this.value = value;
+        this.systemSource = "UI";
     }
 }
