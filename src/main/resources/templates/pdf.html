@@ -538,7 +538,7 @@
 </table>
 
 <div th:id="disclaimer" th:switch="${type}">
-    <th:block th:case="'vaccine'">
+    <th:block th:case="'vaccination'">
         <p th:unless="${isEvidence}" class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
         <p th:unless="${isEvidence}" class="body-text-small">
             <span th:text="#{info.notTravelDocument}"></span>
