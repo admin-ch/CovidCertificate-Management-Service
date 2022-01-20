@@ -135,7 +135,7 @@ class CsvServiceTest {
         var inputStream2 = new FileInputStream(emptyCsv);
         var inputStream3 = new FileInputStream(emptyCsv);
         when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
-        var recoveryName = CertificateType.recovery.name();
+        var recoveryName = CertificateType.RECOVERY.name();
         var exception = assertThrows(CreateCertificateException.class,
                 () -> service.handleCsvRequest(file, recoveryName));
         assertEquals(INVALID_CSV_SIZE, exception.getError());
@@ -149,7 +149,7 @@ class CsvServiceTest {
         var inputStream3 = new FileInputStream(invalidCsv);
         when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
         var exception = assertThrows(CsvException.class,
-                () -> service.handleCsvRequest(file, CertificateType.recovery.name()));
+                () -> service.handleCsvRequest(file, CertificateType.RECOVERY.name()));
         assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
     }
 
@@ -160,7 +160,7 @@ class CsvServiceTest {
         var inputStream2 = new FileInputStream(invalidMultipleCsv);
         var inputStream3 = new FileInputStream(invalidMultipleCsv);
         when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
-        var vaccinationNamme = CertificateType.vaccination.name();
+        var vaccinationNamme = CertificateType.VACCINATION.name();
         var exception = assertThrows(CsvException.class,
                 () -> service.handleCsvRequest(file, vaccinationNamme));
         assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
@@ -177,7 +177,7 @@ class CsvServiceTest {
         var inputStream3 = new FileInputStream(path);
         when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-        service.handleCsvRequest(file, CertificateType.recovery.name());
+        service.handleCsvRequest(file, CertificateType.RECOVERY.name());
 
         verify(covidCertificateGenerationService).generateCovidCertificate(argThat(new CertificateCreateDtoFamilyNameMatcher<RecoveryCertificateCreateDto>(expectedFamilyName)));
 
@@ -215,7 +215,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validRecoveryFile);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.recovery.name());
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.RECOVERY.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -233,7 +233,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(path);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.recovery.name());
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.RECOVERY.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -249,7 +249,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validTestFile);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.test.name());
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.TEST.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -261,7 +261,7 @@ class CsvServiceTest {
             var inputStream2 = new FileInputStream(invalidTestFile);
             var inputStream3 = new FileInputStream(invalidTestFile);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
-            var testName = CertificateType.test.name();
+            var testName = CertificateType.TEST.name();
             var exception = assertThrows(CsvException.class,
                     () -> service.handleCsvRequest(file, testName));
             assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
@@ -278,7 +278,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(path);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.test.name());
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.TEST.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -294,7 +294,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validVaccinationFile);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.vaccination.name());
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -307,7 +307,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validMultipleCsv);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.vaccination.name());
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -324,7 +324,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(path);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.vaccination.name());
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -346,7 +346,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validCsvFilePath);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.vaccination.name());
+            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -361,7 +361,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validCsvFilePath);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            var exception = assertThrows(CsvException.class, () -> service.handleCsvRequest(file, CertificateType.vaccination.name()));
+            var exception = assertThrows(CsvException.class, () -> service.handleCsvRequest(file, CertificateType.VACCINATION.name()));
             assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
         }
     }
