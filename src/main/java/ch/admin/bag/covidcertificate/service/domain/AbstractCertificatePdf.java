@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
 
+import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,9 +15,9 @@ public abstract class AbstractCertificatePdf {
     protected String dateOfBirth;
     protected String identifier;
     protected String language;
-    protected String type;
+    protected CertificateType type;
 
-    protected AbstractCertificatePdf(String familyName, String givenName, String dateOfBirth, String identifier, String language, String type) {
+    protected AbstractCertificatePdf(String familyName, String givenName, String dateOfBirth, String identifier, String language, CertificateType type) {
         this.familyName = familyName;
         this.givenName = givenName;
         this.dateOfBirth = dateOfBirth;
