@@ -1,7 +1,5 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.api.Constants;
-import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
@@ -21,7 +19,23 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_COUNTRY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_CREATE_CERTIFICATE_SYSTEM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_ANTIBODY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_EXCEPTIONAL;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY_RAT;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_TOURIST;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
+import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
