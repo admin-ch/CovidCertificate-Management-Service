@@ -24,20 +24,20 @@ public class KpiData {
     String systemSource;
     String apiGatewayId;
 
-    public KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country) {
+    public KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country, String systemSource) {
         this.timestamp = timestamp;
         this.type = type;
         this.value = value;
         this.uvci = uvci;
         this.details = details;
         this.country = country;
-        this.systemSource = "UI";
+        this.systemSource = systemSource;
     }
 
-    public KpiData(LocalDateTime timestamp, String type, String value) {
+    public KpiData(LocalDateTime timestamp, String type, String value, String systemSource) {
         this.timestamp = timestamp;
         this.type = type;
         this.value = value;
-        this.systemSource = "UI";
+        this.systemSource = systemSource;
     }
 }

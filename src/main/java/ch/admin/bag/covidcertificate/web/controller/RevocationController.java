@@ -3,6 +3,7 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
 import ch.admin.bag.covidcertificate.api.response.RevocationListResponseDto;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
@@ -53,7 +54,7 @@ public class RevocationController {
             throw new RevocationException(DUPLICATE_UVCI);
         }
         revocationService.createRevocation(revocationDto.getUvci());
-        logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, revocationDto.getUvci(), revocationDto.getUserExtId());
+        logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, revocationDto.getUvci(), revocationDto.getSystemSource(), revocationDto.getUserExtId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -76,7 +77,7 @@ public class RevocationController {
         /** not existing UVCIs are handled as warning, because UVCIs issued before 07.08.2021 are always unknown */
         Map<String, String> notExistingUvcisToWarningMessage = revocationService.getNotExistingUvcis(revocableUvcis);
 
-        logRevocationCheckKpi(revocationListDto.getUserExtId());
+        logRevocationCheckKpi(revocationListDto.getUserExtId(), revocationListDto.getSystemSource());
 
         return new CheckRevocationListResponseDto(uvcisToErrorMessage, notExistingUvcisToWarningMessage, revocableUvcis);
     }
@@ -101,7 +102,7 @@ public class RevocationController {
             if (errorMessage == null) {
                 try {
                     revocationService.createRevocation(uvci);
-                    logRevocationKpi(KPI_TYPE_MASS_REVOCATION_SUCCESS, uvci, revocationListDto.getUserExtId());
+                    logRevocationKpi(KPI_TYPE_MASS_REVOCATION_SUCCESS, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId());
                     revokedUvcis.add(uvci);
                 } catch (Exception ex) {
                     uvcisToErrorMessage.put(uvci, "Error during revocation");
@@ -109,9 +110,9 @@ public class RevocationController {
             } else {
                 try {
                     if (errorMessage.startsWith(ALREADY_REVOKED_UVCI.getErrorMessage())) {
-                        logRevocationKpi(KPI_TYPE_MASS_REVOCATION_REDUNDANT, uvci, revocationListDto.getUserExtId());
+                        logRevocationKpi(KPI_TYPE_MASS_REVOCATION_REDUNDANT, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId());
                     } else if (errorMessage.equals(INVALID_UVCI.getErrorMessage())) {
-                        logRevocationKpi(KPI_TYPE_MASS_REVOCATION_FAILURE, uvci, revocationListDto.getUserExtId());
+                        logRevocationKpi(KPI_TYPE_MASS_REVOCATION_FAILURE, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId());
                     } else {
                         log.warn("Mass-revocation failed for unknown reason: {}.", errorMessage);
                     }
@@ -124,20 +125,19 @@ public class RevocationController {
         return new RevocationListResponseDto(uvcisToErrorMessage, revokedUvcis);
     }
 
-    private void logRevocationKpi(String kpiType, String uvci, String userExtId) {
+    private void logRevocationKpi(String kpiType, String uvci, SystemSource systemSource, String userExtId) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        // PREFERRED_USERNAME_CLAIM_KEY required?
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, null);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
         log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, uvci), kv(USER_EXT_ID_CLAIM_KEY, relevantUserExtId));
-        kpiLogService.saveKpiData(new KpiData(kpiTimestamp, kpiType, relevantUserExtId, uvci, null, null));
+        kpiLogService.saveKpiData(new KpiData(kpiTimestamp, kpiType, relevantUserExtId, uvci, null, null, systemSource.category));
     }
 
-    private void logRevocationCheckKpi(String userExtId) {
+    private void logRevocationCheckKpi(String userExtId, SystemSource systemSource) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, null);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
         log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_TYPE_MASS_REVOCATION_CHECK), kv(USER_EXT_ID_CLAIM_KEY, relevantUserExtId));
-        kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_MASS_REVOCATION_CHECK, relevantUserExtId, null, null, null));
+        kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_MASS_REVOCATION_CHECK, relevantUserExtId, null, null, null, systemSource.category));
     }
 }

@@ -16,6 +16,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
 @Slf4j
 public class RevocationDto {
     private String uvci;
+    private SystemSource systemSource;
     private String userExtId;
 
     public void validate() {

@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.FixtureCustomization;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
@@ -196,7 +197,7 @@ class RevocationControllerTest {
         @DisplayName("GIVEN a uvci list WHEN some are already revoked and some are not existing THEN the revocable uvcis contain warning uvcis but no error uvcis")
         void returnsValidAndWarningUvcisAsRevocable() throws Exception {
             var testUvcis = Arrays.asList(FixtureCustomization.createUVCI(), FixtureCustomization.createUVCI(), FixtureCustomization.createUVCI());
-            var createDto = new RevocationListDto(testUvcis, fixture.create(String.class));
+            var createDto = new RevocationListDto(testUvcis, fixture.create(SystemSource.class), fixture.create(String.class));
 
             var errorUvcis = testUvcis.subList(0, 1).stream().collect(Collectors.toMap(s -> s, s -> "any error"));
             when(revocationService.getUvcisWithErrorMessage(any())).thenReturn(errorUvcis);

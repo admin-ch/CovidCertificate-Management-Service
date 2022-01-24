@@ -72,14 +72,12 @@ public class KpiDataService {
 
     private void logCertificateGenerationKpi(String type, String uvci, SystemSource systemSource, String userExtId, String details, String country) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        // TODO: PREFERRED_USERNAME_CLAIM_KEY required?
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
 
         var kpiTimestamp = LocalDateTime.now();
 
-        // TODO: log system source into new DB field
         writeKpiInLog(type, details, country, kpiTimestamp, systemSource, relevantUserExtId);
-        saveKpiData(new KpiData(kpiTimestamp, type, relevantUserExtId, uvci, details, country));
+        saveKpiData(new KpiData(kpiTimestamp, type, relevantUserExtId, uvci, details, country, systemSource.category));
     }
 
 

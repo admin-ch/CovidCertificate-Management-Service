@@ -130,7 +130,7 @@ public class FixtureCustomization {
     }
 
     public static void customizeRevocationDto(JFixture fixture) {
-        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), null));
+        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), fixture.create(SystemSource.class), null));
     }
 
     public static void customizeRevocationListDto(JFixture fixture) {
@@ -138,7 +138,7 @@ public class FixtureCustomization {
         uvcis.add(createUVCI());
         uvcis.add(createUVCI());
         uvcis.add(createUVCI());
-        fixture.customise().lazyInstance(RevocationListDto.class, () -> new RevocationListDto(uvcis, fixture.create(String.class)));
+        fixture.customise().lazyInstance(RevocationListDto.class, () -> new RevocationListDto(uvcis, fixture.create(SystemSource.class), fixture.create(String.class)));
     }
 
     public static String createUVCI() {
