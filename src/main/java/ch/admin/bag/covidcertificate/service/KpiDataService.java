@@ -3,6 +3,7 @@ package ch.admin.bag.covidcertificate.service;
 import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
@@ -65,16 +66,35 @@ public class KpiDataService {
     }
 
     @Transactional
+    public void logRecoveryRatCertificateGenerationKpi(RecoveryRatCertificateCreateDto createDto, String uvci) {
+        var typeCode = Arrays.stream(TestType.values())
+                .filter(testType -> Objects.equals(testType.typeCode, createDto.getTestInfo().get(0).getTypeCode()))
+                .findFirst();
+        String typeCodeDetailString = null;
+        if (typeCode.isPresent() && typeCode.get().equals(TestType.PCR)) {
+            typeCodeDetailString = "pcr";
+        } else if (typeCode.isPresent() && typeCode.get().equals(TestType.RAPID_TEST)) {
+            typeCodeDetailString = "rapid";
+        }
+        logCertificateGenerationKpi(KPI_TYPE_RECOVERY_RAT, uvci, typeCodeDetailString, createDto.getTestInfo().get(0).getMemberStateOfTest());
+    }
+
+    @Transactional
     public void logAntibodyCertificateGenerationKpi(String uvci) {
         logCertificateGenerationKpi(KPI_TYPE_ANTIBODY, uvci, null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
 
+    @Transactional
+    public void logExceptionalCertificateGenerationKpi(String uvci) {
+        logCertificateGenerationKpi(KPI_TYPE_EXCEPTIONAL, uvci, null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+    }
+
     private void logCertificateGenerationKpi(String type, String uvci, String details, String country) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        if (token != null && token.getClaimAsString(USER_EXT_ID_CLAIM_KEY) != null) {
+        if (token != null && token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY) != null) {
             var kpiTimestamp = LocalDateTime.now();
             writeKpiInLog(type, details, country, kpiTimestamp, token);
-            saveKpiData(new KpiData(kpiTimestamp, type, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY), uvci, details, country));
+            saveKpiData(new KpiData(kpiTimestamp, type, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), uvci, details, country));
         }
     }
 
@@ -84,7 +104,7 @@ public class KpiDataService {
         var kpiTypeKVPair =kv(KPI_TYPE_KEY, type);
         var kpiDetailsKVPair = kv(KPI_DETAILS, details);
         var kpiCountryKVPair = kv(KPI_COUNTRY, country);
-        var uuidKVPair = kv(KPI_UUID_KEY, token.getClaimAsString(USER_EXT_ID_CLAIM_KEY));
+        var uuidKVPair = kv(KPI_UUID_KEY, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY));
 
         if(details == null){
             log.info("kpi: {} {} {} {} {}", timestampKVPair, systemKVPair, kpiTypeKVPair, uuidKVPair, kpiCountryKVPair);

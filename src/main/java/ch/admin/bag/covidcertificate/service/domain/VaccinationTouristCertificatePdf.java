@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
+import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -41,7 +42,7 @@ public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language, "vaccination-tourist");
+        super(familyName, givenName, dateOfBirth, identifier, language, CertificateType.VACCINATION_TOURIST);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.vaccineProphylaxis = vaccineProphylaxis;
@@ -61,5 +62,7 @@ public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
     }
 
     @Override
-    public boolean showValidOnlyInSwitzerland() { return true; }
+    public boolean showValidOnlyInSwitzerland() {
+        return true;
+    }
 }

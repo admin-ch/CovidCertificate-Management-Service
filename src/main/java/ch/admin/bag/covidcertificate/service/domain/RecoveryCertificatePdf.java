@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
+import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -35,7 +36,7 @@ public class RecoveryCertificatePdf extends AbstractCertificatePdf {
             LocalDate validUntil,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language, "recovery");
+        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.RECOVERY);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.dateOfFirstPositiveTestResult = dateOfFirstPositiveTestResult;

@@ -65,7 +65,7 @@ public class PdfHtmlRenderer {
         context.setVariable("creationTime", issuedAt.format(DateTimeFormatter.ofPattern("HH:mm")));
         context.setVariable("birthdate", DateHelper.formatDateOfBirth(data.getDateOfBirth()));
         context.setVariable("dateTimeFormatter", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"));
-        context.setVariable("type", data.getType());
+        context.setVariable("type", data.getType().toString());
 
         return context;
     }

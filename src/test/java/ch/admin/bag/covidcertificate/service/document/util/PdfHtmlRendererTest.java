@@ -207,7 +207,7 @@ class PdfHtmlRendererTest {
                 pdfHtmlRenderer.render(data, fixture.create(String.class), LocalDateTime.now());
 
                 assertEquals(1, mockedConstruction.constructed().size());
-                verify(mockedConstruction.constructed().get(0)).setVariable("type", data.getType());
+                verify(mockedConstruction.constructed().get(0)).setVariable("type", data.getType().toString());
             }
         }
     }

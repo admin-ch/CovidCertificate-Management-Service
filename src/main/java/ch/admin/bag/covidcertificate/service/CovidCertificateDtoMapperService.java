@@ -4,7 +4,10 @@ import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.*;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
@@ -86,6 +89,24 @@ public class CovidCertificateDtoMapperService {
         return RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
+    public RecoveryRatCertificateQrCode toRecoveryRatCertificateQrCode(RecoveryRatCertificateCreateDto createDto) {
+        RecoveryRatCertificateDataDto recoveryDataInfo = createDto.getTestInfo().get(0);
+        var testValueSet = valueSetsService.getIssuableTestDto(recoveryDataInfo.getTypeCode(), recoveryDataInfo.getManufacturerCode());
+        return RecoveryRatCertificateQrCodeMapper.toRecoveryRatCertificateQrCode(createDto, testValueSet);
+    }
+
+    public RecoveryRatCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificateCreateDto createDto, RecoveryRatCertificateQrCode qrCodeData) {
+        RecoveryRatCertificateDataDto recoveryDataInfo = createDto.getTestInfo().get(0);
+        var testValueSet = valueSetsService.getIssuableTestDto(recoveryDataInfo.getTypeCode(), recoveryDataInfo.getManufacturerCode());
+        var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
+        if (countryCode == null || countryCodeEn == null) {
+            throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
+        }
+
+        return RecoveryRatCertificatePdfMapper.toRecoveryRatCertificatePdf(createDto, testValueSet, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
+    }
+
     public AntibodyCertificateQrCode toAntibodyCertificateQrCode(AntibodyCertificateCreateDto createDto) {
         return AntibodyCertificateQrCodeMapper.toAntibodyCertificateQrCode(createDto);
     }
@@ -98,5 +119,19 @@ public class CovidCertificateDtoMapperService {
         }
 
         return AntibodyCertificatePdfMapper.toAntibodyCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
+    }
+
+    public ExceptionalCertificateQrCode toExceptionalCertificateQrCode(ExceptionalCertificateCreateDto createDto) {
+        return ExceptionalCertificateQrCodeMapper.toExceptionalCertificateQrCode(createDto);
+    }
+
+    public ExceptionalCertificatePdf toExceptionalCertificatePdf(ExceptionalCertificateCreateDto createDto,ExceptionalCertificateQrCode qrCodeData) {
+        var countryCode = valueSetsService.getCountryCode(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND, createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+        if (countryCode == null || countryCodeEn == null) {
+            throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
+        }
+
+        return ExceptionalCertificatePdfMapper.toExceptionalCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 }

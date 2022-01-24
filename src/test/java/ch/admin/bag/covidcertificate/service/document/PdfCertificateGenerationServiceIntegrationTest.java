@@ -2,6 +2,8 @@ package ch.admin.bag.covidcertificate.service.document;
 
 import ch.admin.bag.covidcertificate.api.mapper.AntibodyCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.AntibodyCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.ExceptionalCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.ExceptionalCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
@@ -11,6 +13,7 @@ import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapp
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
@@ -22,6 +25,8 @@ import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
@@ -43,6 +48,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
 import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getExceptionalCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
@@ -157,6 +163,18 @@ class PdfCertificateGenerationServiceIntegrationTest {
         doTest(pdfData, "antibody", language);
     }
 
+    private void generateDocument_exceptional(String language, String familyName, String givenName) throws Exception {
+        ExceptionalCertificateCreateDto createDto = getExceptionalCertificateCreateDto(language);
+        String country = "Schweiz";
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "familyName", familyName);
+        ReflectionTestUtils.setField(createDto.getPersonData().getName(), "givenName", givenName);
+
+        ExceptionalCertificateQrCode qrCodeData = ExceptionalCertificateQrCodeMapper.toExceptionalCertificateQrCode(createDto);
+        ExceptionalCertificatePdf pdfData = ExceptionalCertificatePdfMapper.toExceptionalCertificatePdf(createDto, qrCodeData, country, countryEn);
+
+        doTest(pdfData, "exceptional", language);
+    }
+
     @ParameterizedTest
     @MethodSource("testConfiguration")
     void generateRecoveryDocuments(String language, String familyName, String givenName) throws Exception {
@@ -193,6 +211,12 @@ class PdfCertificateGenerationServiceIntegrationTest {
         generateDocument_antibody(language, familyName, givenName);
     }
 
+    @ParameterizedTest
+    @MethodSource("testConfiguration")
+    void generateExceptionalDocuments(String language, String familyName, String givenName) throws Exception {
+        generateDocument_exceptional(language, familyName, givenName);
+    }
+
     void doTest(AbstractCertificatePdf pdfData, String filename, String language) throws Exception {
 
         var barcodePayload = "HC1:NCFOXNYTSFDHJI8-.O0:A%1W RI%.BI06%BF1WG21QKP85NPV*JVH5QWKIW18WA%NE/P3F/8X*G3M9FQH+4JZW4V/AY73CIBVQFSA36238FNB939PJ*KN%DJ3239L7BRNHKBWINEV40AT0C7LS4AZKZ73423ZQT-EJEG3LS4JXITAFK1HG%8SC91Z8YA7-TIP+PQE1W9L $N3-Q-*OGF2F%M RFUS2CPA-DG:A3AGJLC1788M7DD-I/2DBAJDAJCNB-439Y4.$SINOPK3.T4RZ4E%5MK9QM9DB9E%5:I9YHQ1FDIV4RB4VIOTNPS46UDBQEAJJKHHGQA8EL4QN9J9E6LF6JC1A5N11+N1X*8O13E20ZO8%3";
@@ -210,7 +234,7 @@ class PdfCertificateGenerationServiceIntegrationTest {
     }
 
     private static Stream<Arguments> testConfiguration() {
-        return Stream.of("de", "fr", "it", "rm").
+        return Stream.of("de","fr","it","rm").
                 flatMap(language -> Stream.of(
                         Arguments.of(language, familyNameSmall, givenNameSmall),
                         Arguments.of(language, familyNameBig, givenNameBig)

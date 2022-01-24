@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
 import ch.admin.bag.covidcertificate.api.Constants;
+import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -40,7 +41,7 @@ public class TestCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language, "test");
+        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.TEST);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.typeOfTest = typeOfTest;

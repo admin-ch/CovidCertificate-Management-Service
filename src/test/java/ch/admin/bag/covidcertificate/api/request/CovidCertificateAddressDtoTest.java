@@ -2,7 +2,6 @@ package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.Range;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -128,7 +127,7 @@ class CovidCertificateAddressDtoTest {
 
     @Nested
     @Tag("CovidCertificateAddressDtoTest.city")
-    @DisplayName("'city' can't be blank and can't exceed " + MAX_CITY_CHARS_LENGTH + " characters lenght.")
+    @DisplayName("'city' can't be blank and can't exceed " + MAX_CITY_CHARS_LENGTH + " characters length.")
     class CityTests {
 
         @ParameterizedTest

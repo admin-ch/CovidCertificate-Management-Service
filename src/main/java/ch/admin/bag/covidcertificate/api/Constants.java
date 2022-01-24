@@ -16,6 +16,10 @@ import java.time.format.DateTimeFormatter;
 public class Constants {
     // Utils
     public static final String EMPTY_STRING = "";
+    public static final String HYPHEN = "-";
+
+    public static final int MIN_NB_OF_DOSES = 1;
+    public static final int MAX_NB_OF_DOSES = 9;
 
     public static final String VERSION = "1.3.0";
     public static final String DEFAULT_DISEASE_OR_AGENT_TARGETED = "840539006";
@@ -32,9 +36,12 @@ public class Constants {
     public static final String KPI_TYPE_VACCINATION_TOURIST = "vt";
     public static final String KPI_TYPE_TEST = "t";
     public static final String KPI_TYPE_RECOVERY = "r";
+    public static final String KPI_TYPE_RECOVERY_RAT = "rr";
     public static final String KPI_TYPE_ANTIBODY = "a";
+    public static final String KPI_TYPE_EXCEPTIONAL = "me";
     public static final String KPI_TYPE_INAPP_DELIVERY = "ad";
     public static final String USER_EXT_ID_CLAIM_KEY = "userExtId";
+    public static final String PREFERRED_USERNAME_CLAIM_KEY = "preferred_username";
     public static final String KPI_UUID_KEY = "uuid";
     public static final String KPI_TIMESTAMP_KEY = "ts";
     public static final String KPI_TYPE_KEY = "type";
@@ -51,6 +58,8 @@ public class Constants {
     public static final DateTimeFormatter LOG_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     public static final ZoneId SWISS_TIMEZONE = ZoneId.of("Europe/Zurich");
 
+    public static final CreateCertificateError MISSING_PROPERTY = new CreateCertificateError(432, "Property %s is missing!", HttpStatus.BAD_REQUEST);
+
     public static final CreateCertificateError NO_VACCINATION_DATA = new CreateCertificateError(451, "No vaccination data was specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_PERSON_DATA = new CreateCertificateError(452, "No person data was specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_DATE_OF_BIRTH = new CreateCertificateError(453, "Invalid dateOfBirth! Must be younger than 1900-01-01", HttpStatus.BAD_REQUEST);
@@ -63,6 +72,7 @@ public class Constants {
     public static final CreateCertificateError NO_TEST_DATA = new CreateCertificateError(460, "No test data was specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_MEMBER_STATE_OF_TEST = new CreateCertificateError(461, "Invalid member state of test", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_TYP_OF_TEST = new CreateCertificateError(462, "Invalid type of test and manufacturer code combination! Must either be a PCR Test type and no manufacturer code or give a manufacturer code and the antigen test type code.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError ONLY_RAPID_TEST_SUPPORTED = new CreateCertificateError(462, "Only rapid antigen test is supported.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_TEST_CENTER = new CreateCertificateError(463, "Invalid testing center or facility", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_SAMPLE_DATE_TIME = new CreateCertificateError(464, "Invalid sample date time! Sample date must be before current date time", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_RECOVERY_DATA = new CreateCertificateError(465, "No recovery data specified", HttpStatus.BAD_REQUEST);
@@ -80,7 +90,12 @@ public class Constants {
     public static final CreateCertificateError INVALID_DATE_OF_BIRTH_IN_FUTURE = new CreateCertificateError(489, "Invalid dateOfBirth! Date cannot be in the future", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_ANTIBODY_DATA = new CreateCertificateError(490, "No antibody data specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ANTIBODY_SAMPLE_DATE_TIME = new CreateCertificateError(491, "Date of sample collection must not be before 16.11.2021", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError NO_EXCEPTIONAL_INFO = new CreateCertificateError(492, "No exceptional data specified", HttpStatus.BAD_REQUEST);
 
+    public static final CreateCertificateError DATE_CANT_BE_BEFORE = new CreateCertificateError(494, "Date can't be before %s!", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError DATE_CANT_BE_AFTER = new CreateCertificateError(495, "Date can't be after %s!", HttpStatus.BAD_REQUEST);
+
+    public static final CreateCertificateError TEXT_INVALID_LENGTH = new CreateCertificateError(496, "Length of property '%s'(string) can't exceed %d characters!", HttpStatus.BAD_REQUEST);
 
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
@@ -107,7 +122,6 @@ public class Constants {
     public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language does not match any of the supported languages: de, it, fr, rm, en!", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError CREATE_PDF_FAILED = new CreateCertificateError(561, "Creating PDF failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_UVCI_FAILED = new CreateCertificateError(562, "Creating UVCI failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    // TODO:mofobo: check with UBIQUE if the got the same specification
     public static final String VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX = "_T";
 
     public static final Integer EXPIRATION_PERIOD_24_MONTHS = 24;

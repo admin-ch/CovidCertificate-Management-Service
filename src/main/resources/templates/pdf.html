@@ -52,8 +52,8 @@
             <p th:text="#{qrCode.date.label}" th:class="body-text-small-en"></p>
         </td>
         <td th:switch="${type}" class="second-col">
-            <table th:case="'vaccine'" class="two-col-table">
-                <tr class="table-row">
+            <table th:case="'vaccination'" class="two-col-table">
+                <tr class="table-row" colspan="2">
                     <th th:id="health-data-header-row" th:unless="${isEvidence}">
                         <p th:text="#{vaccination.title}" class="heading no-padding"></p>
                         <p th:text="#{vaccination.title(${'en'})}" th:class="body-text-en"></p>
@@ -62,7 +62,6 @@
                         <p th:text="#{evidence.title}" class="heading no-padding"></p>
                         <p th:text="#{evidence.title(${'en'})}" th:class="body-text-en"></p>
                     </th>
-                    <th></th>
                 </tr>
                 <tr class="table-row">
                     <td class="table-row-padding">
@@ -128,7 +127,7 @@
                 </tr>
             </table>
             <table th:case="'vaccination-tourist'" class="two-col-table">
-                <tr class="table-row">
+                <tr class="table-row" colspan="2">
                     <th th:id="health-data-header-row" th:unless="${isEvidence}">
                         <p th:text="#{vaccination.title}" class="heading no-padding"></p>
                         <p th:text="#{vaccination.title(${'en'})}" th:class="body-text-en"></p>
@@ -137,7 +136,6 @@
                         <p th:text="#{evidence.title}" class="heading no-padding"></p>
                         <p th:text="#{evidence.title(${'en'})}" th:class="body-text-en"></p>
                     </th>
-                    <th></th>
                 </tr>
                 <tr class="table-row">
                     <td class="table-row-padding">
@@ -203,12 +201,11 @@
                 </tr>
             </table>
             <table th:case="'recovery'" class="two-col-table">
-                <tr class="table-row">
+                <tr class="table-row" colspan="2">
                     <th th:id="health-data-header-row">
                         <p th:text="#{recovery.title}" class="heading no-padding"></p>
                         <p th:text="#{recovery.title(${'en'})}" class="body-text-en"></p>
                     </th>
-                    <th></th>
                 </tr>
                 <tr class="table-row">
                     <td class="table-row-padding">
@@ -254,13 +251,69 @@
                     </td>
                 </tr>
             </table>
-            <table th:case="'test'" class="two-col-table">
+            <table th:case="'recovery-rat'" class="two-col-table">
                 <tr class="table-row">
+                    <th th:id="health-data-header-row" colspan="2">
+                        <p th:text="#{recovery-rat.title}" class="heading no-padding"></p>
+                        <p th:text="#{recovery-rat.title(${'en'})}" th:class="body-text-en"></p>
+                    </th>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{vaccination.disease.label}"></p>
+                        <p class="body-text-en" th:text="#{vaccination.disease.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text" th:text="#{vaccination.disease}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.type.label}"></p>
+                        <p class="body-text-en" th:text="#{test.type.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getTypeOfTest()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.nameAndManufacturer.label}"></p>
+                        <p class="body-text-en" th:text="#{test.nameAndManufacturer.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getTestNameAndManufacturer()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{recovery.firstPositiveTestResult.label}"></p>
+                        <p class="body-text-en" th:text="#{recovery.firstPositiveTestResult.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getSampleDateTime().format(dateTimeFormatter)}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.conducted.label}"></p>
+                        <p class="body-text-en" th:text="#{test.conducted.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getTestingCentreOrFacility()}"></td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{test.country.label}"></p>
+                        <p class="body-text-en" th:text="#{test.country.label(${'en'})}"></p>
+                    </td>
+                    <td>
+                        <p class="body-text no-padding" th:text="${data.getMemberStateOfTest()}"></p>
+                        <p class="body-text-en" th:text="${data.getMemberStateOfTestEn()}"></p>
+                    </td>
+                </tr>
+            </table>
+            <table th:case="'test'" class="two-col-table">
+                <tr class="table-row" colspan="2">
                     <th th:id="health-data-header-row">
                         <p th:text="#{test.title}" class="heading no-padding"></p>
                         <p th:text="#{test.title(${'en'})}" th:class="body-text-en"></p>
                     </th>
-                    <th></th>
                 </tr>
                 <tr class="table-row">
                     <td class="table-row-padding">
@@ -323,12 +376,11 @@
                 </tr>
             </table>
             <table th:case="'antibody'" class="two-col-table">
-                <tr class="table-row">
+                <tr class="table-row" colspan="2">
                     <th th:id="health-data-header-row">
                         <p th:text="#{antibody.title}" class="heading no-padding"></p>
                         <p th:text="#{antibody.title(${'en'})}" class="body-text-en"></p>
                     </th>
-                    <th></th>
                 </tr>
 
                 <tr class="table-row">
@@ -382,6 +434,51 @@
                     <td>
                         <p class="body-text no-padding" th:text="${data.getCountryOfTest()}"></p>
                         <p class="body-text-en" th:text="${data.getCountryOfTestEn()}"></p>
+                    </td>
+                </tr>
+            </table>
+            <table th:case="'exceptional'" class="two-col-table">
+                <tr class="table-row" colspan="2">
+                    <th th:id="health-data-header-row">
+                        <p th:text="#{exceptional.title}" class="heading no-padding"></p>
+                        <p th:text="#{exceptional.title(${'en'})}" class="body-text-en"></p>
+                    </th>
+                </tr>
+
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{antibody.disease.label}"></p>
+                        <p class="body-text-en" th:text="#{antibody.disease.label(${'en'})}"></p>
+                    </td>
+                    <td class="body-text" th:text="#{antibody.disease}"></td>
+                </tr>
+
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{exceptional.validFrom}"></p>
+                        <p class="body-text-en" th:text="#{exceptional.validFrom(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getValidFrom().format(dateFormatter)}"></td>
+                </tr>
+
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{exceptional.attestationIssuer}"></p>
+                        <p class="body-text-en" th:text="#{exceptional.attestationIssuer(${'en'})}"></p>
+                    </td>
+                    <td class="body-text"
+                        th:text="${data.getAttestationIssuer()}"></td>
+                </tr>
+
+                <tr class="table-row">
+                    <td class="table-row-padding">
+                        <p class="body-text no-padding" th:text="#{exceptional.country}"></p>
+                        <p class="body-text-en" th:text="#{exceptional.country(${'en'})}"></p>
+                    </td>
+                    <td>
+                        <p class="body-text no-padding" th:text="${data.getCountry()}"></p>
+                        <p class="body-text-en" th:text="${data.getCountryEn()}"></p>
                     </td>
                 </tr>
             </table>
@@ -440,22 +537,114 @@
     </tr>
 </table>
 
-<div th:id="disclaimer">
-    <th:block th:unless="${isEvidence}">
-        <p class="body-text-small" th:text="#{info.info1}"></p>
-        <p class="body-text-small" th:unless="${showValidOnlyInSwitzerland}" th:text="#{info.info2}"></p>
-        <p class="body-text-small" th:if="${showValidOnlyInSwitzerland}" th:text="#{info.info3}"></p>
-        <p class="body-text-small" th:if="${type == 'recovery'}" th:utext="#{recovery.info}"></p>
-        <p></p><!-- Keep this to separate the languages -->
-        <p class="body-text-small-en" th:text="#{info.info1(${'en'})}"></p>
-        <p class="body-text-small-en" th:unless="${showValidOnlyInSwitzerland}" th:text="#{info.info2(${'en'})}"></p>
-        <p class="body-text-small-en" th:if="${showValidOnlyInSwitzerland}" th:text="#{info.info3(${'en'})}"></p>
-        <p class="body-text-small-en" th:if="${type == 'recovery'}" th:utext="#{recovery.info(${'en'})}"></p>
+<div th:id="disclaimer" th:switch="${type}">
+    <th:block th:case="'vaccination'">
+        <p th:unless="${isEvidence}" class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p th:unless="${isEvidence}" class="body-text-small">
+            <span th:text="#{info.notTravelDocument}"></span>
+            <span th:text="#{info.getInformationBeforeTravel}"></span>
+            <span th:text="#{info.keepPaperDocument}"></span></p>
+        <p th:if="${isEvidence}" class="body-text-small" th:text="#{evidence.info}"></p>
+        <p th:unless="${isEvidence}"></p><!-- Keep this to separate the languages -->
+        <p th:unless="${isEvidence}" class="body-text-small-en"
+           th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p th:unless="${isEvidence}" class="body-text-small-en">
+            <span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span>
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
+        <p th:if="${isEvidence}" class="body-text-small-en" th:text="#{evidence.info(${'en'})}"></p>
     </th:block>
 
-    <th:block th:if="${isEvidence}">
-        <p class="body-text-small" th:text="#{evidence.info}"></p>
-        <p class="body-text-small-en" th:text="#{evidence.info(${'en'})}"></p>
+    <th:block th:case="'vaccination-tourist'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small"><span th:text="#{info.notTravelDocument}"></span>
+            <span th:text="#{info.limitedTimeValidity}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp}"></span>
+            <span th:text="#{info.keepPaperDocument}"></span>
+        </p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p class="body-text-small-en"><span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.limitedTimeValidity(${'en'})}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span>
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span>
+        </p>
+    </th:block>
+
+    <th:block th:case="'recovery'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small"><span th:text="#{info.notTravelDocument}"></span>
+            <span th:text="#{info.getInformationBeforeTravel}"></span>
+            <span th:text="#{info.keepPaperDocument}"></span></p>
+        <p class="body-text-small" th:utext="#{recovery.info}"></p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p class="body-text-small-en"><span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span>
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
+        <p class="body-text-small-en" th:utext="#{recovery.info(${'en'})}"></p>
+    </th:block>
+
+    <th:block th:case="'recovery-rat'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small"><span th:text="#{info.notTravelDocument}"></span>
+            <span th:text="#{info.limitedTimeValidity}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp}"></span>
+            <span th:text="#{info.keepPaperDocument}"></span>
+        </p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p class="body-text-small-en"><span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.limitedTimeValidity(${'en'})}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span>
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span>
+        </p>
+    </th:block>
+
+    <th:block th:case="'test'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small"><span th:text="#{info.notTravelDocument}"></span>
+            <span th:text="#{info.getInformationBeforeTravel}"></span>
+            <span th:text="#{info.keepPaperDocument}"></span></p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p class="body-text-small-en"><span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span>
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
+    </th:block>
+
+    <th:block th:case="'antibody'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small"><span th:text="#{info.notTravelDocument}"></span>
+            <span th:text="#{info.limitedTimeValidity}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp}"></span>
+            <span th:text="#{info.keepPaperDocument}"></span>
+        </p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p class="body-text-small-en"><span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.limitedTimeValidity(${'en'})}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span>
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span>
+        </p>
+    </th:block>
+
+    <th:block th:case="'exceptional'">
+        <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+        <p class="body-text-small">
+            <span th:text="#{info.notTravelDocument}"></span>
+            <span th:text="#{info.limitedTimeValidity}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp}"></span>
+            <span th:text="#{info.faceMaskMayBeRequired}"></span>
+            <span th:text="#{info.keepPaperDocument}"></span></p>
+        <p></p><!-- Keep this to separate the languages -->
+        <p class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+        <p class="body-text-small-en">
+            <span th:text="#{info.notTravelDocument(${'en'})}"></span>
+            <span th:text="#{info.limitedTimeValidity(${'en'})}"></span>
+            <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span>
+            <span th:text="#{info.faceMaskMayBeRequired(${'en'})}"></span>
+            <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
     </th:block>
 </div>
 <table th:id="app-info">
