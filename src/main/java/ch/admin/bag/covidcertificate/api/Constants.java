@@ -36,6 +36,7 @@ public class Constants {
     public static final String KPI_TYPE_VACCINATION_TOURIST = "vt";
     public static final String KPI_TYPE_TEST = "t";
     public static final String KPI_TYPE_RECOVERY = "r";
+    public static final String KPI_TYPE_RECOVERY_RAT = "rr";
     public static final String KPI_TYPE_ANTIBODY = "a";
     public static final String KPI_TYPE_EXCEPTIONAL = "me";
     public static final String KPI_TYPE_INAPP_DELIVERY = "ad";
@@ -75,6 +76,7 @@ public class Constants {
     public static final CreateCertificateError NO_TEST_DATA = new CreateCertificateError(460, "No test data was specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_MEMBER_STATE_OF_TEST = new CreateCertificateError(461, "Invalid member state of test", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_TYP_OF_TEST = new CreateCertificateError(462, "Invalid type of test and manufacturer code combination! Must either be a PCR Test type and no manufacturer code or give a manufacturer code and the antigen test type code.", HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError ONLY_RAPID_TEST_SUPPORTED = new CreateCertificateError(462, "Only rapid antigen test is supported.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_TEST_CENTER = new CreateCertificateError(463, "Invalid testing center or facility", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_SAMPLE_DATE_TIME = new CreateCertificateError(464, "Invalid sample date time! Sample date must be before current date time", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_RECOVERY_DATA = new CreateCertificateError(465, "No recovery data specified", HttpStatus.BAD_REQUEST);

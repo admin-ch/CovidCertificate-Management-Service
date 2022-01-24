@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service.domain;
 
+import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -33,7 +34,7 @@ public class ExceptionalCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language, "exceptional");
+        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.exceptional.toString());
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.validFrom = validFrom;
@@ -43,6 +44,6 @@ public class ExceptionalCertificatePdf extends AbstractCertificatePdf {
         this.issuer = issuer;
     }
 
-
+    @Override
     public boolean showValidOnlyInSwitzerland() { return true; }
 }

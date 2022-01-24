@@ -3,6 +3,18 @@ package ch.admin.bag.covidcertificate;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.Issuable;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RevocationDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
@@ -122,6 +134,44 @@ public class FixtureCustomization {
         });
     }
 
+    public static void customizeVaccinationTouristCertificateCreateDto(JFixture fixture) {
+        fixture.customise().lazyInstance(VaccinationTouristCertificateCreateDto.class, () -> {
+            var helperFixture = new JFixture();
+            customizeVaccinationTouristCertificateDataDto(helperFixture);
+            var vaccinationTouristCertificateCreateDto = helperFixture.create(VaccinationTouristCertificateCreateDto.class);
+            ReflectionTestUtils.setField(vaccinationTouristCertificateCreateDto, "language", DE);
+            return vaccinationTouristCertificateCreateDto;
+        });
+    }
+
+    private static void customizeVaccinationTouristCertificateDataDto(JFixture fixture) {
+        fixture.customise().lazyInstance(VaccinationTouristCertificateDataDto.class, () -> {
+            var numberOfDoses = fixture.create(Integer.class) % 9 + 1;
+            var totalNumberOfDoses = numberOfDoses + (int) Math.ceil(Math.random() * (9 - numberOfDoses));
+            var vaccinationTouristCertificateCreateDto = new JFixture().create(VaccinationTouristCertificateDataDto.class);
+            ReflectionTestUtils.setField(vaccinationTouristCertificateCreateDto, "numberOfDoses", numberOfDoses);
+            ReflectionTestUtils.setField(vaccinationTouristCertificateCreateDto, "totalNumberOfDoses", totalNumberOfDoses);
+            return vaccinationTouristCertificateCreateDto;
+        });
+    }
+
+    public static void customizeAntibodyCertificateCreateDto(JFixture fixture) {
+        fixture.customise().lazyInstance(AntibodyCertificateCreateDto.class, () -> {
+            var helperFixture = new JFixture();
+            var antibodyCertificateCreateDto = helperFixture.create(AntibodyCertificateCreateDto.class);
+            ReflectionTestUtils.setField(antibodyCertificateCreateDto, "language", DE);
+            return antibodyCertificateCreateDto;
+        });
+    }
+
+    public static void customizeExceptionalCertificateCreateDto(JFixture fixture) {
+        fixture.customise().lazyInstance(ExceptionalCertificateCreateDto.class, () -> {
+            var helperFixture = new JFixture();
+            var exceptionalCertificateCreateDto = helperFixture.create(ExceptionalCertificateCreateDto.class);
+            ReflectionTestUtils.setField(exceptionalCertificateCreateDto, "language", DE);
+            return exceptionalCertificateCreateDto;
+        });
+    }
     public static void customizeCreateCertificateException(JFixture fixture) {
         fixture.customise().lazyInstance(CreateCertificateException.class, () -> {
             var createCertificateError = fixture.create(CreateCertificateError.class);

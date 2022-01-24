@@ -2,8 +2,6 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
@@ -13,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 import static ch.admin.bag.covidcertificate.api.Constants.AMBIGUOUS_SIGNING_CERTIFICATE;
 import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND;
@@ -45,16 +42,7 @@ public class SigningInformationService {
     }
 
     public SigningInformation getVaccinationTouristSigningInformation(LocalDate validAt) {
-        var signingInformationList = signingInformationCacheService.findSigningInformation(SigningCertificateCategory.VACCINATION_TOURIST_CH.value, validAt);
-
-        if (signingInformationList == null || signingInformationList.isEmpty()) {
-            log.error("No signing certificate was found to sign the vaccination tourist certificate.");
-            throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
-        } else if (signingInformationList.size() > 1) {
-            log.error("Ambiguous signing certificate. Multiple signing certificates were found to sign the vaccination tourist certificate.");
-            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
-        }
-        return signingInformationList.get(0);
+        return findAndValidateSingleSigningInformation(SigningCertificateCategory.VACCINATION_TOURIST_CH, validAt, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
 
     public SigningInformation getTestSigningInformation() {
@@ -62,15 +50,7 @@ public class SigningInformationService {
     }
 
     public SigningInformation getTestSigningInformation(LocalDate validAt) {
-        var signingInformationList = signingInformationCacheService.findSigningInformation(SigningCertificateCategory.TEST.value, validAt);
-        if (signingInformationList == null || signingInformationList.isEmpty()) {
-            log.error("No signing certificate was found to sign the test certificate.");
-            throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
-        } else if (signingInformationList.size() > 1) {
-            log.error("Ambiguous signing certificate. Multiple signing certificates were found to sign the test certificate");
-            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
-        }
-        return signingInformationList.get(0);
+        return findAndValidateSingleSigningInformation(SigningCertificateCategory.TEST, validAt, "");
     }
 
     public SigningInformation getRecoverySigningInformation(RecoveryCertificateCreateDto createDto) {
@@ -79,53 +59,43 @@ public class SigningInformationService {
 
     public SigningInformation getRecoverySigningInformation(RecoveryCertificateCreateDto createDto, LocalDate validAt) {
         var countryOfTest = createDto.getRecoveryInfo().get(0).getCountryOfTest();
-        var signingCertificateCategory = SigningCertificateCategory.RECOVERY_NON_CH.value;
-        if (Objects.equals(countryOfTest, Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND)) {
-            signingCertificateCategory = SigningCertificateCategory.RECOVERY_CH.value;
+        if (Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equals(countryOfTest)) {
+            return findAndValidateSingleSigningInformation(SigningCertificateCategory.RECOVERY_CH, validAt, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
         }
-        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory, validAt);
+        return findAndValidateSingleSigningInformation(SigningCertificateCategory.RECOVERY_NON_CH, validAt, countryOfTest);
+    }
 
+    public SigningInformation getRecoveryRatSigningInformation() {
+        return getRecoveryRatSigningInformation(LocalDate.now());
+    }
+
+    public SigningInformation getRecoveryRatSigningInformation(LocalDate validAt) {
+        return findAndValidateSingleSigningInformation(SigningCertificateCategory.RECOVERY_RAT_CH, validAt, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+    }
+
+    public SigningInformation getAntibodySigningInformation() {
+        return getAntibodySigningInformation(LocalDate.now());
+    }
+
+    public SigningInformation getAntibodySigningInformation(LocalDate validAt) {
+        return findAndValidateSingleSigningInformation(SigningCertificateCategory.ANTIBODY_CH, validAt, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+    }
+
+    public SigningInformation getExceptionalSigningInformation() {
+        return getExceptionalSigningInformation(LocalDate.now());
+    }
+
+    public SigningInformation getExceptionalSigningInformation(LocalDate validAt) {
+        return findAndValidateSingleSigningInformation(SigningCertificateCategory.EXCEPTIONAL_CH, validAt, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+    }
+
+    private SigningInformation findAndValidateSingleSigningInformation(SigningCertificateCategory signingCertificateCategory, LocalDate validAt, String country) {
+        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory.value, validAt);
         if (signingInformationList == null || signingInformationList.isEmpty()) {
-            log.error("No signing certificate was found to sign the recovery certificate for positive test in {}.", countryOfTest);
+            log.error("No signing certificate was found to sign the {} certificate in {}.", signingCertificateCategory.value, country);
             throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
         } else if (signingInformationList.size() > 1) {
-            log.error("Ambiguous signing certificate. Multiple signing certificates were found for positive test in {}.", countryOfTest);
-            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
-        }
-        return signingInformationList.get(0);
-    }
-
-    public SigningInformation getAntibodySigningInformation(AntibodyCertificateCreateDto createDto) {
-        return getAntibodySigningInformation(createDto, LocalDate.now());
-    }
-
-    public SigningInformation getAntibodySigningInformation(AntibodyCertificateCreateDto createDto, LocalDate validAt) {
-        var signingCertificateCategory = SigningCertificateCategory.ANTIBODY_CH.value;
-        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory, validAt);
-
-        if (signingInformationList == null || signingInformationList.isEmpty()) {
-            log.error("No signing certificate was found to sign the antibody certificate in {}.", ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
-            throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
-        } else if (signingInformationList.size() > 1) {
-            log.error("Ambiguous signing certificate. Multiple signing certificates were found to sign the antibody certificate in {}.", ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
-            throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
-        }
-        return signingInformationList.get(0);
-    }
-
-    public SigningInformation getExceptionalSigningInformation(ExceptionalCertificateCreateDto createDto) {
-        return getExceptionalSigningInformation(createDto, LocalDate.now());
-    }
-
-    public SigningInformation getExceptionalSigningInformation(ExceptionalCertificateCreateDto createDto, LocalDate validAt) {
-        var signingCertificateCategory = SigningCertificateCategory.EXCEPTIONAL_CH.value;
-        var signingInformationList = signingInformationCacheService.findSigningInformation(signingCertificateCategory, validAt);
-
-        if (signingInformationList == null || signingInformationList.isEmpty()) {
-            log.error("No signing certificate was found to sign the antibody certificate in {}.", ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
-            throw new CreateCertificateException(SIGNING_CERTIFICATE_MISSING);
-        } else if (signingInformationList.size() > 1) {
-            log.error("Ambiguous signing certificate. Multiple signing certificates were found to sign the exceptional certificate in {}.", ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+            log.error("Ambiguous signing certificate. Multiple signing certificates were found to sign the {} certificate in {}.", signingCertificateCategory.value, country);
             throw new CreateCertificateException(AMBIGUOUS_SIGNING_CERTIFICATE);
         }
         return signingInformationList.get(0);

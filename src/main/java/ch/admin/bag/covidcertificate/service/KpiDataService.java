@@ -61,6 +61,20 @@ public class KpiDataService {
     }
 
     @Transactional
+    public void logRecoveryRatCertificateGenerationKpi(RecoveryRatCertificateCreateDto createDto, String uvci) {
+        var typeCode = Arrays.stream(TestType.values())
+                .filter(testType -> Objects.equals(testType.typeCode, createDto.getTestInfo().get(0).getTypeCode()))
+                .findFirst();
+        String typeCodeDetailString = null;
+        if (typeCode.isPresent() && typeCode.get().equals(TestType.PCR)) {
+            typeCodeDetailString = "pcr";
+        } else if (typeCode.isPresent() && typeCode.get().equals(TestType.RAPID_TEST)) {
+            typeCodeDetailString = "rapid";
+        }
+        logCertificateGenerationKpi(KPI_TYPE_RECOVERY_RAT, uvci, createDto.getSystemSource(), createDto.getUserExtId(), typeCodeDetailString, createDto.getTestInfo().get(0).getMemberStateOfTest());
+    }
+
+    @Transactional
     public void logAntibodyCertificateGenerationKpi(AntibodyCertificateCreateDto createDto, String uvci) {
         logCertificateGenerationKpi(KPI_TYPE_ANTIBODY, uvci, createDto.getSystemSource(), createDto.getUserExtId(), null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
