@@ -82,17 +82,17 @@ public class CsvService {
             throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
         }
         switch (validCertificateType) {
-            case recovery:
+            case RECOVERY:
                 return new CsvResponseDto(handleCsvRequest(file, RecoveryCertificateCsvBean.class));
-            case recovery_rat:
+            case RECOVERY_RAT:
                 return new CsvResponseDto(handleCsvRequest(file, RecoveryRatCertificateCsvBean.class));
-            case test:
+            case TEST:
                 return new CsvResponseDto(handleCsvRequest(file, TestCertificateCsvBean.class));
-            case vaccination:
+            case VACCINATION:
                 return new CsvResponseDto(handleCsvRequest(file, VaccinationCertificateCsvBean.class));
-            case vaccination_tourist:
+            case VACCINATION_TOURIST:
                 return new CsvResponseDto(handleCsvRequest(file, VaccinationTouristCertificateCsvBean.class));
-            case antibody:
+            case ANTIBODY:
                 return new CsvResponseDto(handleCsvRequest(file, AntibodyCertificateCsvBean.class));
             default:
                 throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);

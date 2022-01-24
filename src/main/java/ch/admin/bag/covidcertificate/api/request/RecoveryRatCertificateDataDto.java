@@ -29,7 +29,7 @@ import static ch.admin.bag.covidcertificate.api.request.validator.TextValidator.
 @AllArgsConstructor
 public class RecoveryRatCertificateDataDto {
 
-    private static final LocalDate LIMIT_MIN_DATE = LocalDate.of(2022, 1, 17);
+    private static final LocalDate LIMIT_MIN_DATE = LocalDate.of(2022, 1, 24);
 
     private String manufacturerCode;
 

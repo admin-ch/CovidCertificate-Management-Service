@@ -39,7 +39,7 @@ public class RecoveryRatCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language, CertificateType.recovery_rat.toString());
+        super(familyName, givenName, dateOfBirth, identifier, language, CertificateType.RECOVERY_RAT);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.typeOfTest = typeOfTest;

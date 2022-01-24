@@ -34,7 +34,7 @@ public class ExceptionalCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.exceptional.toString());
+        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.EXCEPTIONAL);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.validFrom = validFrom;

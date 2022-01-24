@@ -68,7 +68,7 @@ class CsvControllerTest {
                 .perform(multipart(B_URL)
                         .file(file)
                         .header("Authorization", fixture.create(String.class))
-                        .param("certificateType", CertificateType.recovery.name()))
+                        .param("certificateType", CertificateType.RECOVERY.name()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -91,7 +91,7 @@ class CsvControllerTest {
         mockMvc.perform(multipart(B_URL)
                         .file(file)
                         .header("Authorization", fixture.create(String.class))
-                        .param("certificateType", CertificateType.recovery.name()))
+                        .param("certificateType", CertificateType.RECOVERY.name()))
                 .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
     }
 
@@ -108,7 +108,7 @@ class CsvControllerTest {
         mockMvc.perform(multipart(B_URL)
                         .file(file)
                         .header("Authorization", fixture.create(String.class))
-                        .param("certificateType", CertificateType.recovery.name()))
+                        .param("certificateType", CertificateType.RECOVERY.name()))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(result -> assertEquals(NOT_A_CSV.toString(), result.getResponse().getContentAsString()));
     }

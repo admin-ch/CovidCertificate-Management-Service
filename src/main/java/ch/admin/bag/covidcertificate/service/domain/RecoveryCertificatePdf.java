@@ -36,7 +36,7 @@ public class RecoveryCertificatePdf extends AbstractCertificatePdf {
             LocalDate validUntil,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.recovery.toString());
+        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.RECOVERY);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.dateOfFirstPositiveTestResult = dateOfFirstPositiveTestResult;

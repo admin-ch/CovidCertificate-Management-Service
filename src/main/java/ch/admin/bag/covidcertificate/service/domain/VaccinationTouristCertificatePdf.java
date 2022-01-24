@@ -42,7 +42,7 @@ public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language, CertificateType.vaccination_tourist.toString());
+        super(familyName, givenName, dateOfBirth, identifier, language, CertificateType.VACCINATION_TOURIST);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.vaccineProphylaxis = vaccineProphylaxis;

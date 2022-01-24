@@ -34,7 +34,7 @@ public class AntibodyCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.antibody.toString());
+        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.ANTIBODY);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.sampleDate = sampleDate;
