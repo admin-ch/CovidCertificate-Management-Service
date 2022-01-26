@@ -129,7 +129,7 @@ public class RevocationController {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, null);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
-        log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, uvci), kv(USER_EXT_ID_CLAIM_KEY, relevantUserExtId));
+        log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, uvci), kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId));
         kpiLogService.saveKpiData(new KpiData(kpiTimestamp, kpiType, relevantUserExtId, uvci, null, null, systemSource.category));
     }
 
@@ -137,7 +137,7 @@ public class RevocationController {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, null);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
-        log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_TYPE_MASS_REVOCATION_CHECK), kv(USER_EXT_ID_CLAIM_KEY, relevantUserExtId));
+        log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_TYPE_MASS_REVOCATION_CHECK), kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId));
         kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_MASS_REVOCATION_CHECK, relevantUserExtId, null, null, null, systemSource.category));
     }
 }
