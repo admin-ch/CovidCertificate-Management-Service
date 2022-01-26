@@ -42,6 +42,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 @Slf4j
 public class KpiDataService {
+    public static final String SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE = "service-account-cc-api-gateway-service";
     private final KpiDataRepository logRepository;
     private final ServletJeapAuthorization jeapAuthorization;
 
@@ -105,10 +106,15 @@ public class KpiDataService {
 
     private void logCertificateGenerationKpi(String type, String uvci, String details, String country) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        if (token != null && token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY) != null) {
+        if (token != null && token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY) != null &&
+                !token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)
+                      .equalsIgnoreCase(SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE)) {
+            // the request is from Web-UI, so we need to lock
             var kpiTimestamp = LocalDateTime.now();
             writeKpiInLog(type, details, country, kpiTimestamp, token);
-            saveKpiData(new KpiData(kpiTimestamp, type, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), uvci, details, country));
+            saveKpiData(
+                    new KpiData(kpiTimestamp, type, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), uvci, details,
+                                country));
         }
     }
 
