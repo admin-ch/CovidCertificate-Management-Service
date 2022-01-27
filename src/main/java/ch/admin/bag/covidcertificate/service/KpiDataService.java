@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Optional;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND;
@@ -59,10 +57,7 @@ public class KpiDataService {
 
     @Transactional
     public void logTestCertificateGenerationKpi(TestCertificateCreateDto createDto, String uvci) {
-        var typeCode = Arrays.stream(TestType.values())
-                             .filter(testType -> Objects.equals(testType.typeCode,
-                                                                createDto.getTestInfo().get(0).getTypeCode()))
-                             .findFirst();
+        var typeCode = TestType.findByTypeCode(createDto.getTestInfo().get(0).getTypeCode());
         logCertificateGenerationKpi(KPI_TYPE_TEST,
                                     uvci,
                                     getDetails(typeCode),
@@ -109,10 +104,7 @@ public class KpiDataService {
 
     @Transactional
     public void logRecoveryRatCertificateGenerationKpi(RecoveryRatCertificateCreateDto createDto, String uvci) {
-        var typeCode = Arrays.stream(TestType.values())
-                             .filter(testType -> Objects.equals(testType.typeCode,
-                                                                createDto.getTestInfo().get(0).getTypeCode()))
-                             .findFirst();
+        var typeCode = TestType.findByTypeCode(createDto.getTestInfo().get(0).getTypeCode());
         logCertificateGenerationKpi(KPI_TYPE_RECOVERY_RAT,
                                     uvci,
                                     getDetails(typeCode),
