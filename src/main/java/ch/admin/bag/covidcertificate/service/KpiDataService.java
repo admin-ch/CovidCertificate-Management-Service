@@ -76,8 +76,6 @@ public class KpiDataService {
                     typeCodeDetailString = DETAILS_RAPID;
                     break;
             }
-        } else {
-            typeCodeDetailString = DETAILS_RAPID;
         }
         return typeCodeDetailString;
     }
