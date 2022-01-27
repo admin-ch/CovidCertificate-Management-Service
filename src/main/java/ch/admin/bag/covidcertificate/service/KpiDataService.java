@@ -141,16 +141,11 @@ public class KpiDataService {
             return;
         }
         final String claimString = token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY);
-        if (claimString != null && !claimString.equalsIgnoreCase(SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE)) {
+        if (!SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
             // the request is from Web-UI, so we need to log it
             var kpiTimestamp = LocalDateTime.now();
             writeKpiInLog(type, details, country, kpiTimestamp, token);
-            saveKpiData(new KpiData(kpiTimestamp,
-                                    type,
-                                    claimString,
-                                    uvci,
-                                    details,
-                                    country));
+            saveKpiData(new KpiData(kpiTimestamp, type, claimString, uvci, details, country));
         }
     }
 
