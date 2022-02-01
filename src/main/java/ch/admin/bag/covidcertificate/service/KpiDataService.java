@@ -75,7 +75,15 @@ public class KpiDataService {
                 case RAPID_TEST:
                     typeCodeDetailString = DETAILS_RAPID;
                     break;
+                case ANTIBODY_TEST:
+                    typeCodeDetailString = DETAILS_ANTIBODY;
+                    break;
+                case EXCEPTIONAL_TEST:
+                    typeCodeDetailString = DETAILS_MEDICAL_EXCEPTION;
+                    break;
             }
+        } else {
+            typeCodeDetailString = DETAILS_RAPID;
         }
         return typeCodeDetailString;
     }
