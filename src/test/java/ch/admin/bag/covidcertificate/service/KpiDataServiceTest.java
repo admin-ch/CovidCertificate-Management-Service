@@ -475,10 +475,10 @@ class KpiDataServiceTest {
         }
 
         @Test
-        void savesKpiDataWithNullDetails(){
+        void savesKpiDataWithNotNullDetails(){
             service.logAntibodyCertificateGenerationKpi(fixture.create(String.class));
 
-            verify(logRepository).save(argThat((KpiData kpiData)-> kpiData.getDetails()==null));
+            verify(logRepository).save(argThat((KpiData kpiData)-> kpiData.getDetails()!=null));
         }
 
         @Test
@@ -532,10 +532,10 @@ class KpiDataServiceTest {
         }
 
         @Test
-        void savesKpiDataWithNullDetails() {
+        void savesKpiDataWithNotNullDetails() {
             service.logExceptionalCertificateGenerationKpi(fixture.create(String.class));
 
-            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails() == null));
+            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails() != null));
         }
 
         @Test
