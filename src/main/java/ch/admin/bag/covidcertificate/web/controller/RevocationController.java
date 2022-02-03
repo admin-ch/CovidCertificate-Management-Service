@@ -58,14 +58,13 @@ public class RevocationController {
             return;
         }
         final String claimString = token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY);
-        if (!SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
+        if (claimString != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
+            // the request is from Web-UI, so we need to log it
             LocalDateTime kpiTimestamp = LocalDateTime.now();
             log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                     kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI),
-                     kv(KPI_UUID_KEY, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)));
+                     kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, claimString));
             kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY,
-                                                  token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), uvci, null,
-                                                  null));
+                                                  claimString, uvci, null, null));
         }
     }
 }
