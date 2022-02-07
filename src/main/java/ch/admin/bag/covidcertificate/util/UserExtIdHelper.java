@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
+import static ch.admin.bag.covidcertificate.service.KpiDataService.SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE;
 
 public class UserExtIdHelper {
 
@@ -12,11 +13,13 @@ public class UserExtIdHelper {
     }
 
     public static String extractUserExtId(Jwt token, String userExtId, SystemSource systemSource) {
-        String relevantUserExtId;
-        if (token != null && token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY) != null) {
-            relevantUserExtId = token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY);
-        } else {
-            relevantUserExtId = userExtId;
+        String relevantUserExtId = userExtId;
+
+        if (token != null) {
+            final String claimString = token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY);
+            if (!SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
+                relevantUserExtId = claimString;
+            }
         }
 
         if (relevantUserExtId == null) {

@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.Optional;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -23,6 +22,12 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 @Slf4j
 public class KpiDataService {
+    public static final String SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE = "service-account-cc-api-gateway-service";
+    public static final String DETAILS_RAPID = "rapid";
+    public static final String DETAILS_MEDICAL_EXCEPTION = "medical exception";
+    public static final String DETAILS_ANTIBODY = "antibody";
+    public static final String DETAILS_PCR = "pcr";
+
     private final KpiDataRepository logRepository;
     private final ServletJeapAuthorization jeapAuthorization;
 
@@ -33,26 +38,48 @@ public class KpiDataService {
 
     @Transactional
     public void logTestCertificateGenerationKpi(TestCertificateCreateDto createDto, String uvci) {
-        var typeCode = Arrays.stream(TestType.values())
-                .filter(testType -> Objects.equals(testType.typeCode, createDto.getTestInfo().get(0).getTypeCode()))
-                .findFirst();
+        var typeCode = TestType.findByTypeCode(createDto.getTestInfo().get(0).getTypeCode());
+        logCertificateGenerationKpi(KPI_TYPE_TEST,
+                uvci,
+                createDto.getSystemSource(),
+                createDto.getUserExtId(),
+                getDetails(typeCode),
+                createDto.getTestInfo().get(0).getMemberStateOfTest());
+    }
+
+    private String getDetails(Optional<TestType> typeCode) {
         String typeCodeDetailString = null;
-        if (typeCode.isPresent() && typeCode.get().equals(TestType.PCR)) {
-            typeCodeDetailString = "pcr";
-        } else if (typeCode.isPresent() && typeCode.get().equals(TestType.RAPID_TEST)) {
-            typeCodeDetailString = "rapid";
+        if (typeCode.isPresent()) {
+            TestType foundTestType = typeCode.get();
+            switch (foundTestType) {
+                case PCR:
+                    typeCodeDetailString = DETAILS_PCR;
+                    break;
+                case RAPID_TEST:
+                    typeCodeDetailString = DETAILS_RAPID;
+                    break;
+            }
         }
-        logCertificateGenerationKpi(KPI_TYPE_TEST, uvci, createDto.getSystemSource(), createDto.getUserExtId(), typeCodeDetailString, createDto.getTestInfo().get(0).getMemberStateOfTest());
+        return typeCodeDetailString;
     }
 
     @Transactional
     public void logVaccinationCertificateGenerationKpi(VaccinationCertificateCreateDto createDto, String uvci) {
-        logCertificateGenerationKpi(KPI_TYPE_VACCINATION, uvci, createDto.getSystemSource(), createDto.getUserExtId(), createDto.getVaccinationInfo().get(0).getMedicinalProductCode(), createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
+        logCertificateGenerationKpi(KPI_TYPE_VACCINATION, uvci,
+                createDto.getSystemSource(),
+                createDto.getUserExtId(),
+                createDto.getVaccinationInfo().get(0).getMedicinalProductCode(),
+                createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
     }
 
     @Transactional
-    public void logVaccinationTouristCertificateGenerationKpi(VaccinationTouristCertificateCreateDto createDto, String uvci) {
-        logCertificateGenerationKpi(KPI_TYPE_VACCINATION_TOURIST, uvci, createDto.getSystemSource(), createDto.getUserExtId(), createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode(), createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
+    public void logVaccinationTouristCertificateGenerationKpi(
+            VaccinationTouristCertificateCreateDto createDto, String uvci) {
+        logCertificateGenerationKpi(KPI_TYPE_VACCINATION_TOURIST, uvci,
+                createDto.getSystemSource(),
+                createDto.getUserExtId(),
+                createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode(),
+                createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
     }
 
     @Transactional
@@ -62,26 +89,33 @@ public class KpiDataService {
 
     @Transactional
     public void logRecoveryRatCertificateGenerationKpi(RecoveryRatCertificateCreateDto createDto, String uvci) {
-        var typeCode = Arrays.stream(TestType.values())
-                .filter(testType -> Objects.equals(testType.typeCode, createDto.getTestInfo().get(0).getTypeCode()))
-                .findFirst();
-        String typeCodeDetailString = null;
-        if (typeCode.isPresent() && typeCode.get().equals(TestType.PCR)) {
-            typeCodeDetailString = "pcr";
-        } else if (typeCode.isPresent() && typeCode.get().equals(TestType.RAPID_TEST)) {
-            typeCodeDetailString = "rapid";
-        }
-        logCertificateGenerationKpi(KPI_TYPE_RECOVERY_RAT, uvci, createDto.getSystemSource(), createDto.getUserExtId(), typeCodeDetailString, createDto.getTestInfo().get(0).getMemberStateOfTest());
+        var typeCode = TestType.findByTypeCode(createDto.getTestInfo().get(0).getTypeCode());
+        logCertificateGenerationKpi(KPI_TYPE_RECOVERY_RAT,
+                uvci,
+                createDto.getSystemSource(),
+                createDto.getUserExtId(),
+                getDetails(typeCode),
+                createDto.getTestInfo().get(0).getMemberStateOfTest());
     }
 
     @Transactional
     public void logAntibodyCertificateGenerationKpi(AntibodyCertificateCreateDto createDto, String uvci) {
-        logCertificateGenerationKpi(KPI_TYPE_ANTIBODY, uvci, createDto.getSystemSource(), createDto.getUserExtId(), null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+        logCertificateGenerationKpi(KPI_TYPE_ANTIBODY,
+                uvci,
+                createDto.getSystemSource(),
+                createDto.getUserExtId(),
+                DETAILS_ANTIBODY,
+                ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
 
     @Transactional
     public void logExceptionalCertificateGenerationKpi(ExceptionalCertificateCreateDto createDto, String uvci) {
-        logCertificateGenerationKpi(KPI_TYPE_EXCEPTIONAL, uvci, createDto.getSystemSource(), createDto.getUserExtId(), null, ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+        logCertificateGenerationKpi(KPI_TYPE_EXCEPTIONAL,
+                uvci,
+                createDto.getSystemSource(),
+                createDto.getUserExtId(),
+                DETAILS_MEDICAL_EXCEPTION,
+                ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
 
     private void logCertificateGenerationKpi(String type, String uvci, SystemSource systemSource, String userExtId, String details, String country) {
@@ -89,7 +123,6 @@ public class KpiDataService {
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
 
         var kpiTimestamp = LocalDateTime.now();
-
         writeKpiInLog(type, details, country, kpiTimestamp, systemSource, relevantUserExtId);
         saveKpiData(new KpiData(kpiTimestamp, type, relevantUserExtId, uvci, details, country, systemSource.category));
     }
