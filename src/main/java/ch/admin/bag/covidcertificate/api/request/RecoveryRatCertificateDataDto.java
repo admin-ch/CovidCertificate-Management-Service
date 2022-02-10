@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_OF_TEST;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TYP_OF_TEST;
 import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND;
 import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
 import static ch.admin.bag.covidcertificate.api.Constants.ONLY_RAPID_TEST_SUPPORTED;

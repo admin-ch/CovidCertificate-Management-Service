@@ -75,7 +75,15 @@ public class KpiDataService {
                 case RAPID_TEST:
                     typeCodeDetailString = DETAILS_RAPID;
                     break;
+                case ANTIBODY_TEST:
+                    typeCodeDetailString = DETAILS_ANTIBODY;
+                    break;
+                case EXCEPTIONAL_TEST:
+                    typeCodeDetailString = DETAILS_MEDICAL_EXCEPTION;
+                    break;
             }
+        } else {
+            typeCodeDetailString = DETAILS_RAPID;
         }
         return typeCodeDetailString;
     }
@@ -131,7 +139,7 @@ public class KpiDataService {
             return;
         }
         final String claimString = token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY);
-        if (!SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
+        if (claimString != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
             // the request is from Web-UI, so we need to log it
             var kpiTimestamp = LocalDateTime.now();
             writeKpiInLog(type, details, country, kpiTimestamp, token);

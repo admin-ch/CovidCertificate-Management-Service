@@ -22,7 +22,14 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_INAPP_DELIVERY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
+import static ch.admin.bag.covidcertificate.api.Constants.UNKNOWN_APP_CODE;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
@@ -51,7 +58,8 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                     .block();
             log.trace("InApp Delivery Backend Response: {}", response);
             if (response != null && response.getStatusCode().value() == 200) {
-                logKpi();
+                final String code = requestDto.getCode();
+                logKpi(code);
                 return null;
             } else {
                 throw new CreateCertificateException(APP_DELIVERY_FAILED);
@@ -74,12 +82,13 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
         }
     }
 
-    private void logKpi() {
+    private void logKpi(String code) {
         String extId = jeapAuthorization.getExtIdInAuthentication();
         if (extId != null) {
             final var kpiTimestamp = LocalDateTime.now();
-            log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_TYPE_INAPP_DELIVERY), kv(KPI_UUID_KEY, extId));
-            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_INAPP_DELIVERY, extId));
+            log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                     kv(KPI_TYPE_KEY, KPI_TYPE_INAPP_DELIVERY), kv(KPI_UUID_KEY, extId), kv(KPI_DETAILS, code));
+            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_INAPP_DELIVERY, extId, null, code, null));
         }
     }
 }
