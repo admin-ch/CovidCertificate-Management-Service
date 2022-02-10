@@ -30,6 +30,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
 import static ch.admin.bag.covidcertificate.api.Constants.UNKNOWN_APP_CODE;
+import static ch.admin.bag.covidcertificate.service.KpiDataService.SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
@@ -84,7 +85,7 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
 
     private void logKpi(String code) {
         String extId = jeapAuthorization.getExtIdInAuthentication();
-        if (extId != null) {
+        if (extId != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(extId)) {
             final var kpiTimestamp = LocalDateTime.now();
             log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
                      kv(KPI_TYPE_KEY, KPI_TYPE_INAPP_DELIVERY), kv(KPI_UUID_KEY, extId), kv(KPI_DETAILS, code));
