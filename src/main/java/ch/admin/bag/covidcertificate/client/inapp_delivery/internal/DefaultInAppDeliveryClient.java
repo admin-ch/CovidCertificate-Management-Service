@@ -23,9 +23,10 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_IN_APP_DELIVERY_CODE_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_IN_APP_DELIVERY_UVCI_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_INAPP_DELIVERY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_IN_APP_DELIVERY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
@@ -47,20 +48,20 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
     private final KpiDataService kpiLogService;
 
     @Override
-    public CreateCertificateError deliverToApp(InAppDeliveryRequestDto requestDto) {
+    public CreateCertificateError deliverToApp(String uvci, InAppDeliveryRequestDto requestDto) {
         final var uri = UriComponentsBuilder.fromHttpUrl(serviceUri).toUriString();
         log.debug("Call the InApp Delivery Backend with url {}", uri);
         try {
             var response = defaultWebClient.post()
-                    .uri(uri)
-                    .body(Mono.just(requestDto), requestDto.getClass())
-                    .retrieve()
-                    .toBodilessEntity()
-                    .block();
+                                           .uri(uri)
+                                           .body(Mono.just(requestDto), requestDto.getClass())
+                                           .retrieve()
+                                           .toBodilessEntity()
+                                           .block();
             log.trace("InApp Delivery Backend Response: {}", response);
             if (response != null && response.getStatusCode().value() == 200) {
                 final String code = requestDto.getCode();
-                logKpi(code);
+                logKpi(uvci, code);
                 return null;
             } else {
                 throw new CreateCertificateException(APP_DELIVERY_FAILED);
@@ -83,13 +84,17 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
         }
     }
 
-    private void logKpi(String code) {
+    private void logKpi(String uvci, String inAppDeliveryCode) {
         String extId = jeapAuthorization.getExtIdInAuthentication();
         if (extId != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(extId)) {
             final var kpiTimestamp = LocalDateTime.now();
-            log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                     kv(KPI_TYPE_KEY, KPI_TYPE_INAPP_DELIVERY), kv(KPI_UUID_KEY, extId), kv(KPI_DETAILS, code));
-            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_INAPP_DELIVERY, extId, null, code, null));
+            var inAppDeliveryCodeKVPair = kv(KPI_IN_APP_DELIVERY_CODE_KEY, inAppDeliveryCode);
+            var inAppDeliveryUvciPair = kv(KPI_IN_APP_DELIVERY_UVCI_KEY, uvci);
+            log.info("kpi: {} {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                     kv(KPI_TYPE_KEY, KPI_TYPE_IN_APP_DELIVERY), kv(KPI_UUID_KEY, extId),
+                     inAppDeliveryCodeKVPair, inAppDeliveryUvciPair);
+            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, extId,
+                                                  uvci, null, null, inAppDeliveryCode));
         }
     }
 }
