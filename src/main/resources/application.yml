@@ -119,8 +119,136 @@ cc-management-service:
     cron: "0 0 03 * * *" ## At 03:00 AM
   pdf:
     show-watermark: true
+  feature-toggle:
+    features:
+      #AppController
+      - uri: ping
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      #CachesController
+      - uri: caches/clear
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      #CovidCertificateGenerationController
+      - uri: covidcertificate/vaccination
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/vaccination-tourist
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/test
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/recovery
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/recovery-rat
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/antibody
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/exceptional
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/fromexisting/vaccination
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/fromexisting/vaccination-tourist
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/fromexisting/test
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/fromexisting/recovery
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/fromexisting/recovery-rat
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/fromexisting/antibody
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: covidcertificate/fromexisting/exceptional
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      #CsvController
+      - uri: covidcertificate/csv
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      #FeatureToggleController
+      - uri: feature-toggle/features
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      #OneTimePasswordController
+      - uri: otp
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      #RevocationController
+      - uri: revocation
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      #RevocationListController
+      - uri: revocation-list
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+
+      #ValueSetsController
+      - uri: valuesets
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: valuesets/rapid-tests
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: valuesets/issuable-rapid-tests
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: valuesets/vaccines
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: valuesets/issuable-vaccines
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: valuesets/issuable-vaccines/(\w|-)+
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: valuesets/countries
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
+
+      - uri: valuesets/countries/(\w|-)+
+        start: 2020-01-01T00:00:00.000Z
+        end: 2099-12-31T23:59:59.999Z
 
 cc-printing-service:
   billing:
     since-vaccination-date: 2021-07-15
+
 
