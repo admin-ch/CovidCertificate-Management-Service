@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RevocationMapper {
     public static Revocation toRevocation(RevocationDto revocationDto) {
-        return new Revocation(revocationDto.getUvci());
+        return new Revocation(revocationDto.getUvci(), revocationDto.isFraud());
     }
 }

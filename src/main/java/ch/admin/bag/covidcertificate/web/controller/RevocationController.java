@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_FRAUD;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
@@ -48,11 +49,11 @@ public class RevocationController {
         securityHelper.authorizeUser(request);
         revocationDto.validate();
         revocationService.createRevocation(revocationDto);
-        logKpi(revocationDto.getUvci());
+        logKpi(revocationDto.getUvci(), revocationDto.isFraud());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    private void logKpi(String uvci) {
+    private void logKpi(String uvci, boolean fraud) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         if (token == null) {
             return;
@@ -61,10 +62,10 @@ public class RevocationController {
         if (claimString != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
             // the request is from Web-UI, so we need to log it
             LocalDateTime kpiTimestamp = LocalDateTime.now();
-            log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                     kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, claimString));
+            log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                     kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, claimString), kv(KPI_FRAUD, fraud));
             kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY,
-                                                  claimString, uvci, null, null));
+                                                  claimString, uvci, null, null, fraud));
         }
     }
 }

@@ -1,10 +1,12 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.FixtureCustomization;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.domain.Revocation;
 import ch.admin.bag.covidcertificate.domain.RevocationRepository;
 import com.flextrade.jfixture.JFixture;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,12 +18,13 @@ import java.util.List;
 import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RevocationServiceTest {
-    private final JFixture jFixture = new JFixture();
+    private static final JFixture jFixture = new JFixture();
     @Mock
     private RevocationRepository revocationRepository;
     @InjectMocks
@@ -29,13 +32,28 @@ class RevocationServiceTest {
 
     @Test
     void whenCreateRevocation_thenOk() {
+        FixtureCustomization.customizeRevocationDto(jFixture, false);
         // given
         RevocationDto revocationDto = jFixture.create(RevocationDto.class);
         when(revocationRepository.saveAndFlush(any(Revocation.class))).thenReturn(any(Revocation.class));
         // when
         revocationService.createRevocation(revocationDto);
         // then
-        verify(revocationRepository).saveAndFlush(any(Revocation.class));
+        verify(revocationRepository).saveAndFlush(argThat((Revocation revocation) ->
+                revocation.isFraud()==false && revocationDto.getUvci().equals(revocation.getUvci())));
+    }
+
+    @Test
+    void whenCreateFraudRevocation_thenOk() {
+        FixtureCustomization.customizeRevocationDto(jFixture, true);
+        // given
+        RevocationDto revocationDto = jFixture.create(RevocationDto.class);
+        when(revocationRepository.saveAndFlush(any(Revocation.class))).thenReturn(any(Revocation.class));
+        // when
+        revocationService.createRevocation(revocationDto);
+        // then
+        verify(revocationRepository).saveAndFlush(argThat((Revocation revocation) ->
+                revocation.isFraud()==true && revocationDto.getUvci().equals(revocation.getUvci())));
     }
 
     @Test
