@@ -1,6 +1,8 @@
 package ch.admin.bag.covidcertificate.config.featureToggle;
 
+import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.FeatureToggleException;
+import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,6 +16,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CERTIFICATE_TYPE;
+
 @Slf4j
 @Data
 @Configuration
@@ -26,10 +30,22 @@ public class FeatureToggleInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
+        Optional<FeatureData> feature;
 
-        Optional<FeatureData> feature = features.stream()
-                .filter(f -> f.matchesUri(uri))
-                .findFirst();
+        if (uri.equals("/api/v1/covidcertificate/csv")) {
+            try {
+                CertificateType certificateType = CertificateType.fromString(request.getParameter("certificateType"));
+                feature = features.stream()
+                        .filter(f -> f.getType().equals(certificateType))
+                        .findAny();
+            } catch (IllegalArgumentException e) {
+                throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
+            }
+        } else {
+            feature = features.stream()
+                    .filter(f -> f.matchesUris(uri))
+                    .findFirst();
+        }
 
         if (feature.isPresent() && !feature.get().isActive()) {
             throw new FeatureToggleException(uri);
@@ -37,4 +53,5 @@ public class FeatureToggleInterceptor implements HandlerInterceptor {
 
         return true;
     }
+
 }

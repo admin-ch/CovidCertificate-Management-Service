@@ -1,9 +1,9 @@
 info:
-    build:
-        artifact: '@project.artifactId@'
-        description: '@project.description@'
-        name: '@project.name@'
-        version: '@project.version@'
+  build:
+    artifact: '@project.artifactId@'
+    description: '@project.description@'
+    name: '@project.name@'
+    version: '@project.version@'
 logging:
   level:
     ch:
@@ -47,55 +47,55 @@ logging:
   file:
     name: log.log
 server:
-    port: 8120
-    servlet:
-        context-path: /
+  port: 8120
+  servlet:
+    context-path: /
 spring:
-    application:
-        name: cc-management-service
-    datasource:
-        url: jdbc:postgresql://localhost:3120/cc-management
-        # Only for local development
-        username: cc-management
-        password: secret
-        type: com.zaxxer.hikari.HikariDataSource
-        driver-class-name: org.postgresql.Driver
-        hikari:
-            maximum-pool-size: 10
-            pool-name: hikari-cp-${spring.application.name}
-    jpa:
-        hibernate:
-            ddl-auto: validate
-        properties:
-            hibernate:
-                dialect: org.hibernate.dialect.PostgreSQL10Dialect
-        show-sql: false
-        open-in-view: false
-    flyway:
-        enabled: true
-        clean-on-validation-error: false
-        locations: classpath:db/migration/common, classpath:db/migration/postgresql
-    jackson:
-      serialization:
-        write_dates_as_timestamps: false
-    messages:
-        basename: mail-messages,validation-messages
-        encoding: UTF-8
-        fallback-to-system-locale: false
+  application:
+    name: cc-management-service
+  datasource:
+    url: jdbc:postgresql://localhost:3120/cc-management
+    # Only for local development
+    username: cc-management
+    password: secret
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      pool-name: hikari-cp-${spring.application.name}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: false
+    open-in-view: false
+  flyway:
+    enabled: true
+    clean-on-validation-error: false
+    locations: classpath:db/migration/common, classpath:db/migration/postgresql
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+  messages:
+    basename: mail-messages,validation-messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
 
-    servlet:
-        multipart:
-            max-file-size: 10MB
-            max-request-size: 10MB
-    session:
-        store-type: none
-    data:
-        rest:
-            base-path: /api
-            max-page-size: 100
-            default-page-size: 20
-    main:
-        banner-mode: off
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  session:
+    store-type: none
+  data:
+    rest:
+      base-path: /api
+      max-page-size: 100
+      default-page-size: 20
+  main:
+    banner-mode: off
 
 management:
   endpoints:
@@ -121,131 +121,30 @@ cc-management-service:
     show-watermark: true
   feature-toggle:
     features:
-      #AppController
-      - uri: ping
-        start: 2020-01-01T00:00:00.000Z
+      - type: vaccination-tourist
+        uris:
+          - covidcertificate/vaccination-tourist
+        start: 2022-02-15T00:00:00.000Z
         end: 2099-12-31T23:59:59.999Z
 
-      #CachesController
-      - uri: caches/clear
-        start: 2020-01-01T00:00:00.000Z
+      - type: test
+        uris:
+          - covidcertificate/test
+        start: 2022-02-15T00:00:00.000Z
         end: 2099-12-31T23:59:59.999Z
 
-      #CovidCertificateGenerationController
-      - uri: covidcertificate/vaccination
-        start: 2020-01-01T00:00:00.000Z
+      - type: antibody
+        uris:
+          - covidcertificate/antibody
+        start: 2022-02-15T00:00:00.000Z
         end: 2099-12-31T23:59:59.999Z
 
-      - uri: covidcertificate/vaccination-tourist
-        start: 2020-01-01T00:00:00.000Z
+      - type: exceptional
+        uris:
+          - covidcertificate/exceptional
+        start: 2022-02-15T00:00:00.000Z
         end: 2099-12-31T23:59:59.999Z
 
-      - uri: covidcertificate/test
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/recovery
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/recovery-rat
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/antibody
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/exceptional
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/fromexisting/vaccination
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/fromexisting/vaccination-tourist
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/fromexisting/test
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/fromexisting/recovery
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/fromexisting/recovery-rat
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/fromexisting/antibody
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: covidcertificate/fromexisting/exceptional
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      #CsvController
-      - uri: covidcertificate/csv
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      #FeatureToggleController
-      - uri: feature-toggle/features
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      #OneTimePasswordController
-      - uri: otp
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      #RevocationController
-      - uri: revocation
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      #RevocationListController
-      - uri: revocation-list
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-
-      #ValueSetsController
-      - uri: valuesets
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: valuesets/rapid-tests
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: valuesets/issuable-rapid-tests
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: valuesets/vaccines
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: valuesets/issuable-vaccines
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: valuesets/issuable-vaccines/(\w|-)+
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: valuesets/countries
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
-
-      - uri: valuesets/countries/(\w|-)+
-        start: 2020-01-01T00:00:00.000Z
-        end: 2099-12-31T23:59:59.999Z
 
 cc-printing-service:
   billing:
