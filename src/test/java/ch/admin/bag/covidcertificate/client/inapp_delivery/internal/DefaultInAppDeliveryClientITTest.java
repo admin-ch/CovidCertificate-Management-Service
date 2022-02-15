@@ -9,8 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import static ch.admin.bag.covidcertificate.FixtureCustomization.createUVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(properties = {
         "spring.jpa.hibernate.ddl-auto=create",
@@ -34,7 +37,7 @@ class DefaultInAppDeliveryClientITTest {
     void deliverToApp_invalid() {
         var requestDto = new InAppDeliveryRequestDto("test", "test", "test");
         CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                () -> client.deliverToApp(requestDto));
+                                                            () -> client.deliverToApp(createUVCI(), requestDto));
 
         assertEquals(APP_DELIVERY_FAILED,exception.getError());
     }
@@ -42,6 +45,6 @@ class DefaultInAppDeliveryClientITTest {
     @Test
     void deliverToApp_valid() {
         var requestDto = new InAppDeliveryRequestDto(validTestCode, "test", "test");
-        assertDoesNotThrow(() -> client.deliverToApp(requestDto));
+        assertDoesNotThrow(() -> client.deliverToApp(createUVCI(), requestDto));
     }
 }
