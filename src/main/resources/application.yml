@@ -125,25 +125,25 @@ cc-management-service:
         uris:
           - covidcertificate/vaccination-tourist
         start: 2020-01-01T00:00:00.000Z
-        end: 2022-02-15T00:00:00.000Z
+        end: 2022-02-16T00:00:00.000Z
 
       - type: recovery-rat
         uris:
           - covidcertificate/recovery-rat
         start: 2020-01-01T00:00:00.000Z
-        end: 2022-02-15T00:00:00.000Z
+        end: 2022-02-16T00:00:00.000Z
 
       - type: antibody
         uris:
           - covidcertificate/antibody
         start: 2020-01-01T00:00:00.000Z
-        end: 2022-02-15T00:00:00.000Z
+        end: 2022-02-16T00:00:00.000Z
 
       - type: exceptional
         uris:
           - covidcertificate/exceptional
         start: 2020-01-01T00:00:00.000Z
-        end: 2022-02-15T00:00:00.000Z
+        end: 2022-02-16T00:00:00.000Z
 
 
 cc-printing-service:
