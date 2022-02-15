@@ -1,9 +1,9 @@
 info:
-    build:
-        artifact: '@project.artifactId@'
-        description: '@project.description@'
-        name: '@project.name@'
-        version: '@project.version@'
+  build:
+    artifact: '@project.artifactId@'
+    description: '@project.description@'
+    name: '@project.name@'
+    version: '@project.version@'
 logging:
   level:
     ch:
@@ -47,55 +47,55 @@ logging:
   file:
     name: log.log
 server:
-    port: 8120
-    servlet:
-        context-path: /
+  port: 8120
+  servlet:
+    context-path: /
 spring:
-    application:
-        name: cc-management-service
-    datasource:
-        url: jdbc:postgresql://localhost:3120/cc-management
-        # Only for local development
-        username: cc-management
-        password: secret
-        type: com.zaxxer.hikari.HikariDataSource
-        driver-class-name: org.postgresql.Driver
-        hikari:
-            maximum-pool-size: 10
-            pool-name: hikari-cp-${spring.application.name}
-    jpa:
-        hibernate:
-            ddl-auto: validate
-        properties:
-            hibernate:
-                dialect: org.hibernate.dialect.PostgreSQL10Dialect
-        show-sql: false
-        open-in-view: false
-    flyway:
-        enabled: true
-        clean-on-validation-error: false
-        locations: classpath:db/migration/common, classpath:db/migration/postgresql
-    jackson:
-      serialization:
-        write_dates_as_timestamps: false
-    messages:
-        basename: mail-messages,validation-messages
-        encoding: UTF-8
-        fallback-to-system-locale: false
+  application:
+    name: cc-management-service
+  datasource:
+    url: jdbc:postgresql://localhost:3120/cc-management
+    # Only for local development
+    username: cc-management
+    password: secret
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      pool-name: hikari-cp-${spring.application.name}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: false
+    open-in-view: false
+  flyway:
+    enabled: true
+    clean-on-validation-error: false
+    locations: classpath:db/migration/common, classpath:db/migration/postgresql
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+  messages:
+    basename: mail-messages,validation-messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
 
-    servlet:
-        multipart:
-            max-file-size: 10MB
-            max-request-size: 10MB
-    session:
-        store-type: none
-    data:
-        rest:
-            base-path: /api
-            max-page-size: 100
-            default-page-size: 20
-    main:
-        banner-mode: off
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  session:
+    store-type: none
+  data:
+    rest:
+      base-path: /api
+      max-page-size: 100
+      default-page-size: 20
+  main:
+    banner-mode: off
 
 management:
   endpoints:
@@ -119,8 +119,35 @@ cc-management-service:
     cron: "0 0 03 * * *" ## At 03:00 AM
   pdf:
     show-watermark: true
+  feature-toggle:
+    features:
+      - type: vaccination-tourist
+        uris:
+          - covidcertificate/vaccination-tourist
+        start: 2020-01-01T00:00:00.000Z
+        end: 2022-02-16T00:00:00.000Z
+
+      - type: recovery-rat
+        uris:
+          - covidcertificate/recovery-rat
+        start: 2020-01-01T00:00:00.000Z
+        end: 2022-02-16T00:00:00.000Z
+
+      - type: antibody
+        uris:
+          - covidcertificate/antibody
+        start: 2020-01-01T00:00:00.000Z
+        end: 2022-02-16T00:00:00.000Z
+
+      - type: exceptional
+        uris:
+          - covidcertificate/exceptional
+        start: 2020-01-01T00:00:00.000Z
+        end: 2022-02-16T00:00:00.000Z
+
 
 cc-printing-service:
   billing:
     since-vaccination-date: 2021-07-15
+
 
