@@ -127,9 +127,9 @@ cc-management-service:
         start: 2022-02-15T00:00:00.000Z
         end: 2099-12-31T23:59:59.999Z
 
-      - type: test
+      - type: recovery-rat
         uris:
-          - covidcertificate/test
+          - covidcertificate/recovery-rat
         start: 2022-02-15T00:00:00.000Z
         end: 2099-12-31T23:59:59.999Z
 
