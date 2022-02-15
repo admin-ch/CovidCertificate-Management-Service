@@ -23,11 +23,9 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_IN_APP_DELIVERY_CODE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_IN_APP_DELIVERY_UVCI_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_INAPP_DELIVERY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_IN_APP_DELIVERY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
@@ -97,10 +95,6 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                      inAppDeliveryCodeKVPair, inAppDeliveryUvciPair);
             kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, extId,
                                                   uvci, null, null, inAppDeliveryCode));
-xxx
-            log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                    kv(KPI_TYPE_KEY, KPI_TYPE_INAPP_DELIVERY), kv(KPI_UUID_KEY, extId), kv(KPI_DETAILS, code));
-            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_INAPP_DELIVERY, extId, null, code, null, false));
         }
     }
 }
