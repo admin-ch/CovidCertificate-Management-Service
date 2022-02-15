@@ -39,7 +39,9 @@ public class Constants {
     public static final String KPI_TYPE_RECOVERY_RAT = "rr";
     public static final String KPI_TYPE_ANTIBODY = "a";
     public static final String KPI_TYPE_EXCEPTIONAL = "me";
-    public static final String KPI_TYPE_INAPP_DELIVERY = "ad";
+    public static final String KPI_TYPE_IN_APP_DELIVERY = "ad";
+    public static final String KPI_IN_APP_DELIVERY_CODE_KEY = "code";
+    public static final String KPI_IN_APP_DELIVERY_UVCI_KEY = "uvci";
     public static final String USER_EXT_ID_CLAIM_KEY = "userExtId";
     public static final String PREFERRED_USERNAME_CLAIM_KEY = "preferred_username";
     public static final String KPI_UUID_KEY = "uuid";

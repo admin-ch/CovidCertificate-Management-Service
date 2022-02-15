@@ -37,6 +37,7 @@ import java.time.ZonedDateTime;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 
 public class FixtureCustomization {
+
     public static void customizeIssuableVaccineDto(JFixture fixture) {
         fixture.customise().lazyInstance(IssuableVaccineDto.class, () -> new IssuableVaccineDto(
                 fixture.create(String.class), fixture.create(String.class),
@@ -184,7 +185,7 @@ public class FixtureCustomization {
         fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), fraud));
     }
 
-    private static String createUVCI() {
+    public static String createUVCI() {
         return "urn:uvci:01:CH:" + RandomStringUtils.randomAlphanumeric(24).toUpperCase();
     }
 
