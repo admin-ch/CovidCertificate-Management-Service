@@ -8,7 +8,6 @@ import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
@@ -207,8 +206,9 @@ public class CovidCertificateGenerationService {
         if (createDto.sendToPrint()) {
             printQueueClient.sendPrintJob(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
         } else if (createDto.sendToApp()) {
-            var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getAppCode(), code.getPayload(), Base64.getEncoder().encodeToString(pdf));
-            var createError = this.inAppDeliveryClient.deliverToApp(inAppDeliveryDto); // null if no error
+            var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getAppCode(), code.getPayload(),
+                                                               Base64.getEncoder().encodeToString(pdf));
+            var createError = this.inAppDeliveryClient.deliverToApp(uvci, inAppDeliveryDto); // null if no error
             responseDto.setAppDeliveryError(createError);
         }
         return responseDto;

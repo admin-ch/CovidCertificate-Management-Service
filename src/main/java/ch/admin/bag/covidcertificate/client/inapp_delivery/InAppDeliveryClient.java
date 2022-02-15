@@ -10,5 +10,6 @@ public interface InAppDeliveryClient {
      *
      * @param requestDto - data to be sent to the app.
      */
-    CreateCertificateError deliverToApp(InAppDeliveryRequestDto requestDto) throws CreateCertificateException;
+    CreateCertificateError deliverToApp(String uvci, InAppDeliveryRequestDto requestDto)
+            throws CreateCertificateException;
 }

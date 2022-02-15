@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 @Profile(ProfileRegistry.INAPP_DELIVERY_SERVICE_MOCK)
 public class MockInAppDeliveryClient implements InAppDeliveryClient {
     @Override
-    public CreateCertificateError deliverToApp(InAppDeliveryRequestDto requestDto) throws CreateCertificateException {
+    public CreateCertificateError deliverToApp(String uvci, InAppDeliveryRequestDto requestDto)
+            throws CreateCertificateException {
+
         log.info("Call the mock InApp delivery service");
         return null;
     }
