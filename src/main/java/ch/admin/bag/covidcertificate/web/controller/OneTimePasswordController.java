@@ -17,7 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_OTP_SYSTEM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
+import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RestController
@@ -45,7 +51,10 @@ public class OneTimePasswordController {
         String otp = customTokenProvider.createToken(token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), token.getClaimAsString("homeName"));
         LocalDateTime kpiTimestamp = LocalDateTime.now();
         log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, ZonedDateTime.now(SWISS_TIMEZONE).format(LOG_FORMAT)), kv(KPI_OTP_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)));
-        kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_OTP_SYSTEM_KEY, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), SystemSource.WebUI.category));
+        kpiLogService.saveKpiData(
+                new KpiData.KpiDataBuilder(kpiTimestamp, KPI_OTP_SYSTEM_KEY, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), SystemSource.WebUI.category)
+                        .build()
+        );
         return otp;
     }
 

@@ -1,6 +1,13 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.api.request.*;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
@@ -15,7 +22,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_COUNTRY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_CREATE_CERTIFICATE_SYSTEM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_ANTIBODY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_EXCEPTIONAL;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY_RAT;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_TOURIST;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
@@ -58,7 +79,15 @@ public class KpiDataService {
                 case RAPID_TEST:
                     typeCodeDetailString = DETAILS_RAPID;
                     break;
+                case ANTIBODY_TEST:
+                    typeCodeDetailString = DETAILS_ANTIBODY;
+                    break;
+                case EXCEPTIONAL_TEST:
+                    typeCodeDetailString = DETAILS_MEDICAL_EXCEPTION;
+                    break;
             }
+        } else {
+            typeCodeDetailString = DETAILS_RAPID;
         }
         return typeCodeDetailString;
     }
@@ -124,7 +153,13 @@ public class KpiDataService {
 
         var kpiTimestamp = LocalDateTime.now();
         writeKpiInLog(type, details, country, kpiTimestamp, systemSource, relevantUserExtId);
-        saveKpiData(new KpiData(kpiTimestamp, type, relevantUserExtId, uvci, details, country, systemSource.category));
+        saveKpiData(
+                new KpiData.KpiDataBuilder(kpiTimestamp, type, relevantUserExtId, systemSource.category)
+                        .withUvci(uvci)
+                        .withDetails(details)
+                        .withCountry(country)
+                        .build()
+        );
     }
 
 

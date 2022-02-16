@@ -3,7 +3,12 @@ package ch.admin.bag.covidcertificate.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -23,8 +28,11 @@ public class KpiData {
     String country;
     String systemSource;
     String apiGatewayId;
+    @Column(name = "in_app_delivery_code")
+    String inAppDeliveryCode;
 
-    public KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country, String systemSource) {
+    private KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country, String systemSource,
+                    String inAppDeliveryCode) {
         this.timestamp = timestamp;
         this.type = type;
         this.value = value;
@@ -32,12 +40,48 @@ public class KpiData {
         this.details = details;
         this.country = country;
         this.systemSource = systemSource;
+        this.inAppDeliveryCode = inAppDeliveryCode;
     }
 
-    public KpiData(LocalDateTime timestamp, String type, String value, String systemSource) {
-        this.timestamp = timestamp;
-        this.type = type;
-        this.value = value;
-        this.systemSource = systemSource;
+    public static class KpiDataBuilder {
+        LocalDateTime timestamp;
+        String type;
+        String value;
+        String systemSource;
+        String uvci;
+        String details;
+        String country;
+        String inAppDeliveryCode;
+
+        public KpiDataBuilder(LocalDateTime timestamp, String type, String value, String systemSource) {
+            this.timestamp = timestamp;
+            this.type = type;
+            this.value = value;
+            this.systemSource = systemSource;
+        }
+
+        public KpiDataBuilder withUvci(String uvci) {
+            this.uvci = uvci;
+            return this;
+        }
+
+        public KpiDataBuilder withDetails(String details) {
+            this.details = details;
+            return this;
+        }
+
+        public KpiDataBuilder withCountry(String country) {
+            this.country = country;
+            return this;
+        }
+
+        public KpiDataBuilder withInAppDeliveryCode(String inAppDeliveryCode) {
+            this.inAppDeliveryCode = inAppDeliveryCode;
+            return this;
+        }
+
+        public KpiData build() {
+            return new KpiData(timestamp, type, value, uvci, details, country, systemSource, inAppDeliveryCode);
+        }
     }
 }

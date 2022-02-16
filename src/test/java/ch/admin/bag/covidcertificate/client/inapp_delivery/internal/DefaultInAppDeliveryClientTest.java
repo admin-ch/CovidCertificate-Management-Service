@@ -16,11 +16,18 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 
+import static ch.admin.bag.covidcertificate.FixtureCustomization.createUVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
 import static ch.admin.bag.covidcertificate.api.Constants.UNKNOWN_APP_CODE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class DefaultInAppDeliveryClientTest {
 
@@ -56,7 +63,9 @@ class DefaultInAppDeliveryClientTest {
     void doesSendInAppDeliverySuccessfully() {
         mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(200));
 
-        var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
+        var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
+                createUVCI(),
+                this.requestDto));
         assertNull(deliveryStatus);
     }
 
@@ -64,7 +73,9 @@ class DefaultInAppDeliveryClientTest {
     void throwsException__ifResponseCode418() {
         mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(418));
 
-        var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
+        var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
+                createUVCI(),
+                this.requestDto));
         assertEquals(UNKNOWN_APP_CODE, deliveryStatus);
     }
 
@@ -72,7 +83,9 @@ class DefaultInAppDeliveryClientTest {
     void returnsTechnicalError__ifResponseCode500() {
         mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(500));
 
-        var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
+        var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
+                createUVCI(),
+                this.requestDto));
         assertEquals(APP_DELIVERY_FAILED, deliveryStatus);
     }
 
@@ -80,7 +93,9 @@ class DefaultInAppDeliveryClientTest {
     void throwsException__ifServiceUnreachable() {
         ReflectionTestUtils.setField(this.inAppDeliveryClient, "serviceUri", "http://127.0.0.1");
 
-        var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
+        var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
+                createUVCI(),
+                this.requestDto));
         assertEquals(APP_DELIVERY_FAILED, deliveryStatus);
     }
 
@@ -89,7 +104,9 @@ class DefaultInAppDeliveryClientTest {
         when(jeapAuthorization.getExtIdInAuthentication()).thenReturn("test_ext_id");
         mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(200));
 
-        assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(this.requestDto));
+        assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
+                createUVCI(),
+                this.requestDto));
         verify(kpiLogService, times(1)).saveKpiData(any());
     }
 

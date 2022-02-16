@@ -18,7 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -28,7 +32,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.ALREADY_REVOKED_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_CHECK;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_FAILURE;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_REDUNDANT;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_SUCCESS;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
+import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RestController
@@ -130,14 +147,21 @@ public class RevocationController {
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, null);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
         log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, uvci), kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId));
-        kpiLogService.saveKpiData(new KpiData(kpiTimestamp, kpiType, relevantUserExtId, uvci, null, null, systemSource.category));
+        kpiLogService.saveKpiData(
+                new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, relevantUserExtId, systemSource.category)
+                        .withUvci(uvci)
+                        .build()
+        );
     }
 
     private void logRevocationCheckKpi(String userExtId, SystemSource systemSource) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, null);
+        String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
         log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_TYPE_MASS_REVOCATION_CHECK), kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId));
-        kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_MASS_REVOCATION_CHECK, relevantUserExtId, null, null, null, systemSource.category));
+        kpiLogService.saveKpiData(
+                new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_MASS_REVOCATION_CHECK, relevantUserExtId, systemSource.category)
+                        .build()
+        );
     }
 }

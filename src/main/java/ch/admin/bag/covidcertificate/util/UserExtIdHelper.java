@@ -17,7 +17,7 @@ public class UserExtIdHelper {
 
         if (token != null) {
             final String claimString = token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY);
-            if (!SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
+            if (claimString != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
                 relevantUserExtId = claimString;
             }
         }
