@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/feature-toggle")
 @RequiredArgsConstructor
 @Slf4j
 public class FeatureToggleController {
