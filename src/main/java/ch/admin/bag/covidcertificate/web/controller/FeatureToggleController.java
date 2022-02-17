@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -16,11 +17,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class FeatureToggleController {
+
     private final FeatureToggleInterceptor featureToggle;
+    private final SecurityHelper securityHelper;
 
     @GetMapping("/features")
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<FeatureData> getFeatures() {
+    public List<FeatureData> getFeatures(HttpServletRequest request) {
+        log.info("Call getting all configured features");
+        securityHelper.authorizeUser(request);
         return featureToggle.getFeatures();
     }
 }
