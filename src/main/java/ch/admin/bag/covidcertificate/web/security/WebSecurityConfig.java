@@ -34,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             "/v3/api-docs/**",
                             "/api/v1/revocation-list",
                             "/api/v1/ping",
-                            "/api/v1/feature-toggle/features").
+                            "/api/v1/features").
                     and().
                     authorizeRequests().anyRequest().permitAll();
     }
