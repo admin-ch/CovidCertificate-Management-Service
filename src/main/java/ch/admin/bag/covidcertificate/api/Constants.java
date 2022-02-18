@@ -110,6 +110,8 @@ public class Constants {
     public static final CreateCertificateError INVALID_CREATE_REQUESTS = new CreateCertificateError(485, "One or more of the requests in the CSV contain invalid data. For more detailed error messages check the returned CSV", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_APP_CODE_CHECKSUM = new CreateCertificateError(486, "Invalid app code, check input.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_APP_CODE_LENGTH = new CreateCertificateError(487, "Incorrect input, the code consists of 9 characters.", HttpStatus.BAD_REQUEST);
+    public static final FeatureToggleError FEATURE_DEACTIVATED = new FeatureToggleError(488, "Feature zur URI %s ist deaktiviert", HttpStatus.FORBIDDEN);
+
 
     public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550, "Creating COSE protected header failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_COSE_PAYLOAD_FAILED = new CreateCertificateError(551, "Creating COSE payload failed.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -130,7 +132,4 @@ public class Constants {
 
     public static final Integer EXPIRATION_PERIOD_24_MONTHS = 24;
     public static final Integer EXPIRATION_PERIOD_30_DAYS = 30;
-
-    public static final FeatureToggleError FEATURE_DEACTIVATED = new FeatureToggleError(601, "Feature zur URI %s ist deaktiviert", HttpStatus.FORBIDDEN);
-
 }
