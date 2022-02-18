@@ -16,11 +16,9 @@ public class FeatureToggleError implements Serializable {
 
     @Override
     public String toString() {
-        return "FeatureToggleError{" +
-                "errorCode=" + errorCode +
-                ", errorMessage='" + errorMessage + '\'' +
-                ", httpStatus=" + httpStatus +
-                '}';
+        return "{\"errorCode\":" + errorCode + "," +
+                "\"errorMessage\":\"" + errorMessage + "\"," +
+                "\"httpStatus\":\"" + httpStatus.name() + "\"}";
     }
 
     @Override
