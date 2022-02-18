@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +18,8 @@ public class RevocationDto {
     private static final String REGEX_UVCI = "^urn:uvci:01:CH:[A-Z0-9]{24}$";
 
     private String uvci;
+
+    private boolean fraud;
 
     public void validate() {
         if (uvci == null || !uvci.matches(REGEX_UVCI)) {

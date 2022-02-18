@@ -69,7 +69,7 @@ class RevocationControllerSecurityTest {
 
     @BeforeAll
     private static void setup() throws Exception {
-        customizeRevocationDto(fixture);
+        customizeRevocationDto(fixture, false);
 
         wireMockServer.start();
         wireMockServer.stubFor(WireMock.get(urlPathEqualTo("/.well-known/jwks.json")).willReturn(aResponse()

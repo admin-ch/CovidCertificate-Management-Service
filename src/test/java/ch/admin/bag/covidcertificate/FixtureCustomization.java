@@ -181,8 +181,8 @@ public class FixtureCustomization {
         });
     }
 
-    public static void customizeRevocationDto(JFixture fixture) {
-        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI()));
+    public static void customizeRevocationDto(JFixture fixture, boolean fraud) {
+        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), fraud));
     }
 
     public static String createUVCI() {

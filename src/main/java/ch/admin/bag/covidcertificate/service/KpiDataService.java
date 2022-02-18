@@ -143,7 +143,7 @@ public class KpiDataService {
             // the request is from Web-UI, so we need to log it
             var kpiTimestamp = LocalDateTime.now();
             writeKpiInLog(type, details, country, kpiTimestamp, token);
-            saveKpiData(new KpiData(kpiTimestamp, type, claimString, uvci, details, country));
+            saveKpiData(new KpiData(kpiTimestamp, type, claimString, uvci, details, country, false));
         }
     }
 
