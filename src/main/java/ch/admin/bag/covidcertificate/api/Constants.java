@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
+import ch.admin.bag.covidcertificate.api.exception.FeatureToggleError;
 import ch.admin.bag.covidcertificate.api.exception.RevocationError;
 import ch.admin.bag.covidcertificate.api.exception.ValueSetError;
 import lombok.AccessLevel;
@@ -129,4 +130,7 @@ public class Constants {
 
     public static final Integer EXPIRATION_PERIOD_24_MONTHS = 24;
     public static final Integer EXPIRATION_PERIOD_30_DAYS = 30;
+
+    public static final FeatureToggleError FEATURE_DEACTIVATED = new FeatureToggleError(601, "Feature zur URI %s ist deaktiviert", HttpStatus.FORBIDDEN);
+
 }

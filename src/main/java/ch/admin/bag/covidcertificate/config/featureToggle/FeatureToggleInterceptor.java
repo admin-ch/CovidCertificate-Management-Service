@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static ch.admin.bag.covidcertificate.api.Constants.FEATURE_DEACTIVATED;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CERTIFICATE_TYPE;
 
 @Slf4j
@@ -48,7 +49,7 @@ public class FeatureToggleInterceptor implements HandlerInterceptor {
         }
 
         if (feature.isPresent() && !feature.get().isActive()) {
-            throw new FeatureToggleException(uri);
+            throw new FeatureToggleException(FEATURE_DEACTIVATED, uri);
         }
 
         return true;
