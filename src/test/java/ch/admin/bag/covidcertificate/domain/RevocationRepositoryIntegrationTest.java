@@ -77,7 +77,7 @@ class RevocationRepositoryIntegrationTest {
     }
 
     private void persistRevocation(String uvci) {
-        Revocation revocation = new Revocation(uvci);
+        Revocation revocation = new Revocation(uvci, false);
         entityManager.persist(revocation);
     }
 }

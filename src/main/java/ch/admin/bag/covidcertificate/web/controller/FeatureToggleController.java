@@ -1,6 +1,6 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
-import ch.admin.bag.covidcertificate.config.featureToggle.FeatureData;
+import ch.admin.bag.covidcertificate.api.response.FeaturesDto;
 import ch.admin.bag.covidcertificate.config.featureToggle.FeatureToggleInterceptor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,18 +9,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1/feature-toggle")
 @RequiredArgsConstructor
 @Slf4j
 public class FeatureToggleController {
+
     private final FeatureToggleInterceptor featureToggle;
+    private final SecurityHelper securityHelper;
 
     @GetMapping("/features")
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<FeatureData> getFeatures() {
-        return featureToggle.getFeatures();
+    public FeaturesDto getFeatures(HttpServletRequest request) {
+        log.info("Call getting all configured features");
+        securityHelper.authorizeUser(request);
+        return new FeaturesDto(featureToggle.getFeatures());
     }
 }

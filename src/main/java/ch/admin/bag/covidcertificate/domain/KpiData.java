@@ -28,6 +28,7 @@ public class KpiData {
     String country;
     String systemSource;
     String apiGatewayId;
+    boolean fraud;
     @Column(name = "in_app_delivery_code")
     String inAppDeliveryCode;
 
@@ -38,6 +39,16 @@ public class KpiData {
         this.systemSource = "UI";
     }
 
+    public KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country, boolean fraud) {
+        this.timestamp = timestamp;
+        this.value = value;
+        this.type = type;
+        this.uvci = uvci;
+        this.details = details;
+        this.country = country;
+        this.fraud = fraud;
+        this.systemSource = "UI";
+    }
     public KpiData(
             LocalDateTime timestamp, String type, String value, String uvci,
             String details, String country) {
