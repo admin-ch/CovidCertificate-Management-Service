@@ -56,7 +56,7 @@ class RevocationControllerTest {
 
     @BeforeAll
     static void setup() {
-        customizeRevocationDto(fixture);
+        customizeRevocationDto(fixture, false);
     }
 
     @BeforeEach

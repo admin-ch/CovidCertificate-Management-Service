@@ -10,9 +10,9 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouris
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
-import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequestDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
@@ -41,7 +41,6 @@ import se.digg.dgc.encoding.impl.DefaultBarcodeCreator;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.SignatureException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -570,39 +569,51 @@ class CovidCertificateGenerationServiceTest {
         @Test
         void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
+            var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
-            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            verify(inAppDeliveryClient, times(1)).deliverToApp(
+                    uvciArgumentCaptor.capture(), inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
+            assertNotNull(uvciArgumentCaptor.getValue());
         }
 
         @Test
         void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
+            var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
-            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            verify(inAppDeliveryClient, times(1)).deliverToApp(
+                    uvciArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
+            assertNotNull(uvciArgumentCaptor.getValue());
         }
 
         @Test
         void shouldSendInAppDelivery_withCorrectPdfData_whenAppCodeIsPassed() {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
+            var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
             var pdf = Base64.getEncoder().encodeToString(pdfByteArray);
-            when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdfByteArray);
+            when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(
+                    pdfByteArray);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
-            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            verify(inAppDeliveryClient, times(1)).deliverToApp(
+                    uvciArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
+            assertNotNull(uvciArgumentCaptor.getValue());
         }
 
         @Test
@@ -770,38 +781,51 @@ class CovidCertificateGenerationServiceTest {
         @Test
         void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getTestCertificateCreateDto(null, "1833", "de", "BITBITBIT");
+            var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
-            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            verify(inAppDeliveryClient, times(1)).deliverToApp(
+                    uvciArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
+            assertNotNull(uvciArgumentCaptor.getValue());
         }
 
         @Test
         void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
             var createDto = getTestCertificateCreateDto(null, "1833", "de", "BITBITBIT");
+            var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
-            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            verify(inAppDeliveryClient, times(1)).deliverToApp(
+                    uvciArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
         }
 
         @Test
         void shouldSendInAppDelivery_withCorrectPdfData_whenAppCodeIsPassed() {
             var createDto = getTestCertificateCreateDto(null, "1833", "de", "BITBITBIT");
+            var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
             var pdf = Base64.getEncoder().encodeToString(pdfByteArray);
-            when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdfByteArray);
+            when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(
+                    pdfByteArray);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
-            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            verify(inAppDeliveryClient, times(1)).deliverToApp(
+                    uvciArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
         }
 
@@ -939,38 +963,51 @@ class CovidCertificateGenerationServiceTest {
         @Test
         void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getRecoveryCertificateCreateDto("de", "BITBITBIT");
+            var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
-            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            verify(inAppDeliveryClient, times(1)).deliverToApp(
+                    uvciArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
         }
 
         @Test
         void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
             var createDto = getRecoveryCertificateCreateDto("de", "BITBITBIT");
+            var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
-            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            verify(inAppDeliveryClient, times(1)).deliverToApp(
+                    uvciArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
         }
 
         @Test
         void shouldSendInAppDelivery_withCorrectPdfData_whenAppCodeIsPassed() {
             var createDto = getRecoveryCertificateCreateDto("de", "BITBITBIT");
+            var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
             var pdf = Base64.getEncoder().encodeToString(pdfByteArray);
-            when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdfByteArray);
+            when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(
+                    pdfByteArray);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
-            verify(inAppDeliveryClient, times(1)).deliverToApp(inAppDeliveryRequestDtoArgumentCaptor.capture());
+            verify(inAppDeliveryClient, times(1)).deliverToApp(
+                    uvciArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
+            assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
         }
 
