@@ -33,8 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             "/swagger-ui/**",
                             "/v3/api-docs/**",
                             "/api/v1/revocation-list",
-                            "/api/v1/ping",
-                            "/api/v1/feature-toggle/features").
+                            "/api/v1/ping").
                     and().
                     authorizeRequests().anyRequest().permitAll();
     }
