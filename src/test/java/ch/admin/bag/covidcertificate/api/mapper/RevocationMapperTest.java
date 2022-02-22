@@ -10,14 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class RevocationMapperTest {
-    private final JFixture jFixture = new JFixture();
+    private final JFixture fixture = new JFixture();
 
     @Test
     void whenToRevocation_thenMapsUVCI() {
         //given
-        String uvci = jFixture.create(String.class);
+        String uvci = fixture.create(String.class);
         // when
-        Revocation result = RevocationMapper.toRevocation(uvci);
+        Revocation result = RevocationMapper.toRevocation(uvci, fixture.create(Boolean.class));
         // then
         assertEquals(uvci, result.getUvci());
     }

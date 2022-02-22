@@ -69,7 +69,7 @@ class RevocationControllerTest {
 
     @BeforeAll
     static void setup() {
-        customizeRevocationDto(fixture);
+        customizeRevocationDto(fixture, false);
         customizeRevocationListDto(fixture);
     }
 
@@ -77,7 +77,7 @@ class RevocationControllerTest {
     void setupMocks() {
         this.mockMvc = standaloneSetup(controller, new ResponseStatusExceptionHandler()).build();
         lenient().doNothing().when(kpiLogService).saveKpiData(any());
-        lenient().doNothing().when(revocationService).createRevocation(anyString());
+        lenient().doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
         lenient().when(revocationService.getRevocations())
                 .thenReturn(fixture.collections().createCollection(List.class, String.class));
         Jwt jwt = mock(Jwt.class);
@@ -99,7 +99,7 @@ class RevocationControllerTest {
 
             var createDto = fixture.create(RevocationDto.class);
             when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
-            doNothing().when(revocationService).createRevocation(anyString());
+            doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
 
             mockMvc.perform(post(REVOCATION_URL)
                             .accept(MediaType.ALL_VALUE)
@@ -115,7 +115,7 @@ class RevocationControllerTest {
             var createDto = fixture.create(RevocationDto.class);
             var exception = fixture.create(RevocationException.class);
             when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
-            doThrow(exception).when(revocationService).createRevocation(anyString());
+            doThrow(exception).when(revocationService).createRevocation(anyString(), anyBoolean());
 
             mockMvc.perform(post(REVOCATION_URL)
                             .accept(MediaType.ALL_VALUE)
@@ -240,7 +240,7 @@ class RevocationControllerTest {
         void revokeCertificateAndReturnCreatedStatus() throws Exception {
             var createDto = fixture.create(RevocationListDto.class);
             when(revocationService.getUvcisWithErrorMessage(anyList())).thenReturn(new HashMap<>());
-            doNothing().when(revocationService).createRevocation(anyString());
+            doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
 
             MockHttpServletResponse response = mockMvc
                     .perform(post(REVOCATION_LIST_URL)

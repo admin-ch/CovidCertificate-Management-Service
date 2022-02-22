@@ -23,6 +23,7 @@ import java.util.List;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -49,7 +50,7 @@ class RevocationListControllerTest {
 
     @BeforeAll
     static void setup() {
-        customizeRevocationDto(fixture);
+        customizeRevocationDto(fixture, false);
     }
 
     @BeforeEach
@@ -57,7 +58,7 @@ class RevocationListControllerTest {
         this.mockMvc = standaloneSetup(controller, new ResponseStatusExceptionHandler()).build();
         lenient().when(revocationService.getRevocations())
                  .thenReturn(fixture.collections().createCollection(List.class, String.class));
-        lenient().doNothing().when(revocationService).createRevocation(anyString());
+        lenient().doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
         lenient().when(jeapAuthorization.getJeapAuthenticationToken())
                  .thenReturn(fixture.create(JeapAuthenticationToken.class));
     }

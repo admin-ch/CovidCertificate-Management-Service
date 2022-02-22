@@ -19,6 +19,8 @@ public class RevocationDto {
     private SystemSource systemSource;
     private String userExtId;
 
+    private boolean fraud;
+
     public void validate() {
         if (uvci == null || !UVCI.isValid(uvci)) {
             log.info("Validate revocation for {} failed.", uvci);

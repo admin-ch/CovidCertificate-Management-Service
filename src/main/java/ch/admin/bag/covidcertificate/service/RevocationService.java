@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.mapper.RevocationMapper;
 import ch.admin.bag.covidcertificate.domain.KpiDataRepository;
 import ch.admin.bag.covidcertificate.domain.Revocation;
@@ -16,7 +17,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.ALREADY_REVOKED_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.UNKNOWN_UVCI;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +31,20 @@ public class RevocationService {
     private final KpiDataRepository kpiDataRepository;
 
     @Transactional
-    public void createRevocation(String uvci) {
-        revocationRepository.save(RevocationMapper.toRevocation(uvci));
-        log.info("Revocation for {} created.", uvci);
+    public void createRevocation(String uvci, boolean fraud) {
+        try {
+            if (revocationRepository.findByUvci(uvci) != null) {
+                log.info("Revocation for {} already exists.", uvci);
+                throw new RevocationException(DUPLICATE_UVCI);
+            }
+            revocationRepository.saveAndFlush(RevocationMapper.toRevocation(uvci, fraud));
+            log.info("Revocation for {} created.", uvci);
+        } catch (RevocationException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(String.format("Create revocation for %s failed.", uvci), e);
+            throw e;
+        }
     }
 
     @Transactional(readOnly = true)

@@ -28,11 +28,12 @@ public class KpiData {
     String country;
     String systemSource;
     String apiGatewayId;
+    boolean fraud;
     @Column(name = "in_app_delivery_code")
     String inAppDeliveryCode;
 
     private KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country, String systemSource,
-                    String inAppDeliveryCode) {
+                    String inAppDeliveryCode, boolean fraud) {
         this.timestamp = timestamp;
         this.type = type;
         this.value = value;
@@ -41,6 +42,7 @@ public class KpiData {
         this.country = country;
         this.systemSource = systemSource;
         this.inAppDeliveryCode = inAppDeliveryCode;
+        this.fraud = fraud;
     }
 
     public static class KpiDataBuilder {
@@ -52,12 +54,14 @@ public class KpiData {
         String details;
         String country;
         String inAppDeliveryCode;
+        boolean fraud;
 
         public KpiDataBuilder(LocalDateTime timestamp, String type, String value, String systemSource) {
             this.timestamp = timestamp;
             this.type = type;
             this.value = value;
             this.systemSource = systemSource;
+            this.fraud = false;
         }
 
         public KpiDataBuilder withUvci(String uvci) {
@@ -80,8 +84,13 @@ public class KpiData {
             return this;
         }
 
+        public KpiDataBuilder withFraud(boolean fraud) {
+            this.fraud = fraud;
+            return this;
+        }
+
         public KpiData build() {
-            return new KpiData(timestamp, type, value, uvci, details, country, systemSource, inAppDeliveryCode);
+            return new KpiData(timestamp, type, value, uvci, details, country, systemSource, inAppDeliveryCode, fraud);
         }
     }
 }

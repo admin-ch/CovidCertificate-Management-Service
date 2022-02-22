@@ -70,7 +70,7 @@ class RevocationControllerSecurityTest {
 
     @BeforeAll
     private static void setup() throws Exception {
-        customizeRevocationDto(fixture);
+        customizeRevocationDto(fixture, false);
 
         wireMockServer.start();
         wireMockServer.stubFor(WireMock.get(urlPathEqualTo("/.well-known/jwks.json")).willReturn(aResponse()
@@ -190,7 +190,7 @@ class RevocationControllerSecurityTest {
     void setupMocks() {
         lenient().when(revocationService.getRevocations())
                  .thenReturn(fixture.collections().createCollection(List.class, String.class));
-        lenient().doNothing().when(revocationService).createRevocation(anyString());
+        lenient().doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
         lenient().when(jeapAuthorization.getJeapAuthenticationToken())
                  .thenReturn(fixture.create(JeapAuthenticationToken.class));
     }
@@ -212,19 +212,19 @@ class RevocationControllerSecurityTest {
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
 
             callGetValueSetsWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.CREATED);
-            Mockito.verify(revocationService, times(1)).createRevocation(anyString());
+            Mockito.verify(revocationService, times(1)).createRevocation(anyString(), anyBoolean());
         }
 
         @Test
         void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
             callGetValueSetsWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
-            Mockito.verify(revocationService, times(0)).createRevocation(anyString());
+            Mockito.verify(revocationService, times(0)).createRevocation(anyString(), anyBoolean());
         }
 
         @Test
         void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
             callGetValueSetsWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(revocationService, times(0)).createRevocation(anyString());
+            Mockito.verify(revocationService, times(0)).createRevocation(anyString(), anyBoolean());
         }
     }
 

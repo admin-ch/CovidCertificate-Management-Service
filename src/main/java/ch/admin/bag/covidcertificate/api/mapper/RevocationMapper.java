@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RevocationMapper {
-    public static Revocation toRevocation(String uvci) {
-        return new Revocation(uvci);
+    public static Revocation toRevocation(String uvci, boolean fraud) {
+        return new Revocation(uvci, fraud);
     }
 }

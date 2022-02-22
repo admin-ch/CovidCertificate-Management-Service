@@ -35,6 +35,7 @@ import java.util.Map;
 import static ch.admin.bag.covidcertificate.api.Constants.ALREADY_REVOKED_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_FRAUD;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
@@ -70,7 +71,8 @@ public class RevocationController {
         if (revocationService.isAlreadyRevoked(uvci)) {
             throw new RevocationException(DUPLICATE_UVCI);
         }
-        revocationService.createRevocation(revocationDto.getUvci());
+
+        revocationService.createRevocation(revocationDto.getUvci(), revocationDto.isFraud());
         logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, revocationDto.getUvci(), revocationDto.getSystemSource(), revocationDto.getUserExtId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -118,7 +120,7 @@ public class RevocationController {
             String errorMessage = uvcisToErrorMessage.get(uvci);
             if (errorMessage == null) {
                 try {
-                    revocationService.createRevocation(uvci);
+                    revocationService.createRevocation(uvci, false); // TODO: fraud flag for mass-revocation
                     logRevocationKpi(KPI_TYPE_MASS_REVOCATION_SUCCESS, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId());
                     revokedUvcis.add(uvci);
                 } catch (Exception ex) {
