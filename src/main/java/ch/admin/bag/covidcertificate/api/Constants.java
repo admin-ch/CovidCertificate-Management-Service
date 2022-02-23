@@ -54,6 +54,10 @@ public class Constants {
     public static final String KPI_CREATE_CERTIFICATE_SYSTEM_KEY = "cc";
     public static final String KPI_SYSTEM_UI = "ui";
     public static final String KPI_REVOKE_CERTIFICATE_SYSTEM_KEY = "re";
+    public static final String KPI_TYPE_MASS_REVOCATION_CHECK = "mre-c";
+    public static final String KPI_TYPE_MASS_REVOCATION_SUCCESS = "mre-s";
+    public static final String KPI_TYPE_MASS_REVOCATION_FAILURE = "mre-f";
+    public static final String KPI_TYPE_MASS_REVOCATION_REDUNDANT = "mre-r";
     public static final String KPI_OTP_SYSTEM_KEY = "otp";
 
     public static final LocalDate MIN_DATE_OF_BIRTH = LocalDate.of(1900, Month.JANUARY, 1);
@@ -84,6 +88,7 @@ public class Constants {
     public static final CreateCertificateError INVALID_COUNTRY_OF_TEST = new CreateCertificateError(467, "Invalid country of test", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_LANGUAGE = new CreateCertificateError(469, "The given language does not match any of the supported languages: de, it, fr, rm!", HttpStatus.BAD_REQUEST);
     public static final RevocationError INVALID_UVCI = new RevocationError(470, "Invalid UVCI format.", HttpStatus.BAD_REQUEST);
+    public static final RevocationError INVALID_SIZE_OF_UVCI_LIST = new RevocationError(472, "Invalid size of UVCI List.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ADDRESS = new CreateCertificateError(474, "Paper-based delivery requires a valid address.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError DUPLICATE_DELIVERY_METHOD = new CreateCertificateError(475, "Delivery method can either be InApp or print, but not both.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError UNKNOWN_APP_CODE = new CreateCertificateError(476, "Unknown app code.", HttpStatus.NOT_FOUND);
@@ -111,6 +116,10 @@ public class Constants {
     public static final CreateCertificateError INVALID_APP_CODE_CHECKSUM = new CreateCertificateError(486, "Invalid app code, check input.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_APP_CODE_LENGTH = new CreateCertificateError(487, "Incorrect input, the code consists of 9 characters.", HttpStatus.BAD_REQUEST);
     public static final FeatureToggleError FEATURE_DEACTIVATED = new FeatureToggleError(488, "Feature zur URI %s ist deaktiviert", HttpStatus.FORBIDDEN);
+
+
+    public static final RevocationError UNKNOWN_UVCI = new RevocationError(495, "Uvci is not known.", HttpStatus.BAD_REQUEST);
+    public static final RevocationError ALREADY_REVOKED_UVCI = new RevocationError(496, "Uvci is already revoked.", HttpStatus.BAD_REQUEST);
 
 
     public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550, "Creating COSE protected header failed.", HttpStatus.INTERNAL_SERVER_ERROR);

@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.client.inapp_delivery.internal;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.config.ProfileRegistry;
@@ -53,11 +54,11 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
         log.debug("Call the InApp Delivery Backend with url {}", uri);
         try {
             var response = defaultWebClient.post()
-                                           .uri(uri)
-                                           .body(Mono.just(requestDto), requestDto.getClass())
-                                           .retrieve()
-                                           .toBodilessEntity()
-                                           .block();
+                    .uri(uri)
+                    .body(Mono.just(requestDto), requestDto.getClass())
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
             log.trace("InApp Delivery Backend Response: {}", response);
             if (response != null && response.getStatusCode().value() == 200) {
                 final String code = requestDto.getCode();
@@ -86,15 +87,24 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
 
     private void logKpi(String uvci, String inAppDeliveryCode) {
         String extId = jeapAuthorization.getExtIdInAuthentication();
+
+        // kpi is only logged here if we don't already log it in the api-gateway
         if (extId != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(extId)) {
             final var kpiTimestamp = LocalDateTime.now();
             var inAppDeliveryCodeKVPair = kv(KPI_IN_APP_DELIVERY_CODE_KEY, inAppDeliveryCode);
             var inAppDeliveryUvciPair = kv(KPI_IN_APP_DELIVERY_UVCI_KEY, uvci);
-            log.info("kpi: {} {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                     kv(KPI_TYPE_KEY, KPI_TYPE_IN_APP_DELIVERY), kv(KPI_UUID_KEY, extId),
-                     inAppDeliveryCodeKVPair, inAppDeliveryUvciPair);
-            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, extId,
-                                                  uvci, null, null, inAppDeliveryCode));
+            log.info("kpi: {} {} {} {} {}",
+                    kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                    kv(KPI_TYPE_KEY, KPI_TYPE_IN_APP_DELIVERY),
+                    kv(KPI_UUID_KEY, extId),
+                    inAppDeliveryCodeKVPair,
+                    inAppDeliveryUvciPair);
+            kpiLogService.saveKpiData(
+                    new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, extId, SystemSource.WebUI.category)
+                            .withUvci(uvci)
+                            .withCountry(inAppDeliveryCode)
+                            .build()
+            );
         }
     }
 }

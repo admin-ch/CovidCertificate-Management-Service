@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
+import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,11 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class RevocationDtoTest {
+
+    private final JFixture fixture = new JFixture();
+
     @Test
     void whenValidate_thenOk() {
         //given
         String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        RevocationDto revocationDto = new RevocationDto(uvci, false);
+        RevocationDto revocationDto = new RevocationDto(uvci, fixture.create(SystemSource.class), null, false);
         // when
         revocationDto.validate();
         // then
@@ -34,7 +38,7 @@ class RevocationDtoTest {
     void givenUVCIHasInvalidFormat_whenValidate_thenThrowsRevocationException(String uvci) {
         // given to short, to long, invalid start, invalid character, lowercase character, special character.
         // when
-        RevocationDto revocationDto = new RevocationDto(uvci, false);
+        RevocationDto revocationDto = new RevocationDto(uvci, fixture.create(SystemSource.class), null, false);
         // then
         RevocationException exception = assertThrows(RevocationException.class, revocationDto::validate);
         assertEquals(INVALID_UVCI, exception.getError());

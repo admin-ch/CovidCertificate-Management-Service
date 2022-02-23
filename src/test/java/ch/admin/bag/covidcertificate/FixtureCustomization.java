@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
@@ -21,11 +22,7 @@ import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.domain.RapidTest;
 import ch.admin.bag.covidcertificate.domain.Vaccine;
-import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.*;
 import com.flextrade.jfixture.JFixture;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -33,6 +30,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 
@@ -182,7 +181,15 @@ public class FixtureCustomization {
     }
 
     public static void customizeRevocationDto(JFixture fixture, boolean fraud) {
-        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), fraud));
+        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), fixture.create(SystemSource.class), null, fraud));
+    }
+
+    public static void customizeRevocationListDto(JFixture fixture) {
+        List<String> uvcis = new LinkedList<>();
+        uvcis.add(createUVCI());
+        uvcis.add(createUVCI());
+        uvcis.add(createUVCI());
+        fixture.customise().lazyInstance(RevocationListDto.class, () -> new RevocationListDto(uvcis, fixture.create(SystemSource.class), fixture.create(String.class)));
     }
 
     public static String createUVCI() {
