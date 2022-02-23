@@ -87,13 +87,18 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
 
     private void logKpi(String uvci, String inAppDeliveryCode) {
         String extId = jeapAuthorization.getExtIdInAuthentication();
+
+        // kpi is only logged here if we don't already log it in the api-gateway
         if (extId != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(extId)) {
             final var kpiTimestamp = LocalDateTime.now();
             var inAppDeliveryCodeKVPair = kv(KPI_IN_APP_DELIVERY_CODE_KEY, inAppDeliveryCode);
             var inAppDeliveryUvciPair = kv(KPI_IN_APP_DELIVERY_UVCI_KEY, uvci);
-            log.info("kpi: {} {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                    kv(KPI_TYPE_KEY, KPI_TYPE_IN_APP_DELIVERY), kv(KPI_UUID_KEY, extId),
-                    inAppDeliveryCodeKVPair, inAppDeliveryUvciPair);
+            log.info("kpi: {} {} {} {} {}",
+                    kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                    kv(KPI_TYPE_KEY, KPI_TYPE_IN_APP_DELIVERY),
+                    kv(KPI_UUID_KEY, extId),
+                    inAppDeliveryCodeKVPair,
+                    inAppDeliveryUvciPair);
             kpiLogService.saveKpiData(
                     new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, extId, SystemSource.WebUI.category)
                             .withUvci(uvci)

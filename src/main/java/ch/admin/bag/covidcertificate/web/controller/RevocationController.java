@@ -37,7 +37,6 @@ import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_FRAUD;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_CHECK;
@@ -73,7 +72,7 @@ public class RevocationController {
         }
 
         revocationService.createRevocation(revocationDto.getUvci(), revocationDto.isFraud());
-        logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, revocationDto.getUvci(), revocationDto.getSystemSource(), revocationDto.getUserExtId());
+        logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, revocationDto.getUvci(), revocationDto.getSystemSource(), revocationDto.getUserExtId(), revocationDto.isFraud());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -110,6 +109,9 @@ public class RevocationController {
         log.info("Call of mass-revocation.");
         securityHelper.authorizeUser(request);
 
+        // fraud flag will be implemented for mass-revocation with VACCINECER-2045
+        boolean fraud = false;
+
         revocationListDto.validateList();
 
         Map<String, String> uvcisToErrorMessage = revocationService.getUvcisWithErrorMessage(revocationListDto.getUvcis());
@@ -120,8 +122,8 @@ public class RevocationController {
             String errorMessage = uvcisToErrorMessage.get(uvci);
             if (errorMessage == null) {
                 try {
-                    revocationService.createRevocation(uvci, false); // TODO: fraud flag for mass-revocation
-                    logRevocationKpi(KPI_TYPE_MASS_REVOCATION_SUCCESS, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId());
+                    revocationService.createRevocation(uvci, fraud);
+                    logRevocationKpi(KPI_TYPE_MASS_REVOCATION_SUCCESS, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), fraud);
                     revokedUvcis.add(uvci);
                 } catch (Exception ex) {
                     uvcisToErrorMessage.put(uvci, "Error during revocation");
@@ -129,14 +131,14 @@ public class RevocationController {
             } else {
                 try {
                     if (errorMessage.startsWith(ALREADY_REVOKED_UVCI.getErrorMessage())) {
-                        logRevocationKpi(KPI_TYPE_MASS_REVOCATION_REDUNDANT, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId());
+                        logRevocationKpi(KPI_TYPE_MASS_REVOCATION_REDUNDANT, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), fraud);
                     } else if (errorMessage.equals(INVALID_UVCI.getErrorMessage())) {
-                        logRevocationKpi(KPI_TYPE_MASS_REVOCATION_FAILURE, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId());
+                        logRevocationKpi(KPI_TYPE_MASS_REVOCATION_FAILURE, uvci, revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), fraud);
                     } else {
                         log.warn("Mass-revocation failed for unknown reason: {}.", errorMessage);
                     }
                 } catch (Exception ex) {
-                    log.error("Mass-revocation KPI Log failed: {}.", ex.getLocalizedMessage());
+                    log.error("Mass-revocation KPI Log failed: {} {}.", ex, ex.getLocalizedMessage());
                 }
             }
         }
@@ -144,14 +146,20 @@ public class RevocationController {
         return new RevocationListResponseDto(uvcisToErrorMessage, revokedUvcis);
     }
 
-    private void logRevocationKpi(String kpiType, String uvci, SystemSource systemSource, String userExtId) {
+    private void logRevocationKpi(String kpiType, String uvci, SystemSource systemSource, String userExtId, boolean fraud) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, null);
+        String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
-        log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, uvci), kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId));
+        log.info("kpi: {} {} {} {} {}",
+                kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                kv(KPI_TYPE_KEY, kpiType),
+                kv(KPI_UUID_KEY, uvci),
+                kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId),
+                kv(KPI_FRAUD, fraud));
         kpiLogService.saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, relevantUserExtId, systemSource.category)
                         .withUvci(uvci)
+                        .withFraud(fraud)
                         .build()
         );
     }
@@ -160,7 +168,10 @@ public class RevocationController {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
-        log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_TYPE_MASS_REVOCATION_CHECK), kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId));
+        log.info("kpi: {} {} {}",
+                kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                kv(KPI_TYPE_KEY, KPI_TYPE_MASS_REVOCATION_CHECK),
+                kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId));
         kpiLogService.saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_MASS_REVOCATION_CHECK, relevantUserExtId, systemSource.category)
                         .build()
