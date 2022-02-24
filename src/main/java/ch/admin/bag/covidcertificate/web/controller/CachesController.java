@@ -33,7 +33,7 @@ public class CachesController {
      * @param only OPTIONAL list or single String seperated by "," of caches
      */
     @PostMapping("/clear")
-    @PreAuthorize("hasAnyRole('bag-cc-superuser')")
+    @PreAuthorize("hasRole('bag-cc-superuser')")
     public void clear(@RequestParam(required = false) Optional<List<String>> only) {
         log.info("Call of clear all caches.");
 
