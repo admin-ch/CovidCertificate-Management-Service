@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
+import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,7 +20,7 @@ class RevocationDtoTest {
         String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
         RevocationDto revocationDto = new RevocationDto(uvci);
         // when
-        revocationDto.validate();
+        UvciValidator.validateUvciMatchesSpecification(revocationDto.getUvci());
         // then
         assertEquals(uvci, revocationDto.getUvci());
     }
@@ -36,7 +37,7 @@ class RevocationDtoTest {
         // when
         RevocationDto revocationDto = new RevocationDto(uvci);
         // then
-        RevocationException exception = assertThrows(RevocationException.class, revocationDto::validate);
+        RevocationException exception = assertThrows(RevocationException.class, () -> UvciValidator.validateUvciMatchesSpecification(revocationDto.getUvci()));
         assertEquals(INVALID_UVCI, exception.getError());
     }
 }

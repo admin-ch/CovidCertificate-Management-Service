@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
+import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
@@ -45,7 +46,7 @@ public class RevocationController {
     public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto, HttpServletRequest request) {
         log.info("Call of create revocation for uvci {}.", revocationDto.getUvci());
         securityHelper.authorizeUser(request);
-        revocationDto.validate();
+        UvciValidator.validateUvciMatchesSpecification(revocationDto.getUvci());
         revocationService.createRevocation(revocationDto);
         logKpi(revocationDto.getUvci());
         return new ResponseEntity<>(HttpStatus.CREATED);
