@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
+import ch.admin.bag.covidcertificate.api.exception.FeatureToggleException;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.exception.ValueSetException;
 import ch.admin.bag.covidcertificate.api.exception.CacheNotFoundException;
@@ -68,6 +69,12 @@ public class ResponseStatusExceptionHandler {
     protected ResponseEntity<Object> handleCacheNotFoundException(CacheNotFoundException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = {FeatureToggleException.class})
+    protected ResponseEntity<Object> handleFeatureToggleException(FeatureToggleException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(e.getError(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = {Exception.class})

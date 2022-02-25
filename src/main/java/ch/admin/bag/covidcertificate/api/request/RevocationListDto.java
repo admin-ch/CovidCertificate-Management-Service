@@ -1,30 +1,28 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
-import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
+import java.util.List;
+
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SIZE_OF_UVCI_LIST;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Slf4j
-public class RevocationDto {
-    private String uvci;
+public class RevocationListDto {
+    private List<String> uvcis;
     private SystemSource systemSource;
     private String userExtId;
 
-    private boolean fraud;
-
-    public void validate() {
-        if (uvci == null || !UVCI.isValid(uvci)) {
-            log.info("Validate revocation for {} failed.", uvci);
-            throw new RevocationException(INVALID_UVCI);
+    public void validateList() {
+        if (uvcis.size() > 100) {
+            throw new RevocationException(INVALID_SIZE_OF_UVCI_LIST);
         }
     }
 }

@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.client.inapp_delivery.internal;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.config.ProfileRegistry;
@@ -22,7 +23,16 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_IN_APP_DELIVERY_CODE_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_IN_APP_DELIVERY_UVCI_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_IN_APP_DELIVERY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
+import static ch.admin.bag.covidcertificate.api.Constants.UNKNOWN_APP_CODE;
+import static ch.admin.bag.covidcertificate.service.KpiDataService.SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
@@ -39,7 +49,7 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
     private final KpiDataService kpiLogService;
 
     @Override
-    public CreateCertificateError deliverToApp(InAppDeliveryRequestDto requestDto) {
+    public CreateCertificateError deliverToApp(String uvci, InAppDeliveryRequestDto requestDto) {
         final var uri = UriComponentsBuilder.fromHttpUrl(serviceUri).toUriString();
         log.debug("Call the InApp Delivery Backend with url {}", uri);
         try {
@@ -51,7 +61,8 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                     .block();
             log.trace("InApp Delivery Backend Response: {}", response);
             if (response != null && response.getStatusCode().value() == 200) {
-                logKpi();
+                final String code = requestDto.getCode();
+                logKpi(uvci, code);
                 return null;
             } else {
                 throw new CreateCertificateException(APP_DELIVERY_FAILED);
@@ -74,12 +85,26 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
         }
     }
 
-    private void logKpi() {
+    private void logKpi(String uvci, String inAppDeliveryCode) {
         String extId = jeapAuthorization.getExtIdInAuthentication();
-        if (extId != null) {
+
+        // kpi is only logged here if we don't already log it in the api-gateway
+        if (extId != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(extId)) {
             final var kpiTimestamp = LocalDateTime.now();
-            log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)), kv(KPI_TYPE_KEY, KPI_TYPE_INAPP_DELIVERY), kv(KPI_UUID_KEY, extId));
-            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_TYPE_INAPP_DELIVERY, extId));
+            var inAppDeliveryCodeKVPair = kv(KPI_IN_APP_DELIVERY_CODE_KEY, inAppDeliveryCode);
+            var inAppDeliveryUvciPair = kv(KPI_IN_APP_DELIVERY_UVCI_KEY, uvci);
+            log.info("kpi: {} {} {} {} {}",
+                    kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                    kv(KPI_TYPE_KEY, KPI_TYPE_IN_APP_DELIVERY),
+                    kv(KPI_UUID_KEY, extId),
+                    inAppDeliveryCodeKVPair,
+                    inAppDeliveryUvciPair);
+            kpiLogService.saveKpiData(
+                    new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, extId, SystemSource.WebUI.category)
+                            .withUvci(uvci)
+                            .withCountry(inAppDeliveryCode)
+                            .build()
+            );
         }
     }
 }

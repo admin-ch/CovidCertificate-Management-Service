@@ -16,10 +16,12 @@ public class Revocation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;
     String uvci;
+    boolean fraud;
     @Column(insertable = false)
     LocalDateTime creationDateTime;
 
-    public Revocation(String uvci) {
+    public Revocation(String uvci, boolean fraud) {
         this.uvci = uvci;
+        this.fraud = fraud;
     }
 }
