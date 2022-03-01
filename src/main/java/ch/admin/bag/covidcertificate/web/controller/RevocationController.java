@@ -78,16 +78,17 @@ public class RevocationController {
 
     @PostMapping("/uvcilist/check")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PreAuthorize("hasRole('bag-cc-superuser')")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "202", description = "CHECKED")
     public CheckRevocationListResponseDto checkMassRevocation(
-            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) throws Exception {
+            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
         log.info("Call of mass-revocation-check.");
         securityHelper.authorizeUser(request);
 
         revocationListDto.validateList();
 
-        Map<String, String> uvcisToErrorMessage = revocationService.getUvcisWithErrorMessage(revocationListDto.getUvcis());
+        Map<String, String> uvcisToErrorMessage = revocationService.getUvcisWithErrorMessage(
+                revocationListDto.getUvcis());
 
         List<String> revocableUvcis = new ArrayList<>(revocationListDto.getUvcis());
         revocableUvcis.removeAll(uvcisToErrorMessage.keySet());
@@ -102,7 +103,7 @@ public class RevocationController {
 
     @PostMapping("/uvcilist")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('bag-cc-superuser')")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "201", description = "CREATED")
     public RevocationListResponseDto massRevocation(
             @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
