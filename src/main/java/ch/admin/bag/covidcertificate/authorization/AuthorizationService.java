@@ -78,6 +78,10 @@ public class AuthorizationService {
         return services.get(service);
     }
 
+    public List<RoleData> getRoleMapping() {
+        return roleConfig.getMappings();
+    }
+
     /**
      * Returns <code>true</code> for given function IF:
      * <ul>
