@@ -2,10 +2,7 @@ package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
-import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
-import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
-import ch.admin.bag.covidcertificate.api.response.RevocationListResponseDto;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
@@ -21,28 +18,18 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
-import static ch.admin.bag.covidcertificate.api.Constants.ALREADY_REVOKED_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_FRAUD;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_CHECK;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_FAILURE;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_REDUNDANT;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_SUCCESS;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
 import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
@@ -76,6 +63,10 @@ public class RevocationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    /*
+    // TODO VACCINECER-2086: Enable Mass-revocation
+    // TODO: make sure PreAuthorize fits new authorization
+
     @PostMapping("/uvcilist/check")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
@@ -93,7 +84,7 @@ public class RevocationController {
         List<String> revocableUvcis = new ArrayList<>(revocationListDto.getUvcis());
         revocableUvcis.removeAll(uvcisToErrorMessage.keySet());
 
-        /** not existing UVCIs are handled as warning, because UVCIs issued before 07.08.2021 are always unknown */
+        // not existing UVCIs are handled as warning, because UVCIs issued before 07.08.2021 are always unknown
         Map<String, String> notExistingUvcisToWarningMessage = revocationService.getNotExistingUvcis(revocableUvcis);
 
         logRevocationCheckKpi(revocationListDto.getUserExtId(), revocationListDto.getSystemSource());
@@ -146,6 +137,7 @@ public class RevocationController {
 
         return new RevocationListResponseDto(uvcisToErrorMessage, revokedUvcis);
     }
+    */
 
     private void logRevocationKpi(String kpiType, String uvci, SystemSource systemSource, String userExtId, boolean fraud) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();

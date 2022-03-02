@@ -141,6 +141,8 @@ class RevocationControllerTest {
         }
     }
 
+    /*
+    // TODO VACCINECER-2086: Enable Mass-revocation
     @Nested
     @DisplayName("POST " + REVOCATION_LIST_CHECK_URL)
     class CheckMassRevocation {
@@ -269,4 +271,5 @@ class RevocationControllerTest {
                     .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
         }
     }
+     */
 }
