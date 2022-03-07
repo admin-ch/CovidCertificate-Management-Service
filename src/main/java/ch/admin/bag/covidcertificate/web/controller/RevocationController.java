@@ -32,7 +32,6 @@ import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_CHECK;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
-import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RestController
@@ -143,11 +142,10 @@ public class RevocationController {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
-        log.info("kpi: {} {} {} {} {} {}",
+        log.info("kpi: {} {} {} {} {}",
                 kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
                 kv(KPI_TYPE_KEY, kpiType),
-                kv(KPI_UUID_KEY, uvci),
-                kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId),
+                kv(KPI_UUID_KEY, relevantUserExtId),
                 kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, systemSource.category),
                 kv(KPI_FRAUD, fraud));
         kpiLogService.saveKpiData(
@@ -162,10 +160,11 @@ public class RevocationController {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
+        // TODO: check with Splunk-Reports
         log.info("kpi: {} {} {}",
                 kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
                 kv(KPI_TYPE_KEY, KPI_TYPE_MASS_REVOCATION_CHECK),
-                kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId));
+                kv(KPI_UUID_KEY, relevantUserExtId));
         kpiLogService.saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_MASS_REVOCATION_CHECK, relevantUserExtId, systemSource.category)
                         .build()
