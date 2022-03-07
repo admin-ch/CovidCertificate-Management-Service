@@ -143,11 +143,12 @@ public class RevocationController {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
-        log.info("kpi: {} {} {} {} {}",
+        log.info("kpi: {} {} {} {} {} {}",
                 kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
                 kv(KPI_TYPE_KEY, kpiType),
                 kv(KPI_UUID_KEY, uvci),
                 kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId),
+                kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, systemSource.category),
                 kv(KPI_FRAUD, fraud));
         kpiLogService.saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, relevantUserExtId, systemSource.category)
