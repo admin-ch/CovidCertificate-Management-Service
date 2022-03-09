@@ -6,12 +6,14 @@ import ch.admin.bag.covidcertificate.authorization.config.RoleData;
 import ch.admin.bag.covidcertificate.authorization.config.ServiceData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthorizationService {
+
+    public static String SRVC_WEB = "web-ui";
+    public static String SRVC_API = "api-gateway";
+    public static String SRVC_MGMT = "management";
+    public static String SRVC_REPORT = "report";
 
     private final AuthorizationConfig authorizationConfig;
     private final RoleConfig roleConfig;
@@ -55,8 +62,9 @@ public class AuthorizationService {
                 log.info("no supported roles in '{}'", rawRoles);
             } else {
                 // keep authorizations which are currently valid
+                val functions = serviceData.getFunctions();
                 List<ServiceData.Function> functionsByPointInTime =
-                        filterByPointInTime(LocalDateTime.now(), serviceData.getFunctions());
+                        filterByPointInTime(LocalDateTime.now(), functions.values());
                 // identify the functions granted to this time by given roles
                 grantedFunctions = functionsByPointInTime.stream()
                         .filter(function -> isGranted(roles, function))
@@ -98,14 +106,21 @@ public class AuthorizationService {
      * @return <code>true</code> only if both mandatory and one-of are valid
      */
     private boolean isGranted(Set<String> roles, ServiceData.Function function) {
-        String mandatory = function.getMandatory();
-        boolean mandatoryValid = mandatory==null ? true : roles.contains(mandatory);
+        //lets
+        boolean allAdditionalValid = true;
+        if (function.getAdditional() != null) {
+            // keep additional functions to authorize for which are currently valid
+            List<ServiceData.Function> addFunctionsByPointInTime =
+                    filterByPointInTime(LocalDateTime.now(), function.getAdditional());
+            allAdditionalValid = addFunctionsByPointInTime==null || addFunctionsByPointInTime.isEmpty() ? false :
+                    addFunctionsByPointInTime.stream().allMatch(func -> isGranted(roles, func));
+        }
         List<String> oneOf = function.getOneOf();
         boolean oneOfValid = oneOf==null || oneOf.isEmpty() ? false : oneOf.stream().anyMatch(roles::contains);
-        return (mandatoryValid && oneOfValid);
+        return (allAdditionalValid && oneOfValid);
     }
 
-    private List<ServiceData.Function> filterByPointInTime(LocalDateTime pointInTime, List<ServiceData.Function> functions) {
+    private List<ServiceData.Function> filterByPointInTime(LocalDateTime pointInTime, Collection<ServiceData.Function> functions) {
         List<ServiceData.Function> result = Collections.emptyList();
         if (functions != null && pointInTime != null) {
             result = functions.stream()
