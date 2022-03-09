@@ -100,9 +100,10 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
                     inAppDeliveryCodeKVPair,
                     inAppDeliveryUvciPair);
             kpiLogService.saveKpiData(
-                    new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, extId, SystemSource.WebUI.category)
+                    new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, extId,
+                                               SystemSource.WebUI.category)
                             .withUvci(uvci)
-                            .withCountry(inAppDeliveryCode)
+                            .withInAppDeliveryCode(inAppDeliveryCode)
                             .build()
             );
         }
