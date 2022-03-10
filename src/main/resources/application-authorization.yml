@@ -118,7 +118,7 @@ roles:
   -
     intern:   ${roles.id.cert.rat}
     eiam:     "9500.GGG.Recovery-Rat-Cert-Creator"
-    claim:    "bag-cc-testccert_rat_creator"
+    claim:    "bag-cc-recoverycert_rat_creator"
   -
     intern:   ${roles.id.cert.tourist}
     eiam:     "9500.GGG-Covidcertificate.VaccCert-Tourist-Creator"
@@ -298,7 +298,7 @@ services:
 
       # create/revoke certificates
       create-certificate-web:
-        identifier:   "create-certificates-web"
+        identifier:   "create-certificate-web"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.id.user.web}
@@ -306,49 +306,49 @@ services:
         identifier:   "create-vaccine-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.webui.functions.create-certificate-web}
+        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
         one-of:       ${roles.id.cert.vacc}
       create-vaccine-tourist-certificate:
         identifier:   "create-vaccine-tourist-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.webui.functions.create-certificate-web}
+        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
         one-of:       ${roles.id.cert.tourist}
       create-test-certificate:
         identifier:   "create-test-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.webui.functions.create-certificate-web}
+        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
         one-of:       ${roles.id.cert.test}
       create-antibody-certificate:
         identifier:   "create-antibody-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.webui.functions.create-certificate-web}
+        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
         one-of:       ${roles.id.cert.antibody}
       create-recovery-certificate:
         identifier:   "create-recovery-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.webui.functions.create-certificate-web}
+        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
         one-of:       ${roles.id.cert.recovery}
       create-recovery-rat-certificate:
         identifier:   "create-recovery-rat-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.webui.functions.create-certificate-web}
+        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
         one-of:       ${roles.id.cert.rat}
       create-exceptional-certificate:
         identifier:   "create-exceptional-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.webui.functions.create-certificate-web}
+        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
         one-of:       ${roles.id.cert.exception}
       revoke-certificate:
         identifier:   "revoke-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.webui.functions.create-certificate-web}
+        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
         one-of:       ${roles.groups.cert-creators-plus}
 
       # one-time-password
@@ -444,7 +444,7 @@ services:
 
       # create/revoke certificates
       create-certificate:
-        identifier:   "create-certificates"
+        identifier:   "create-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.id.user.web}
@@ -452,43 +452,43 @@ services:
         identifier:   "create-vaccine-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.api-gateway.functions.create-certificate}
+        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.vacc}
       create-vaccine-tourist-certificate:
         identifier:   "create-vaccine-tourist-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.api-gateway.functions.create-certificate}
+        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.tourist}
       create-test-certificate:
         identifier:   "create-test-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.api-gateway.functions.create-certificate}
+        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.test}
       create-antibody-certificate:
         identifier:   "create-antibody-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.api-gateway.functions.create-certificate}
+        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.antibody}
       create-recovery-certificate:
         identifier:   "create-recovery-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.api-gateway.functions.create-certificate}
+        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.recovery}
       create-recovery-rat-certificate:
         identifier:   "create-recovery-rat-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.api-gateway.functions.create-certificate}
+        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.rat}
       revoke-certificate:
         identifier:   "revoke-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        additional:   ${services.api-gateway.functions.create-certificate}
+        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.groups.cert-creators}
 
   ##   M A N A G E M E N T   ##############################################################################
@@ -505,51 +505,57 @@ services:
         one-of:       ${roles.id.user.web}, ${roles.id.user.api}
       create-vaccine-certificate:
         identifier:   "create-vaccine-certificate"
+        uri:
+          -           "/api/v1/covidcertificate/vaccination"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        addtional:    ${services.management.functions.create-certificate}
+        additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.vacc}
       create-vaccine-tourist-certificate:
         identifier:   "create-vaccine-tourist-certificate"
+        uri:
+          -           "/api/v1/covidcertificate/vaccination-tourist"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        addtional:    ${services.management.functions.create-certificate}
+        additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.tourist}
       create-test-certificate:
         identifier:   "create-test-certificate"
+        uri:
+          -           "/api/v1/covidcertificate/vaccination-tourist"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        addtional:    ${services.management.functions.create-certificate}
+        additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.test}
       create-antibody-certificate:
         identifier:   "create-antibody-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        addtional:    ${services.management.functions.create-certificate}
+        additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.antibody}
       create-recovery-certificate:
         identifier:   "create-recovery-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        addtional:    ${services.management.functions.create-certificate}
+        additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.recovery}
       create-recovery-rat-certificate:
         identifier:   "create-recovery-rat-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        addtional:    ${services.management.functions.create-certificate}
+        additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.rat}
       create-exceptional-certificate:
         identifier:   "create-exceptional-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        addtional:    ${services.management.functions.create-certificate}
+        additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.exception}
       revoke-certificate:
         identifier:   "revoke-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        addtional:    ${services.management.functions.create-certificate}
+        additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.groups.cert-creators-plus}
 
       # one-time-password
@@ -576,42 +582,42 @@ services:
         identifier:   "valuesets"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+        one-of:       ${roles.groups.any}
       rapid-test-valueset:
         identifier:   "rapid-test-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+        one-of:       ${roles.groups.any}
       issuable-rapid-test-valueset:
         identifier:   "issuable-rapid-test-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+        one-of:       ${roles.groups.any}
       vaccines-valueset:
         identifier:   "vaccines-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+        one-of:       ${roles.groups.any}
       issuable-vaccines-valueset:
         identifier:   "issuable-vaccines-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+        one-of:       ${roles.groups.any}
       issuable-vaccines-valueset-by-system-source:
         identifier:   "issuable-vaccines-valueset-by-system-source"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+        one-of:       ${roles.groups.any}
       countries-valueset:
         identifier:   "countries-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+        one-of:       ${roles.groups.any}
       countries-valueset-by-language:
         identifier:   "countries-valueset-by-language"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+        one-of:       ${roles.groups.any}
 
       # extras
       clear-caches:

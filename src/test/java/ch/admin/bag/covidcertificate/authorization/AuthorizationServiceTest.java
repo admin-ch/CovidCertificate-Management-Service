@@ -4,11 +4,13 @@ import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.domain.Revocation;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
         "spring.jpa.hibernate.ddl-auto=create",
         "spring.datasource.driver-class-name=org.h2.Driver",
@@ -49,7 +52,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testSimpleGrant() {
-        List<String> rawRoles = new ArrayList<String>();
+        List<String> rawRoles = new ArrayList<>();
         rawRoles.add("bag-cc-web_ui_user");
         Set<String> authFunctions = authorizationService.getCurrent(AuthorizationService.SRVC_WEB, rawRoles);
         assertTrue(authFunctions.stream().anyMatch(func -> func.equals("create-certificates-web")));
@@ -57,7 +60,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testDelegatedGrant(){
-        List<String> rawRoles = new ArrayList<String>();
+        List<String> rawRoles = new ArrayList<>();
         rawRoles.add("bag-cc-web_ui_user");
         rawRoles.add("bag-cc-vacccert_creator");
         Set<String> authFunctions = authorizationService.getCurrent(AuthorizationService.SRVC_WEB, rawRoles);
@@ -66,7 +69,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testSimpleGrantEiam() {
-        List<String> rawRoles = new ArrayList<String>();
+        List<String> rawRoles = new ArrayList<>();
         rawRoles.add("9500.GGG-Covidcertificate.Web-UI-User");
         Set<String> authFunctions = authorizationService.getCurrent(AuthorizationService.SRVC_WEB, rawRoles);
         assertTrue(authFunctions.stream().anyMatch(func -> func.equals("create-certificates-web")));
@@ -74,7 +77,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testDelegatedGrantEiam(){
-        List<String> rawRoles = new ArrayList<String>();
+        List<String> rawRoles = new ArrayList<>();
         rawRoles.add("9500.GGG-Covidcertificate.Web-UI-User");
         rawRoles.add("9500.GGG-Covidcertificate.VaccCert-Creator");
         Set<String> authFunctions = authorizationService.getCurrent(AuthorizationService.SRVC_WEB, rawRoles);
@@ -83,7 +86,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testSimpleNoGrant(){
-        List<String> rawRoles = new ArrayList<String>();
+        List<String> rawRoles = new ArrayList<>();
         rawRoles.add("bag-cc-api_gw_user");
         Set<String> authFunctions = authorizationService.getCurrent(AuthorizationService.SRVC_WEB, rawRoles);
         //web base creator right must not be granted because right not assigned to API-GW user
@@ -92,7 +95,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testDelegatedNoGrant(){
-        List<String> rawRoles = new ArrayList<String>();
+        List<String> rawRoles = new ArrayList<>();
         rawRoles.add("bag-cc-api_gw_user");
         rawRoles.add("bag-cc-vacccert_tourist_creator");
         Set<String> authFunctions = authorizationService.getCurrent(AuthorizationService.SRVC_WEB, rawRoles);
@@ -102,7 +105,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testSimpleNoGrantEiam(){
-        List<String> rawRoles = new ArrayList<String>();
+        List<String> rawRoles = new ArrayList<>();
         rawRoles.add("9500.GGG-Covidcertificate.API-GW-User");
         Set<String> authFunctions = authorizationService.getCurrent(AuthorizationService.SRVC_WEB, rawRoles);
         //web base creator right must not be granted because right not assigned to API-GW user
@@ -111,7 +114,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testDelegatedNoGrantEiam(){
-        List<String> rawRoles = new ArrayList<String>();
+        List<String> rawRoles = new ArrayList<>();
         rawRoles.add("9500.GGG-Covidcertificate.API-GW-User");
         rawRoles.add("9500.GGG-Covidcertificate.VaccCert-Tourist-Creator");
         Set<String> authFunctions = authorizationService.getCurrent(AuthorizationService.SRVC_WEB, rawRoles);

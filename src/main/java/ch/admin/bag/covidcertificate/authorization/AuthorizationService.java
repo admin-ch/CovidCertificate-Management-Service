@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Profile("authorization")
@@ -109,14 +112,15 @@ public class AuthorizationService {
         //lets
         boolean allAdditionalValid = true;
         if (function.getAdditional() != null) {
-            // keep additional functions to authorize for which are currently valid
+            // check additional functions which are currently valid
             List<ServiceData.Function> addFunctionsByPointInTime =
                     filterByPointInTime(LocalDateTime.now(), function.getAdditional());
-            allAdditionalValid = addFunctionsByPointInTime==null || addFunctionsByPointInTime.isEmpty() ? false :
-                    addFunctionsByPointInTime.stream().allMatch(func -> isGranted(roles, func));
+
+            allAdditionalValid = addFunctionsByPointInTime.stream().allMatch(func -> isGranted(roles, func));
         }
         List<String> oneOf = function.getOneOf();
-        boolean oneOfValid = oneOf==null || oneOf.isEmpty() ? false : oneOf.stream().anyMatch(roles::contains);
+        boolean oneOfValid = true;
+        oneOfValid = oneOf.stream().anyMatch(roles::contains);
         return (allAdditionalValid && oneOfValid);
     }
 
@@ -144,9 +148,9 @@ public class AuthorizationService {
     @PostConstruct
     private void init() {
         services = new TreeMap<>();
-        services.put("api-gateway", authorizationConfig.getApiGateway());
-        services.put("management", authorizationConfig.getManagement());
-        services.put("web-ui", authorizationConfig.getWebUi());
+        services.put("api-gateway", enrichServiceData(authorizationConfig.getApiGateway()));
+        services.put("management", enrichServiceData(authorizationConfig.getManagement()));
+        services.put("web-ui", enrichServiceData(authorizationConfig.getWebUi()));
 
         roleMapping = new TreeMap<>();
         for (RoleData roleData : roleConfig.getMappings()) {
@@ -159,5 +163,38 @@ public class AuthorizationService {
                 roleMapping.put(roleData.getEiam(), roleData.getIntern());
             }
         }
+    }
+
+    private ServiceData enrichServiceData(ServiceData serviceData){
+        serviceData.getFunctions().values().stream()
+                .forEach(function -> enrichFunction(function, serviceData.getFunctions()));
+        return serviceData;
+    }
+
+    private ServiceData.Function enrichFunction(ServiceData.Function function, Map<String, ServiceData.Function> repo){
+        function.setAdditional(buildAdditionalList(function.getAdditionalRef(),repo));
+        if (function.getUri() == null) {
+            function.setUri(Collections.<String>emptyList());
+        }
+        if (function.getOneOf() == null) {
+            function.setOneOf(Collections.<String>emptyList());
+        }
+        return function;
+    }
+
+    private List<ServiceData.Function> buildAdditionalList(List<String> refs, Map<String, ServiceData.Function> repo){
+        List<ServiceData.Function> result = new ArrayList<ServiceData.Function>();
+        if (refs != null)
+        for (String ref: refs) {
+            ServiceData.Function func = repo.get(ref);
+            if (func != null){
+                //found matching function
+                result.add(func);
+            } else {
+                throw new IllegalStateException(MessageFormat.format("referenced Function in Authorization Config not found: \"{0}\"", ref));
+            }
+
+        }
+        return result;
     }
 }
