@@ -146,7 +146,7 @@ public class AuthorizationService {
     }
 
     @PostConstruct
-    private void init() {
+     void init() {
         services = new TreeMap<>();
         services.put("api-gateway", enrichServiceData(authorizationConfig.getApiGateway()));
         services.put("management", enrichServiceData(authorizationConfig.getManagement()));
@@ -166,7 +166,7 @@ public class AuthorizationService {
     }
 
     private ServiceData enrichServiceData(ServiceData serviceData){
-        serviceData.getFunctions().values().stream()
+        serviceData.getFunctions().values()
                 .forEach(function -> enrichFunction(function, serviceData.getFunctions()));
         return serviceData;
     }

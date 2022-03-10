@@ -26,6 +26,5 @@ public class ServiceData {
         private List<String> additionalRef;
         private List<Function> additional;
         private List<String> oneOf;
-        private String uri;
     }
 }

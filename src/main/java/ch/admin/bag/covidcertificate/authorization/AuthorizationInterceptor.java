@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,9 +46,9 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         String uri = request.getRequestURI();
         ServiceData.Function function = authorizationService.getDefinition("management")
                 .getFunctions()
+                .values()
                 .stream()
-                .filter(f -> StringUtils.hasText(f.getUri()))
-                .filter(f -> f.getUri().matches(uri))
+                .filter(f -> f.getUri().stream().anyMatch(regex -> regex.matches(uri)))
                 .findAny()
                 .orElseThrow(() -> new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri));
 

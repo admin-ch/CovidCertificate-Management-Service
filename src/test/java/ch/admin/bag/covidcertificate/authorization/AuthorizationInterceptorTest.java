@@ -23,6 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,7 +55,7 @@ public class AuthorizationInterceptorTest extends Assert {
 
         ServiceData serviceData = new ServiceData();
 
-        serviceData.setFunctions(List.of(
+        serviceData.setFunctions(Map.ofEntries(
                 createFunction("/mandatoryRoleMissing", "MISSING_ROLE", null),
                 createFunction("/mandatoryRolePresent", "MANDATORY_ROLE", null),
                 createFunction("/oneOfRoleMissing", "MANDATORY_ROLE", List.of("MISSING_ROLE")),
@@ -129,15 +130,16 @@ public class AuthorizationInterceptorTest extends Assert {
         assertTrue(interceptor.preHandle(request, response, handler));
     }
 
-    private ServiceData.Function createFunction(String uri, String mandatory, List<String> oneOf) {
-        return ServiceData.Function.builder()
-                .from(LocalDateTime.now())
-                .until(LocalDateTime.now().plusDays(10))
-                .identifier(uri)
-                .mandatory(mandatory)
-                .oneOf(oneOf)
-                .uri(uri)
-                .build();
+    private Map.Entry<String, ServiceData.Function> createFunction(String uri, String mandatory, List<String> oneOf) {
+        return Map.entry(uri,
+                ServiceData.Function.builder()
+                        .from(LocalDateTime.now())
+                        .until(LocalDateTime.now().plusDays(10))
+                        .identifier(uri)
+// TODO:               .additional(mandatory)
+                        .oneOf(oneOf)
+                        .uri(List.of(uri))
+                        .build());
     }
 
 
