@@ -16,4 +16,5 @@ import java.util.List;
 public class RoleConfig {
 
     private List<RoleData> mappings;
+
 }

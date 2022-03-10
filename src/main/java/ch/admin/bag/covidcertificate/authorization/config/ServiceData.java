@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.authorization.config;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -16,6 +17,7 @@ public class ServiceData {
     private Map<String,Function> functions = new HashMap<>();
 
     @Data
+    @Builder
     public static class Function {
         private String identifier;
         private List<String> uri;
@@ -24,5 +26,6 @@ public class ServiceData {
         private List<String> additionalRef;
         private List<Function> additional;
         private List<String> oneOf;
+        private String uri;
     }
 }
