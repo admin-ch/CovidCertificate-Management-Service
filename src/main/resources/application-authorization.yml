@@ -329,48 +329,56 @@ services:
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.user.web}
       one-of:       ${roles.id.cert.vacc}
+      uri:          "/api/v1/covidcertificate/vaccination"
     -
       identifier:   "create-vaccine-tourist-certificate"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.user.web}
       one-of:       ${roles.id.cert.tourist}
+      uri:          "/api/v1/covidcertificate/vaccination-tourist"
     -
       identifier:   "create-test-certificate"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.user.web}
       one-of:       ${roles.id.cert.test}
+      uri:          "/api/v1/covidcertificate/test"
     -
       identifier:   "create-antibody-certificate"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.user.web}
       one-of:       ${roles.id.cert.antibody}
+      uri:          "/api/v1/covidcertificate/antibody"
     -
       identifier:   "create-recovery-certificate"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.user.web}
       one-of:       ${roles.id.cert.recovery}
+      uri:          "/api/v1/covidcertificate/recovery"
     -
       identifier:   "create-recovery-rat-certificate"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.user.web}
       one-of:       ${roles.id.cert.rat}
+      uri:          "/api/v1/covidcertificate/recovery-rat"
     -
       identifier:   "create-exceptional-certificate"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.user.web}
       one-of:       ${roles.id.cert.exception}
+      uri:          "/api/v1/covidcertificate/exceptional"
     -
       identifier:   "revoke-certificate"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.user.revocator}
       one-of:       ${roles.groups.cert-creators-plus}
+      uri:          "/api/v1/covidcertificate/revoke"
 
     # one-time-password
     -
@@ -378,6 +386,7 @@ services:
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.user.api}
+      uri:          "/api/v1/otp"
 
     # bulk operations
     -
@@ -385,11 +394,14 @@ services:
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.cert.bulk}
+      uri:          "/api/v1/covidcertificate/csv"
     -
       identifier:   "bulk-revoke-certificates"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.cert.bulk}
+#      TODO:
+#      uri:          "/api/v1/covidcertificate/TODO"
 
     # valuesets
     -
@@ -397,41 +409,49 @@ services:
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+      uri:          "/api/v1/valuesets"
     -
       identifier:   "rapid-test-valueset"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+      uri:          "/api/v1/valuesets/rapid-tests"
     -
       identifier:   "issuable-rapid-test-valueset"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+      uri:          "/api/v1/valuesets/issuable-rapid-tests"
     -
       identifier:   "vaccines-valueset"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+      uri:          "/api/v1/valuesets/vaccines"
     -
       identifier:   "issuable-vaccines-valueset"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+      uri:          "/api/v1/valuesets/issuable-vaccines"
     -
       identifier:   "issuable-vaccines-valueset-by-system-source"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+      uri:          "/api/v1/valuesets/issuable-vaccines/(\\w|-)+"
     -
       identifier:   "countries-valueset"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+      uri:          "/api/v1/valuesets/countries"
     -
       identifier:   "countries-valueset-by-language"
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       one-of:       ${roles.id.user.api}, ${roles.id.user.web}
+      uri:          "/api/v1/valuesets/countries/(\\w|-)+"
 
     # extras
     -
@@ -439,6 +459,7 @@ services:
       from:         2022-01-01T00:00:00
       until:        2099-12-31T23:59:59
       mandatory:    ${roles.id.legacy.super-user}
+      uri:          "/api/v1/caches/clear"
 
   ##   R E P O R T   ##############################################################################
 

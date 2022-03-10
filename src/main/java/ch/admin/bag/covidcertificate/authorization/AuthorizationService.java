@@ -6,6 +6,7 @@ import ch.admin.bag.covidcertificate.authorization.config.RoleData;
 import ch.admin.bag.covidcertificate.authorization.config.ServiceData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -99,9 +100,9 @@ public class AuthorizationService {
      */
     private boolean isGranted(Set<String> roles, ServiceData.Function function) {
         String mandatory = function.getMandatory();
-        boolean mandatoryValid = mandatory==null ? true : roles.contains(mandatory);
+        boolean mandatoryValid = mandatory == null || roles.contains(mandatory);
         List<String> oneOf = function.getOneOf();
-        boolean oneOfValid = oneOf==null || oneOf.isEmpty() ? false : oneOf.stream().anyMatch(roles::contains);
+        boolean oneOfValid = CollectionUtils.isEmpty(oneOf) || oneOf.stream().anyMatch(roles::contains);
         return (mandatoryValid && oneOfValid);
     }
 
@@ -127,7 +128,7 @@ public class AuthorizationService {
     }
 
     @PostConstruct
-    private void init() {
+    void init() {
         services = new TreeMap<>();
         services.put("api-gateway", authorizationConfig.getApiGateway());
         services.put("management", authorizationConfig.getManagement());

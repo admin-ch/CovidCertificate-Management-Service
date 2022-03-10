@@ -109,6 +109,8 @@ management:
       enabled: true
 
 cc-management-service:
+  auth:
+    allow-unauthenticated: cc-api-gateway-service
   rest:
     connectTimeoutSeconds: 8
     readTimeoutSeconds: 8
