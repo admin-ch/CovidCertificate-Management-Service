@@ -70,7 +70,7 @@ public class AuthorizationService {
                 // identify the functions granted to this time by given roles
                 grantedFunctions = functionsByPointInTime.stream()
                         .filter(function -> isGranted(roles, function))
-                        .map(function -> function.getIdentifier())
+                        .map(ServiceData.Function::getIdentifier)
                         .collect(Collectors.toSet());
             }
         }
@@ -172,19 +172,15 @@ public class AuthorizationService {
         return serviceData;
     }
 
-    private ServiceData.Function enrichFunction(ServiceData.Function function, Map<String, ServiceData.Function> repo) {
+    private void enrichFunction(ServiceData.Function function, Map<String, ServiceData.Function> repo) {
         function.setAdditional(buildAdditionalList(function.getAdditionalRef(), repo));
-        if (function.getUri() == null) {
-            function.setUri(Collections.<String>emptyList());
-        }
         if (function.getOneOf() == null) {
-            function.setOneOf(Collections.<String>emptyList());
+            function.setOneOf(Collections.emptyList());
         }
-        return function;
     }
 
     private List<ServiceData.Function> buildAdditionalList(List<String> refs, Map<String, ServiceData.Function> repo) {
-        List<ServiceData.Function> result = new ArrayList<ServiceData.Function>();
+        List<ServiceData.Function> result = new ArrayList<>();
         if (refs != null)
             for (String ref : refs) {
                 ServiceData.Function func = repo.get(ref);

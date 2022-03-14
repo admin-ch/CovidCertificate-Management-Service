@@ -448,48 +448,64 @@ services:
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.id.user.web}
+        uri:          "/api/v1/covidcertificate"
+
       create-vaccine-certificate:
         identifier:   "create-vaccine-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.vacc}
+        uri:          "/api/v1/covidcertificate/vaccination"
+
       create-vaccine-tourist-certificate:
         identifier:   "create-vaccine-tourist-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.tourist}
+        uri:          "/api/v1/covidcertificate/vaccination-tourist"
+
       create-test-certificate:
         identifier:   "create-test-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.test}
+        uri:          "/api/v1/covidcertificate/test"
+
       create-antibody-certificate:
         identifier:   "create-antibody-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.antibody}
+        uri:          "/api/v1/covidcertificate/antibody"
+
       create-recovery-certificate:
         identifier:   "create-recovery-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.recovery}
+        uri:          "/api/v1/covidcertificate/recovery"
+
       create-recovery-rat-certificate:
         identifier:   "create-recovery-rat-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.rat}
+        uri:          "/api/v1/covidcertificate/recovery-rat"
+
       revoke-certificate:
         identifier:   "revoke-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
         one-of:       ${roles.groups.cert-creators}
+        uri:          "/api/v1/covidcertificate/revoke"
+
 
   ##   M A N A G E M E N T   ##############################################################################
 
@@ -505,58 +521,68 @@ services:
         one-of:       ${roles.id.user.web}, ${roles.id.user.api}
       create-vaccine-certificate:
         identifier:   "create-vaccine-certificate"
-        uri:
-          -           "/api/v1/covidcertificate/vaccination"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.vacc}
+        uri:          "/api/v1/covidcertificate/vaccination"
+
       create-vaccine-tourist-certificate:
         identifier:   "create-vaccine-tourist-certificate"
-        uri:
-          -           "/api/v1/covidcertificate/vaccination-tourist"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.tourist}
+        uri:          "/api/v1/covidcertificate/vaccination-tourist"
+
       create-test-certificate:
         identifier:   "create-test-certificate"
-        uri:
-          -           "/api/v1/covidcertificate/vaccination-tourist"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.test}
+        uri:          "/api/v1/covidcertificate/test"
+
       create-antibody-certificate:
         identifier:   "create-antibody-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.antibody}
+        uri:          "/api/v1/covidcertificate/antibody"
+
       create-recovery-certificate:
         identifier:   "create-recovery-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.recovery}
+        uri:          "/api/v1/covidcertificate/recovery"
+
       create-recovery-rat-certificate:
         identifier:   "create-recovery-rat-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.rat}
+        uri:          "/api/v1/covidcertificate/recovery-rat"
+
       create-exceptional-certificate:
         identifier:   "create-exceptional-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.id.cert.exception}
+        uri:          "/api/v1/covidcertificate/exceptional"
+
       revoke-certificate:
         identifier:   "revoke-certificate"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         additionalRef:    ${services.management.functions.create-certificate.identifier}
         one-of:       ${roles.groups.cert-creators-plus}
+        uri:          "/api/v1/covidcertificate/revoke"
+
 
       # one-time-password
       create-otp:
@@ -564,6 +590,7 @@ services:
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.id.user.api}
+        uri:          "/api/v1/otp"
 
       # bulk operations
       bulk-create-certificates:
@@ -571,11 +598,14 @@ services:
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.id.cert.bulk}
+        uri:          "/api/v1/covidcertificate/csv"
+
       bulk-revoke-certificates:
         identifier:   "bulk-revoke-certificates"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.id.cert.bulk}
+        uri:          "/api/v1/covidcertificate/TODO" #TODO
 
       # valuesets
       valuesets:
@@ -583,41 +613,56 @@ services:
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
+        uri:          "/api/v1/valuesets"
+
       rapid-test-valueset:
         identifier:   "rapid-test-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
+        uri:          "/api/v1/valuesets/rapid-tests"
+
       issuable-rapid-test-valueset:
         identifier:   "issuable-rapid-test-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
+        uri:          "/api/v1/valuesets/issuable-rapid-tests"
+
       vaccines-valueset:
         identifier:   "vaccines-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
+        uri:          "/api/v1/valuesets/vaccines"
+
       issuable-vaccines-valueset:
         identifier:   "issuable-vaccines-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
+        uri:          "/api/v1/valuesets/issuable-vaccines"
+
       issuable-vaccines-valueset-by-system-source:
         identifier:   "issuable-vaccines-valueset-by-system-source"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
+        uri:          "/api/v1/valuesets/issuable-vaccines/(\\w|-)+"
+
       countries-valueset:
         identifier:   "countries-valueset"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
+        uri:          "/api/v1/valuesets/countries"
+
       countries-valueset-by-language:
         identifier:   "countries-valueset-by-language"
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
+        uri:          "/api/v1/valuesets/countries/(\\w|-)+"
 
       # extras
       clear-caches:
@@ -625,6 +670,8 @@ services:
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         mandatory:    ${roles.id.legacy.super-user}
+        uri:          "/api/v1/caches/clear"
+
 
   ##   R E P O R T   ##############################################################################
 
@@ -638,53 +685,74 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.detail}
+        uri: "/api/v1/report/fraud/a2/by_uvci"
+
       report-a3:
         identifier: "report-a3"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
+        uri: "/api/v1/report/fraud/a3/for_timerange_by_users"
+
       report-a4:
         identifier: "report-a4"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.detail}
+        uri: "/api/v1/report/fraud/a4/for_timerange_by_users_and_types"
+
       report-a5:
         identifier: "report-a5"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
+        uri: "/api/v1/report/fraud/a5/(Aggregated Rep, URL TBD)" #TODO
+
       report-a6:
         identifier: "report-a6"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.detail}
+        uri: "/api/v1/report/fraud/a6/(Detail Rep, URL TBD)" #TODO
+
       report-a7:
         identifier: "report-a7"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
+        uri: "/api/v1/report/fraud/a7/(Aggregated Rep, URL TBD)" #TODO
+
       report-a8:
         identifier: "report-a8"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.stats}
+        uri: "/api/v1/report/certificate/statistics/a8/for_timerange_by_week"
+
       report-a9:
         identifier: "report-a9"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.stats}
+        uri:  "/api/v1/report/certificate/statistics/a9/full_period"
+
       report-a10:
         identifier: "report-a10"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
+        uri: "/api/v1/report/fraud/a10/for_timerange_by_types"
+
       report-a11:
         identifier: "report-a11"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
+        #TODO: uri
+
       report-a12:
         identifier: "report-a12"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
+        #TODO: uri

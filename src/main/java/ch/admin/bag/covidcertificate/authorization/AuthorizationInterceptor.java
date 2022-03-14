@@ -7,6 +7,7 @@ import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenti
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.Objects;
+import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -48,7 +49,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 .getFunctions()
                 .values()
                 .stream()
-                .filter(f -> f.getUri().stream().anyMatch(regex -> regex.matches(uri)))
+                .filter(f -> StringUtils.hasText(f.getUri()))
+                .filter(f -> f.getUri().matches(uri))
                 .findAny()
                 .orElseThrow(() -> new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri));
 
