@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
-@Profile("authorization")
+
 @Slf4j
 @Data
 @Configuration

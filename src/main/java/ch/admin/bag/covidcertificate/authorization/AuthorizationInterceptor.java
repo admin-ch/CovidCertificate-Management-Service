@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Set;
 
-@Profile("authorization")
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor

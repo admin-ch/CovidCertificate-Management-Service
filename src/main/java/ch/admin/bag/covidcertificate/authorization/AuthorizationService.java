@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-@Profile("authorization")
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -167,6 +167,9 @@ public class AuthorizationService {
     }
 
     private ServiceData enrichServiceData(ServiceData serviceData) {
+        if (serviceData == null){
+            return null;
+        }
         serviceData.getFunctions().values()
                 .forEach(function -> enrichFunction(function, serviceData.getFunctions()));
         return serviceData;
