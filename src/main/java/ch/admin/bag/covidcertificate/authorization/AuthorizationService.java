@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.context.annotation.Profile;
+
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -167,7 +167,7 @@ public class AuthorizationService {
     }
 
     private ServiceData enrichServiceData(ServiceData serviceData) {
-        if (serviceData == null){
+        if (serviceData == null) {
             return null;
         }
         serviceData.getFunctions().values()

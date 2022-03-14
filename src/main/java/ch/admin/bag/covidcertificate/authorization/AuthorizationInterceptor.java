@@ -10,7 +10,7 @@ import org.bouncycastle.util.Objects;
 import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.servlet.HandlerInterceptor;
