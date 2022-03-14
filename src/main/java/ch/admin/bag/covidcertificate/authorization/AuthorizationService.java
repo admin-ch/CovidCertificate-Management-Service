@@ -7,6 +7,7 @@ import ch.admin.bag.covidcertificate.authorization.config.ServiceData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,6 @@ import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Profile("authorization")
@@ -45,8 +44,8 @@ public class AuthorizationService {
      * Returns all permitted functions by given roles at given service.
      * This permission is bound to time and may change during time.
      *
-     * @param service   the requesting service
-     * @param rawRoles  the current roles of the user (either from eIAM or from Claim)
+     * @param service  the requesting service
+     * @param rawRoles the current roles of the user (either from eIAM or from Claim)
      * @return list of permitted functions
      */
     public Set<String> getCurrent(String service, List<String> rawRoles) {
@@ -75,7 +74,7 @@ public class AuthorizationService {
                         .collect(Collectors.toSet());
             }
         }
-        log.info("grants: "+grantedFunctions);
+        log.info("grants: " + grantedFunctions);
         return grantedFunctions;
     }
 
@@ -103,8 +102,8 @@ public class AuthorizationService {
      * </ul>
      * <li>
      * The given function is only permitted when both conditions are valid.
-
-     * @param roles  the user's roles
+     *
+     * @param roles    the user's roles
      * @param function the function to check
      * @return <code>true</code> only if both mandatory and one-of are valid
      */
@@ -119,8 +118,10 @@ public class AuthorizationService {
             allAdditionalValid = addFunctionsByPointInTime.stream().allMatch(func -> isGranted(roles, func));
         }
         List<String> oneOf = function.getOneOf();
-        boolean oneOfValid = true;
-        oneOfValid = oneOf.stream().anyMatch(roles::contains);
+        if (CollectionUtils.isEmpty(oneOf)) {
+            return allAdditionalValid;
+        }
+        boolean oneOfValid = oneOf.stream().anyMatch(roles::contains);
         return (allAdditionalValid && oneOfValid);
     }
 
@@ -138,15 +139,15 @@ public class AuthorizationService {
     private boolean isBetween(LocalDateTime pointInTime, ServiceData.Function function) {
         boolean between = false;
         if (function != null) {
-            boolean fromSmallerEquals = (function.getFrom()==null || function.getFrom().isBefore(pointInTime) || function.getFrom().isEqual(pointInTime));
-            boolean untilLargerEquals = (function.getUntil()==null || function.getUntil().isAfter(pointInTime) || function.getUntil().isEqual(pointInTime));
+            boolean fromSmallerEquals = (function.getFrom() == null || function.getFrom().isBefore(pointInTime) || function.getFrom().isEqual(pointInTime));
+            boolean untilLargerEquals = (function.getUntil() == null || function.getUntil().isAfter(pointInTime) || function.getUntil().isEqual(pointInTime));
             between = fromSmallerEquals && untilLargerEquals;
         }
         return between;
     }
 
     @PostConstruct
-     void init() {
+    void init() {
         services = new TreeMap<>();
         services.put("api-gateway", enrichServiceData(authorizationConfig.getApiGateway()));
         services.put("management", enrichServiceData(authorizationConfig.getManagement()));
@@ -165,14 +166,14 @@ public class AuthorizationService {
         }
     }
 
-    private ServiceData enrichServiceData(ServiceData serviceData){
+    private ServiceData enrichServiceData(ServiceData serviceData) {
         serviceData.getFunctions().values()
                 .forEach(function -> enrichFunction(function, serviceData.getFunctions()));
         return serviceData;
     }
 
-    private ServiceData.Function enrichFunction(ServiceData.Function function, Map<String, ServiceData.Function> repo){
-        function.setAdditional(buildAdditionalList(function.getAdditionalRef(),repo));
+    private ServiceData.Function enrichFunction(ServiceData.Function function, Map<String, ServiceData.Function> repo) {
+        function.setAdditional(buildAdditionalList(function.getAdditionalRef(), repo));
         if (function.getUri() == null) {
             function.setUri(Collections.<String>emptyList());
         }
@@ -182,19 +183,19 @@ public class AuthorizationService {
         return function;
     }
 
-    private List<ServiceData.Function> buildAdditionalList(List<String> refs, Map<String, ServiceData.Function> repo){
+    private List<ServiceData.Function> buildAdditionalList(List<String> refs, Map<String, ServiceData.Function> repo) {
         List<ServiceData.Function> result = new ArrayList<ServiceData.Function>();
         if (refs != null)
-        for (String ref: refs) {
-            ServiceData.Function func = repo.get(ref);
-            if (func != null){
-                //found matching function
-                result.add(func);
-            } else {
-                throw new IllegalStateException(MessageFormat.format("referenced Function in Authorization Config not found: \"{0}\"", ref));
-            }
+            for (String ref : refs) {
+                ServiceData.Function func = repo.get(ref);
+                if (func != null) {
+                    //found matching function
+                    result.add(func);
+                } else {
+                    throw new IllegalStateException(MessageFormat.format("referenced Function in Authorization Config not found: \"{0}\"", ref));
+                }
 
-        }
+            }
         return result;
     }
 }
