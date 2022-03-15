@@ -1,0 +1,15 @@
+<th:block>
+    <p class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+    <p class="body-text-small"><span th:text="#{info.notTravelDocument}"></span>
+        <span th:text="#{info.limitedTimeValidity}"></span>
+        <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp}"></span>
+        <span th:text="#{info.keepPaperDocument}"></span>
+    </p>
+    <p></p><!-- Keep this to separate the languages -->
+    <p class="body-text-small-en" th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+    <p class="body-text-small-en"><span th:text="#{info.notTravelDocument(${'en'})}"></span>
+        <span th:text="#{info.limitedTimeValidity(${'en'})}"></span>
+        <span th:text="#{info.verifyAgainstSwissValidationRulesWithApp(${'en'})}"></span>
+        <span th:text="#{info.keepPaperDocument(${'en'})}"></span>
+    </p>
+</th:block>

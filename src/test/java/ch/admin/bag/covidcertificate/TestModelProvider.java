@@ -40,6 +40,43 @@ public class TestModelProvider {
     }
 
     public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(
+            String familyName,
+            String givenName,
+            LocalDate birthDate,
+            String medicalProductCode,
+            int numberOfDoses,
+            int totalNumberOfDoses,
+            LocalDate vaccinationDate,
+            String countryCode,
+            String language
+    ) {
+        CovidCertificatePersonNameDto covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(
+                familyName,
+                givenName);
+
+        CovidCertificatePersonDto covidCertificatePersonDto = new CovidCertificatePersonDto(
+                covidCertificatePersonNameDto,
+                birthDate.toString());
+
+        VaccinationCertificateDataDto vaccinationCertificateDataDto = new VaccinationCertificateDataDto(
+                medicalProductCode,
+                numberOfDoses,
+                totalNumberOfDoses,
+                vaccinationDate,
+                countryCode
+        );
+
+        return new VaccinationCertificateCreateDto(
+                covidCertificatePersonDto,
+                List.of(vaccinationCertificateDataDto),
+                language,
+                null,
+                null,
+                SystemSource.WebUI
+        );
+    }
+
+    public static VaccinationCertificateCreateDto getVaccinationCertificateCreateDto(
             String medicalProductCode, String language, String inAppCode) {
         return new VaccinationCertificateCreateDto(
                 getCovidCertificatePersonDto(),
