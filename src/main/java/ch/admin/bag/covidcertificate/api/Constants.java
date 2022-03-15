@@ -45,6 +45,7 @@ public class Constants {
     public static final String KPI_IN_APP_DELIVERY_UVCI_KEY = "uvci";
     public static final String USER_EXT_ID_CLAIM_KEY = "userExtId";
     public static final String PREFERRED_USERNAME_CLAIM_KEY = "preferred_username";
+    public static final String USER_ROLES_CLAIM_KEY = "userroles";
     public static final String KPI_UUID_KEY = "uuid";
     public static final String KPI_TIMESTAMP_KEY = "ts";
     public static final String KPI_TYPE_KEY = "type";
