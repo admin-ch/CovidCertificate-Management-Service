@@ -24,6 +24,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
 import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
+import static ch.admin.bag.covidcertificate.api.Constants.USER_ROLES_CLAIM_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RestController
@@ -48,7 +49,10 @@ public class OneTimePasswordController {
 
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
 
-        String otp = customTokenProvider.createToken(token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY), token.getClaimAsString("homeName"));
+        String otp = customTokenProvider.createToken(
+                token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY),
+                token.getClaimAsString("homeName"),
+                token.getClaimAsStringList(USER_ROLES_CLAIM_KEY));
         LocalDateTime kpiTimestamp = LocalDateTime.now();
         log.info("kpi: {} {} {}", kv(KPI_TIMESTAMP_KEY, ZonedDateTime.now(SWISS_TIMEZONE).format(LOG_FORMAT)), kv(KPI_OTP_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)));
         kpiLogService.saveKpiData(
