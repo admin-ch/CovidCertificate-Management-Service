@@ -3,6 +3,9 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
+import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
+import ch.admin.bag.covidcertificate.api.response.RevocationListResponseDto;
+import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
@@ -51,7 +54,7 @@ public class RevocationController {
         log.info("Call of create revocation.");
         final String uvci = revocationDto.getUvci();
         securityHelper.authorizeUser(request);
-        revocationDto.validate();
+        UvciValidator.validateUvciMatchesSpecification(revocationDto.getUvci());
 
         if (revocationService.isAlreadyRevoked(uvci)) {
             throw new RevocationException(DUPLICATE_UVCI);

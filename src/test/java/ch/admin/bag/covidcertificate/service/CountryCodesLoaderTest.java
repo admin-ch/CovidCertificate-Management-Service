@@ -18,7 +18,7 @@ class CountryCodesLoaderTest {
         @Test
         void allCountryCodesDeAreLoaded() {
             var countryCodes = countryCodesLoader.getCountryCodes();
-            assertEquals(3, countryCodes.getDe().size());
+            assertEquals(251, countryCodes.getDe().size());
         }
 
         @Test
@@ -36,7 +36,7 @@ class CountryCodesLoaderTest {
         @Test
         void allCountryCodesEnAreLoaded() {
             var countryCodes = countryCodesLoader.getCountryCodes();
-            assertEquals(3, countryCodes.getEn().size());
+            assertEquals(251, countryCodes.getEn().size());
         }
 
         @Test
@@ -54,7 +54,7 @@ class CountryCodesLoaderTest {
         @Test
         void allCountryCodesFrAreLoaded() {
             var countryCodes = countryCodesLoader.getCountryCodes();
-            assertEquals(3, countryCodes.getFr().size());
+            assertEquals(251, countryCodes.getFr().size());
         }
 
         @Test
@@ -73,7 +73,7 @@ class CountryCodesLoaderTest {
         @Test
         void allCountryCodesItAreLoaded() {
             var countryCodes = countryCodesLoader.getCountryCodes();
-            assertEquals(3, countryCodes.getIt().size());
+            assertEquals(251, countryCodes.getIt().size());
         }
 
         @Test

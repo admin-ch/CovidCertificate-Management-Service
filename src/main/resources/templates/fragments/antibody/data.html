@@ -1,0 +1,62 @@
+<table class="two-col-table">
+    <tr class="table-row" colspan="2">
+        <th th:id="health-data-header-row">
+            <p th:text="#{antibody.title}" class="heading no-padding"></p>
+            <p th:text="#{antibody.title(${'en'})}" class="body-text-en"></p>
+        </th>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{antibody.disease.label}"></p>
+            <p class="body-text-en" th:text="#{antibody.disease.label(${'en'})}"></p>
+        </td>
+        <td class="body-text" th:text="#{antibody.disease}"></td>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{antibody.date.label}"></p>
+            <p class="body-text-en" th:text="#{antibody.date.label(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getSampleDate().format(dateFormatter)}"></td>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{antibody.finding.label}"></p>
+            <p class="body-text-en" th:text="#{antibody.finding.label(${'en'})}"></p>
+        </td>
+        <td class="body-text" th:text="#{antibody.finding.value}"></td>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{antibody.type.label}"></p>
+            <p class="body-text-en" th:text="#{antibody.type.label(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="#{antibody.type.value}"></td>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{test.conducted.label}"></p>
+            <p class="body-text-en" th:text="#{test.conducted.label(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getTestingCentreOrFacility()}"></td>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{antibody.countryOfTest.label}"></p>
+            <p class="body-text-en" th:text="#{antibody.countryOfTest.label(${'en'})}"></p>
+        </td>
+        <td>
+            <p class="body-text no-padding" th:text="${data.getCountryOfTest()}"></p>
+            <p class="body-text-en" th:text="${data.getCountryOfTestEn()}"></p>
+        </td>
+    </tr>
+</table>
