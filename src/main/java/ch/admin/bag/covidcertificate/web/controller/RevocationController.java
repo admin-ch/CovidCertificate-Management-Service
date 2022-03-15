@@ -2,7 +2,6 @@ package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
-import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
 import ch.admin.bag.covidcertificate.api.response.RevocationListResponseDto;
@@ -22,31 +21,20 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
-import static ch.admin.bag.covidcertificate.api.Constants.ALREADY_REVOKED_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_FRAUD;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_CHECK;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_FAILURE;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_REDUNDANT;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_SUCCESS;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
-import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @RestController
@@ -77,23 +65,28 @@ public class RevocationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    /*
+    // TODO VACCINECER-2086: Enable Mass-revocation
+    // TODO: make sure PreAuthorize fits new authorization
+
     @PostMapping("/uvcilist/check")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PreAuthorize("hasRole('bag-cc-superuser')")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "202", description = "CHECKED")
     public CheckRevocationListResponseDto checkMassRevocation(
-            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) throws Exception {
+            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
         log.info("Call of mass-revocation-check.");
         securityHelper.authorizeUser(request);
 
         revocationListDto.validateList();
 
-        Map<String, String> uvcisToErrorMessage = revocationService.getUvcisWithErrorMessage(revocationListDto.getUvcis());
+        Map<String, String> uvcisToErrorMessage = revocationService.getUvcisWithErrorMessage(
+                revocationListDto.getUvcis());
 
         List<String> revocableUvcis = new ArrayList<>(revocationListDto.getUvcis());
         revocableUvcis.removeAll(uvcisToErrorMessage.keySet());
 
-        /** not existing UVCIs are handled as warning, because UVCIs issued before 07.08.2021 are always unknown */
+        // not existing UVCIs are handled as warning, because UVCIs issued before 07.08.2021 are always unknown
         Map<String, String> notExistingUvcisToWarningMessage = revocationService.getNotExistingUvcis(revocableUvcis);
 
         logRevocationCheckKpi(revocationListDto.getUserExtId(), revocationListDto.getSystemSource());
@@ -103,7 +96,7 @@ public class RevocationController {
 
     @PostMapping("/uvcilist")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('bag-cc-superuser')")
+    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "201", description = "CREATED")
     public RevocationListResponseDto massRevocation(
             @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
@@ -146,6 +139,7 @@ public class RevocationController {
 
         return new RevocationListResponseDto(uvcisToErrorMessage, revokedUvcis);
     }
+    */
 
     private void logRevocationKpi(String kpiType, String uvci, SystemSource systemSource, String userExtId, boolean fraud) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
@@ -154,8 +148,8 @@ public class RevocationController {
         log.info("kpi: {} {} {} {} {}",
                 kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
                 kv(KPI_TYPE_KEY, kpiType),
-                kv(KPI_UUID_KEY, uvci),
-                kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId),
+                kv(KPI_UUID_KEY, relevantUserExtId),
+                kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, systemSource.category),
                 kv(KPI_FRAUD, fraud));
         kpiLogService.saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, relevantUserExtId, systemSource.category)
@@ -169,10 +163,11 @@ public class RevocationController {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
+        // TODO: check with Splunk-Reports
         log.info("kpi: {} {} {}",
                 kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
                 kv(KPI_TYPE_KEY, KPI_TYPE_MASS_REVOCATION_CHECK),
-                kv(PREFERRED_USERNAME_CLAIM_KEY, relevantUserExtId));
+                kv(KPI_UUID_KEY, relevantUserExtId));
         kpiLogService.saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_MASS_REVOCATION_CHECK, relevantUserExtId, systemSource.category)
                         .build()

@@ -26,13 +26,6 @@ public class SecurityHelper {
         var jeapAuthenticationToken = jeapAuthorization.getJeapAuthenticationToken();
         log.trace(jeapAuthenticationToken.toString());
 
-        if (jeapAuthenticationToken.getUserRoles().contains("bag-cc-superuser") &&
-                !jeapAuthenticationToken.getUserRoles().contains("bag-cc-strongauth")) {
-            log.warn("Superuser not allowed to use the application without strongauth...");
-            log.warn("userroles: {}", jeapAuthenticationToken.getUserRoles());
-            throw new AccessDeniedException("Access denied for Superuser without strongauth");
-        }
-
         if ((jeapAuthenticationToken.getUserRoles().contains("bag-cc-hin-epr") || jeapAuthenticationToken.getUserRoles().contains("bag-cc-hin")) &&
                 !jeapAuthenticationToken.getUserRoles().contains("bag-cc-hincode") &&
                 !jeapAuthenticationToken.getUserRoles().contains("bag-cc-personal")) {
