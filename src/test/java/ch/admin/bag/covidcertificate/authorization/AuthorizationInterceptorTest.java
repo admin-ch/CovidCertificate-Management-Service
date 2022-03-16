@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.authorization;
 
 import ch.admin.bag.covidcertificate.api.Constants;
+import ch.admin.bag.covidcertificate.api.exception.AuthorizationError;
 import ch.admin.bag.covidcertificate.api.exception.AuthorizationException;
 import ch.admin.bag.covidcertificate.authorization.config.AuthorizationConfig;
 import ch.admin.bag.covidcertificate.authorization.config.LocalDateTimeConverter;
@@ -57,15 +58,13 @@ public class AuthorizationInterceptorTest {
     @Test
     public void testNoFunctionConfigured() {
         MockHttpServletRequest request = mockRequest("/uriToNowhere");
-        AuthorizationException exception = assertThrows(AuthorizationException.class,
-                () -> interceptor.preHandle(request, response, handler));
-        assertEquals(exception.getError().getErrorCode(), Constants.NO_FUNCTION_CONFIGURED.getErrorCode());
+        assertError(request, Constants.NO_FUNCTION_CONFIGURED);
     }
 
     @Test
     public void testRoleMissing() {
         MockHttpServletRequest request = mockRequest("/only-web-user", "USELESS_ROLE");
-        assertForbidden(request);
+        assertError(request, Constants.FORBIDDEN);
     }
 
 
@@ -78,7 +77,7 @@ public class AuthorizationInterceptorTest {
     @Test
     public void testRefRoleMissing() {
         MockHttpServletRequest request = mockRequest("/web-user-and-admin", "ADMIN");
-        assertForbidden(request);
+        assertError(request, Constants.FORBIDDEN);
     }
 
     @Test
@@ -90,7 +89,7 @@ public class AuthorizationInterceptorTest {
     @Test
     public void testChainRolesMissing() {
         MockHttpServletRequest request = mockRequest("/chain-web-and-admin", "CHAIN", "ADMIN");
-        assertForbidden(request);
+        assertError(request, Constants.FORBIDDEN);
     }
 
     @Test
@@ -102,14 +101,14 @@ public class AuthorizationInterceptorTest {
     @Test
     public void testAllowedInFuture() {
         MockHttpServletRequest request = mockRequest("/future", "WEB-USER");
-        assertForbidden(request);
+        assertError(request, Constants.NO_FUNCTION_CONFIGURED);
     }
 
 
     @Test
     public void testAllowedInPast() {
         MockHttpServletRequest request = mockRequest("/past", "WEB-USER");
-        assertForbidden(request);
+        assertError(request, Constants.NO_FUNCTION_CONFIGURED);
     }
 
     private MockHttpServletRequest mockRequest(String uri, String... roles) {
@@ -122,10 +121,10 @@ public class AuthorizationInterceptorTest {
         return get(uri).buildRequest(mockServletContext);
     }
 
-    private void assertForbidden(MockHttpServletRequest request) {
+    private void assertError(MockHttpServletRequest request, AuthorizationError error) {
         AuthorizationException exception = assertThrows(AuthorizationException.class,
                 () -> interceptor.preHandle(request, response, handler));
-        assertEquals(exception.getError().getErrorCode(), Constants.FORBIDDEN.getErrorCode());
+        assertEquals(exception.getError().getErrorCode(), error.getErrorCode());
     }
 
 }

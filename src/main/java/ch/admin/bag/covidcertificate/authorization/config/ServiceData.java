@@ -23,5 +23,11 @@ public class ServiceData {
         private List<String> additionalRef;
         private List<Function> additional;
         private List<String> oneOf;
+
+        public boolean isBetween(LocalDateTime pointInTime) {
+            boolean fromSmallerEquals = (this.getFrom() == null || this.getFrom().isBefore(pointInTime) || this.getFrom().isEqual(pointInTime));
+            boolean untilLargerEquals = (this.getUntil() == null || this.getUntil().isAfter(pointInTime) || this.getUntil().isEqual(pointInTime));
+            return fromSmallerEquals && untilLargerEquals;
+        }
     }
 }

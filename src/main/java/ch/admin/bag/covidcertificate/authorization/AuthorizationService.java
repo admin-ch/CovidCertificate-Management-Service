@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.collections.CollectionUtils;
-
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -130,21 +129,12 @@ public class AuthorizationService {
         if (functions != null && pointInTime != null) {
             result = functions.stream()
                     .parallel()
-                    .filter(function -> isBetween(pointInTime, function))
+                    .filter(function -> function.isBetween(pointInTime))
                     .collect(Collectors.toList());
         }
         return result;
     }
 
-    private boolean isBetween(LocalDateTime pointInTime, ServiceData.Function function) {
-        boolean between = false;
-        if (function != null) {
-            boolean fromSmallerEquals = (function.getFrom() == null || function.getFrom().isBefore(pointInTime) || function.getFrom().isEqual(pointInTime));
-            boolean untilLargerEquals = (function.getUntil() == null || function.getUntil().isAfter(pointInTime) || function.getUntil().isEqual(pointInTime));
-            between = fromSmallerEquals && untilLargerEquals;
-        }
-        return between;
-    }
 
     @PostConstruct
     void init() {

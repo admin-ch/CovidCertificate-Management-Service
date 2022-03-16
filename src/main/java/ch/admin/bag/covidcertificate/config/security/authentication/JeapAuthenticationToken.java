@@ -27,7 +27,7 @@ public class JeapAuthenticationToken extends JwtAuthenticationToken {
      * @return The client id specified in this token.
      */
     public String getClientId() {
-        return getToken().getClaimAsString("clientId");
+        return getToken().getClaimAsString("client_id");
     }
 
     /**

@@ -12,12 +12,13 @@ import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -38,14 +39,11 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String clientId = ((Jwt) SecurityContextHolder
+        JeapAuthenticationToken authentication = ((JeapAuthenticationToken) SecurityContextHolder
                 .getContext()
-                .getAuthentication()
-                .getCredentials())
-                .getClaims()
-                .get("client_id")
-                .toString();
+                .getAuthentication());
 
+        String clientId = authentication.getClientId();
         if (Objects.areEqual(allowUnauthenticated, clientId)) {
             log.info("Allow unauthenticated because clientId is {}", clientId);
             return true;
@@ -57,17 +55,12 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 .stream()
                 .filter(f -> StringUtils.hasText(f.getUri()))
                 .filter(f -> urisAreEqual(f.getUri(), uri))
+                .filter(f -> f.isBetween(LocalDateTime.now()))
                 .findAny()
                 .orElseThrow(() -> new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri));
 
-
-        Set<String> roles = ((JeapAuthenticationToken) SecurityContextHolder
-                .getContext()
-                .getAuthentication())
-                .getUserRoles();
-
-
-        Set<String> permittedFunctions = authorizationService.getCurrent("management", new ArrayList<>(roles));
+        List<String> roles = new ArrayList<>(authentication.getUserRoles());
+        Set<String> permittedFunctions = authorizationService.getCurrent("management", roles);
 
         if (!permittedFunctions.contains(function.getIdentifier())) {
             throw new AuthorizationException(Constants.FORBIDDEN, uri);
@@ -87,7 +80,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         return IntStream.range(0, paths.length)
                 .mapToObj(i -> Pair.of(paths[i], pathsToCompare[i]))
                 .filter(pair -> !pair.getLeft().startsWith("{") && !pair.getLeft().endsWith("}"))
-                .anyMatch(pair -> !Objects.areEqual(pair.getLeft(), pair.getRight()));
+                .allMatch(pair -> Objects.areEqual(pair.getLeft(), pair.getRight()));
 
 
     }
