@@ -6,7 +6,6 @@ import ch.admin.bag.covidcertificate.authorization.config.ServiceData;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bouncycastle.util.Objects;
 import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,10 +77,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         }
 
         return IntStream.range(0, paths.length)
-                .mapToObj(i -> Pair.of(paths[i], pathsToCompare[i]))
-                .filter(pair -> !pair.getLeft().startsWith("{") && !pair.getLeft().endsWith("}"))
-                .allMatch(pair -> Objects.areEqual(pair.getLeft(), pair.getRight()));
-
-
+                .map(i -> paths.length - 1 - i) // reverse since uris start with /api/v1/
+                .filter(i -> !paths[i].startsWith("{") && !paths[i].startsWith("}"))
+                .allMatch(i -> Objects.areEqual(paths[i], pathsToCompare[i]));
     }
 }
