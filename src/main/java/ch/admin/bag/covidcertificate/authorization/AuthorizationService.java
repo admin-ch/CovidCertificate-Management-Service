@@ -30,10 +30,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AuthorizationService {
 
-    public static String SRVC_WEB = "web-ui";
-    public static String SRVC_API = "api-gateway";
-    public static String SRVC_MGMT = "management";
-    public static String SRVC_REPORT = "report";
+    public static final String SRVC_WEB = "web-ui";
+    public static final String SRVC_API = "api-gateway";
+    public static final String SRVC_MGMT = "management";
+    public static final String SRVC_REPORT = "report";
 
     private final AuthorizationConfig authorizationConfig;
     private final RoleConfig roleConfig;
@@ -149,9 +149,9 @@ public class AuthorizationService {
     @PostConstruct
     void init() {
         services = new TreeMap<>();
-        services.put("api-gateway", enrichServiceData(authorizationConfig.getApiGateway()));
-        services.put("management", enrichServiceData(authorizationConfig.getManagement()));
-        services.put("web-ui", enrichServiceData(authorizationConfig.getWebUi()));
+        services.put(SRVC_API, enrichServiceData(authorizationConfig.getApiGateway()));
+        services.put(SRVC_MGMT, enrichServiceData(authorizationConfig.getManagement()));
+        services.put(SRVC_WEB, enrichServiceData(authorizationConfig.getWebUi()));
 
         roleMapping = new TreeMap<>();
         for (RoleData roleData : roleConfig.getMappings()) {

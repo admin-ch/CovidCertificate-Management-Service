@@ -74,11 +74,11 @@ roles:
   -
     intern:   ${roles.id.legacy.super-user}
     eiam:     "9500.GGG-Covidcertificate.SuperUserCC"
-    claim:    "SuperUserCC"
+    claim:    "bag-cc-superuser"
   -
     intern:   ${roles.id.legacy.creator}
     eiam:     "9500.GGG-Covidcertificate.CertificateCreator"
-    claim:    "CertificateCreator"
+    claim:    "bag-cc-certificatecreator"
   -
     intern:   ${roles.id.user.web}
     eiam:     "9500.GGG-Covidcertificate.Web-UI-User"
@@ -512,6 +512,20 @@ services:
   management:
 
     functions:
+      # authorization
+      auth-current-service:
+        identifier:   "auth-current-service"
+        from:         2022-01-01T00:00:00
+        to:           2099-12-31T23:59:59
+        uri:          "/api/v1/authorization/current/{service}"
+
+      auth-service-definition:
+        identifier:   "auth-service-definition"
+        from:         2022-01-01T00:00:00
+        to:           2099-12-31T23:59:59
+        uri:          "/api/v1/authorization/definition/{service}"
+
+    #Don't configure /api/v1/authorization/role-mapping since nobody should reach that endpoint except api-gateway
 
       # create/revoke certificates
       create-certificate:
@@ -648,7 +662,7 @@ services:
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets/issuable-vaccines/(\\w|-)+"
+        uri:          "/api/v1/valuesets/issuable-vaccines/{systemSource}"
 
       countries-valueset:
         identifier:   "countries-valueset"
@@ -662,7 +676,7 @@ services:
         from:         2022-01-01T00:00:00
         until:        2099-12-31T23:59:59
         one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets/countries/(\\w|-)+"
+        uri:          "/api/v1/valuesets/countries/{language}"
 
       # extras
       clear-caches:
