@@ -1,58 +1,57 @@
-
 ##   R O L E S   ##############################################################################
 
 roles:
   id:
     legacy:
-      super-user:     "SUPER_USER_COVIDCERTIFICATE"
-      creator:        "CERTIFICATE_CREATOR"
+      super-user: "SUPER_USER_COVIDCERTIFICATE"
+      creator: "CERTIFICATE_CREATOR"
     user:
-      api:            "API_GW_USER"
-      web:            "WEB_UI_USER"
-      revocator:      "WEB_UI_REVOCATOR"
+      api: "API_GW_USER"
+      web: "WEB_UI_USER"
+      revocator: "WEB_UI_REVOCATOR"
     cert:
-      bulk:           "BULK_CERT_MANAGER"
-      vacc:           "VACC_CERT_CREATOR"
-      tourist:        "VACC_CERT_TOURIST_CREATOR"
-      test:           "TEST_CERT_CREATOR"
-      antibody:       "TEST_CERT_ANTIBODY_CREATOR"
-      recovery:       "RECOVERY_CERT_CREATOR"
-      rat:            "RECOVERY_RAT_CERT_CREATOR"
-      exception:      "EXCEPTION_CERT_CREATOR"
+      bulk: "BULK_CERT_MANAGER"
+      vacc: "VACC_CERT_CREATOR"
+      tourist: "VACC_CERT_TOURIST_CREATOR"
+      test: "TEST_CERT_CREATOR"
+      antibody: "TEST_CERT_ANTIBODY_CREATOR"
+      recovery: "RECOVERY_CERT_CREATOR"
+      rat: "RECOVERY_RAT_CERT_CREATOR"
+      exception: "EXCEPTION_CERT_CREATOR"
     report:
-      detail:         "DETAIL_REPORT_USER"
-      agg:            "AGG_REPORT_USER"
-      stats:          "STATS_REPORT_USER"
+      detail: "DETAIL_REPORT_USER"
+      agg: "AGG_REPORT_USER"
+      stats: "STATS_REPORT_USER"
     dataroom:
-      dr-ag:          "DR_AG"
-      dr-ai:          "DR_AI"
-      dr-ar:          "DR_AR"
-      dr-be:          "DR_BE"
-      dr-bl:          "DR_BL"
-      dr-bs:          "DR_BS"
-      dr-fr:          "DR_FR"
-      dr-ge:          "DR_GE"
-      dr-gl:          "DR_GL"
-      dr-gr:          "DR_GR"
-      dr-ju:          "DR_JU"
-      dr-lu:          "DR_LU"
-      dr-ne:          "DR_NE"
-      dr-nw:          "DR_NW"
-      dr-ow:          "DR_OW"
-      dr-sg:          "DR_SG"
-      dr-sh:          "DR_SH"
-      dr-sz:          "DR_SZ"
-      dr-so:          "DR_SO"
-      dr-ti:          "DR_TI"
-      dr-tg:          "DR_TG"
-      dr-ur:          "DR_UR"
-      dr-vd:          "DR_VD"
-      dr-vs:          "DR_VS"
-      dr-zg:          "DR_ZG"
-      dr-zh:          "DR_ZH"
-      dr-armee:       "DR_Armee"
-      dr-bv-intern:   "DR_BV-Intern"
-      dr-ggg:         "DR_GGG"
+      dr-ag: "DR_AG"
+      dr-ai: "DR_AI"
+      dr-ar: "DR_AR"
+      dr-be: "DR_BE"
+      dr-bl: "DR_BL"
+      dr-bs: "DR_BS"
+      dr-fr: "DR_FR"
+      dr-ge: "DR_GE"
+      dr-gl: "DR_GL"
+      dr-gr: "DR_GR"
+      dr-ju: "DR_JU"
+      dr-lu: "DR_LU"
+      dr-ne: "DR_NE"
+      dr-nw: "DR_NW"
+      dr-ow: "DR_OW"
+      dr-sg: "DR_SG"
+      dr-sh: "DR_SH"
+      dr-sz: "DR_SZ"
+      dr-so: "DR_SO"
+      dr-ti: "DR_TI"
+      dr-tg: "DR_TG"
+      dr-ur: "DR_UR"
+      dr-vd: "DR_VD"
+      dr-vs: "DR_VS"
+      dr-zg: "DR_ZG"
+      dr-zh: "DR_ZH"
+      dr-armee: "DR_Armee"
+      dr-bv-intern: "DR_BV-Intern"
+      dr-ggg: "DR_GGG"
 
   groups:
     any:
@@ -61,9 +60,9 @@ roles:
       ${roles.id.legacy.super-user},${roles.id.legacy.creator}
     users:
       ${roles.id.user.api},${roles.id.user.web},${roles.id.user.revocator}
-    cert-creators-plus:   # INCLUDES exceptional
+    cert-creators-plus: # INCLUDES exceptional
       ${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat},${roles.id.cert.exception}
-    cert-creators:        # EXCLUDES exceptional
+    cert-creators: # EXCLUDES exceptional
       ${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat}
     reporter:
       ${roles.id.report.detail},${roles.id.report.agg},${roles.id.report.stats}
@@ -71,182 +70,138 @@ roles:
       ${roles.id.dataroom.dr-ag},${roles.id.dataroom.dr-ai},${roles.id.dataroom.dr-ar},${roles.id.dataroom.dr-be},${roles.id.dataroom.dr-bs},${roles.id.dataroom.dr-bl}, ,${roles.id.dataroom.dr-fr},${roles.id.dataroom.dr-ge},${roles.id.dataroom.dr-gl},${roles.id.dataroom.dr-gr},${roles.id.dataroom.dr-ju},${roles.id.dataroom.dr-lu},${roles.id.dataroom.dr-ne},${roles.id.dataroom.dr-nw},${roles.id.dataroom.dr-ow},${roles.id.dataroom.dr-sg},${roles.id.dataroom.dr-sh},${roles.id.dataroom.dr-sz},${roles.id.dataroom.dr-so},${roles.id.dataroom.dr-ti},${roles.id.dataroom.dr-tg},${roles.id.dataroom.dr-ur},${roles.id.dataroom.dr-vd},${roles.id.dataroom.dr-vs},${roles.id.dataroom.dr-zg},${roles.id.dataroom.dr-zh},${roles.id.dataroom.dr-bv-intern},${roles.id.dataroom.dr-armee}
 
   mappings:
-  -
-    intern:   ${roles.id.legacy.super-user}
-    eiam:     "9500.GGG-Covidcertificate.SuperUserCC"
-    claim:    "bag-cc-superuser"
-  -
-    intern:   ${roles.id.legacy.creator}
-    eiam:     "9500.GGG-Covidcertificate.CertificateCreator"
-    claim:    "bag-cc-certificatecreator"
-  -
-    intern:   ${roles.id.user.web}
-    eiam:     "9500.GGG-Covidcertificate.Web-UI-User"
-    claim:    "bag-cc-web_ui_user"
-  -
-    intern:   ${roles.id.user.api}
-    eiam:     "9500.GGG-Covidcertificate.API-GW-User"
-    claim:    "bag-cc-api_gw_user"
-  -
-    intern:   ${roles.id.user.revocator}
-    eiam:     "9500.GGG-Covidcertificate.Web-UI-Revocator"
-    claim:    "bag-cc-web_ui_revocator"
-  -
-    intern:   ${roles.id.cert.bulk}
-    eiam:     "9500.GGG-Covidcertificate.BulkCert-Manager"
-    claim:    "bag-cc-bulkcert_manager"
-  -
-    intern:   ${roles.id.cert.exception}
-    eiam:     "9500.GGG-Covidcertificate.ExceptionCert-Creator"
-    claim:    "bag-cc-exceptcert_creator"
-  -
-    intern:   ${roles.id.cert.recovery}
-    eiam:     "9500.GGG-Covidcertificate.Recovery-Cert-Creator"
-    claim:    "bag-cc-recoverycert_creator"
-  -
-    intern:   ${roles.id.cert.test}
-    eiam:     "9500.GGG.TestCert-Creator"
-    claim:    "bag-cc-testccert_creator"
-  -
-    intern:   ${roles.id.cert.vacc}
-    eiam:     "9500.GGG-Covidcertificate.VaccCert-Creator"
-    claim:    "bag-cc-vacccert_creator"
-  -
-    intern:   ${roles.id.cert.antibody}
-    eiam:     "9500.GGG.TestCert-Antibody-Creator"
-    claim:    "bag-cc-testccert_rat_creator"
-  -
-    intern:   ${roles.id.cert.rat}
-    eiam:     "9500.GGG.Recovery-Rat-Cert-Creator"
-    claim:    "bag-cc-recoverycert_rat_creator"
-  -
-    intern:   ${roles.id.cert.tourist}
-    eiam:     "9500.GGG-Covidcertificate.VaccCert-Tourist-Creator"
-    claim:    "bag-cc-vacccert_tourist_creator"
-  -
-    intern:   ${roles.id.report.agg}
-    eiam:     "9500.GGG-Covidcertificate.Agg_Report_user"
-    claim:    "bag-cc-rep_user_agg"
-  -
-    intern:   ${roles.id.report.stats}
-    eiam:     "9500.GGG-Covidcertificate.Stats_Report_user"
-    claim:    "bag-cc-rep_user_stats"
-  -
-    intern:   ${roles.id.report.detail}
-    eiam:     "9500.GGG-Covidcertificate.Detail_Report_user"
-    claim:    "bag-cc-rep_user_detail"
-  -
-    intern:   ${roles.id.dataroom.dr-armee}
-    eiam:     "9500.GGG-Covidcertificate.DR_Armee"
-    claim:    "bag-cc-dr_armee"
-  -
-    intern:   ${roles.id.dataroom.dr-bv-intern}
-    eiam:     "9500.GGG-Covidcertificate.DR_BV-Intern"
-    claim:    "bag-cc-dr_bv_intern"
-  -
-    intern:   ${roles.id.dataroom.dr-ag}
-    eiam:     "9500.GGG-Covidcertificate.DR_AG"
-    claim:    "bag-cc-dr_ag"
-  -
-    intern:   ${roles.id.dataroom.dr-ai}
-    eiam:     "9500.GGG-Covidcertificate.DR_AI"
-    claim:    "bag-cc-dr_ai"
-  -
-    intern:   ${roles.id.dataroom.dr-ar}
-    eiam:     "9500.GGG-Covidcertificate.DR_AR"
-    claim:    "bag-cc-dr_ar"
-  -
-    intern:   ${roles.id.dataroom.dr-be}
-    eiam:     "9500.GGG-Covidcertificate.DR_BE"
-    claim:    "bag-cc-dr_be"
-  -
-    intern:   ${roles.id.dataroom.dr-bl}
-    eiam:     "9500.GGG-Covidcertificate.DR_BL"
-    claim:    "bag-cc-dr_bl"
-  -
-    intern:   ${roles.id.dataroom.dr-bs}
-    eiam:     "9500.GGG-Covidcertificate.DR_BS"
-    claim:    "bag-cc-dr_bs"
-  -
-    intern:   ${roles.id.dataroom.dr-fr}
-    eiam:     "9500.GGG-Covidcertificate.DR_FR"
-    claim:    "bag-cc-dr_fr"
-  -
-    intern:   ${roles.id.dataroom.dr-ge}
-    eiam:     "9500.GGG-Covidcertificate.DR_GE"
-    claim:    "bag-cc-dr_ge"
-  -
-    intern:   ${roles.id.dataroom.dr-gl}
-    eiam:     "9500.GGG-Covidcertificate.DR_GL"
-    claim:    "bag-cc-dr_gl"
-  -
-    intern:   ${roles.id.dataroom.dr-gr}
-    eiam:     "9500.GGG-Covidcertificate.DR_GR"
-    claim:    "bag-cc-dr_gr"
-  -
-    intern:   ${roles.id.dataroom.dr-ju}
-    eiam:     "9500.GGG-Covidcertificate.DR_JU"
-    claim:    "bag-cc-dr_ju"
-  -
-    intern:   ${roles.id.dataroom.dr-lu}
-    eiam:     "9500.GGG-Covidcertificate.DR_LU"
-    claim:    "bag-cc-dr_lu"
-  -
-    intern:   ${roles.id.dataroom.dr-ne}
-    eiam:     "9500.GGG-Covidcertificate.DR_NE"
-    claim:    "bag-cc-dr_ne"
-  -
-    intern:   ${roles.id.dataroom.dr-nw}
-    eiam:     "9500.GGG-Covidcertificate.DR_NW"
-    claim:    "bag-cc-dr_NW"
-  -
-    intern:   ${roles.id.dataroom.dr-ow}
-    eiam:     "9500.GGG-Covidcertificate.DR_OW"
-    claim:    "bag-cc-dr_ow"
-  -
-    intern:   ${roles.id.dataroom.dr-sg}
-    eiam:     "9500.GGG-Covidcertificate.DR_SG"
-    claim:    "bag-cc-dr_sg"
-  -
-    intern:   ${roles.id.dataroom.dr-sh}
-    eiam:     "9500.GGG-Covidcertificate.DR_SH"
-    claim:    "bag-cc-dr_sh"
-  -
-    intern:   ${roles.id.dataroom.dr-sz}
-    eiam:     "9500.GGG-Covidcertificate.DR_SZ"
-    claim:    "bag-cc-dr_sz"
-  -
-    intern:   ${roles.id.dataroom.dr-so}
-    eiam:     "9500.GGG-Covidcertificate.DR_SO"
-    claim:    "bag-cc-dr_so"
-  -
-    intern:   ${roles.id.dataroom.dr-ti}
-    eiam:     "9500.GGG-Covidcertificate.DR_TI"
-    claim:    "bag-cc-dr_ti"
-  -
-    intern:   ${roles.id.dataroom.dr-tg}
-    eiam:     "9500.GGG-Covidcertificate.DR_TG"
-    claim:    "bag-cc-dr_tg"
-  -
-    intern:   ${roles.id.dataroom.dr-ur}
-    eiam:     "9500.GGG-Covidcertificate.DR_UR"
-    claim:    "bag-cc-dr_ur"
-  -
-    intern:   ${roles.id.dataroom.dr-vd}
-    eiam:     "9500.GGG-Covidcertificate.DR_VD"
-    claim:    "bag-cc-dr_vd"
-  -
-    intern:   ${roles.id.dataroom.dr-vs}
-    eiam:     "9500.GGG-Covidcertificate.DR_VS"
-    claim:    "bag-cc-dr_vs"
-  -
-    intern:   ${roles.id.dataroom.dr-zg}
-    eiam:     "9500.GGG-Covidcertificate.DR_ZG"
-    claim:    "bag-cc-dr_zg"
-  -
-    intern:   ${roles.id.dataroom.dr-zh}
-    eiam:     "9500.GGG-Covidcertificate.DR_ZH"
-    claim:    "bag-cc-dr_zh"
+    - intern: ${roles.id.legacy.super-user}
+      eiam: "9500.GGG-Covidcertificate.SuperUserCC"
+      claim: "bag-cc-superuser"
+    - intern: ${roles.id.legacy.creator}
+      eiam: "9500.GGG-Covidcertificate.CertificateCreator"
+      claim: "bag-cc-certificatecreator"
+    - intern: ${roles.id.user.web}
+      eiam: "9500.GGG-Covidcertificate.Web-UI-User"
+      claim: "bag-cc-web_ui_user"
+    - intern: ${roles.id.user.api}
+      eiam: "9500.GGG-Covidcertificate.API-GW-User"
+      claim: "bag-cc-api_gw_user"
+    - intern: ${roles.id.user.revocator}
+      eiam: "9500.GGG-Covidcertificate.Web-UI-Revocator"
+      claim: "bag-cc-web_ui_revocator"
+    - intern: ${roles.id.cert.bulk}
+      eiam: "9500.GGG-Covidcertificate.BulkCert-Manager"
+      claim: "bag-cc-bulkcert_manager"
+    - intern: ${roles.id.cert.exception}
+      eiam: "9500.GGG-Covidcertificate.ExceptionCert-Creator"
+      claim: "bag-cc-exceptcert_creator"
+    - intern: ${roles.id.cert.recovery}
+      eiam: "9500.GGG-Covidcertificate.Recovery-Cert-Creator"
+      claim: "bag-cc-recoverycert_creator"
+    - intern: ${roles.id.cert.test}
+      eiam: "9500.GGG.TestCert-Creator"
+      claim: "bag-cc-testccert_creator"
+    - intern: ${roles.id.cert.vacc}
+      eiam: "9500.GGG-Covidcertificate.VaccCert-Creator"
+      claim: "bag-cc-vacccert_creator"
+    - intern: ${roles.id.cert.antibody}
+      eiam: "9500.GGG.TestCert-Antibody-Creator"
+      claim: "bag-cc-testccert_rat_creator"
+    - intern: ${roles.id.cert.rat}
+      eiam: "9500.GGG.Recovery-Rat-Cert-Creator"
+      claim: "bag-cc-recoverycert_rat_creator"
+    - intern: ${roles.id.cert.tourist}
+      eiam: "9500.GGG-Covidcertificate.VaccCert-Tourist-Creator"
+      claim: "bag-cc-vacccert_tourist_creator"
+    - intern: ${roles.id.report.agg}
+      eiam: "9500.GGG-Covidcertificate.Agg_Report_user"
+      claim: "bag-cc-rep_user_agg"
+    - intern: ${roles.id.report.stats}
+      eiam: "9500.GGG-Covidcertificate.Stats_Report_user"
+      claim: "bag-cc-rep_user_stats"
+    - intern: ${roles.id.report.detail}
+      eiam: "9500.GGG-Covidcertificate.Detail_Report_user"
+      claim: "bag-cc-rep_user_detail"
+    - intern: ${roles.id.dataroom.dr-armee}
+      eiam: "9500.GGG-Covidcertificate.DR_Armee"
+      claim: "bag-cc-dr_armee"
+    - intern: ${roles.id.dataroom.dr-bv-intern}
+      eiam: "9500.GGG-Covidcertificate.DR_BV-Intern"
+      claim: "bag-cc-dr_bv_intern"
+    - intern: ${roles.id.dataroom.dr-ag}
+      eiam: "9500.GGG-Covidcertificate.DR_AG"
+      claim: "bag-cc-dr_ag"
+    - intern: ${roles.id.dataroom.dr-ai}
+      eiam: "9500.GGG-Covidcertificate.DR_AI"
+      claim: "bag-cc-dr_ai"
+    - intern: ${roles.id.dataroom.dr-ar}
+      eiam: "9500.GGG-Covidcertificate.DR_AR"
+      claim: "bag-cc-dr_ar"
+    - intern: ${roles.id.dataroom.dr-be}
+      eiam: "9500.GGG-Covidcertificate.DR_BE"
+      claim: "bag-cc-dr_be"
+    - intern: ${roles.id.dataroom.dr-bl}
+      eiam: "9500.GGG-Covidcertificate.DR_BL"
+      claim: "bag-cc-dr_bl"
+    - intern: ${roles.id.dataroom.dr-bs}
+      eiam: "9500.GGG-Covidcertificate.DR_BS"
+      claim: "bag-cc-dr_bs"
+    - intern: ${roles.id.dataroom.dr-fr}
+      eiam: "9500.GGG-Covidcertificate.DR_FR"
+      claim: "bag-cc-dr_fr"
+    - intern: ${roles.id.dataroom.dr-ge}
+      eiam: "9500.GGG-Covidcertificate.DR_GE"
+      claim: "bag-cc-dr_ge"
+    - intern: ${roles.id.dataroom.dr-gl}
+      eiam: "9500.GGG-Covidcertificate.DR_GL"
+      claim: "bag-cc-dr_gl"
+    - intern: ${roles.id.dataroom.dr-gr}
+      eiam: "9500.GGG-Covidcertificate.DR_GR"
+      claim: "bag-cc-dr_gr"
+    - intern: ${roles.id.dataroom.dr-ju}
+      eiam: "9500.GGG-Covidcertificate.DR_JU"
+      claim: "bag-cc-dr_ju"
+    - intern: ${roles.id.dataroom.dr-lu}
+      eiam: "9500.GGG-Covidcertificate.DR_LU"
+      claim: "bag-cc-dr_lu"
+    - intern: ${roles.id.dataroom.dr-ne}
+      eiam: "9500.GGG-Covidcertificate.DR_NE"
+      claim: "bag-cc-dr_ne"
+    - intern: ${roles.id.dataroom.dr-nw}
+      eiam: "9500.GGG-Covidcertificate.DR_NW"
+      claim: "bag-cc-dr_NW"
+    - intern: ${roles.id.dataroom.dr-ow}
+      eiam: "9500.GGG-Covidcertificate.DR_OW"
+      claim: "bag-cc-dr_ow"
+    - intern: ${roles.id.dataroom.dr-sg}
+      eiam: "9500.GGG-Covidcertificate.DR_SG"
+      claim: "bag-cc-dr_sg"
+    - intern: ${roles.id.dataroom.dr-sh}
+      eiam: "9500.GGG-Covidcertificate.DR_SH"
+      claim: "bag-cc-dr_sh"
+    - intern: ${roles.id.dataroom.dr-sz}
+      eiam: "9500.GGG-Covidcertificate.DR_SZ"
+      claim: "bag-cc-dr_sz"
+    - intern: ${roles.id.dataroom.dr-so}
+      eiam: "9500.GGG-Covidcertificate.DR_SO"
+      claim: "bag-cc-dr_so"
+    - intern: ${roles.id.dataroom.dr-ti}
+      eiam: "9500.GGG-Covidcertificate.DR_TI"
+      claim: "bag-cc-dr_ti"
+    - intern: ${roles.id.dataroom.dr-tg}
+      eiam: "9500.GGG-Covidcertificate.DR_TG"
+      claim: "bag-cc-dr_tg"
+    - intern: ${roles.id.dataroom.dr-ur}
+      eiam: "9500.GGG-Covidcertificate.DR_UR"
+      claim: "bag-cc-dr_ur"
+    - intern: ${roles.id.dataroom.dr-vd}
+      eiam: "9500.GGG-Covidcertificate.DR_VD"
+      claim: "bag-cc-dr_vd"
+    - intern: ${roles.id.dataroom.dr-vs}
+      eiam: "9500.GGG-Covidcertificate.DR_VS"
+      claim: "bag-cc-dr_vs"
+    - intern: ${roles.id.dataroom.dr-zg}
+      eiam: "9500.GGG-Covidcertificate.DR_ZG"
+      claim: "bag-cc-dr_zg"
+    - intern: ${roles.id.dataroom.dr-zh}
+      eiam: "9500.GGG-Covidcertificate.DR_ZH"
+      claim: "bag-cc-dr_zh"
 
 # 1st level:  SERVICE
 #   2nd level:  FUNCTION
@@ -265,176 +220,176 @@ services:
 
       # navigation
       main:
-        identifier:   "main"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.any}
+        identifier: "main"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.any}
 
       main-certificate-generation:
-        identifier:   "main-certificate-generation"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.cert-creators-plus}
+        identifier: "main-certificate-generation"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus}
       main-certificate-revocation:
-        identifier:   "main-certificate-revocation"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.revocator},${roles.groups.cert-creators}
+        identifier: "main-certificate-revocation"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.user.revocator},${roles.groups.cert-creators}
       main-one-time-password-generation:
-        identifier:   "main-one-time-password-generation"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:    ${roles.id.user.api}
+        identifier: "main-one-time-password-generation"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.user.api}
       main-bulk-operations:
-        identifier:   "main-bulk-operations"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:    ${roles.id.cert.bulk}
+        identifier: "main-bulk-operations"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
       main-reporting-self-service:
-        identifier:   "main-reporting-self-service"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.detail}, ${roles.id.report.agg}, ${roles.id.report.stats}
+        identifier: "main-reporting-self-service"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.detail}, ${roles.id.report.agg}, ${roles.id.report.stats}
 
       # create/revoke certificates
       create-certificate-web:
-        identifier:   "create-certificate-web"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.web}
+        identifier: "create-certificate-web"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.user.web}
       create-vaccine-certificate:
-        identifier:   "create-vaccine-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
-        one-of:       ${roles.id.cert.vacc}
+        identifier: "create-vaccine-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.vacc}
       create-vaccine-tourist-certificate:
-        identifier:   "create-vaccine-tourist-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
-        one-of:       ${roles.id.cert.tourist}
+        identifier: "create-vaccine-tourist-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.tourist}
       create-test-certificate:
-        identifier:   "create-test-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
-        one-of:       ${roles.id.cert.test}
+        identifier: "create-test-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.test}
       create-antibody-certificate:
-        identifier:   "create-antibody-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
-        one-of:       ${roles.id.cert.antibody}
+        identifier: "create-antibody-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.antibody}
       create-recovery-certificate:
-        identifier:   "create-recovery-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
-        one-of:       ${roles.id.cert.recovery}
+        identifier: "create-recovery-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.recovery}
       create-recovery-rat-certificate:
-        identifier:   "create-recovery-rat-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
-        one-of:       ${roles.id.cert.rat}
+        identifier: "create-recovery-rat-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.rat}
       create-exceptional-certificate:
-        identifier:   "create-exceptional-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
-        one-of:       ${roles.id.cert.exception}
+        identifier: "create-exceptional-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.exception}
       revoke-certificate:
-        identifier:   "revoke-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.web-ui.functions.create-certificate-web.identifier}
-        one-of:       ${roles.groups.cert-creators-plus}
+        identifier: "revoke-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
+        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus}
 
       # one-time-password
       create-otp:
-        identifier:   "create-otp"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}
+        identifier: "create-otp"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.user.api}
 
       # bulk operations
       bulk-create-certificates:
-        identifier:   "bulk-create-certificates"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.cert.bulk}
+        identifier: "bulk-create-certificates"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
       bulk-revoke-certificates:
-        identifier:   "bulk-revoke-certificates"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.cert.bulk}
+        identifier: "bulk-revoke-certificates"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
 
       # reports
       report-a2:
-        identifier:   "report-a2"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.detail}
-        dataroom:     ${roles.groups.data-room}
+        identifier: "report-a2"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.detail}
+        dataroom: ${roles.groups.data-room}
       report-a3:
-        identifier:   "report-a3"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.agg}
-        dataroom:     ${roles.groups.data-room}
+        identifier: "report-a3"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        dataroom: ${roles.groups.data-room}
       report-a4:
-        identifier:   "report-a4"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.detail}
-        dataroom:     ${roles.groups.data-room}
+        identifier: "report-a4"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.detail}
+        dataroom: ${roles.groups.data-room}
       report-a5:
-        identifier:   "report-a5"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.agg}
-        dataroom:     ${roles.groups.data-room}
+        identifier: "report-a5"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        dataroom: ${roles.groups.data-room}
       report-a6:
-        identifier:   "report-a6"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.detail}
-        dataroom:     ${roles.groups.data-room}
+        identifier: "report-a6"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.detail}
+        dataroom: ${roles.groups.data-room}
       report-a7:
-        identifier:   "report-a7"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.agg}
-        dataroom:     ${roles.groups.data-room}
+        identifier: "report-a7"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        dataroom: ${roles.groups.data-room}
       report-a8:
-        identifier:   "report-a8"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.stats}
+        identifier: "report-a8"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.stats}
       report-a9:
-        identifier:   "report-a9"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.stats}
+        identifier: "report-a9"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.stats}
       report-a10:
-        identifier:   "report-a10"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.agg}
-        dataroom:     ${roles.groups.data-room}
+        identifier: "report-a10"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        dataroom: ${roles.groups.data-room}
       report-a11:
-        identifier:   "report-a11"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.details}
-        dataroom:     ${roles.groups.data-room}
+        identifier: "report-a11"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.details}
+        dataroom: ${roles.groups.data-room}
       report-a12:
-        identifier:   "report-a12"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.report.agg}
-        dataroom:     ${roles.groups.data-room}
+        identifier: "report-a12"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        dataroom: ${roles.groups.data-room}
 
   ##   A P I - G A T E W A Y   ##############################################################################
 
@@ -444,67 +399,67 @@ services:
 
       # create/revoke certificates
       create-certificate:
-        identifier:   "create-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.web}
-        uri:          "/api/v1/covidcertificate"
+        identifier: "create-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.user.web}
+        uri: "/api/v1/covidcertificate"
 
       create-vaccine-certificate:
-        identifier:   "create-vaccine-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.vacc}
-        uri:          "/api/v1/covidcertificate/vaccination"
+        identifier: "create-vaccine-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.api-gateway.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.vacc}
+        uri: "/api/v1/covidcertificate/vaccination"
 
       create-vaccine-tourist-certificate:
-        identifier:   "create-vaccine-tourist-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.tourist}
-        uri:          "/api/v1/covidcertificate/vaccination-tourist"
+        identifier: "create-vaccine-tourist-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.api-gateway.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.tourist}
+        uri: "/api/v1/covidcertificate/vaccination-tourist"
 
       create-test-certificate:
-        identifier:   "create-test-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.test}
-        uri:          "/api/v1/covidcertificate/test"
+        identifier: "create-test-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.api-gateway.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.test}
+        uri: "/api/v1/covidcertificate/test"
 
       create-antibody-certificate:
-        identifier:   "create-antibody-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.antibody}
-        uri:          "/api/v1/covidcertificate/antibody"
+        identifier: "create-antibody-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.api-gateway.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.antibody}
+        uri: "/api/v1/covidcertificate/antibody"
 
       create-recovery-certificate:
-        identifier:   "create-recovery-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.recovery}
-        uri:          "/api/v1/covidcertificate/recovery"
+        identifier: "create-recovery-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.api-gateway.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.recovery}
+        uri: "/api/v1/covidcertificate/recovery"
 
       create-recovery-rat-certificate:
-        identifier:   "create-recovery-rat-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.rat}
-        uri:          "/api/v1/covidcertificate/recovery-rat"
+        identifier: "create-recovery-rat-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.api-gateway.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.rat}
+        uri: "/api/v1/covidcertificate/recovery-rat"
 
       revoke-certificate:
-        identifier:   "revoke-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:   ${services.api-gateway.functions.create-certificate.identifier}
-        one-of:       ${roles.groups.cert-creators}
-        uri:          "/api/v1/covidcertificate/revoke"
+        identifier: "revoke-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.api-gateway.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.groups.cert-creators}
+        uri: "/api/v1/covidcertificate/revoke"
 
 
   ##   M A N A G E M E N T   ##############################################################################
@@ -514,177 +469,183 @@ services:
     functions:
       # authorization
       auth-current-service:
-        identifier:   "auth-current-service"
-        from:         2022-01-01T00:00:00
-        to:           2099-12-31T23:59:59
-        uri:          "/api/v1/authorization/current/{service}"
+        identifier: "auth-current-service"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/authorization/current/{service}"
 
       auth-service-definition:
-        identifier:   "auth-service-definition"
-        from:         2022-01-01T00:00:00
-        to:           2099-12-31T23:59:59
-        uri:          "/api/v1/authorization/definition/{service}"
+        identifier: "auth-service-definition"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/authorization/definition/{service}"
 
-    #Don't configure /api/v1/authorization/role-mapping since nobody should reach that endpoint except api-gateway
+      auth-service-role:
+        identifier: "auth-service-role"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/authorization/role-mapping"
+
+      #Don't configure /api/v1/authorization/role-mapping since nobody should reach that endpoint except api-gateway
 
       # create/revoke certificates
       create-certificate:
-        identifier:   "create-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.web}, ${roles.id.user.api}
+        identifier: "create-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.user.web}, ${roles.id.user.api}
       create-vaccine-certificate:
-        identifier:   "create-vaccine-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:    ${services.management.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.vacc}
-        uri:          "/api/v1/covidcertificate/vaccination"
+        identifier: "create-vaccine-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.management.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.vacc}
+        uri: "/api/v1/covidcertificate/vaccination"
 
       create-vaccine-tourist-certificate:
-        identifier:   "create-vaccine-tourist-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:    ${services.management.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.tourist}
-        uri:          "/api/v1/covidcertificate/vaccination-tourist"
+        identifier: "create-vaccine-tourist-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.management.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.tourist}
+        uri: "/api/v1/covidcertificate/vaccination-tourist"
 
       create-test-certificate:
-        identifier:   "create-test-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:    ${services.management.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.test}
-        uri:          "/api/v1/covidcertificate/test"
+        identifier: "create-test-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.management.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.test}
+        uri: "/api/v1/covidcertificate/test"
 
       create-antibody-certificate:
-        identifier:   "create-antibody-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:    ${services.management.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.antibody}
-        uri:          "/api/v1/covidcertificate/antibody"
+        identifier: "create-antibody-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.management.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.antibody}
+        uri: "/api/v1/covidcertificate/antibody"
 
       create-recovery-certificate:
-        identifier:   "create-recovery-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:    ${services.management.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.recovery}
-        uri:          "/api/v1/covidcertificate/recovery"
+        identifier: "create-recovery-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.management.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.recovery}
+        uri: "/api/v1/covidcertificate/recovery"
 
       create-recovery-rat-certificate:
-        identifier:   "create-recovery-rat-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:    ${services.management.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.rat}
-        uri:          "/api/v1/covidcertificate/recovery-rat"
+        identifier: "create-recovery-rat-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.management.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.rat}
+        uri: "/api/v1/covidcertificate/recovery-rat"
 
       create-exceptional-certificate:
-        identifier:   "create-exceptional-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:    ${services.management.functions.create-certificate.identifier}
-        one-of:       ${roles.id.cert.exception}
-        uri:          "/api/v1/covidcertificate/exceptional"
+        identifier: "create-exceptional-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.management.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.cert.exception}
+        uri: "/api/v1/covidcertificate/exceptional"
 
       revoke-certificate:
-        identifier:   "revoke-certificate"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        additionalRef:    ${services.management.functions.create-certificate.identifier}
-        one-of:       ${roles.groups.cert-creators-plus}
-        uri:          "/api/v1/covidcertificate/revoke"
+        identifier: "revoke-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.management.functions.create-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus}
+        uri: "/api/v1/covidcertificate/revoke"
 
 
       # one-time-password
       create-otp:
-        identifier:   "create-otp"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.user.api}
-        uri:          "/api/v1/otp"
+        identifier: "create-otp"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.user.api}
+        uri: "/api/v1/otp"
 
       # bulk operations
       bulk-create-certificates:
-        identifier:   "bulk-create-certificates"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.cert.bulk}
-        uri:          "/api/v1/covidcertificate/csv"
+        identifier: "bulk-create-certificates"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
+        uri: "/api/v1/covidcertificate/csv"
 
       bulk-revoke-certificates:
-        identifier:   "bulk-revoke-certificates"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.id.cert.bulk}
-        uri:          "/api/v1/covidcertificate/TODO" #TODO
+        identifier: "bulk-revoke-certificates"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
+        uri: "/api/v1/covidcertificate/TODO" #TODO
 
       # valuesets
       valuesets:
-        identifier:   "valuesets"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets"
+        identifier: "valuesets"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.groups.any}
+        uri: "/api/v1/valuesets"
 
       rapid-test-valueset:
-        identifier:   "rapid-test-valueset"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets/rapid-tests"
+        identifier: "rapid-test-valueset"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.groups.any}
+        uri: "/api/v1/valuesets/rapid-tests"
 
       issuable-rapid-test-valueset:
-        identifier:   "issuable-rapid-test-valueset"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets/issuable-rapid-tests"
+        identifier: "issuable-rapid-test-valueset"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.groups.any}
+        uri: "/api/v1/valuesets/issuable-rapid-tests"
 
       vaccines-valueset:
-        identifier:   "vaccines-valueset"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets/vaccines"
+        identifier: "vaccines-valueset"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.groups.any}
+        uri: "/api/v1/valuesets/vaccines"
 
       issuable-vaccines-valueset:
-        identifier:   "issuable-vaccines-valueset"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets/issuable-vaccines"
+        identifier: "issuable-vaccines-valueset"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.groups.any}
+        uri: "/api/v1/valuesets/issuable-vaccines"
 
       issuable-vaccines-valueset-by-system-source:
-        identifier:   "issuable-vaccines-valueset-by-system-source"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets/issuable-vaccines/{systemSource}"
+        identifier: "issuable-vaccines-valueset-by-system-source"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.groups.any}
+        uri: "/api/v1/valuesets/issuable-vaccines/{systemSource}"
 
       countries-valueset:
-        identifier:   "countries-valueset"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets/countries"
+        identifier: "countries-valueset"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.groups.any}
+        uri: "/api/v1/valuesets/countries"
 
       countries-valueset-by-language:
-        identifier:   "countries-valueset-by-language"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        one-of:       ${roles.groups.any}
-        uri:          "/api/v1/valuesets/countries/{language}"
+        identifier: "countries-valueset-by-language"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.groups.any}
+        uri: "/api/v1/valuesets/countries/{language}"
 
       # extras
       clear-caches:
-        identifier:   "clear-caches"
-        from:         2022-01-01T00:00:00
-        until:        2099-12-31T23:59:59
-        mandatory:    ${roles.id.legacy.super-user}
-        uri:          "/api/v1/caches/clear"
+        identifier: "clear-caches"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        mandatory: ${roles.id.legacy.super-user}
+        uri: "/api/v1/caches/clear"
 
 
   ##   R E P O R T   ##############################################################################
@@ -748,7 +709,7 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.stats}
-        uri:  "/api/v1/report/certificate/statistics/a9/full_period"
+        uri: "/api/v1/report/certificate/statistics/a9/full_period"
 
       report-a10:
         identifier: "report-a10"
