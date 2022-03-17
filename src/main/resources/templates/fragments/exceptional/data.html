@@ -1,0 +1,45 @@
+<table class="two-col-table">
+    <tr class="table-row" colspan="2">
+        <th th:id="health-data-header-row">
+            <p th:text="#{exceptional.title}" class="heading no-padding"></p>
+            <p th:text="#{exceptional.title(${'en'})}" class="body-text-en"></p>
+        </th>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{antibody.disease.label}"></p>
+            <p class="body-text-en" th:text="#{antibody.disease.label(${'en'})}"></p>
+        </td>
+        <td class="body-text" th:text="#{antibody.disease}"></td>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{exceptional.validFrom}"></p>
+            <p class="body-text-en" th:text="#{exceptional.validFrom(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getValidFrom().format(dateFormatter)}"></td>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{exceptional.attestationIssuer}"></p>
+            <p class="body-text-en" th:text="#{exceptional.attestationIssuer(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getAttestationIssuer()}"></td>
+    </tr>
+
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{exceptional.country}"></p>
+            <p class="body-text-en" th:text="#{exceptional.country(${'en'})}"></p>
+        </td>
+        <td>
+            <p class="body-text no-padding" th:text="${data.getCountry()}"></p>
+            <p class="body-text-en" th:text="${data.getCountryEn()}"></p>
+        </td>
+    </tr>
+</table>

@@ -28,38 +28,69 @@ public class KpiData {
     String country;
     String systemSource;
     String apiGatewayId;
+    boolean fraud;
     @Column(name = "in_app_delivery_code")
     String inAppDeliveryCode;
 
-    public KpiData(LocalDateTime timestamp, String type, String value) {
+    private KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country, String systemSource,
+                    String inAppDeliveryCode, boolean fraud) {
         this.timestamp = timestamp;
-        this.value = value;
         this.type = type;
-        this.systemSource = "UI";
-    }
-
-    public KpiData(
-            LocalDateTime timestamp, String type, String value, String uvci,
-            String details, String country) {
-        this.timestamp = timestamp;
         this.value = value;
-        this.type = type;
         this.uvci = uvci;
         this.details = details;
         this.country = country;
-        this.systemSource = "UI";
-    }
-
-    public KpiData(
-            LocalDateTime timestamp, String type, String value, String uvci,
-            String details, String country, String inAppDeliveryCode) {
-        this.timestamp = timestamp;
-        this.value = value;
-        this.type = type;
-        this.uvci = uvci;
-        this.details = details;
-        this.country = country;
-        this.systemSource = "UI";
+        this.systemSource = systemSource;
         this.inAppDeliveryCode = inAppDeliveryCode;
+        this.fraud = fraud;
+    }
+
+    public static class KpiDataBuilder {
+        LocalDateTime timestamp;
+        String type;
+        String value;
+        String systemSource;
+        String uvci;
+        String details;
+        String country;
+        String inAppDeliveryCode;
+        boolean fraud;
+
+        public KpiDataBuilder(LocalDateTime timestamp, String type, String value, String systemSource) {
+            this.timestamp = timestamp;
+            this.type = type;
+            this.value = value;
+            this.systemSource = systemSource;
+            this.fraud = false;
+        }
+
+        public KpiDataBuilder withUvci(String uvci) {
+            this.uvci = uvci;
+            return this;
+        }
+
+        public KpiDataBuilder withDetails(String details) {
+            this.details = details;
+            return this;
+        }
+
+        public KpiDataBuilder withCountry(String country) {
+            this.country = country;
+            return this;
+        }
+
+        public KpiDataBuilder withInAppDeliveryCode(String inAppDeliveryCode) {
+            this.inAppDeliveryCode = inAppDeliveryCode;
+            return this;
+        }
+
+        public KpiDataBuilder withFraud(boolean fraud) {
+            this.fraud = fraud;
+            return this;
+        }
+
+        public KpiData build() {
+            return new KpiData(timestamp, type, value, uvci, details, country, systemSource, inAppDeliveryCode, fraud);
+        }
     }
 }

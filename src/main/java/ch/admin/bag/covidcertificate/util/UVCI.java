@@ -17,6 +17,8 @@ public class UVCI {
     private static final String VERSION = "01";
     private static final byte[] SALT;
 
+    private static final String REGEX_UVCI = "^urn:uvci:01:CH:[A-Z0-9]{24}$";
+
     private UVCI() {
         throw new IllegalStateException("Utility class");
     }
@@ -32,6 +34,10 @@ public class UVCI {
         long timestamp = System.nanoTime();
         String opaqueString = getOpaqueString(input + timestamp);
         return String.format("%s:%s:%s:%s", PREFIX, VERSION, Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND, opaqueString);
+    }
+
+    public static boolean isValid(String uvci) {
+        return uvci.matches(REGEX_UVCI);
     }
 
     private static String getOpaqueString(String input) {

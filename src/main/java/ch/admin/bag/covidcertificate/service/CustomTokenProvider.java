@@ -6,8 +6,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.security.Key;
@@ -16,9 +18,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static ch.admin.bag.covidcertificate.api.Constants.USER_EXT_ID_CLAIM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.USER_ROLES_CLAIM_KEY;
 
 @Component
 @Slf4j
@@ -55,11 +59,11 @@ public class CustomTokenProvider {
         }
     }
 
-    public String createToken(String userExtId, String idpSource) {
-        log.info("CreateToken with userExtId {} and idpSource {}", userExtId, idpSource);
+    public String createToken(String userExtId, String idpSource, List<String> userRoles) {
+        log.info("CreateToken with userExtId {} and idpSource {} and userRoles {}", userExtId, idpSource, userRoles);
 
-        if (userExtId == null || idpSource == null) {
-            throw new IllegalStateException("UserExtId and idpSource are required!");
+        if (StringUtil.isBlank(userExtId) || StringUtil.isBlank(idpSource) || CollectionUtils.isEmpty(userRoles))  {
+            throw new IllegalStateException("UserExtId, idpSource and userRoles are required!");
         }
 
         final long nowMillis = System.currentTimeMillis();
@@ -74,6 +78,7 @@ public class CustomTokenProvider {
                 .claim(SCOPE_CLAIM_KEY, COVID_CERT_CREATION)
                 .claim(USER_EXT_ID_CLAIM_KEY, userExtId)
                 .claim(IDP_SOURCE_CLAIM_KEY, idpSource)
+                .claim(USER_ROLES_CLAIM_KEY, userRoles)
                 .claim(TYP_CLAIM_KEY, AUTH_MACHINE_JWT)
                 .signWith(signingKey, SignatureAlgorithm.RS256);
 

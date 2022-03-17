@@ -1,0 +1,16 @@
+<th:block>
+    <p th:unless="${isEvidence}" class="body-text-small" th:text="#{info.validOnlyOnIdPresentation}"></p>
+    <p th:unless="${isEvidence}" class="body-text-small">
+        <span th:text="#{info.notTravelDocument}"></span>
+        <span th:text="#{info.getInformationBeforeTravel}"></span>
+        <span th:text="#{info.keepPaperDocument}"></span></p>
+    <p th:if="${isEvidence}" class="body-text-small" th:text="#{evidence.info}"></p>
+    <p th:unless="${isEvidence}"></p><!-- Keep this to separate the languages -->
+    <p th:unless="${isEvidence}" class="body-text-small-en"
+       th:text="#{info.validOnlyOnIdPresentation(${'en'})}"></p>
+    <p th:unless="${isEvidence}" class="body-text-small-en">
+        <span th:text="#{info.notTravelDocument(${'en'})}"></span>
+        <span th:text="#{info.getInformationBeforeTravel(${'en'})}"></span>
+        <span th:text="#{info.keepPaperDocument(${'en'})}"></span></p>
+    <p th:if="${isEvidence}" class="body-text-small-en" th:text="#{evidence.info(${'en'})}"></p>
+</th:block>

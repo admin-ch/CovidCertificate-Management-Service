@@ -9,7 +9,10 @@ import static ch.admin.bag.covidcertificate.api.Constants.DATE_CANT_BE_BEFORE;
 import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
 import static ch.admin.bag.covidcertificate.api.Constants.MISSING_PROPERTY;
 
-public class LocalDateValidator {
+public final class LocalDateValidator {
+
+    private LocalDateValidator() {
+    }
 
     public static void validateDateIsNotMissing(LocalDate date, String propertyName) {
         if (date == null) {
