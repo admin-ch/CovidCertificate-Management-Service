@@ -473,18 +473,21 @@ services:
         from: 2022-01-01T00:00:00
         to: 2099-12-31T23:59:59
         uri: "/api/v1/authorization/current/{service}"
+        one-of: ${roles.groups.any}
 
       auth-service-definition:
         identifier: "auth-service-definition"
         from: 2022-01-01T00:00:00
         to: 2099-12-31T23:59:59
         uri: "/api/v1/authorization/definition/{service}"
+        one-of: ${roles.groups.any}
 
       auth-service-role:
         identifier: "auth-service-role"
         from: 2022-01-01T00:00:00
         to: 2099-12-31T23:59:59
         uri: "/api/v1/authorization/role-mapping"
+        one-of: ${roles.groups.any}
 
       #Don't configure /api/v1/authorization/role-mapping since nobody should reach that endpoint except api-gateway
 

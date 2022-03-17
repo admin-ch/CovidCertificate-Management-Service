@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class AuthorizationServiceTest {
         assertNotNull(authorizationService.getDefinition(AuthorizationService.SRVC_WEB));
         assertNotNull(authorizationService.getDefinition(AuthorizationService.SRVC_API));
         assertNotNull(authorizationService.getDefinition(AuthorizationService.SRVC_MGMT));
-//TODO:        assertNotNull(authorizationService.getDefinition(AuthorizationService.SRVC_REPORT));
+        assertNotNull(authorizationService.getDefinition(AuthorizationService.SRVC_REPORT));
     }
 
     @Test

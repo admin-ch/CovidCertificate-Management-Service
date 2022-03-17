@@ -24,7 +24,6 @@ public class AuthorizationController {
     private final AuthorizationService authorizationService;
 
     @GetMapping("/current/{service}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public Set<String> getCurrent(@PathVariable String service, @RequestBody UserDto user) {
         log.info("current authorization service={} user={}", service, user);
         Set<String> result = authorizationService.getCurrent(service, user.getRoles());
@@ -33,7 +32,6 @@ public class AuthorizationController {
     }
 
     @GetMapping("/definition/{service}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public ServiceData getDefinition(@PathVariable String service) {
         log.info("authorization service={}", service);
         ServiceData result = authorizationService.getDefinition(service);
@@ -42,7 +40,6 @@ public class AuthorizationController {
     }
 
     @GetMapping("/role-mapping")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public List<RoleData> getRoleMapping() {
         log.info("authorization role-mapping");
         List<RoleData> result = authorizationService.getRoleMapping();

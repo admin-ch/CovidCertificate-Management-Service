@@ -107,15 +107,17 @@ public class AuthorizationService {
      * @param function the function to check
      * @return <code>true</code> only if both mandatory and one-of are valid
      */
+
+
     private boolean isGranted(Set<String> roles, ServiceData.Function function) {
-        //lets
         boolean allAdditionalValid = true;
-        if (function.getAdditional() != null) {
+        if (CollectionUtils.isNotEmpty(function.getAdditional())) {
             // check additional functions which are currently valid
-            List<ServiceData.Function> addFunctionsByPointInTime =
+            List<ServiceData.Function> activeAdditionalFunctions =
                     filterByPointInTime(LocalDateTime.now(), function.getAdditional());
 
-            allAdditionalValid = addFunctionsByPointInTime.stream().allMatch(func -> isGranted(roles, func));
+            //TODO: avoid infinite recursion!
+            allAdditionalValid = activeAdditionalFunctions.stream().allMatch(func -> isGranted(roles, func));
         }
         List<String> oneOf = function.getOneOf();
         if (CollectionUtils.isEmpty(oneOf)) {
@@ -143,6 +145,7 @@ public class AuthorizationService {
         services.put(SRVC_API, enrichServiceData(authorizationConfig.getApiGateway()));
         services.put(SRVC_MGMT, enrichServiceData(authorizationConfig.getManagement()));
         services.put(SRVC_WEB, enrichServiceData(authorizationConfig.getWebUi()));
+        services.put(SRVC_REPORT, enrichServiceData(authorizationConfig.getReport()));
 
         roleMapping = new TreeMap<>();
         for (RoleData roleData : roleConfig.getMappings()) {
