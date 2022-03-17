@@ -26,8 +26,11 @@ import java.util.stream.IntStream;
 @Configuration
 @RequiredArgsConstructor
 public class AuthorizationInterceptor implements HandlerInterceptor {
+
     private static final String SPRING_ERROR_URI = "/error";
+
     private final AuthorizationService authorizationService;
+
     @Value("${cc-management-service.auth.allow-unauthenticated}")
     private String allowUnauthenticated;
 

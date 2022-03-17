@@ -36,6 +36,7 @@ public class AuthorizationService {
 
     private final AuthorizationConfig authorizationConfig;
     private final RoleConfig roleConfig;
+
     private Map<String, ServiceData> services;
     private Map<String, String> roleMapping;
 
