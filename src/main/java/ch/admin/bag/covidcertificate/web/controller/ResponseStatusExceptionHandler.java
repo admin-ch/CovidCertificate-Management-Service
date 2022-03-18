@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
+import ch.admin.bag.covidcertificate.api.exception.AuthorizationException;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.exception.FeatureToggleException;
@@ -75,6 +76,12 @@ public class ResponseStatusExceptionHandler {
     protected ResponseEntity<Object> handleFeatureToggleException(FeatureToggleException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getError(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(value = {AuthorizationException.class})
+    protected ResponseEntity<Object> handleAuthorizationException(AuthorizationException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = {Exception.class})

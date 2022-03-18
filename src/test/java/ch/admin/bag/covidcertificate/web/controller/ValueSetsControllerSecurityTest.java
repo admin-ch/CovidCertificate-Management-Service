@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
+import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;
 import ch.admin.bag.covidcertificate.service.ValueSetsService;
 import ch.admin.bag.covidcertificate.testutil.JwtTestUtil;
@@ -22,6 +23,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -29,6 +32,7 @@ import static ch.admin.bag.covidcertificate.FixtureCustomization.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,6 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = {ValueSetsController.class, OAuth2SecuredWebConfiguration.class})
 @ActiveProfiles("test")
 class ValueSetsControllerSecurityTest {
+    @MockBean
+    private AuthorizationInterceptor interceptor;
     @MockBean
     private SecurityHelper securityHelper;
     @MockBean
@@ -183,6 +189,7 @@ class ValueSetsControllerSecurityTest {
     @BeforeEach
     void setupMocks() {
         lenient().when(valueSetsService.getValueSets()).thenReturn(fixture.create(ValueSetsDto.class));
+        lenient().when(interceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Object.class))).thenReturn(true);
     }
 
     @AfterAll
