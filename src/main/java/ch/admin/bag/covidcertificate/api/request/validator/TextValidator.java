@@ -7,6 +7,9 @@ import static ch.admin.bag.covidcertificate.api.Constants.TEXT_INVALID_LENGTH;
 
 public class TextValidator {
 
+    private TextValidator() {
+    }
+
     public static void validateTextIsNotNullAndNotEmpty(String text, String propertyName) {
         if (text == null || text.isEmpty()) {
             throw new CreateCertificateException(MISSING_PROPERTY, propertyName);

@@ -1,0 +1,57 @@
+<table class="two-col-table">
+    <tr class="table-row">
+        <th th:id="health-data-header-row" colspan="2">
+            <p th:text="#{recovery-rat.title}" class="heading no-padding"></p>
+            <p th:text="#{recovery-rat.title(${'en'})}" th:class="body-text-en"></p>
+        </th>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{vaccination.disease.label}"></p>
+            <p class="body-text-en" th:text="#{vaccination.disease.label(${'en'})}"></p>
+        </td>
+        <td class="body-text" th:text="#{vaccination.disease}"></td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{test.type.label}"></p>
+            <p class="body-text-en" th:text="#{test.type.label(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getTypeOfTest()}"></td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{test.nameAndManufacturer.label}"></p>
+            <p class="body-text-en" th:text="#{test.nameAndManufacturer.label(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getTestNameAndManufacturer()}"></td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{recovery.firstPositiveTestResult.label}"></p>
+            <p class="body-text-en" th:text="#{recovery.firstPositiveTestResult.label(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getSampleDateTime().format(dateTimeFormatter)}"></td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{test.conducted.label}"></p>
+            <p class="body-text-en" th:text="#{test.conducted.label(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getTestingCentreOrFacility()}"></td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{test.country.label}"></p>
+            <p class="body-text-en" th:text="#{test.country.label(${'en'})}"></p>
+        </td>
+        <td>
+            <p class="body-text no-padding" th:text="${data.getMemberStateOfTest()}"></p>
+            <p class="body-text-en" th:text="${data.getMemberStateOfTestEn()}"></p>
+        </td>
+    </tr>
+</table>

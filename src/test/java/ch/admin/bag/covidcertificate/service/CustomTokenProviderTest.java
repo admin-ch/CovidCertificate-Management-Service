@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -22,7 +23,7 @@ class CustomTokenProviderTest {
 
         tokenProvider.init();
 
-        String token = tokenProvider.createToken("5349", "CHLOGIN");
+        String token = tokenProvider.createToken("5349", "CHLOGIN", List.of("bag-cc-certificatecreator", "bag-cc-superuser"));
 
         log.debug(token);
 

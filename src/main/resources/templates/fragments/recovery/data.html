@@ -1,0 +1,51 @@
+<table class="two-col-table">
+    <tr class="table-row" colspan="2">
+        <th th:id="health-data-header-row">
+            <p th:text="#{recovery.title}" class="heading no-padding"></p>
+            <p th:text="#{recovery.title(${'en'})}" class="body-text-en"></p>
+        </th>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{vaccination.disease.label}"></p>
+            <p class="body-text-en" th:text="#{vaccination.disease.label(${'en'})}"></p>
+        </td>
+        <td class="body-text" th:text="#{vaccination.disease}"></td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{recovery.firstPositiveTestResult.label}"></p>
+            <p class="body-text-en" th:text="#{recovery.firstPositiveTestResult.label(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getDateOfFirstPositiveTestResult().format(dateFormatter)}"></td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{recovery.validFrom}"></p>
+            <p class="body-text-en" th:text="#{recovery.validFrom(${'en'})}"></p>
+        </td>
+        <td class="body-text"
+            th:text="${data.getValidFrom().format(dateFormatter)}"></td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{recovery.validUntil}"></p>
+            <p class="body-text-en" th:text="#{recovery.validUntil(${'en'})}"></p>
+        </td>
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:utext="#{recovery.countrySpecific}"></p>
+            <p class="body-text-en" th:utext="#{recovery.countrySpecific(${'en'})}"></p>
+        </td>
+    </tr>
+    <tr class="table-row">
+        <td class="table-row-padding">
+            <p class="body-text no-padding" th:text="#{recovery.countryOfTest.label}"></p>
+            <p class="body-text-en" th:text="#{recovery.countryOfTest.label(${'en'})}"></p>
+        </td>
+        <td>
+            <p class="body-text no-padding" th:text="${data.getCountryOfTest()}"></p>
+            <p class="body-text-en" th:text="${data.getCountryOfTestEn()}"></p>
+        </td>
+    </tr>
+</table>

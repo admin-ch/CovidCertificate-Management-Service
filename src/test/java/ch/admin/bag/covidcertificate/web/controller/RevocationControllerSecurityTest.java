@@ -1,11 +1,13 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
+import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import ch.admin.bag.covidcertificate.service.RevocationService;
+import ch.admin.bag.covidcertificate.testutil.JeapAuthenticationTestTokenBuilder;
 import ch.admin.bag.covidcertificate.testutil.JwtTestUtil;
 import ch.admin.bag.covidcertificate.testutil.KeyPairTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +15,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flextrade.jfixture.JFixture;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,25 +27,36 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationDto;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = {RevocationController.class, OAuth2SecuredWebConfiguration.class})
 @ActiveProfiles("test")
 class RevocationControllerSecurityTest {
+    @MockBean
+    private AuthorizationInterceptor interceptor;
     @MockBean
     private SecurityHelper securityHelper;
     @MockBean
@@ -187,9 +204,13 @@ class RevocationControllerSecurityTest {
 
     @BeforeEach
     void setupMocks() {
-        lenient().when(revocationService.getRevocations()).thenReturn(fixture.collections().createCollection(List.class, String.class));
-        lenient().doNothing().when(revocationService).createRevocation(any(RevocationDto.class));
-        lenient().when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(fixture.create(JeapAuthenticationToken.class));    }
+        lenient().when(revocationService.getRevocations())
+                 .thenReturn(fixture.collections().createCollection(List.class, String.class));
+        lenient().doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
+        lenient().when(jeapAuthorization.getJeapAuthenticationToken())
+                 .thenReturn(fixture.create(JeapAuthenticationToken.class));
+        lenient().when(interceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Object.class))).thenReturn(true);
+    }
 
     @AfterAll
     static void teardown() {
@@ -200,20 +221,27 @@ class RevocationControllerSecurityTest {
     class Create {
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
+            when(revocationService.doesUvciExist(anyString())).thenReturn(true);
+            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            Jwt jwt = mock(Jwt.class);
+            when(jwt.getClaimAsString(anyString())).thenReturn("test");
+            JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).build();
+            when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
+
             callGetValueSetsWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.CREATED);
-            Mockito.verify(revocationService, times(1)).createRevocation(any(RevocationDto.class));
+            Mockito.verify(revocationService, times(1)).createRevocation(anyString(), anyBoolean());
         }
 
         @Test
         void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
             callGetValueSetsWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
-            Mockito.verify(revocationService, times(0)).createRevocation(any(RevocationDto.class));
+            Mockito.verify(revocationService, times(0)).createRevocation(anyString(), anyBoolean());
         }
 
         @Test
         void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
             callGetValueSetsWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(revocationService, times(0)).createRevocation(any(RevocationDto.class));
+            Mockito.verify(revocationService, times(0)).createRevocation(anyString(), anyBoolean());
         }
     }
 
