@@ -28,7 +28,9 @@ public class Vaccine {
     private UUID id;
 
     private String code;
+
     private String display;
+
     private boolean active;
 
     /**
@@ -50,20 +52,20 @@ public class Vaccine {
     private int vaccineOrder;
 
     private boolean webUiSelectable;
+
     private boolean apiGatewaySelectable;
+
     private boolean apiPlatformSelectable;
 
     private boolean swissMedic;
+
     private boolean emea;
+
     private boolean whoEul;
 
     private String analogVaccine;
 
-    // these attributes are featured on the table
-    // but used only for query/document purposes
     private LocalDateTime modifiedAt;
-    private LocalDateTime validFrom;
-    private LocalDateTime validTo;
 
     @ManyToOne
     @JoinColumn(name = "auth_holder")
@@ -75,10 +77,6 @@ public class Vaccine {
     @JoinColumn(name = "prophylaxis")
     private Prophylaxis prophylaxis;
 
-    /**
-     * Used only for integration tests.
-     * (Spring does not allow @profile at constructor to exclude it)
-     */
     public Vaccine(
             String code,
             String display,
@@ -92,9 +90,7 @@ public class Vaccine {
             boolean swissMedic,
             boolean emea,
             boolean whoEul,
-            String analogVaccine,
-            LocalDateTime validFrom,
-            LocalDateTime validTo
+            String analogVaccine
     ) {
         this.code = code;
         this.display = display;
@@ -109,8 +105,6 @@ public class Vaccine {
         this.emea = emea;
         this.whoEul = whoEul;
         this.analogVaccine = analogVaccine;
-        this.validFrom = validFrom;
-        this.validTo = validTo;
     }
 
     @Override

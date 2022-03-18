@@ -221,17 +221,6 @@ public class ValueSetsService {
         return IssuableVaccineMapper.fromVaccines(vaccines);
     }
 
-    @Scheduled(cron = "${cc-management-service.cache-midnight-reset}")
-    @CacheEvict(value = {
-            API_GATEWAY_ISSUABLE_VACCINE_CACHE_NAME,
-            WEB_UI_ISSUABLE_VACCINE_CACHE_NAME,
-            API_PLATFORM_ISSUABLE_VACCINE_CACHE_NAME,
-            VACCINE_CACHE_NAME
-    }, allEntries = true)
-    public void resetApiIssuableVaccinesCache() {
-        log.info("Resetting cache of api/web/platform issuable vaccines");
-    }
-
     @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")
     @CacheEvict(value = RAPID_TEST_CACHE_NAME, allEntries = true)
     public void cleanRapidTestsCache() {
