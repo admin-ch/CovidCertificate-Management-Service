@@ -467,6 +467,15 @@ services:
   management:
 
     functions:
+
+      #feature-toggle
+      feature-toggle:
+        identifier: "feature-toggle"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/feature-toggle/features"
+        one-of: ${roles.groups.any}
+
       # authorization
       auth-current-service:
         identifier: "auth-current-service"
