@@ -28,7 +28,6 @@ cc-management-service:
     token-validity: 43200000
     privateKey: ${vcap.services.cc_jwt_signing_key.credentials.privateKey}
   cache-duration: 21600000
-  cache-midnight-reset: "0 0 0 * * *" ## midnight 00:00:10 every day
   monitor:
     prometheus:
       user: "prometheus"
