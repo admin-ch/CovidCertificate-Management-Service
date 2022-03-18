@@ -115,5 +115,4 @@ public class AuthorizationServiceTest {
         assertFalse(authFunctions.stream().anyMatch(func -> func.equals("create-vaccine-tourist-certificate")));
     }
 
-    //TODO right in future should not be applied today
 }
