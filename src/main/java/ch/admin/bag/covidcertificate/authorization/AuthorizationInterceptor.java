@@ -27,7 +27,15 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
-    private static final String SPRING_ERROR_URI = "/error";
+    private static final List<String> WHITELISTED_URIS = List.of(
+            "/error",
+            "/actuator/.*",
+            "/swagger-ui.html",
+            "/swagger-ui/.*",
+            "/v3/api-docs/.*",
+            "/api/v1/revocation-list",
+            "/api/v1/ping"
+    );
 
     private final AuthorizationService authorizationService;
 
@@ -37,7 +45,11 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
-        if (SPRING_ERROR_URI.equals(uri)) {
+        boolean isWhitelisted = WHITELISTED_URIS
+                .stream()
+                .anyMatch(whitelistedUri -> whitelistedUri.matches(uri));
+
+        if (isWhitelisted) {
             return true;
         }
 
