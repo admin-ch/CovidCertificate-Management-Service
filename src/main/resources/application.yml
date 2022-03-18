@@ -51,6 +51,8 @@ server:
   servlet:
     context-path: /
 spring:
+  config:
+    import: application-authorization.yml
   application:
     name: cc-management-service
   datasource:
@@ -109,6 +111,8 @@ management:
       enabled: true
 
 cc-management-service:
+  auth:
+    allow-unauthenticated: cc-api-gateway-service
   rest:
     connectTimeoutSeconds: 8
     readTimeoutSeconds: 8

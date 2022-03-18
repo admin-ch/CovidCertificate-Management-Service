@@ -7,6 +7,7 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertifica
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
+import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
@@ -31,6 +32,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -47,6 +50,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = {CovidCertificateGenerationController.class, OAuth2SecuredWebConfiguration.class})
 @ActiveProfiles("test")
 class CovidCertificateGenerationControllerSecurityTest {
+    @MockBean
+    private AuthorizationInterceptor interceptor;
     @MockBean
     private SecurityHelper securityHelper;
     @MockBean
@@ -76,6 +81,7 @@ class CovidCertificateGenerationControllerSecurityTest {
     private static final LocalDateTime EXPIRED_IN_FUTURE = LocalDateTime.now().plusDays(1);
     private static final LocalDateTime EXPIRED_IN_PAST = LocalDateTime.now().minusDays(1);
     private static final WireMockServer wireMockServer = new WireMockServer(options().port(MOCK_SERVER_PORT));
+
 
     @BeforeAll
     private static void setup() throws Exception {
@@ -203,6 +209,8 @@ class CovidCertificateGenerationControllerSecurityTest {
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(TestCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
         lenient().when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(fixture.create(JeapAuthenticationToken.class));
+        lenient().when(interceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Object.class))).thenReturn(true);
+
     }
 
     @AfterAll
