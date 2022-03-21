@@ -568,8 +568,7 @@ services:
         until: 2099-12-31T23:59:59
         additionalRef: ${services.management.functions.create-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus}
-        uri: "/api/v1/covidcertificate/revoke"
-
+        uri: "/api/v1/revocation"
 
       # one-time-password
       create-otp:
