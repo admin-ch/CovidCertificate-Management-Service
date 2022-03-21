@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 
 @Slf4j
 @Configuration
@@ -45,11 +47,13 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
+        log.info("Call of preHandle with URI: {}", uri);
         boolean isWhitelisted = WHITELISTED_URIS
                 .stream()
                 .anyMatch(whitelistedUri -> whitelistedUri.matches(uri));
 
         if (isWhitelisted) {
+            log.info("URI {} is whitelisted.", uri);
             return true;
         }
 
@@ -75,6 +79,11 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
         List<String> roles = new ArrayList<>(authentication.getUserRoles());
         Set<String> permittedFunctions = authorizationService.getCurrent("management", roles);
+
+        log.info("Verify function authorization: {}, {}, {}",
+                kv("clientId", clientId),
+                kv("roles", roles),
+                kv("function", function.getIdentifier()));
 
         if (!permittedFunctions.contains(function.getIdentifier())) {
             throw new AuthorizationException(Constants.FORBIDDEN, uri);
