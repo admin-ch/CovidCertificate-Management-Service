@@ -47,7 +47,6 @@ public class TestController {
     private final TestCovidCertificateGenerationService testCovidCertificateGenerationService;
 
     @GetMapping("/{validAt}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public List<SigningInformation> testSigningInformationConfiguration(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             HttpServletRequest request) {
@@ -80,7 +79,6 @@ public class TestController {
     }
 
     @PostMapping("/vaccination/{validAt}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createVaccinationCertificate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody VaccinationCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
@@ -90,7 +88,6 @@ public class TestController {
     }
 
     @PostMapping("/vaccination-tourist/{validAt}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createVaccinationTouristCertificate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody VaccinationTouristCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
@@ -100,7 +97,6 @@ public class TestController {
     }
 
     @PostMapping("/test/{validAt}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createTestCertificate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody TestCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
@@ -110,7 +106,6 @@ public class TestController {
     }
 
     @PostMapping("/recovery/{validAt}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createRecoveryCertificate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody RecoveryCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
@@ -120,7 +115,6 @@ public class TestController {
     }
 
     @PostMapping("/recovery-rat/{validAt}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createRecoveryRatCertificate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody RecoveryRatCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
@@ -130,7 +124,6 @@ public class TestController {
     }
 
     @PostMapping("/antibody/{validAt}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createAntibodyCertificate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody AntibodyCertificateCreateDto createDto, HttpServletRequest request) throws IOException {
@@ -140,7 +133,6 @@ public class TestController {
     }
 
     @PostMapping("/exceptional/{validAt}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CovidCertificateCreateResponseDto createExceptionalCertificate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody ExceptionalCertificateCreateDto createDto, HttpServletRequest request) throws IOException {

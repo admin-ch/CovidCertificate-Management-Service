@@ -42,7 +42,6 @@ public class OneTimePasswordController {
     private final KpiDataService kpiLogService;
 
     @PostMapping()
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public String createOneTimePassword(HttpServletRequest request) {
         log.info("Call of Create OTP");
         securityHelper.authorizeUser(request);

@@ -21,7 +21,6 @@ public class FeatureToggleController {
     private final SecurityHelper securityHelper;
 
     @GetMapping("/features")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public FeaturesDto getFeatures(HttpServletRequest request) {
         log.info("Call getting all configured features");
         securityHelper.authorizeUser(request);
