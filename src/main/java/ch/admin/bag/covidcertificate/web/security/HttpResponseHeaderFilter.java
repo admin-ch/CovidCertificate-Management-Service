@@ -5,7 +5,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/v1/verify/*", "/v1/covidcertificate/*", "/v1/events/*"})
+@WebFilter(urlPatterns = {"/v1/verify/*", "/v1/covidcertificate/*", "/v1/events/*", "/v1/authorization/*"})
 public class HttpResponseHeaderFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
