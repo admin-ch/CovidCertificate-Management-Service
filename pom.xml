@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ch.admin.bag.covidcertificate</groupId>
 	<artifactId>cc-management-service</artifactId>
-	<version>3.9.8</version>
+	<version>3.9.9</version>
 	<name>cc-management-service</name>
 	<description>Service for generating Covid Certificates</description>
 
