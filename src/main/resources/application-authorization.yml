@@ -55,7 +55,7 @@ roles:
 
   groups:
     any:
-      ${roles.id.legacy.super-user},${roles.id.legacy.creator},${roles.id.user.api},${roles.id.user.web},${roles.id.user.revocator},${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat},${roles.id.cert.exception},${roles.id.report.detail},${roles.id.report.agg},${roles.id.report.stats}
+      ${roles.id.legacy.super-user},${roles.id.legacy.creator},${roles.id.user.api},${roles.id.user.web},${roles.id.user.revocator},${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat},${roles.id.cert.exception},${roles.id.report.detail},${roles.id.report.agg},${roles.id.report.stats},${roles.id.cert.bulk}
     legacy:
       ${roles.id.legacy.super-user},${roles.id.legacy.creator}
     users:
