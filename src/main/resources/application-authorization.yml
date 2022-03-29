@@ -95,16 +95,16 @@ roles:
       eiam: "9500.GGG-Covidcertificate.Recovery-Cert-Creator"
       claim: "bag-cc-recoverycert_creator"
     - intern: ${roles.id.cert.test}
-      eiam: "9500.GGG.TestCert-Creator"
+      eiam: "9500.GGG-Covidcertificate.TestCert-Creator"
       claim: "bag-cc-testccert_creator"
     - intern: ${roles.id.cert.vacc}
       eiam: "9500.GGG-Covidcertificate.VaccCert-Creator"
       claim: "bag-cc-vacccert_creator"
     - intern: ${roles.id.cert.antibody}
-      eiam: "9500.GGG.TestCert-Antibody-Creator"
-      claim: "bag-cc-testccert_rat_creator"
+      eiam: "9500.GGG-Covidcertificate.Recovery-Cert-Antibody-Creator"
+      claim: "bag-cc-recoverycert_antibody_creator"
     - intern: ${roles.id.cert.rat}
-      eiam: "9500.GGG.Recovery-Rat-Cert-Creator"
+      eiam: "9500.GGG-Covidcertificate.Recovery-Rat-Cert-Creator"
       claim: "bag-cc-recoverycert_rat_creator"
     - intern: ${roles.id.cert.tourist}
       eiam: "9500.GGG-Covidcertificate.VaccCert-Tourist-Creator"
