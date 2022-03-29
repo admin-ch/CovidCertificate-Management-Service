@@ -234,6 +234,7 @@ services:
         identifier: "main-certificate-revocation"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
+        additionalRef: ${services.web-ui.functions.revoke-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.id.user.revocator},${roles.id.user.web}
       main-one-time-password-generation:
         identifier: "main-one-time-password-generation"
@@ -402,7 +403,7 @@ services:
         identifier: "create-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.user.web}
+        one-of: ${roles.groups.legacy},${roles.id.user.api}
         uri: "/api/v1/covidcertificate"
 
       create-vaccine-certificate:
@@ -658,7 +659,7 @@ services:
         identifier: "revoke-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus}
+        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus},${roles.id.user.revocator}
         uri: "/api/v1/revocation"
 
       # Revocation-list
