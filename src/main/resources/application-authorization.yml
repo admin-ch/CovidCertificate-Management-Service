@@ -304,7 +304,6 @@ services:
         identifier: "revoke-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
         one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus},${roles.id.user.revocator}
 
       # one-time-password
