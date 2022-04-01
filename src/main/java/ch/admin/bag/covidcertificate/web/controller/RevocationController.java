@@ -48,7 +48,6 @@ public class RevocationController {
     private final KpiDataService kpiLogService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "201", description = "CREATED")
     public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto, HttpServletRequest request) {
         log.info("Call of create revocation.");
@@ -71,7 +70,6 @@ public class RevocationController {
 
     @PostMapping("/uvcilist/check")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "202", description = "CHECKED")
     public CheckRevocationListResponseDto checkMassRevocation(
             @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
@@ -96,7 +94,6 @@ public class RevocationController {
 
     @PostMapping("/uvcilist")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "201", description = "CREATED")
     public RevocationListResponseDto massRevocation(
             @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {

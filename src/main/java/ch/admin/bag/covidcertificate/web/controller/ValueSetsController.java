@@ -30,7 +30,6 @@ public class ValueSetsController {
     private final ValueSetsService valueSetsService;
 
     @GetMapping("")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public ValueSetsResponseDto get(HttpServletRequest request) {
         log.info("Call to get value sets.");
         securityHelper.authorizeUser(request);
@@ -39,7 +38,6 @@ public class ValueSetsController {
     }
 
     @GetMapping("/rapid-tests")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public List<TestDto> getRapidTests(HttpServletRequest request) {
         log.info("Call of getRapidTests for value sets");
         securityHelper.authorizeUser(request);
@@ -48,7 +46,6 @@ public class ValueSetsController {
     }
 
     @GetMapping("/issuable-rapid-tests")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public List<IssuableTestDto> getIssuableRapidTests(HttpServletRequest request) {
         log.info("Call of getIssuableRapidTests for value sets");
         securityHelper.authorizeUser(request);
@@ -57,7 +54,6 @@ public class ValueSetsController {
     }
 
     @GetMapping("/vaccines")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public List<VaccineDto> getVaccines(HttpServletRequest request) {
         log.info("Call of getVaccines for value sets");
         securityHelper.authorizeUser(request);
@@ -66,7 +62,6 @@ public class ValueSetsController {
     }
 
     @GetMapping("/issuable-vaccines")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public List<IssuableVaccineDto> getIssuableVaccines(HttpServletRequest request) {
         securityHelper.authorizeUser(request);
 
@@ -75,7 +70,6 @@ public class ValueSetsController {
     }
 
     @GetMapping("/issuable-vaccines/{systemSource}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public List<IssuableVaccineDto> getIssuableVaccines(@PathVariable String systemSource, HttpServletRequest request) {
         securityHelper.authorizeUser(request);
 
@@ -94,7 +88,6 @@ public class ValueSetsController {
     }
 
     @GetMapping("/countries")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CountryCodes getCountryCodes(HttpServletRequest request) {
         log.info("Call of getCountryCodes for value sets");
         securityHelper.authorizeUser(request);
@@ -103,7 +96,6 @@ public class ValueSetsController {
     }
 
     @GetMapping("/countries/{language}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public List<CountryCode> getCountryCodesByLanguage(@PathVariable final String language, HttpServletRequest request) {
         log.info("Call of getCountryCodes by language for value sets");
         securityHelper.authorizeUser(request);

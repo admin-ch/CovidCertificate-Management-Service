@@ -5,15 +5,16 @@ import ch.admin.bag.covidcertificate.authorization.config.ServiceData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Set;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 
 @RestController
@@ -24,9 +25,9 @@ public class AuthorizationController {
     private final AuthorizationService authorizationService;
 
     @GetMapping("/current/{service}")
-    public Set<String> getCurrent(@PathVariable String service, @RequestBody UserDto user) {
-        log.info("current authorization service={} user={}", service, user);
-        Set<String> result = authorizationService.getCurrent(service, user.getRoles());
+    public Set<String> getCurrent(@PathVariable String service, @RequestParam List<String> roles) {
+        log.info("Get current authorization: {} {}", kv("service", service), kv("roles", roles));
+        Set<String> result = authorizationService.getCurrent(service, roles);
         log.info("found: "+result);
         return result;
     }

@@ -55,7 +55,7 @@ roles:
 
   groups:
     any:
-      ${roles.id.legacy.super-user},${roles.id.legacy.creator},${roles.id.user.api},${roles.id.user.web},${roles.id.user.revocator},${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat},${roles.id.cert.exception},${roles.id.report.detail},${roles.id.report.agg},${roles.id.report.stats}
+      ${roles.id.legacy.super-user},${roles.id.legacy.creator},${roles.id.user.api},${roles.id.user.web},${roles.id.user.revocator},${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat},${roles.id.cert.exception},${roles.id.report.detail},${roles.id.report.agg},${roles.id.report.stats},${roles.id.cert.bulk}
     legacy:
       ${roles.id.legacy.super-user},${roles.id.legacy.creator}
     users:
@@ -95,16 +95,16 @@ roles:
       eiam: "9500.GGG-Covidcertificate.Recovery-Cert-Creator"
       claim: "bag-cc-recoverycert_creator"
     - intern: ${roles.id.cert.test}
-      eiam: "9500.GGG.TestCert-Creator"
+      eiam: "9500.GGG-Covidcertificate.TestCert-Creator"
       claim: "bag-cc-testccert_creator"
     - intern: ${roles.id.cert.vacc}
       eiam: "9500.GGG-Covidcertificate.VaccCert-Creator"
       claim: "bag-cc-vacccert_creator"
     - intern: ${roles.id.cert.antibody}
-      eiam: "9500.GGG.TestCert-Antibody-Creator"
-      claim: "bag-cc-testccert_rat_creator"
+      eiam: "9500.GGG-Covidcertificate.Recovery-Cert-Antibody-Creator"
+      claim: "bag-cc-recoverycert_antibody_creator"
     - intern: ${roles.id.cert.rat}
-      eiam: "9500.GGG.Recovery-Rat-Cert-Creator"
+      eiam: "9500.GGG-Covidcertificate.Recovery-Rat-Cert-Creator"
       claim: "bag-cc-recoverycert_rat_creator"
     - intern: ${roles.id.cert.tourist}
       eiam: "9500.GGG-Covidcertificate.VaccCert-Tourist-Creator"
@@ -229,12 +229,13 @@ services:
         identifier: "main-certificate-generation"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus}
+        one-of: ${roles.groups.legacy},${roles.id.user.web}
       main-certificate-revocation:
         identifier: "main-certificate-revocation"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.user.revocator},${roles.groups.cert-creators}
+        additionalRef: ${services.web-ui.functions.revoke-certificate.identifier}
+        one-of: ${roles.groups.legacy},${roles.id.user.revocator},${roles.id.user.web}
       main-one-time-password-generation:
         identifier: "main-one-time-password-generation"
         from: 2022-01-01T00:00:00
@@ -303,8 +304,7 @@ services:
         identifier: "revoke-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.web-ui.functions.create-certificate-web.identifier}
-        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus}
+        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus},${roles.id.user.revocator}
 
       # one-time-password
       create-otp:
@@ -402,7 +402,7 @@ services:
         identifier: "create-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.user.web}
+        one-of: ${roles.groups.legacy},${roles.id.user.api}
         uri: "/api/v1/covidcertificate"
 
       create-vaccine-certificate:
@@ -467,6 +467,15 @@ services:
   management:
 
     functions:
+
+      #feature-toggle
+      feature-toggle:
+        identifier: "feature-toggle"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/feature-toggle/features"
+        one-of: ${roles.groups.any}
+
       # authorization
       auth-current-service:
         identifier: "auth-current-service"
@@ -489,19 +498,10 @@ services:
         uri: "/api/v1/authorization/role-mapping"
         one-of: ${roles.groups.any}
 
-      #Don't configure /api/v1/authorization/role-mapping since nobody should reach that endpoint except api-gateway
-
-      # create/revoke certificates
-      create-certificate:
-        identifier: "create-certificate"
-        from: 2022-01-01T00:00:00
-        until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.user.web}, ${roles.id.user.api}
       create-vaccine-certificate:
         identifier: "create-vaccine-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.management.functions.create-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.id.cert.vacc}
         uri: "/api/v1/covidcertificate/vaccination"
 
@@ -509,7 +509,6 @@ services:
         identifier: "create-vaccine-tourist-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.management.functions.create-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.id.cert.tourist}
         uri: "/api/v1/covidcertificate/vaccination-tourist"
 
@@ -517,7 +516,6 @@ services:
         identifier: "create-test-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.management.functions.create-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.id.cert.test}
         uri: "/api/v1/covidcertificate/test"
 
@@ -525,7 +523,6 @@ services:
         identifier: "create-antibody-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.management.functions.create-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.id.cert.antibody}
         uri: "/api/v1/covidcertificate/antibody"
 
@@ -533,7 +530,6 @@ services:
         identifier: "create-recovery-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.management.functions.create-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.id.cert.recovery}
         uri: "/api/v1/covidcertificate/recovery"
 
@@ -541,7 +537,6 @@ services:
         identifier: "create-recovery-rat-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.management.functions.create-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.id.cert.rat}
         uri: "/api/v1/covidcertificate/recovery-rat"
 
@@ -549,18 +544,130 @@ services:
         identifier: "create-exceptional-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.management.functions.create-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.id.cert.exception}
         uri: "/api/v1/covidcertificate/exceptional"
 
+      create-fromexisting-vaccine-certificate:
+        identifier: "create-fromexisting-vaccine-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.vacc}
+        uri: "/api/v1/covidcertificate/fromexisting/vaccination"
+
+      create-fromexisting-vaccine-tourist-certificate:
+        identifier: "create-fromexisting-vaccine-tourist-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.tourist}
+        uri: "/api/v1/covidcertificate/fromexisting/vaccination-tourist"
+
+      create-fromexisting-test-certificate:
+        identifier: "create-fromexisting-test-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.test}
+        uri: "/api/v1/covidcertificate/fromexisting/test"
+
+      create-fromexisting-antibody-certificate:
+        identifier: "create-fromexisting-antibody-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.antibody}
+        uri: "/api/v1/covidcertificate/fromexisting/antibody"
+
+      create-fromexisting-recovery-certificate:
+        identifier: "create-fromexisting-recovery-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.recovery}
+        uri: "/api/v1/covidcertificate/fromexisting/recovery"
+
+      create-fromexisting-recovery-rat-certificate:
+        identifier: "create-fromexisting-recovery-rat-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.rat}
+        uri: "/api/v1/covidcertificate/fromexisting/recovery-rat"
+
+      create-fromexisting-exceptional-certificate:
+        identifier: "create-fromexisting-exceptional-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.exception}
+        uri: "/api/v1/covidcertificate/fromexisting/exceptional"
+
+      # internal test
+      test-create-all-certificates:
+        identifier: "test-create-all-certificates"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.vacc}
+        uri: "/internal/api/v1/test/{validAt}"
+
+      test-create-vaccine-certificate:
+        identifier: "test-create-vaccine-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.vacc}
+        uri: "/internal/api/v1/test/vaccination/{validAt}"
+
+      test-create-vaccine-tourist-certificate:
+        identifier: "test-create-vaccine-tourist-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.tourist}
+        uri: "/internal/api/v1/test/vaccination-tourist/{validAt}"
+
+      test-create-test-certificate:
+        identifier: "test-create-test-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.test}
+        uri: "/internal/api/v1/test/test/{validAt}"
+
+      test-create-antibody-certificate:
+        identifier: "test-create-antibody-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.antibody}
+        uri: "/internal/api/v1/test/antibody/{validAt}"
+
+      test-create-recovery-certificate:
+        identifier: "test-create-recovery-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.recovery}
+        uri: "/internal/api/v1/test/recovery/{validAt}"
+
+      test-create-recovery-rat-certificate:
+        identifier: "test-create-recovery-rat-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.rat}
+        uri: "/internal/api/v1/test/recovery-rat/{validAt}"
+
+      test-create-exceptional-certificate:
+        identifier: "test-create-exceptional-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.exception}
+        uri: "/internal/api/v1/test/exceptional/{validAt}"
+
+      # Revocation
       revoke-certificate:
         identifier: "revoke-certificate"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        additionalRef: ${services.management.functions.create-certificate.identifier}
-        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus}
-        uri: "/api/v1/covidcertificate/revoke"
+        one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus},${roles.id.user.revocator}
+        uri: "/api/v1/revocation"
 
+      # Revocation-list
+      revoke-list-certificate:
+        identifier: "revoke-list-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
+        uri: "/api/v1/revocation-list"
 
       # one-time-password
       create-otp:
@@ -577,13 +684,6 @@ services:
         until: 2099-12-31T23:59:59
         one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
         uri: "/api/v1/covidcertificate/csv"
-
-      bulk-revoke-certificates:
-        identifier: "bulk-revoke-certificates"
-        from: 2022-01-01T00:00:00
-        until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
-        uri: "/api/v1/covidcertificate/TODO" #TODO
 
       # valuesets
       valuesets:

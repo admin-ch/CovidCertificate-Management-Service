@@ -30,7 +30,6 @@ public class CsvController {
     private final CsvService csvService;
 
     @PostMapping("/csv")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     public CsvResponseDto createWithCsv(@RequestParam("file") MultipartFile file, @RequestParam("certificateType") String certificateType, HttpServletRequest request) throws IOException {
         securityHelper.authorizeUser(request);
         log.info(file.getContentType());
