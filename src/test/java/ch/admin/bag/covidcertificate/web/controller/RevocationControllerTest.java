@@ -1,11 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
-import ch.admin.bag.covidcertificate.FixtureCustomization;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
-import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
-import ch.admin.bag.covidcertificate.api.request.SystemSource;
-import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
@@ -22,16 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationListDto;
@@ -98,7 +90,7 @@ class RevocationControllerTest {
             lenient().when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
 
             var createDto = fixture.create(RevocationDto.class);
-            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            when(revocationService.getRevocationDateTime(anyString())).thenReturn(null);
             doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
 
             mockMvc.perform(post(REVOCATION_URL)
@@ -114,7 +106,7 @@ class RevocationControllerTest {
         void returnsStatusCodeOfRevocationException_ifOneWasThrown() throws Exception {
             var createDto = fixture.create(RevocationDto.class);
             var exception = fixture.create(RevocationException.class);
-            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            when(revocationService.getRevocationDateTime(anyString())).thenReturn(null);
             doThrow(exception).when(revocationService).createRevocation(anyString(), anyBoolean());
 
             mockMvc.perform(post(REVOCATION_URL)

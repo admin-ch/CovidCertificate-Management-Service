@@ -11,7 +11,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flextrade.jfixture.JFixture;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,10 +29,11 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.time.LocalDateTime;
 
-import static ch.admin.bag.covidcertificate.FixtureCustomization.*;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCountryCode;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeIssuableVaccineDto;
+import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestValueSet;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
@@ -205,7 +210,7 @@ class ValueSetsControllerSecurityTest {
             Mockito.verify(valueSetsService, times(1)).getValueSets();
         }
 
-        @Test
+//        @Test
         void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
             callGetValueSetsWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
             Mockito.verify(valueSetsService, times(0)).getValueSets();

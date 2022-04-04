@@ -1,12 +1,13 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.AuthorizationException;
+import ch.admin.bag.covidcertificate.api.exception.CacheNotFoundException;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.exception.FeatureToggleException;
+import ch.admin.bag.covidcertificate.api.exception.RevocationErrorExternal;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.exception.ValueSetException;
-import ch.admin.bag.covidcertificate.api.exception.CacheNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,13 @@ public class ResponseStatusExceptionHandler {
 
     @ExceptionHandler(value = {RevocationException.class})
     protected ResponseEntity<Object> handleRevocationException(RevocationException ex) {
-        return new ResponseEntity<>(ex.getError(), ex.getError().getHttpStatus());
+        RevocationErrorExternal error = new RevocationErrorExternal(
+                ex.getError().getErrorCode(),
+                ex.getError().getErrorMessage(),
+                ex.getError().getHttpStatus(),
+                ex.getRevocationDateTime()
+        );
+        return new ResponseEntity<>(error, ex.getError().getHttpStatus());
     }
 
     @ExceptionHandler(value = {AccessDeniedException.class, SecurityException.class})
@@ -55,7 +62,7 @@ public class ResponseStatusExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         Throwable cause = e.getCause().getCause();
 
-        if(cause instanceof CreateCertificateException) {
+        if (cause instanceof CreateCertificateException) {
             return this.handleCreateCertificateException((CreateCertificateException) cause);
         }
         return new ResponseEntity<>("Malformed Request", HttpStatus.BAD_REQUEST);

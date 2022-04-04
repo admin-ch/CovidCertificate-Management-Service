@@ -3,8 +3,6 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
-import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
-import ch.admin.bag.covidcertificate.api.response.RevocationListResponseDto;
 import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
@@ -16,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,8 +52,9 @@ public class RevocationController {
         securityHelper.authorizeUser(request);
         UvciValidator.validateUvciMatchesSpecification(revocationDto.getUvci());
 
-        if (revocationService.isAlreadyRevoked(uvci)) {
-            throw new RevocationException(DUPLICATE_UVCI);
+        LocalDateTime revocationDateTime = revocationService.getRevocationDateTime(uvci);
+        if (revocationDateTime != null) {
+            throw new RevocationException(DUPLICATE_UVCI, revocationDateTime);
         }
 
         revocationService.createRevocation(revocationDto.getUvci(), revocationDto.isFraud());
