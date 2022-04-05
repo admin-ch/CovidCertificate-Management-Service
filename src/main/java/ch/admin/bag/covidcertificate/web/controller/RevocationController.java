@@ -3,8 +3,6 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
-import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
-import ch.admin.bag.covidcertificate.api.response.RevocationListResponseDto;
 import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
@@ -16,14 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
@@ -42,17 +38,15 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 @Slf4j
 public class RevocationController {
-    private final SecurityHelper securityHelper;
     private final ServletJeapAuthorization jeapAuthorization;
     private final RevocationService revocationService;
     private final KpiDataService kpiLogService;
 
     @PostMapping
     @ApiResponse(responseCode = "201", description = "CREATED")
-    public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto, HttpServletRequest request) {
+    public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto) {
         log.info("Call of create revocation.");
         final String uvci = revocationDto.getUvci();
-        securityHelper.authorizeUser(request);
         UvciValidator.validateUvciMatchesSpecification(revocationDto.getUvci());
 
         if (revocationService.isAlreadyRevoked(uvci)) {
@@ -72,9 +66,9 @@ public class RevocationController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiResponse(responseCode = "202", description = "CHECKED")
     public CheckRevocationListResponseDto checkMassRevocation(
-            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
+            @Valid @RequestBody RevocationListDto revocationListDto) {
         log.info("Call of mass-revocation-check.");
-        securityHelper.authorizeUser(request);
+
 
         revocationListDto.validateList();
 
@@ -96,9 +90,9 @@ public class RevocationController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponse(responseCode = "201", description = "CREATED")
     public RevocationListResponseDto massRevocation(
-            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
+            @Valid @RequestBody RevocationListDto revocationListDto) {
         log.info("Call of mass-revocation.");
-        securityHelper.authorizeUser(request);
+
 
         // fraud flag will be implemented for mass-revocation with VACCINECER-2045
         boolean fraud = false;

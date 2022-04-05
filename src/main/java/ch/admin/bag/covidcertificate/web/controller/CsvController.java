@@ -26,12 +26,10 @@ public class CsvController {
     private static final String CSV_CONTENT_TYPE = "text/csv";
     private static final String EXCEL_CONTENT_TYPE = "application/vnd.ms-excel";
 
-    private final SecurityHelper securityHelper;
     private final CsvService csvService;
 
     @PostMapping("/csv")
-    public CsvResponseDto createWithCsv(@RequestParam("file") MultipartFile file, @RequestParam("certificateType") String certificateType, HttpServletRequest request) throws IOException {
-        securityHelper.authorizeUser(request);
+    public CsvResponseDto createWithCsv(@RequestParam("file") MultipartFile file, @RequestParam("certificateType") String certificateType) throws IOException {
         log.info(file.getContentType());
         if (!CSV_CONTENT_TYPE.equals(file.getContentType()) && !EXCEL_CONTENT_TYPE.equals(file.getContentType())) {
             throw new CreateCertificateException(NOT_A_CSV);
