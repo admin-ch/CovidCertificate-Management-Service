@@ -10,12 +10,15 @@ import ch.admin.bag.covidcertificate.testutil.JeapAuthenticationTestTokenBuilder
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flextrade.jfixture.JFixture;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,37 +30,34 @@ import java.util.List;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationListDto;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @ExtendWith(MockitoExtension.class)
 class RevocationControllerTest {
+    private static final String REVOCATION_URL = "/api/v1/revocation";
+    private static final String REVOCATION_LIST_CHECK_URL = "/api/v1/revocation/uvcilist/check";
+    private static final String REVOCATION_LIST_URL = "/api/v1/revocation/uvcilist";
+    private static final JFixture fixture = new JFixture();
+    private final ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().modules(new JavaTimeModule()).build();
     @InjectMocks
     private RevocationController controller;
-    @Mock
-    private SecurityHelper securityHelper;
     @Mock
     private RevocationService revocationService;
     @Mock
     private KpiDataService kpiLogService;
     @Mock
     private ServletJeapAuthorization jeapAuthorization;
-
     private MockMvc mockMvc;
-
-    private final ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().modules(new JavaTimeModule()).build();
-
-    private static final String REVOCATION_URL = "/api/v1/revocation";
-
-    private static final String REVOCATION_LIST_CHECK_URL = "/api/v1/revocation/uvcilist/check";
-
-    private static final String REVOCATION_LIST_URL = "/api/v1/revocation/uvcilist";
-
-    private static final JFixture fixture = new JFixture();
 
     @BeforeAll
     static void setup() {
@@ -117,20 +117,6 @@ class RevocationControllerTest {
                     .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
 
-        @Test
-        @DisplayName("GIVEN an AccessDeniedException WHEN authorizing the user THEN 403 status code is returned")
-        void returns403StatusCode_ifAccessDeniedExceptionWasThrown() throws Exception {
-            var createDto = fixture.create(RevocationDto.class);
-            when(securityHelper.authorizeUser(any(HttpServletRequest.class))).thenThrow(
-                    fixture.create(AccessDeniedException.class));
-
-            mockMvc.perform(post(REVOCATION_URL)
-                            .accept(MediaType.APPLICATION_JSON_VALUE)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .header("Authorization", fixture.create(String.class))
-                            .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
-        }
     }
 
     /*
@@ -210,20 +196,6 @@ class RevocationControllerTest {
             assertThat(expectedDto.getRevocableUvcis()).doesNotContainAnyElementsOf(errorUvcis.keySet());
         }
 
-        @Test
-        @DisplayName("GIVEN an AccessDeniedException WHEN authorizing the user THEN 403 status code is returned")
-        void returns403StatusCode_ifAccessDeniedExceptionWasThrown() throws Exception {
-            var createDto = fixture.create(RevocationListDto.class);
-            when(securityHelper.authorizeUser(any(HttpServletRequest.class))).thenThrow(
-                    fixture.create(AccessDeniedException.class));
-
-            mockMvc.perform(post(REVOCATION_LIST_CHECK_URL)
-                            .accept(MediaType.APPLICATION_JSON_VALUE)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .header("Authorization", anyString())
-                            .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
-        }
     }
 
     @Nested
@@ -248,20 +220,6 @@ class RevocationControllerTest {
             assertThat(result).isNotNull();
         }
 
-        @Test
-        @DisplayName("GIVEN an AccessDeniedException WHEN authorizing the user THEN 403 status code is returned")
-        void returns403StatusCode_ifAccessDeniedExceptionWasThrown() throws Exception {
-            var createDto = fixture.create(RevocationListDto.class);
-            when(securityHelper.authorizeUser(any(HttpServletRequest.class))).thenThrow(
-                    fixture.create(AccessDeniedException.class));
-
-            mockMvc.perform(post(REVOCATION_LIST_URL)
-                            .accept(MediaType.APPLICATION_JSON_VALUE)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .header("Authorization", fixture.create(String.class))
-                            .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
-        }
     }
      */
 }

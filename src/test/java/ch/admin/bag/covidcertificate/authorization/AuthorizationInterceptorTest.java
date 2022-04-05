@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AuthorizationInterceptor.class, AuthorizationService.class, AuthorizationConfig.class, RoleConfig.class, LocalDateTimeConverter.class})
-@ActiveProfiles(profiles = {"test"})
+@ActiveProfiles(profiles = {"test", "auth-test"})
 @EnableConfigurationProperties
 public class AuthorizationInterceptorTest {
     private final Object handler = new Object();

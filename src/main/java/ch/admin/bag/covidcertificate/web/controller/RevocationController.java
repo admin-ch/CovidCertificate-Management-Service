@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
@@ -39,17 +38,15 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 @Slf4j
 public class RevocationController {
-    private final SecurityHelper securityHelper;
     private final ServletJeapAuthorization jeapAuthorization;
     private final RevocationService revocationService;
     private final KpiDataService kpiLogService;
 
     @PostMapping
     @ApiResponse(responseCode = "201", description = "CREATED")
-    public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto, HttpServletRequest request) {
+    public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto) {
         log.info("Call of create revocation.");
         final String uvci = revocationDto.getUvci();
-        securityHelper.authorizeUser(request);
         UvciValidator.validateUvciMatchesSpecification(revocationDto.getUvci());
 
         LocalDateTime revocationDateTime = revocationService.getRevocationDateTime(uvci);
@@ -70,9 +67,9 @@ public class RevocationController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiResponse(responseCode = "202", description = "CHECKED")
     public CheckRevocationListResponseDto checkMassRevocation(
-            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
+            @Valid @RequestBody RevocationListDto revocationListDto) {
         log.info("Call of mass-revocation-check.");
-        securityHelper.authorizeUser(request);
+
 
         revocationListDto.validateList();
 
@@ -94,9 +91,9 @@ public class RevocationController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponse(responseCode = "201", description = "CREATED")
     public RevocationListResponseDto massRevocation(
-            @Valid @RequestBody RevocationListDto revocationListDto, HttpServletRequest request) {
+            @Valid @RequestBody RevocationListDto revocationListDto) {
         log.info("Call of mass-revocation.");
-        securityHelper.authorizeUser(request);
+
 
         // fraud flag will be implemented for mass-revocation with VACCINECER-2045
         boolean fraud = false;

@@ -15,12 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static ch.admin.bag.covidcertificate.api.Constants.NOT_A_CSV;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,20 +29,14 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @ExtendWith(MockitoExtension.class)
 class CsvControllerTest {
+    private static final String B_URL = "/api/v1/covidcertificate/csv";
+    private static final JFixture fixture = new JFixture();
+    private final ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().modules(new JavaTimeModule()).build();
     @InjectMocks
     private CsvController controller;
     @Mock
-    private SecurityHelper securityHelper;
-    @Mock
     private CsvService csvService;
-
     private MockMvc mockMvc;
-
-    private static final String B_URL = "/api/v1/covidcertificate/csv";
-
-    private final ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().modules(new JavaTimeModule()).build();
-
-    private static final JFixture fixture = new JFixture();
 
     @BeforeEach
     void setupMocks() {
@@ -74,25 +65,6 @@ class CsvControllerTest {
 
         CsvResponseDto expectedDto = mapper.readValue(result.getResponse().getContentAsString(), CsvResponseDto.class);
         assertEquals(csvResponseDto, expectedDto);
-    }
-
-    @Test
-    void returns403StatusCode_ifAccessDeniedExceptionWasThrown() throws Exception {
-        when(securityHelper.authorizeUser(any(HttpServletRequest.class))).thenThrow(fixture.create(AccessDeniedException.class));
-
-        MockMultipartFile file
-                = new MockMultipartFile(
-                "file",
-                "hello.txt",
-                "text/csv",
-                "Hello, World!".getBytes()
-        );
-
-        mockMvc.perform(multipart(B_URL)
-                        .file(file)
-                        .header("Authorization", fixture.create(String.class))
-                        .param("certificateType", CertificateType.RECOVERY.name()))
-                .andExpect(status().is(HttpStatus.FORBIDDEN.value()));
     }
 
     @Test

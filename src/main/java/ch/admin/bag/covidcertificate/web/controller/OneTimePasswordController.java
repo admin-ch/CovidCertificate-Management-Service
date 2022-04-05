@@ -7,13 +7,11 @@ import ch.admin.bag.covidcertificate.service.CustomTokenProvider;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
@@ -33,8 +31,6 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 public class OneTimePasswordController {
 
-    private final SecurityHelper securityHelper;
-
     private final CustomTokenProvider customTokenProvider;
 
     private final ServletJeapAuthorization jeapAuthorization;
@@ -42,9 +38,8 @@ public class OneTimePasswordController {
     private final KpiDataService kpiLogService;
 
     @PostMapping()
-    public String createOneTimePassword(HttpServletRequest request) {
+    public String createOneTimePassword() {
         log.info("Call of Create OTP");
-        securityHelper.authorizeUser(request);
 
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
 
