@@ -104,7 +104,7 @@ class RevocationControllerSecurityTest extends AbstractSecurityTest {
             Mockito.verify(revocationService, times(1)).createRevocation(anyString(), anyBoolean());
         }
 
-//        @Test
+        @Test
         void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
             callGetValueSetsWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
             Mockito.verify(revocationService, times(0)).createRevocation(anyString(), anyBoolean());
