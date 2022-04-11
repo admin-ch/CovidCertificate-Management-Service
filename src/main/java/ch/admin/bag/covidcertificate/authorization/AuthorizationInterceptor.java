@@ -44,7 +44,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
         List<String> rawRoles = new ArrayList<>(authentication.getUserRoles());
         boolean isHinUser = rawRoles.contains("bag-cc-hin-epr") || rawRoles.contains("bag-cc-hin");
-        boolean isHinCodeOrPersonal = rawRoles.contains("bag-cc-hincode") && rawRoles.contains("bag-cc-personal");
+        boolean isHinCodeOrPersonal = rawRoles.contains("bag-cc-hincode") || rawRoles.contains("bag-cc-personal");
         if (isHinUser && !isHinCodeOrPersonal) {
             log.warn("HIN-User not allowed to use the application...");
             log.warn("userroles: {}", rawRoles);
