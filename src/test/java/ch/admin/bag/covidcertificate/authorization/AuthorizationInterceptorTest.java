@@ -21,9 +21,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static ch.admin.bag.covidcertificate.api.Constants.ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringRunner.class)
@@ -109,6 +110,24 @@ public class AuthorizationInterceptorTest {
     public void testAllowedInPast() {
         MockHttpServletRequest request = mockRequest("/past", "WEB-USER");
         assertError(request, Constants.NO_FUNCTION_CONFIGURED);
+    }
+
+    @Test
+    public void userHinErpAuthorized() {
+        MockHttpServletRequest request = mockRequest("/only-web-user", "WEB-USER", "bag-cc-hin-epr", "bag-cc-hincode", "bac-cc-personal");
+        assertTrue(interceptor.preHandle(request, response, handler));
+    }
+
+    @Test
+    public void userHinAuthorized() {
+        MockHttpServletRequest request = mockRequest("/only-web-user", "WEB-USER", "bag-cc-hin", "bag-cc-hincode", "bac-cc-personal");
+        assertTrue(interceptor.preHandle(request, response, handler));
+    }
+
+    @Test
+    public void userHinNotAuthorized() {
+        MockHttpServletRequest request = mockRequest("/only-web-user", "WEB-USER", "bag-cc-hin");
+        assertError(request, ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN);
     }
 
     private MockHttpServletRequest mockRequest(String uri, String... roles) {

@@ -10,6 +10,7 @@ import org.bouncycastle.util.Objects;
 import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -28,17 +29,6 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Configuration
 @RequiredArgsConstructor
 public class AuthorizationInterceptor implements HandlerInterceptor {
-
-    private static final List<String> WHITELISTED_URIS = List.of(
-            "/error",
-            "/actuator/.*",
-            "/swagger-ui.html",
-            "/swagger-ui/.*",
-            "/v3/api-docs/.*",
-            "/api/v1/revocation-list",
-            "/api/v1/ping"
-    );
-
     private final AuthorizationService authorizationService;
 
     @Value("${cc-management-service.auth.allow-unauthenticated}")
@@ -47,19 +37,19 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
-        log.info("Call of preHandle with URI: {}", uri);
-        boolean isWhitelisted = WHITELISTED_URIS
-                .stream()
-                .anyMatch(whitelistedUri -> whitelistedUri.matches(uri));
-
-        if (isWhitelisted) {
-            log.info("URI {} is whitelisted.", uri);
-            return true;
-        }
-
+        log.trace("Call of preHandle with URI: {}", uri);
         JeapAuthenticationToken authentication = ((JeapAuthenticationToken) SecurityContextHolder
                 .getContext()
                 .getAuthentication());
+
+        List<String> rawRoles = new ArrayList<>(authentication.getUserRoles());
+        boolean isHinUser = rawRoles.contains("bag-cc-hin-epr") || rawRoles.contains("bag-cc-hin");
+        boolean isHinCodeOrPersonal = rawRoles.contains("bag-cc-hincode") || rawRoles.contains("bag-cc-personal");
+        if (isHinUser && !isHinCodeOrPersonal) {
+            log.warn("HIN-User not allowed to use the application...");
+            log.warn("userroles: {}", rawRoles);
+            throw new AuthorizationException(Constants.ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN);
+        }
 
         String clientId = authentication.getClientId();
         if (Objects.areEqual(allowUnauthenticated, clientId)) {
