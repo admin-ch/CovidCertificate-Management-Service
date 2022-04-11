@@ -25,6 +25,10 @@ public class TextValidator {
 
     public static void validateTextIsNotBlankAndLengthIsNotBiggerThanMaxLength(String text, String propertyName, int maxLength) {
         validateTextIsNotBlank(text, propertyName);
+        validateTextLengthIsNotBiggerThanMaxLength(text, propertyName, maxLength);
+    }
+
+    public static void validateTextLengthIsNotBiggerThanMaxLength(String text, String propertyName, int maxLength) {
         if (text.length() > maxLength) {
             throw new CreateCertificateException(TEXT_INVALID_LENGTH, propertyName, maxLength);
         }

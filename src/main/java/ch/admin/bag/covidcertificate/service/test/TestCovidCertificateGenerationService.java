@@ -80,7 +80,7 @@ public class TestCovidCertificateGenerationService {
         var qrCodeData = covidCertificateDtoMapperService.toRecoveryRatCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toRecoveryRatCertificatePdf(createDto, qrCodeData);
         var signingInformation = signingInformationService.getRecoveryRatSigningInformation(validAt);
-        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getTestInfo().get(0).getIdentifier(), createDto, signingInformation);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getRecoveryInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(AntibodyCertificateCreateDto createDto, LocalDate validAt) throws JsonProcessingException {
