@@ -29,7 +29,7 @@ public class TextValidator {
     }
 
     public static void validateTextLengthIsNotBiggerThanMaxLength(String text, String propertyName, int maxLength) {
-        if (text.length() > maxLength) {
+        if (text != null && text.length() > maxLength) {
             throw new CreateCertificateException(TEXT_INVALID_LENGTH, propertyName, maxLength);
         }
     }
