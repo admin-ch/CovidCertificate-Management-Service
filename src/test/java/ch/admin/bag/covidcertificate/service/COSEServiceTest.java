@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
@@ -26,6 +27,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.CREATE_COSE_SIGNATURE_
 import static ch.admin.bag.covidcertificate.api.Constants.CREATE_SIGNATURE_FAILED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
@@ -78,9 +80,14 @@ class COSEServiceTest {
             var signingInformation = fixture.create(SigningInformation.class);
             ReflectionTestUtils.setField(signingInformation, "certificateAlias", certificateAlias);
 
-            coseService.getCOSESign1(fixture.create(byte[].class), signingInformation, fixture.create(Instant.class));
-            // then
-            verify(cborService).getProtectedHeader(any());
+            var exception = assertThrows(CreateCertificateException.class, () -> {
+                coseService.getCOSESign1(fixture.create(byte[].class), signingInformation,
+                                         fixture.create(Instant.class));
+            });
+
+            CreateCertificateError actualError = exception.getError();
+
+            assertTrue(CREATE_COSE_PROTECTED_HEADER_FAILED.equals(actualError));
         }
 
         @Test

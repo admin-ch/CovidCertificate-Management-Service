@@ -32,16 +32,15 @@ public class COSEService {
 
     private byte[] getProtectedHeader(SigningInformation signingInformation) {
         try {
-            if (signingInformation.getCertificateAlias() != null && !signingInformation.getCertificateAlias()
-                                                                                       .isBlank()) {
+            if (signingInformation.getCertificateAlias() != null &&
+                    !signingInformation.getCertificateAlias().isBlank()) {
                 var keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
                 return cborService.getProtectedHeader(keyIdentifier);
-            } else {
-                throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
             }
         } catch (Exception e) {
             throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
         }
+        throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
     }
 
     private byte[] getPayload(byte[] hcert, Instant expiredAt) {
