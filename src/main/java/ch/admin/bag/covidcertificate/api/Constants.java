@@ -122,6 +122,7 @@ public class Constants {
 
     public static final AuthorizationError NO_FUNCTION_CONFIGURED = new AuthorizationError(489, "Function with uri %s is not configured", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final AuthorizationError FORBIDDEN = new AuthorizationError(489, "No sufficient roles for feature with uri %s", HttpStatus.FORBIDDEN);
+    public static final AuthorizationError ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN = new AuthorizationError(489, "Access denied for HIN with CH-Login", HttpStatus.FORBIDDEN);
 
     public static final RevocationError UNKNOWN_UVCI = new RevocationError(495, "Uvci is not known.", HttpStatus.BAD_REQUEST);
     public static final RevocationError ALREADY_REVOKED_UVCI = new RevocationError(496, "Uvci is already revoked.", HttpStatus.BAD_REQUEST);

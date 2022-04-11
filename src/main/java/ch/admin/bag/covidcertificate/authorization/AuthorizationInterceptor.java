@@ -48,7 +48,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         if (isHinUser && !isHinCodeOrPersonal) {
             log.warn("HIN-User not allowed to use the application...");
             log.warn("userroles: {}", rawRoles);
-            throw new AccessDeniedException("Access denied for HIN with CH-Login");
+            throw new AuthorizationException(Constants.ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN);
         }
 
         String clientId = authentication.getClientId();
