@@ -1,0 +1,2 @@
+ALTER TABLE kpi
+    ADD COLUMN IF NOT EXISTS fixed_user_id VARCHAR(64);
