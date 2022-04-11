@@ -1,7 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @Getter
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString
 @Table(name = "signing_information")
 public class SigningInformation {
@@ -33,4 +31,15 @@ public class SigningInformation {
     private String certificateAlias;
     private LocalDate validFrom;
     private LocalDate validTo;
+
+    public SigningInformation(
+            String certificateType, String code, String alias, String certificateAlias, LocalDate validFrom,
+            LocalDate validTo) {
+        this.certificateType = certificateType;
+        this.code = code;
+        this.alias = alias;
+        this.certificateAlias = certificateAlias;
+        this.validFrom = validFrom;
+        this.validTo = validTo;
+    }
 }
