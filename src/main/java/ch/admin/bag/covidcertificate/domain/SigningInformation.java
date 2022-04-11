@@ -28,19 +28,7 @@ public class SigningInformation {
     private String certificateType;
     private String code;
     private String alias;
-    @Deprecated
-    private String keyIdentifier;
     private String certificateAlias;
     private LocalDate validFrom;
     private LocalDate validTo;
-
-    public SigningInformation(String certificateType, String code, String alias, String keyIdentifier, String certificateAlias, LocalDate validFrom, LocalDate validTo) {
-        this.certificateType = certificateType;
-        this.code = code;
-        this.alias = alias;
-        this.keyIdentifier = keyIdentifier;
-        this.certificateAlias = certificateAlias;
-        this.validFrom = validFrom;
-        this.validTo = validTo;
-    }
 }

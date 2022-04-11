@@ -32,12 +32,13 @@ public class COSEService {
 
     private byte[] getProtectedHeader(SigningInformation signingInformation) {
         try {
-            //TODO: keyIdentifier should be deleted. It is deprecated and used only for backwards compatibility.
-            var keyIdentifier = signingInformation.getKeyIdentifier();
-            if(signingInformation.getCertificateAlias() != null && !signingInformation.getCertificateAlias().isBlank()){
-                keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
+            if (signingInformation.getCertificateAlias() != null && !signingInformation.getCertificateAlias()
+                                                                                       .isBlank()) {
+                var keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
+                return cborService.getProtectedHeader(keyIdentifier);
+            } else {
+                throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
             }
-            return cborService.getProtectedHeader(keyIdentifier);
         } catch (Exception e) {
             throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
         }

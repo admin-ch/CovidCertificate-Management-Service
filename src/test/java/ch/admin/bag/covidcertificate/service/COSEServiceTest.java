@@ -80,7 +80,7 @@ class COSEServiceTest {
 
             coseService.getCOSESign1(fixture.create(byte[].class), signingInformation, fixture.create(Instant.class));
             // then
-            verify(cborService).getProtectedHeader(signingInformation.getKeyIdentifier());
+            verify(cborService).getProtectedHeader(any());
         }
 
         @Test
