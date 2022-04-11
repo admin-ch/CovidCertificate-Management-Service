@@ -90,14 +90,10 @@ public class CovidCertificateDtoMapperService {
     }
 
     public RecoveryCertificateQrCode toRecoveryRatCertificateQrCode(RecoveryRatCertificateCreateDto createDto) {
-//        RecoveryRatCertificateDataDto recoveryDataInfo = createDto.getTestInfo().get(0);
-//        var testValueSet = valueSetsService.getIssuableTestDto(recoveryDataInfo.getTypeCode(), recoveryDataInfo.getManufacturerCode());
         return RecoveryRatCertificateQrCodeMapper.toRecoveryCertificateQrCode(createDto);
     }
 
     public RecoveryCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificateCreateDto createDto, RecoveryCertificateQrCode qrCodeData) {
-//        RecoveryRatCertificateDataDto recoveryDataInfo = createDto.getTestInfo().get(0);
-//        var testValueSet = valueSetsService.getIssuableTestDto(recoveryDataInfo.getTypeCode(), recoveryDataInfo.getManufacturerCode());
         var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {
