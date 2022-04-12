@@ -17,4 +17,5 @@ public class AuthorizationConfig {
     private ServiceData apiGateway;
     private ServiceData management;
     private ServiceData report;
+    private ServiceData notifications;
 }
