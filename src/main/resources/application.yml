@@ -131,12 +131,6 @@ cc-management-service:
         start: 2020-01-01T00:00:00.000Z
         end: 2022-02-16T00:00:00.000Z
 
-      - type: recovery-rat
-        uris:
-          - covidcertificate/recovery-rat
-        start: 2020-01-01T00:00:00.000Z
-        end: 2022-02-16T00:00:00.000Z
-
       - type: antibody
         uris:
           - covidcertificate/antibody

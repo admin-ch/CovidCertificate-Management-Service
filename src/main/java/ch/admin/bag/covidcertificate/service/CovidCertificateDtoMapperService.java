@@ -89,22 +89,18 @@ public class CovidCertificateDtoMapperService {
         return RecoveryCertificatePdfMapper.toRecoveryCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
-    public RecoveryRatCertificateQrCode toRecoveryRatCertificateQrCode(RecoveryRatCertificateCreateDto createDto) {
-        RecoveryRatCertificateDataDto recoveryDataInfo = createDto.getTestInfo().get(0);
-        var testValueSet = valueSetsService.getIssuableTestDto(recoveryDataInfo.getTypeCode(), recoveryDataInfo.getManufacturerCode());
-        return RecoveryRatCertificateQrCodeMapper.toRecoveryRatCertificateQrCode(createDto, testValueSet);
+    public RecoveryCertificateQrCode toRecoveryRatCertificateQrCode(RecoveryRatCertificateCreateDto createDto) {
+        return RecoveryRatCertificateQrCodeMapper.toRecoveryCertificateQrCode(createDto);
     }
 
-    public RecoveryRatCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificateCreateDto createDto, RecoveryRatCertificateQrCode qrCodeData) {
-        RecoveryRatCertificateDataDto recoveryDataInfo = createDto.getTestInfo().get(0);
-        var testValueSet = valueSetsService.getIssuableTestDto(recoveryDataInfo.getTypeCode(), recoveryDataInfo.getManufacturerCode());
+    public RecoveryCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificateCreateDto createDto, RecoveryCertificateQrCode qrCodeData) {
         var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
         }
 
-        return RecoveryRatCertificatePdfMapper.toRecoveryRatCertificatePdf(createDto, testValueSet, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
+        return RecoveryRatCertificatePdfMapper.toRecoveryCertificatePdf(createDto, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
     public AntibodyCertificateQrCode toAntibodyCertificateQrCode(AntibodyCertificateCreateDto createDto) {
