@@ -16,7 +16,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -33,12 +35,17 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
-        String httpMethod = request.getMethod();
         log.trace("Call of preHandle with URI: {}", uri);
 
         JeapAuthenticationToken authentication = ((JeapAuthenticationToken) SecurityContextHolder
                 .getContext()
                 .getAuthentication());
+
+        String clientId = authentication.getClientId();
+        if (Objects.areEqual(allowUnauthenticated, clientId)) {
+            log.info("Allow unauthenticated because clientId is {}", clientId);
+            return true;
+        }
 
         Set<String> rawRoles = authentication.getUserRoles();
         boolean isHinUser = rawRoles.contains("bag-cc-hin-epr") || rawRoles.contains("bag-cc-hin");
@@ -49,23 +56,25 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             throw new AuthorizationException(Constants.ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN);
         }
 
-        String clientId = authentication.getClientId();
-        if (Objects.areEqual(allowUnauthenticated, clientId)) {
-            log.info("Allow unauthenticated because clientId is {}", clientId);
-            return true;
-        }
-
-        ServiceData.Function function = authorizationService.getDefinition("management")
+        List<ServiceData.Function> functions = authorizationService.getDefinition("management")
                 .getFunctions()
                 .values()
                 .stream()
                 .filter(f -> StringUtils.hasText(f.getUri()))
                 .filter(f -> f.matchesUri(uri))
-                .filter(f -> f.matchesHttpMethod(httpMethod))
+                .filter(f -> f.matchesHttpMethod(request.getMethod()))
                 .filter(f -> f.isBetween(LocalDateTime.now()))
-                .findAny()
-                .orElseThrow(() -> new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri));
+                .collect(Collectors.toList());
 
+        if (functions.isEmpty()) {
+            throw new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri);
+        }
+
+        if (functions.size() > 1) {
+            throw new AuthorizationException(Constants.TOO_MANY_FUNCTIONS_CONFIGURED, uri, request.getMethod());
+        }
+
+        ServiceData.Function function = functions.get(0);
         Set<String> roles = authorizationService.mapRawRoles(rawRoles);
 
         log.info("Verify function authorization: {}, {}, {}",
