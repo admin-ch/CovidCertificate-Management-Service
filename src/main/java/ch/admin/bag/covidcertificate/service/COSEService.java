@@ -5,6 +5,7 @@ import ch.admin.bag.covidcertificate.client.signing.SigningClient;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -32,15 +33,14 @@ public class COSEService {
 
     private byte[] getProtectedHeader(SigningInformation signingInformation) {
         try {
-            //TODO: keyIdentifier should be deleted. It is deprecated and used only for backwards compatibility.
-            var keyIdentifier = signingInformation.getKeyIdentifier();
-            if(signingInformation.getCertificateAlias() != null && !signingInformation.getCertificateAlias().isBlank()){
-                keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
+            if (StringUtils.isNotBlank(signingInformation.getCertificateAlias())) {
+                var keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
+                return cborService.getProtectedHeader(keyIdentifier);
             }
-            return cborService.getProtectedHeader(keyIdentifier);
         } catch (Exception e) {
             throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
         }
+        throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
     }
 
     private byte[] getPayload(byte[] hcert, Instant expiredAt) {
