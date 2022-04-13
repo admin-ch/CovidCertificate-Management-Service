@@ -10,17 +10,15 @@ import org.bouncycastle.util.Objects;
 import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -38,11 +36,18 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
         log.trace("Call of preHandle with URI: {}", uri);
+
         JeapAuthenticationToken authentication = ((JeapAuthenticationToken) SecurityContextHolder
                 .getContext()
                 .getAuthentication());
 
-        List<String> rawRoles = new ArrayList<>(authentication.getUserRoles());
+        String clientId = authentication.getClientId();
+        if (Objects.areEqual(allowUnauthenticated, clientId)) {
+            log.info("Allow unauthenticated because clientId is {}", clientId);
+            return true;
+        }
+
+        Set<String> rawRoles = authentication.getUserRoles();
         boolean isHinUser = rawRoles.contains("bag-cc-hin-epr") || rawRoles.contains("bag-cc-hin");
         boolean isHinCodeOrPersonal = rawRoles.contains("bag-cc-hincode") || rawRoles.contains("bag-cc-personal");
         if (isHinUser && !isHinCodeOrPersonal) {
@@ -51,48 +56,39 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             throw new AuthorizationException(Constants.ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN);
         }
 
-        String clientId = authentication.getClientId();
-        if (Objects.areEqual(allowUnauthenticated, clientId)) {
-            log.info("Allow unauthenticated because clientId is {}", clientId);
-            return true;
-        }
-
-        ServiceData.Function function = authorizationService.getDefinition("management")
+        List<ServiceData.Function> functions = authorizationService.getDefinition("management")
                 .getFunctions()
                 .values()
                 .stream()
                 .filter(f -> StringUtils.hasText(f.getUri()))
-                .filter(f -> urisAreEqual(f.getUri(), uri))
+                .filter(f -> f.matchesUri(uri))
+                .filter(f -> f.matchesHttpMethod(request.getMethod()))
                 .filter(f -> f.isBetween(LocalDateTime.now()))
-                .findAny()
-                .orElseThrow(() -> new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri));
+                .collect(Collectors.toList());
 
-        List<String> roles = new ArrayList<>(authentication.getUserRoles());
-        Set<String> permittedFunctions = authorizationService.getCurrent("management", roles);
+        if (functions.isEmpty()) {
+            throw new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri);
+        }
+
+        if (functions.size() > 1) {
+            throw new AuthorizationException(Constants.TOO_MANY_FUNCTIONS_CONFIGURED, uri, request.getMethod());
+        }
+
+        ServiceData.Function function = functions.get(0);
+        Set<String> roles = authorizationService.mapRawRoles(rawRoles);
 
         log.info("Verify function authorization: {}, {}, {}",
                 kv("clientId", clientId),
                 kv("roles", roles),
                 kv("function", function.getIdentifier()));
 
-        if (!permittedFunctions.contains(function.getIdentifier())) {
+        boolean isGranted = authorizationService.isGranted(roles, function);
+
+        if (!isGranted) {
             throw new AuthorizationException(Constants.FORBIDDEN, uri);
         }
 
         return true;
     }
 
-    private boolean urisAreEqual(String uri1, String uri2) {
-        String[] paths = uri1.split("/");
-        String[] pathsToCompare = uri2.split("/");
-
-        if (paths.length != pathsToCompare.length) {
-            return false;
-        }
-
-        return IntStream.range(0, paths.length)
-                .map(i -> paths.length - 1 - i) // reverse since uris start with /api/v1/
-                .filter(i -> !paths[i].startsWith("{") && !paths[i].startsWith("}"))
-                .allMatch(i -> Objects.areEqual(paths[i], pathsToCompare[i]));
-    }
 }
