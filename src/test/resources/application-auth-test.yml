@@ -55,3 +55,32 @@ services:
         until: 2010-12-31T23:59:59
         one-of: ${roles.test.web-user}
         uri: "/past"
+
+      too-many-funcs1:
+        identifier: "too-many-funcs1"
+        from: 2010-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        uri: "/too-many-funcs"
+
+      too-many-funcs2:
+        identifier: "too-many-funcs2"
+        from: 2010-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        uri: "/too-many-funcs"
+
+      db-crud:
+        identifier: "db-read"
+        from: 2010-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        uri: "/db"
+        http: GET
+        one-of: ${roles.test.web-user}
+
+      db-read:
+        identifier: "db-crud"
+        from: 2010-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        uri: "/db"
+        http: GET, POST, DELETE
+        one-of: ${roles.test.admin}
+
