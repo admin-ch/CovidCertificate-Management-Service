@@ -23,8 +23,6 @@ public class RecoveryRatCertificateCsvBean extends CertificateCsvBean {
     private String typeCode;
     @CsvBindByName(column = "sampleDateTime")
     private String sampleDateTime;
-    @CsvBindByName(column = "testingCentreOrFacility")
-    private String testingCentreOrFacility;
     @CsvBindByName(column = "memberStateOfTest")
     private String memberStateOfTest;
 
@@ -41,7 +39,7 @@ public class RecoveryRatCertificateCsvBean extends CertificateCsvBean {
                 (manufacturerCode != null) ? manufacturerCode.trim(): "",
                 (typeCode != null) ? typeCode.trim(): "",
                 sampleDateTimeParsed,
-                (testingCentreOrFacility != null) ? testingCentreOrFacility.trim(): "",
+              "",
                 (memberStateOfTest != null) ? memberStateOfTest.trim().toUpperCase(): ""
         );
         return super.mapToCreateDto(dataDto);
