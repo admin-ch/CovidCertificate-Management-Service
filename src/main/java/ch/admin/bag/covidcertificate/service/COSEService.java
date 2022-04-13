@@ -5,6 +5,7 @@ import ch.admin.bag.covidcertificate.client.signing.SigningClient;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -32,8 +33,7 @@ public class COSEService {
 
     private byte[] getProtectedHeader(SigningInformation signingInformation) {
         try {
-            if (signingInformation.getCertificateAlias() != null &&
-                    !signingInformation.getCertificateAlias().isBlank()) {
+            if (StringUtils.isNotBlank(signingInformation.getCertificateAlias())) {
                 var keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
                 return cborService.getProtectedHeader(keyIdentifier);
             }
