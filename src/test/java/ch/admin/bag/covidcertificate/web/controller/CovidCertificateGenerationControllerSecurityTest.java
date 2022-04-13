@@ -6,7 +6,7 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
+import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
 import ch.admin.bag.covidcertificate.authorization.config.AuthorizationConfig;
@@ -49,11 +49,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         LocalDateTimeConverter.class})
 @ActiveProfiles({"test", "authorization"})
 class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityTest {
+
     private static final String BASE_URL = "/api/v1/covidcertificate/";
+
     @MockBean
     private CovidCertificateGenerationService covidCertificateGenerationService;
+
     @MockBean
     private KpiDataService kpiDataService;
+
     @MockBean
     private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
@@ -66,9 +70,25 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
 
     @BeforeEach
     void setupMocks() throws IOException {
-        lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(VaccinationCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
-        lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(TestCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
-        lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(VaccinationCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(TestCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(RecoveryCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+
+        lenient().when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
+                any(VaccinationCertificatePdfGenerateRequestDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
+                any(TestCertificatePdfGenerateRequestDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
+                any(RecoveryCertificatePdfGenerateRequestDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
     }
 
     private void callCreateCertificateWithToken(String url, String requestBody, LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {

@@ -1,10 +1,10 @@
 package ch.admin.bag.covidcertificate.client.signing.internal;
 
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.client.signing.SigningRequestDto;
 import ch.admin.bag.covidcertificate.client.signing.VerifySignatureRequestDto;
 import ch.admin.bag.covidcertificate.config.ProfileRegistry;
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +47,7 @@ public class DefaultSigningClient implements SigningClient {
         this.restTemplate = restTemplate;
     }
 
-    public byte[] createSignature(byte[] cosePayload, SigningInformation signingInformation) {
+    public byte[] createSignature(byte[] cosePayload, SigningInformationDto signingInformation) {
         var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(cosePayload),
                                                       signingInformation.getAlias());
         long start = System.currentTimeMillis();

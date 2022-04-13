@@ -19,6 +19,7 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCsvBean;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
+import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.opencsv.CSVWriter;
@@ -99,7 +100,8 @@ public class CsvService {
         }
     }
 
-    private byte[] handleCsvRequest(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass) throws IOException {
+    private byte[] handleCsvRequest(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass)
+            throws IOException {
         final var charset = Charset.forName(UniversalDetector.detectCharset(file.getInputStream()));
         log.debug("Found charset {} for file", charset);
         List<CertificateCsvBean> csvBeans = mapToBean(file, csvBeanClass, charset);
@@ -113,19 +115,27 @@ public class CsvService {
         }
     }
 
-    private List<CovidCertificateCreateResponseDto> createCertificates(List<CertificateCreateDto> createDtos, Class<?> csvBeanClass) throws JsonProcessingException {
+    private List<CovidCertificateCreateResponseDto> createCertificates(
+            List<CertificateCreateDto> createDtos, Class<?> csvBeanClass) throws JsonProcessingException {
         if (csvBeanClass == RecoveryCertificateCsvBean.class) {
-            return createRecoveryCertificates(createDtos.stream().map(RecoveryCertificateCreateDto.class::cast).collect(Collectors.toList()));
+            return createRecoveryCertificates(
+                    createDtos.stream().map(RecoveryCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else if (csvBeanClass == RecoveryRatCertificateCsvBean.class) {
-            return createRecoveryRatCertificates(createDtos.stream().map(RecoveryRatCertificateCreateDto.class::cast).collect(Collectors.toList()));
+            return createRecoveryRatCertificates(
+                    createDtos.stream().map(RecoveryRatCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else if (csvBeanClass == TestCertificateCsvBean.class) {
-            return createTestCertificates(createDtos.stream().map(TestCertificateCreateDto.class::cast).collect(Collectors.toList()));
+            return createTestCertificates(
+                    createDtos.stream().map(TestCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else if (csvBeanClass == VaccinationCertificateCsvBean.class) {
-            return createVaccinationCertificates(createDtos.stream().map(VaccinationCertificateCreateDto.class::cast).collect(Collectors.toList()));
+            return createVaccinationCertificates(
+                    createDtos.stream().map(VaccinationCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else if (csvBeanClass == VaccinationTouristCertificateCsvBean.class) {
-            return createVaccinationTouristCertificates(createDtos.stream().map(VaccinationTouristCertificateCreateDto.class::cast).collect(Collectors.toList()));
+            return createVaccinationTouristCertificates(createDtos.stream()
+                                                                  .map(VaccinationTouristCertificateCreateDto.class::cast)
+                                                                  .collect(Collectors.toList()));
         } else if (csvBeanClass == AntibodyCertificateCsvBean.class) {
-            return createAntibodyCertificates(createDtos.stream().map(AntibodyCertificateCreateDto.class::cast).collect(Collectors.toList()));
+            return createAntibodyCertificates(
+                    createDtos.stream().map(AntibodyCertificateCreateDto.class::cast).collect(Collectors.toList()));
         } else {
             throw new CreateCertificateException(INVALID_CSV);
         }
@@ -138,81 +148,132 @@ public class CsvService {
         throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS, errorCsv));
     }
 
-    private List<CovidCertificateCreateResponseDto> createRecoveryCertificates(List<RecoveryCertificateCreateDto> createDtos) throws JsonProcessingException {
+    private List<CovidCertificateCreateResponseDto> createRecoveryCertificates(
+            List<RecoveryCertificateCreateDto> createDtos)
+            throws JsonProcessingException {
+
         List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
         for (RecoveryCertificateCreateDto createDto : createDtos) {
             log.info("Call of Create for recovery certificate");
-            CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
+            CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
+                    .generateCovidCertificate(createDto);
+            CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logRecoveryCertificateGenerationKpi(createDto, responseDto.getUvci());
+            kpiLogService.logRecoveryCertificateGenerationKpi(
+                    createDto,
+                    responseDto.getUvci(),
+                    responseEnvelope.getUsedKexIdentifier());
         }
         return responseDtos;
     }
 
-    private List<CovidCertificateCreateResponseDto> createRecoveryRatCertificates(List<RecoveryRatCertificateCreateDto> createDtos) throws JsonProcessingException {
+    private List<CovidCertificateCreateResponseDto> createRecoveryRatCertificates(
+            List<RecoveryRatCertificateCreateDto> createDtos)
+            throws JsonProcessingException {
+
         List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
         for (RecoveryRatCertificateCreateDto createDto : createDtos) {
             log.info("Call of create for recovery-rat certificate");
-            CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
+            CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
+                    .generateCovidCertificate(createDto);
+            CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logRecoveryRatCertificateGenerationKpi(createDto, responseDto.getUvci());
+            kpiLogService.logRecoveryRatCertificateGenerationKpi(
+                    createDto, responseDto.getUvci(),
+                    responseEnvelope.getUsedKexIdentifier());
         }
         return responseDtos;
     }
 
-    private List<CovidCertificateCreateResponseDto> createTestCertificates(List<TestCertificateCreateDto> createDtos) throws JsonProcessingException {
+    private List<CovidCertificateCreateResponseDto> createTestCertificates(
+            List<TestCertificateCreateDto> createDtos)
+            throws JsonProcessingException {
         List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
         for (TestCertificateCreateDto createDto : createDtos) {
             log.info("Call of Create for test certificate");
-            CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
+            CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
+                    .generateCovidCertificate(createDto);
+            CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logTestCertificateGenerationKpi(createDto, responseDto.getUvci());
+            kpiLogService.logTestCertificateGenerationKpi(
+                    createDto,
+                    responseDto.getUvci(),
+                    responseEnvelope.getUsedKexIdentifier());
         }
         return responseDtos;
     }
 
-    private List<CovidCertificateCreateResponseDto> createVaccinationCertificates(List<VaccinationCertificateCreateDto> createDtos) throws JsonProcessingException {
+    private List<CovidCertificateCreateResponseDto> createVaccinationCertificates(
+            List<VaccinationCertificateCreateDto> createDtos)
+            throws JsonProcessingException {
+
         List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
         for (VaccinationCertificateCreateDto createDto : createDtos) {
             log.info("Call of Create for vaccination certificate");
-            CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
+            CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
+                    .generateCovidCertificate(createDto);
+            CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logVaccinationCertificateGenerationKpi(createDto, responseDto.getUvci());
+            kpiLogService.logVaccinationCertificateGenerationKpi(
+                    createDto,
+                    responseDto.getUvci(),
+                    responseEnvelope.getUsedKexIdentifier());
         }
         return responseDtos;
     }
 
-    private List<CovidCertificateCreateResponseDto> createVaccinationTouristCertificates(List<VaccinationTouristCertificateCreateDto> createDtos) throws JsonProcessingException {
+    private List<CovidCertificateCreateResponseDto> createVaccinationTouristCertificates(
+            List<VaccinationTouristCertificateCreateDto> createDtos)
+            throws JsonProcessingException {
+
         List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
         for (VaccinationTouristCertificateCreateDto createDto : createDtos) {
             log.info("Call of Create for vaccination-tourist certificate");
-            CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
+            CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
+                    .generateCovidCertificate(createDto);
+            CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logVaccinationTouristCertificateGenerationKpi(createDto, responseDto.getUvci());
+            kpiLogService.logVaccinationTouristCertificateGenerationKpi(
+                    createDto,
+                    responseDto.getUvci(),
+                    responseEnvelope.getUsedKexIdentifier());
         }
         return responseDtos;
     }
 
-    private List<CovidCertificateCreateResponseDto> createAntibodyCertificates(List<AntibodyCertificateCreateDto> createDtos) throws JsonProcessingException {
+    private List<CovidCertificateCreateResponseDto> createAntibodyCertificates(
+            List<AntibodyCertificateCreateDto> createDtos)
+            throws JsonProcessingException {
+
         List<CovidCertificateCreateResponseDto> responseDtos = new ArrayList<>();
         for (AntibodyCertificateCreateDto createDto : createDtos) {
             log.info("Call of Create for antibody certificate");
-            CovidCertificateCreateResponseDto responseDto = covidCertificateGenerationService.generateCovidCertificate(createDto);
+            CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
+                    .generateCovidCertificate(createDto);
+            CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
             responseDtos.add(responseDto);
             logUvci(responseDto.getUvci());
-            kpiLogService.logAntibodyCertificateGenerationKpi(createDto, responseDto.getUvci());
+            kpiLogService.logAntibodyCertificateGenerationKpi(
+                    createDto,
+                    responseDto.getUvci(),
+                    responseEnvelope.getUsedKexIdentifier());
         }
         return responseDtos;
     }
 
-    private List<CertificateCsvBean> mapToBean(MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass, Charset charset) throws IOException {
+    private List<CertificateCsvBean> mapToBean(
+            MultipartFile file, Class<? extends CertificateCsvBean> csvBeanClass,
+            Charset charset)
+            throws IOException {
+
         var separator = getSeparator(file);
-        try (Reader reader = new BufferedReader(new InputStreamReader(new UnicodeBOMInputStream(file.getInputStream()), charset))) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(
+                new UnicodeBOMInputStream(file.getInputStream()), charset))) {
 
             CsvToBean<CertificateCsvBean> csvToBean = new CsvToBeanBuilder<CertificateCsvBean>(reader)
                     .withSeparator(separator)
@@ -256,7 +317,10 @@ public class CsvService {
                 .collect(Collectors.toList());
     }
 
-    private boolean areCreateCertificateRequestsValid(List<CertificateCreateDto> createDtos, List<CertificateCsvBean> csvBeans) {
+    private boolean areCreateCertificateRequestsValid(
+            List<CertificateCreateDto> createDtos,
+            List<CertificateCsvBean> csvBeans) {
+
         var hasError = false;
         for (var i = 0; i < createDtos.size(); i++) {
             var createDto = createDtos.get(i);
@@ -299,18 +363,22 @@ public class CsvService {
             valueSetsService.getIssuableTestDto(dataDto);
         } else if (createDto instanceof VaccinationCertificateCreateDto) {
             var dataDto = ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(0);
-            var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(), createDto.getLanguage());
+            var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(),
+                                                              createDto.getLanguage());
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
-            covidCertificateVaccinationValidationService.validateProductAndCountry((VaccinationCertificateCreateDto) createDto);
+            covidCertificateVaccinationValidationService.validateProductAndCountry(
+                    (VaccinationCertificateCreateDto) createDto);
         } else if (createDto instanceof VaccinationTouristCertificateCreateDto) {
             var dataDto = ((VaccinationTouristCertificateCreateDto) createDto).getVaccinationTouristInfo().get(0);
-            var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(), createDto.getLanguage());
+            var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(),
+                                                              createDto.getLanguage());
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
             }
-            covidCertificateVaccinationValidationService.validateProductAndCountryForVaccinationTourist((VaccinationTouristCertificateCreateDto) createDto);
+            covidCertificateVaccinationValidationService
+                    .validateProductAndCountryForVaccinationTourist((VaccinationTouristCertificateCreateDto) createDto);
         }
     }
 
@@ -318,7 +386,8 @@ public class CsvService {
         var tempId = UUID.randomUUID();
         var file = new File("temp" + tempId + ".csv");
         try (var csvWriter = new CSVWriter(new FileWriter(file, charset))) {
-            StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(csvWriter)
+            StatefulBeanToCsv<CertificateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCsvBean>(
+                    csvWriter)
                     .withSeparator(';')
                     .withApplyQuotesToAll(false)
                     .build();

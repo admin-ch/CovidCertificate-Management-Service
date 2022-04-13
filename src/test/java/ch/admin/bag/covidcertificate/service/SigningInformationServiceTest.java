@@ -4,7 +4,7 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.service.domain.SigningCertificateCategory;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +43,12 @@ class SigningInformationServiceTest {
 
 
     @BeforeEach
-    void setup(){
-        lenient().when(signingInformationCacheService.findSigningInformation(any(), any(), any())).thenReturn(fixture.create(SigningInformation.class));
-        lenient().when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(Collections.singletonList(fixture.create(SigningInformation.class)));
+    void setup() {
+        lenient().when(signingInformationCacheService.findSigningInformation(any(), any(), any()))
+                 .thenReturn(fixture.create(SigningInformationDto.class));
+        lenient().when(signingInformationCacheService.findSigningInformation(any(), any()))
+                 .thenReturn(Collections.singletonList(fixture.create(
+                         SigningInformationDto.class)));
     }
 
     @Nested
@@ -67,7 +70,7 @@ class SigningInformationServiceTest {
 
         @Test
         void shouldReturnLoadedSigningInformation(){
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationCacheService.findSigningInformation(any(), any(), any())).thenReturn(signingInformation);
 
             var actual = signingInformationService.getVaccinationSigningInformation(fixture.create(VaccinationCertificateCreateDto.class));
@@ -99,7 +102,7 @@ class SigningInformationServiceTest {
 
         @Test
         void shouldReturnLoadedSigningInformation(){
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(Collections.singletonList(signingInformation));
 
             var actual = signingInformationService.getTestSigningInformation();
@@ -109,11 +112,13 @@ class SigningInformationServiceTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifNoSigningInformationIsFound(List<SigningInformation> signingInformationList){
-            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(signingInformationList);
+        void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifNoSigningInformationIsFound(
+                List<SigningInformationDto> signingInformationList) {
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(
+                    signingInformationList);
 
             var exception = assertThrows(CreateCertificateException.class,
-                    () -> signingInformationService.getTestSigningInformation()
+                                         () -> signingInformationService.getTestSigningInformation()
             );
 
             assertEquals(SIGNING_CERTIFICATE_MISSING, exception.getError());
@@ -121,12 +126,14 @@ class SigningInformationServiceTest {
         }
 
         @Test
-        void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifMultipleSigningInformationAreFound(){
-            var signingInformationList = new ArrayList<>(fixture.collections().createCollection(SigningInformation.class));
-            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(signingInformationList);
+        void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifMultipleSigningInformationAreFound() {
+            var signingInformationList = new ArrayList<>(
+                    fixture.collections().createCollection(SigningInformationDto.class));
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(
+                    signingInformationList);
 
             var exception = assertThrows(CreateCertificateException.class,
-                    () -> signingInformationService.getTestSigningInformation()
+                                         () -> signingInformationService.getTestSigningInformation()
             );
 
             assertEquals(AMBIGUOUS_SIGNING_CERTIFICATE, exception.getError());
@@ -157,7 +164,7 @@ class SigningInformationServiceTest {
         @Test
         void shouldReturnLoadedSigningInformation(){
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(Collections.singletonList(signingInformation));
 
             var actual = signingInformationService.getRecoverySigningInformation(createDto);
@@ -167,12 +174,14 @@ class SigningInformationServiceTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifNoSigningInformationIsFound(List<SigningInformation> signingInformationList){
+        void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifNoSigningInformationIsFound(
+                List<SigningInformationDto> signingInformationList) {
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
-            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(signingInformationList);
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(
+                    signingInformationList);
 
             var exception = assertThrows(CreateCertificateException.class,
-                    () -> signingInformationService.getRecoverySigningInformation(createDto)
+                                         () -> signingInformationService.getRecoverySigningInformation(createDto)
             );
 
             assertEquals(SIGNING_CERTIFICATE_MISSING, exception.getError());
@@ -180,13 +189,15 @@ class SigningInformationServiceTest {
         }
 
         @Test
-        void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifMultipleSigningInformationAreFound(){
+        void shouldThrowCreateCertificateExceptionWith5xxErrorCode_ifMultipleSigningInformationAreFound() {
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
-            var signingInformationList = new ArrayList<>(fixture.collections().createCollection(SigningInformation.class));
-            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(signingInformationList);
+            var signingInformationList = new ArrayList<>(
+                    fixture.collections().createCollection(SigningInformationDto.class));
+            when(signingInformationCacheService.findSigningInformation(any(), any())).thenReturn(
+                    signingInformationList);
 
             var exception = assertThrows(CreateCertificateException.class,
-                    () -> signingInformationService.getRecoverySigningInformation(createDto)
+                                         () -> signingInformationService.getRecoverySigningInformation(createDto)
             );
 
             assertEquals(AMBIGUOUS_SIGNING_CERTIFICATE, exception.getError());

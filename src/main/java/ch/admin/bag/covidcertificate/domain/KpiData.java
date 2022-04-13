@@ -31,9 +31,21 @@ public class KpiData {
     boolean fraud;
     @Column(name = "in_app_delivery_code")
     String inAppDeliveryCode;
+    @Column(name = "key_identifier")
+    String keyIdentifier;
 
-    private KpiData(LocalDateTime timestamp, String type, String value, String uvci, String details, String country, String systemSource,
-                    String inAppDeliveryCode, boolean fraud) {
+    private KpiData(
+            LocalDateTime timestamp,
+            String type,
+            String value,
+            String uvci,
+            String details,
+            String country,
+            String systemSource,
+            String inAppDeliveryCode,
+            String keyIdentifier,
+            boolean fraud) {
+
         this.timestamp = timestamp;
         this.type = type;
         this.value = value;
@@ -42,6 +54,7 @@ public class KpiData {
         this.country = country;
         this.systemSource = systemSource;
         this.inAppDeliveryCode = inAppDeliveryCode;
+        this.keyIdentifier = keyIdentifier;
         this.fraud = fraud;
     }
 
@@ -54,6 +67,7 @@ public class KpiData {
         String details;
         String country;
         String inAppDeliveryCode;
+        String keyIdentifier;
         boolean fraud;
 
         public KpiDataBuilder(LocalDateTime timestamp, String type, String value, String systemSource) {
@@ -84,13 +98,28 @@ public class KpiData {
             return this;
         }
 
+        public KpiDataBuilder withKeyIdentifier(String keyIdentifier) {
+            this.keyIdentifier = keyIdentifier;
+            return this;
+        }
+
         public KpiDataBuilder withFraud(boolean fraud) {
             this.fraud = fraud;
             return this;
         }
 
         public KpiData build() {
-            return new KpiData(timestamp, type, value, uvci, details, country, systemSource, inAppDeliveryCode, fraud);
+            return new KpiData(
+                    timestamp,
+                    type,
+                    value,
+                    uvci,
+                    details,
+                    country,
+                    systemSource,
+                    inAppDeliveryCode,
+                    keyIdentifier,
+                    fraud);
         }
     }
 }
