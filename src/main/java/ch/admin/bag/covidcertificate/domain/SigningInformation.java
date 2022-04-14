@@ -33,8 +33,13 @@ public class SigningInformation {
     private LocalDate validTo;
 
     public SigningInformation(
-            String certificateType, String code, String alias, String certificateAlias, LocalDate validFrom,
+            String certificateType,
+            String code,
+            String alias,
+            String certificateAlias,
+            LocalDate validFrom,
             LocalDate validTo) {
+
         this.certificateType = certificateType;
         this.code = code;
         this.alias = alias;
