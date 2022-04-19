@@ -18,6 +18,8 @@ roles:
       recovery: "RECOVERY_CERT_CREATOR"
       rat: "RECOVERY_RAT_CERT_CREATOR"
       exception: "EXCEPTION_CERT_CREATOR"
+    app:
+      manager: "COVID_APP_MANAGER"
     report:
       detail: "DETAIL_REPORT_USER"
       agg: "AGG_REPORT_USER"
@@ -60,10 +62,10 @@ roles:
       ${roles.id.legacy.super-user},${roles.id.legacy.creator}
     users:
       ${roles.id.user.api},${roles.id.user.web},${roles.id.user.revocator}
-    cert-creators-plus: # INCLUDES exceptional
-      ${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat},${roles.id.cert.exception}
     cert-creators: # EXCLUDES exceptional
       ${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat}
+    cert-creators-plus: # INCLUDES exceptional
+      ${roles.groups.cert-creators},${roles.id.cert.exception}
     reporter:
       ${roles.id.report.detail},${roles.id.report.agg},${roles.id.report.stats}
     data-room:
@@ -109,6 +111,9 @@ roles:
     - intern: ${roles.id.cert.tourist}
       eiam: "9500.GGG-Covidcertificate.VaccCert-Tourist-Creator"
       claim: "bag-cc-vacccert_tourist_creator"
+    - intern: ${roles.id.app.manager}
+      eiam: "9500.GGG-Covidcertificate.Covid-App-Manager"
+      claim: "bag-cc-covid_app_manager"
     - intern: ${roles.id.report.agg}
       eiam: "9500.GGG-Covidcertificate.Agg_Report_user"
       claim: "bag-cc-rep_user_agg"
@@ -205,10 +210,13 @@ roles:
 
 # 1st level:  SERVICE
 #   2nd level:  FUNCTION
-#     from:       activates the function's permission with this date/time
-#     until:      deactivates the function's permission after this date/time
-#     mandatory:  this permission is needed to access the function
-#     one-of:     one of the listed permissions is needed to access the function
+#     identifier:     name of the function for internal use
+#     uri:            uri which this function is mapped to (/api/v1/...)
+#     http:           http-method which this function is mapped to
+#     from:           activates the function's permission with this date/time
+#     until:          deactivates the function's permission after this date/time
+#     one-of:         one of the listed permissions is needed to access the function
+#     additionalRef:  checks roles of additional function
 
 services:
 
@@ -834,3 +842,23 @@ services:
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
         #TODO: uri
+
+  ##   N O T I F I C A T I O N S   ##############################################################################
+
+  notifications:
+    functions:
+      getAllNotifications:
+        identifier: "getAllNotifications"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy}, ${roles.id.app.manager}, ${roles.groups.users}, ${roles.groups.reporter}, ${roles.id.cert.bulk}
+        uri: "/api/v1/notifications"
+        http: GET
+
+      writeOrDeleteNotifications:
+        identifier: "writeOrDeleteNotifications"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.app.manager}
+        uri: "/api/v1/notifications"
+        http: POST, DELETE

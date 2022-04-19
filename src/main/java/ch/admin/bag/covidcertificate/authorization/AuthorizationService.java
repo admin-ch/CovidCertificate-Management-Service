@@ -33,6 +33,7 @@ public class AuthorizationService {
     public static final String SRVC_API = "api-gateway";
     public static final String SRVC_MGMT = "management";
     public static final String SRVC_REPORT = "report";
+    public static final String SRVC_NOTIFICATIONS = "notifications";
 
     private final AuthorizationConfig authorizationConfig;
     private final RoleConfig roleConfig;
@@ -56,10 +57,7 @@ public class AuthorizationService {
             log.info("service '{}' unknown", service);
         } else {
             // map the raw roles to the configured roles
-            final Set<String> roles = rawRoles.stream()
-                    .map(role -> roleMapping.get(role))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
+            final Set<String> roles = mapRawRoles(rawRoles);
             if (roles.isEmpty()) {
                 log.info("no supported roles in '{}'", rawRoles);
             } else {
@@ -76,6 +74,13 @@ public class AuthorizationService {
         }
         log.info("grants: " + grantedFunctions);
         return grantedFunctions;
+    }
+
+    public Set<String> mapRawRoles(Collection<String> rawRoles) {
+        return rawRoles.stream()
+                .map(role -> roleMapping.get(role))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -109,7 +114,12 @@ public class AuthorizationService {
      */
 
 
-    private boolean isGranted(Set<String> roles, ServiceData.Function function) {
+    public boolean isGranted(Set<String> roles, ServiceData.Function function) {
+        boolean isActive = function.isBetween(LocalDateTime.now());
+        if (!isActive) {
+            return false;
+        }
+
         boolean allAdditionalValid = true;
         if (CollectionUtils.isNotEmpty(function.getAdditional())) {
             // check additional functions which are currently valid
@@ -146,6 +156,7 @@ public class AuthorizationService {
         services.put(SRVC_MGMT, enrichServiceData(authorizationConfig.getManagement()));
         services.put(SRVC_WEB, enrichServiceData(authorizationConfig.getWebUi()));
         services.put(SRVC_REPORT, enrichServiceData(authorizationConfig.getReport()));
+        services.put(SRVC_NOTIFICATIONS, enrichServiceData(authorizationConfig.getNotifications()));
 
         roleMapping = new TreeMap<>();
         for (RoleData roleData : roleConfig.getMappings()) {

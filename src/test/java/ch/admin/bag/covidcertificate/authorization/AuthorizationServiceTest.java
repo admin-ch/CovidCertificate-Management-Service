@@ -36,6 +36,7 @@ public class AuthorizationServiceTest {
         assertNotNull(authorizationService.getDefinition(AuthorizationService.SRVC_API));
         assertNotNull(authorizationService.getDefinition(AuthorizationService.SRVC_MGMT));
         assertNotNull(authorizationService.getDefinition(AuthorizationService.SRVC_REPORT));
+        assertNotNull(authorizationService.getDefinition(AuthorizationService.SRVC_NOTIFICATIONS));
     }
 
     @Test

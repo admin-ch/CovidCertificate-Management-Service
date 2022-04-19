@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
@@ -21,9 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringRunner.class)
@@ -61,6 +62,25 @@ public class AuthorizationInterceptorTest {
         assertError(request, Constants.NO_FUNCTION_CONFIGURED);
     }
 
+    @Test
+    public void testToManyFunctionConfigured() {
+        MockHttpServletRequest request = mockRequest("/too-many-funcs");
+        assertError(request, Constants.TOO_MANY_FUNCTIONS_CONFIGURED);
+    }
+
+    @Test
+    public void testWrongHttpMethod() {
+        MockHttpServletRequest request = mockRequest("/db", "WEB-USER");
+        request.setMethod(HttpMethod.DELETE.name());
+        assertError(request, Constants.FORBIDDEN);
+    }
+
+    @Test
+    public void testCorrectHttpMethod() {
+        MockHttpServletRequest request = mockRequest("/db", "ADMIN");
+        request.setMethod(HttpMethod.DELETE.name());
+        assertTrue(interceptor.preHandle(request, response, handler));
+    }
     @Test
     public void testRoleMissing() {
         MockHttpServletRequest request = mockRequest("/only-web-user", "USELESS_ROLE");
@@ -111,6 +131,24 @@ public class AuthorizationInterceptorTest {
         assertError(request, Constants.NO_FUNCTION_CONFIGURED);
     }
 
+    @Test
+    public void userHinErpAuthorized() {
+        MockHttpServletRequest request = mockRequest("/only-web-user", "WEB-USER", "bag-cc-hin-epr", "bag-cc-hincode", "bac-cc-personal");
+        assertTrue(interceptor.preHandle(request, response, handler));
+    }
+
+    @Test
+    public void userHinAuthorized() {
+        MockHttpServletRequest request = mockRequest("/only-web-user", "WEB-USER", "bag-cc-hin", "bag-cc-hincode", "bac-cc-personal");
+        assertTrue(interceptor.preHandle(request, response, handler));
+    }
+
+    @Test
+    public void userHinNotAuthorized() {
+        MockHttpServletRequest request = mockRequest("/only-web-user", "WEB-USER", "bag-cc-hin");
+        assertError(request, Constants.ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN);
+    }
+
     private MockHttpServletRequest mockRequest(String uri, String... roles) {
         SecurityContextHolder.getContext()
                 .setAuthentication(JeapAuthenticationTestTokenBuilder.create()
@@ -124,7 +162,7 @@ public class AuthorizationInterceptorTest {
     private void assertError(MockHttpServletRequest request, AuthorizationError error) {
         AuthorizationException exception = assertThrows(AuthorizationException.class,
                 () -> interceptor.preHandle(request, response, handler));
-        assertEquals(exception.getError().getErrorCode(), error.getErrorCode());
+        assertEquals(error.getErrorCode(), exception.getError().getErrorCode());
     }
 
 }

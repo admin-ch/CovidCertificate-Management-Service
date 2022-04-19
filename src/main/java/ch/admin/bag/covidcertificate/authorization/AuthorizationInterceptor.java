@@ -16,10 +16,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -28,17 +27,6 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Configuration
 @RequiredArgsConstructor
 public class AuthorizationInterceptor implements HandlerInterceptor {
-
-    private static final List<String> WHITELISTED_URIS = List.of(
-            "/error",
-            "/actuator/.*",
-            "/swagger-ui.html",
-            "/swagger-ui/.*",
-            "/v3/api-docs/.*",
-            "/api/v1/revocation-list",
-            "/api/v1/ping"
-    );
-
     private final AuthorizationService authorizationService;
 
     @Value("${cc-management-service.auth.allow-unauthenticated}")
@@ -47,15 +35,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
-        log.info("Call of preHandle with URI: {}", uri);
-        boolean isWhitelisted = WHITELISTED_URIS
-                .stream()
-                .anyMatch(whitelistedUri -> whitelistedUri.matches(uri));
-
-        if (isWhitelisted) {
-            log.info("URI {} is whitelisted.", uri);
-            return true;
-        }
+        log.trace("Call of preHandle with URI: {}", uri);
 
         JeapAuthenticationToken authentication = ((JeapAuthenticationToken) SecurityContextHolder
                 .getContext()
@@ -67,42 +47,48 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        ServiceData.Function function = authorizationService.getDefinition("management")
+        Set<String> rawRoles = authentication.getUserRoles();
+        boolean isHinUser = rawRoles.contains("bag-cc-hin-epr") || rawRoles.contains("bag-cc-hin");
+        boolean isHinCodeOrPersonal = rawRoles.contains("bag-cc-hincode") || rawRoles.contains("bag-cc-personal");
+        if (isHinUser && !isHinCodeOrPersonal) {
+            log.warn("HIN-User not allowed to use the application...");
+            log.warn("userroles: {}", rawRoles);
+            throw new AuthorizationException(Constants.ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN);
+        }
+
+        List<ServiceData.Function> functions = authorizationService.getDefinition("management")
                 .getFunctions()
                 .values()
                 .stream()
                 .filter(f -> StringUtils.hasText(f.getUri()))
-                .filter(f -> urisAreEqual(f.getUri(), uri))
+                .filter(f -> f.matchesUri(uri))
+                .filter(f -> f.matchesHttpMethod(request.getMethod()))
                 .filter(f -> f.isBetween(LocalDateTime.now()))
-                .findAny()
-                .orElseThrow(() -> new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri));
+                .collect(Collectors.toList());
 
-        List<String> roles = new ArrayList<>(authentication.getUserRoles());
-        Set<String> permittedFunctions = authorizationService.getCurrent("management", roles);
+        if (functions.isEmpty()) {
+            throw new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri);
+        }
+
+        if (functions.size() > 1) {
+            throw new AuthorizationException(Constants.TOO_MANY_FUNCTIONS_CONFIGURED, uri, request.getMethod());
+        }
+
+        ServiceData.Function function = functions.get(0);
+        Set<String> roles = authorizationService.mapRawRoles(rawRoles);
 
         log.info("Verify function authorization: {}, {}, {}",
                 kv("clientId", clientId),
                 kv("roles", roles),
                 kv("function", function.getIdentifier()));
 
-        if (!permittedFunctions.contains(function.getIdentifier())) {
+        boolean isGranted = authorizationService.isGranted(roles, function);
+
+        if (!isGranted) {
             throw new AuthorizationException(Constants.FORBIDDEN, uri);
         }
 
         return true;
     }
 
-    private boolean urisAreEqual(String uri1, String uri2) {
-        String[] paths = uri1.split("/");
-        String[] pathsToCompare = uri2.split("/");
-
-        if (paths.length != pathsToCompare.length) {
-            return false;
-        }
-
-        return IntStream.range(0, paths.length)
-                .map(i -> paths.length - 1 - i) // reverse since uris start with /api/v1/
-                .filter(i -> !paths[i].startsWith("{") && !paths[i].startsWith("}"))
-                .allMatch(i -> Objects.areEqual(paths[i], pathsToCompare[i]));
-    }
 }
