@@ -113,6 +113,7 @@ public class CovidCertificateDtoMapperService {
     }
 
     public RecoveryCertificateQrCode toRecoveryRatCertificateQrCode(RecoveryRatCertificateCreateDto createDto) {
+        valueSetsService.validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
         return RecoveryRatCertificateQrCodeMapper.toRecoveryCertificateQrCode(createDto);
     }
 
