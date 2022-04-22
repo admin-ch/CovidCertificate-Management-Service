@@ -2,23 +2,46 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.mapper.*;
+import ch.admin.bag.covidcertificate.api.mapper.AntibodyCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.AntibodyCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.ExceptionalCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.ExceptionalCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryRatCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryRatCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
-import ch.admin.bag.covidcertificate.service.domain.*;
+import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificateQrCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_VACCINATION;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_OF_TEST;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
 
 
 @Service
@@ -59,13 +82,13 @@ public class CovidCertificateDtoMapperService {
     }
 
     public TestCertificateQrCode toTestCertificateQrCode(TestCertificateCreateDto createDto) {
-        var testValueSet = valueSetsService.getIssuableTestDto(createDto.getTestInfo().get(0));
+        var testValueSet = valueSetsService.validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
         return TestCertificateQrCodeMapper.toTestCertificateQrCode(createDto, testValueSet);
 
     }
 
     public TestCertificatePdf toTestCertificatePdf(TestCertificateCreateDto createDto, TestCertificateQrCode qrCodeData) {
-        var testValueSet = valueSetsService.getIssuableTestDto(createDto.getTestInfo().get(0));
+        var testValueSet = valueSetsService.validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
         var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {
@@ -94,6 +117,7 @@ public class CovidCertificateDtoMapperService {
     }
 
     public RecoveryCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificateCreateDto createDto, RecoveryCertificateQrCode qrCodeData) {
+        valueSetsService.validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
         var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {

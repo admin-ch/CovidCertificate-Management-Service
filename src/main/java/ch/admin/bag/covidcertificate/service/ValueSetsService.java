@@ -6,7 +6,6 @@ import ch.admin.bag.covidcertificate.api.mapper.IssuableRapidTestMapper;
 import ch.admin.bag.covidcertificate.api.mapper.IssuableVaccineMapper;
 import ch.admin.bag.covidcertificate.api.mapper.RapidTestMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccineMapper;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCodes;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
@@ -91,13 +90,8 @@ public class ValueSetsService {
     }
 
     @Cacheable(ISSUABLE_TEST_DTO_CACHE_NAME)
-    public IssuableTestDto getIssuableTestDto(String testTypeCode, String testCode) {
-        return getIssuableTestDto(this.getIssuableRapidTests(), testTypeCode, testCode);
-    }
-
-    @Cacheable(ISSUABLE_TEST_DTO_CACHE_NAME)
-    public IssuableTestDto getIssuableTestDto(TestCertificateDataDto testCertificateDataDto) {
-        return getIssuableTestDto(this.getIssuableRapidTests(), testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
+    public IssuableTestDto validateAndGetIssuableTestDto(String testTypeCode, String testCode) {
+        return validateAndGetIssuableTestDto(this.getIssuableRapidTests(), testTypeCode, testCode);
     }
 
     @Cacheable(COUNTRY_CODES_CACHE_NAME)
@@ -106,7 +100,7 @@ public class ValueSetsService {
         return countryCodesLoader.getCountryCodes();
     }
 
-    private IssuableTestDto getIssuableTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
+    private IssuableTestDto validateAndGetIssuableTestDto(Collection<IssuableTestDto> testValueSets, String testTypeCode, String testCode) {
         if (validPCRTest(testTypeCode, testCode)) {
             return new IssuableTestDto("", "PCR", TestType.PCR, null);
         } else if (validRapidTest(testTypeCode, testCode)) {

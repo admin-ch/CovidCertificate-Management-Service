@@ -1,15 +1,29 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.mapper.*;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.RecoveryCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.TestCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificatePdfMapper;
+import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
-import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
-import ch.admin.bag.covidcertificate.service.domain.*;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -24,11 +38,16 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestValueSet;
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_VACCINATION;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_OF_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -45,7 +64,7 @@ class CovidCertificateDtoMapperServiceTest {
     public void setUp() {
         customizeTestValueSet(fixture);
         lenient().when(valueSetsService.getVaccinationValueSet(any())).thenReturn(fixture.create(IssuableVaccineDto.class));
-        lenient().when(valueSetsService.getIssuableTestDto(any())).thenReturn(fixture.create(IssuableTestDto.class));
+        lenient().when(valueSetsService.validateAndGetIssuableTestDto(any(), any())).thenReturn(fixture.create(IssuableTestDto.class));
         lenient().when(valueSetsService.getCountryCode(any(), any())).thenReturn(fixture.create(CountryCode.class));
         lenient().when(valueSetsService.getCountryCodeEn(any())).thenReturn(fixture.create(CountryCode.class));
     }
@@ -514,14 +533,14 @@ class CovidCertificateDtoMapperServiceTest {
         void shouldLoadTestValueSet() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             service.toTestCertificateQrCode(createDto);
-            verify(valueSetsService).getIssuableTestDto(createDto.getTestInfo().get(0));
+            verify(valueSetsService).validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
         }
 
         @Test
         void throwsCreateCertificateException_ifValueSetServiceThrowsCreateCertificateException() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var expected = fixture.create(CreateCertificateException.class);
-            lenient().when(valueSetsService.getIssuableTestDto(any())).thenThrow(expected);
+            lenient().when(valueSetsService.validateAndGetIssuableTestDto(any(), any())).thenThrow(expected);
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
                     () -> service.toTestCertificateQrCode(createDto)
@@ -549,7 +568,7 @@ class CovidCertificateDtoMapperServiceTest {
         @Test
         void shouldMapToTestCertificateQrCode_withCorrectTestValueSet() {
             var vaccinationValueSet = fixture.create(IssuableTestDto.class);
-            when(valueSetsService.getIssuableTestDto(any())).thenReturn(vaccinationValueSet);
+            when(valueSetsService.validateAndGetIssuableTestDto(any(), any())).thenReturn(vaccinationValueSet);
             try (MockedStatic<TestCertificateQrCodeMapper> vaccinationCertificateQrMapperMock =
                          Mockito.mockStatic(TestCertificateQrCodeMapper.class)) {
                 vaccinationCertificateQrMapperMock
@@ -584,7 +603,7 @@ class CovidCertificateDtoMapperServiceTest {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             service.toTestCertificatePdf(createDto, qrCodeData);
-            verify(valueSetsService).getIssuableTestDto(createDto.getTestInfo().get(0));
+            verify(valueSetsService).validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
         }
 
         @Test
@@ -608,7 +627,7 @@ class CovidCertificateDtoMapperServiceTest {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var qrCodeData = fixture.create(TestCertificateQrCode.class);
             var expected = fixture.create(CreateCertificateException.class);
-            lenient().when(valueSetsService.getIssuableTestDto(any())).thenThrow(expected);
+            lenient().when(valueSetsService.validateAndGetIssuableTestDto(any(), any())).thenThrow(expected);
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
                     () -> service.toTestCertificatePdf(createDto, qrCodeData)
@@ -662,7 +681,7 @@ class CovidCertificateDtoMapperServiceTest {
         @Test
         void shouldMapToTestCertificatePdf_withCorrectTestValueSet() {
             var testValueSet = fixture.create(IssuableTestDto.class);
-            when(valueSetsService.getIssuableTestDto(any())).thenReturn(testValueSet);
+            when(valueSetsService.validateAndGetIssuableTestDto(any(), any())).thenReturn(testValueSet);
             try (MockedStatic<TestCertificatePdfMapper> testCertificatePdfMapperMock =
                          Mockito.mockStatic(TestCertificatePdfMapper.class)) {
                 testCertificatePdfMapperMock
