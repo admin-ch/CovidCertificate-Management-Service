@@ -21,9 +21,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationDto;
@@ -88,7 +90,7 @@ class RevocationControllerTest {
             lenient().when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
 
             var createDto = fixture.create(RevocationDto.class);
-            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            when(revocationService.getRevocationDateTime(anyString())).thenReturn(null);
             doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
 
             mockMvc.perform(post(REVOCATION_URL)
@@ -104,7 +106,7 @@ class RevocationControllerTest {
         void returnsStatusCodeOfRevocationException_ifOneWasThrown() throws Exception {
             var createDto = fixture.create(RevocationDto.class);
             var exception = fixture.create(RevocationException.class);
-            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            when(revocationService.getRevocationDateTime(anyString())).thenReturn(null);
             doThrow(exception).when(revocationService).createRevocation(anyString(), anyBoolean());
 
             mockMvc.perform(post(REVOCATION_URL)

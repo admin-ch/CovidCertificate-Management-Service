@@ -49,8 +49,9 @@ public class RevocationController {
         final String uvci = revocationDto.getUvci();
         UvciValidator.validateUvciMatchesSpecification(revocationDto.getUvci());
 
-        if (revocationService.isAlreadyRevoked(uvci)) {
-            throw new RevocationException(DUPLICATE_UVCI);
+        LocalDateTime revocationDateTime = revocationService.getRevocationDateTime(uvci);
+        if (revocationDateTime != null) {
+            throw new RevocationException(DUPLICATE_UVCI, revocationDateTime);
         }
 
         revocationService.createRevocation(revocationDto.getUvci(), revocationDto.isFraud());
