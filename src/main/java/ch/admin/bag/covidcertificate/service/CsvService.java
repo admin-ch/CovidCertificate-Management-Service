@@ -163,7 +163,7 @@ public class CsvService {
             kpiLogService.logRecoveryCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKexIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier());
         }
         return responseDtos;
     }
@@ -182,7 +182,7 @@ public class CsvService {
             logUvci(responseDto.getUvci());
             kpiLogService.logRecoveryRatCertificateGenerationKpi(
                     createDto, responseDto.getUvci(),
-                    responseEnvelope.getUsedKexIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier());
         }
         return responseDtos;
     }
@@ -201,7 +201,7 @@ public class CsvService {
             kpiLogService.logTestCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKexIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier());
         }
         return responseDtos;
     }
@@ -221,7 +221,7 @@ public class CsvService {
             kpiLogService.logVaccinationCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKexIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier());
         }
         return responseDtos;
     }
@@ -241,7 +241,7 @@ public class CsvService {
             kpiLogService.logVaccinationTouristCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKexIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier());
         }
         return responseDtos;
     }
@@ -261,7 +261,7 @@ public class CsvService {
             kpiLogService.logAntibodyCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKexIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier());
         }
         return responseDtos;
     }

@@ -17,6 +17,7 @@ import ch.admin.bag.covidcertificate.service.domain.SigningCertificateCategory;
 import ch.admin.bag.covidcertificate.service.test.TestCovidCertificateGenerationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,8 +58,7 @@ public class TestController {
                     var messageBytes = UUID.randomUUID().toString().getBytes();
                     var signatureBytes = signingClient
                             .createSignature(messageBytes, SigningInformationMapper.fromEntity(signingInformation));
-                    if (signingInformation.getCertificateAlias() != null &&
-                            !signingInformation.getCertificateAlias().isBlank()) {
+                    if (StringUtils.isNotBlank(signingInformation.getCertificateAlias())) {
 
                         var message = Base64.getEncoder().encodeToString(messageBytes);
                         var signature = Base64.getEncoder().encodeToString(signatureBytes);

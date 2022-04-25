@@ -15,5 +15,5 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class CovidCertificateResponseEnvelope {
     private CovidCertificateCreateResponseDto responseDto;
-    private String usedKexIdentifier;
+    private String usedKeyIdentifier;
 }
