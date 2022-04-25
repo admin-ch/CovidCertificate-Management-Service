@@ -19,10 +19,15 @@ import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificateQrC
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
@@ -53,13 +58,14 @@ public class CovidCertificateDtoMapperService {
 
     public VaccinationCertificateQrCode toVaccinationCertificateQrCode(VaccinationCertificateCreateDto createDto) {
         var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
-        return  VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccinationValueSet);
+        return VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccinationValueSet);
     }
 
-    public VaccinationCertificatePdf toVaccinationCertificatePdf(VaccinationCertificateCreateDto createDto, VaccinationCertificateQrCode qrCodeData){
-        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
-        var countryCode = valueSetsService.getCountryCode(createDto.getVaccinationInfo().get(0).getCountryOfVaccination(), createDto.getLanguage());
-        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
+    public VaccinationCertificatePdf toVaccinationCertificatePdf(VaccinationCertificateCreateDto createDto, VaccinationCertificateQrCode qrCodeData) {
+        VaccinationCertificateDataDto vaccinationCertificateDataDto = createDto.getVaccinationInfo().get(0);
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(vaccinationCertificateDataDto.getMedicinalProductCode());
+        var countryCode = valueSetsService.getCountryCode(vaccinationCertificateDataDto.getCountryOfVaccination(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(vaccinationCertificateDataDto.getCountryOfVaccination());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
         }
@@ -68,13 +74,14 @@ public class CovidCertificateDtoMapperService {
 
     public VaccinationTouristCertificateQrCode toVaccinationTouristCertificateQrCode(VaccinationTouristCertificateCreateDto createDto) {
         var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode());
-        return  VaccinationTouristCertificateQrCodeMapper.toVaccinationTouristCertificateQrCode(createDto, vaccinationValueSet);
+        return VaccinationTouristCertificateQrCodeMapper.toVaccinationTouristCertificateQrCode(createDto, vaccinationValueSet);
     }
 
-    public VaccinationTouristCertificatePdf toVaccinationTouristCertificatePdf(VaccinationTouristCertificateCreateDto createDto, VaccinationTouristCertificateQrCode qrCodeData){
-        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode());
-        var countryCode = valueSetsService.getCountryCode(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination(), createDto.getLanguage());
-        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
+    public VaccinationTouristCertificatePdf toVaccinationTouristCertificatePdf(VaccinationTouristCertificateCreateDto createDto, VaccinationTouristCertificateQrCode qrCodeData) {
+        VaccinationTouristCertificateDataDto vaccinationTouristCertificateDataDto = createDto.getVaccinationTouristInfo().get(0);
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(vaccinationTouristCertificateDataDto.getMedicinalProductCode());
+        var countryCode = valueSetsService.getCountryCode(vaccinationTouristCertificateDataDto.getCountryOfVaccination(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(vaccinationTouristCertificateDataDto.getCountryOfVaccination());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
         }
@@ -82,15 +89,17 @@ public class CovidCertificateDtoMapperService {
     }
 
     public TestCertificateQrCode toTestCertificateQrCode(TestCertificateCreateDto createDto) {
-        var testValueSet = valueSetsService.validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
+        TestCertificateDataDto testCertificateDataDto = createDto.getTestInfo().get(0);
+        var testValueSet = valueSetsService.validateAndGetIssuableTestDto(testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
         return TestCertificateQrCodeMapper.toTestCertificateQrCode(createDto, testValueSet);
 
     }
 
     public TestCertificatePdf toTestCertificatePdf(TestCertificateCreateDto createDto, TestCertificateQrCode qrCodeData) {
-        var testValueSet = valueSetsService.validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
-        var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
-        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
+        TestCertificateDataDto testCertificateDataDto = createDto.getTestInfo().get(0);
+        var testValueSet = valueSetsService.validateAndGetIssuableTestDto(testCertificateDataDto.getTypeCode(), testCertificateDataDto.getManufacturerCode());
+        var countryCode = valueSetsService.getCountryCode(testCertificateDataDto.getMemberStateOfTest(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(testCertificateDataDto.getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
         }
@@ -103,8 +112,9 @@ public class CovidCertificateDtoMapperService {
     }
 
     public RecoveryCertificatePdf toRecoveryCertificatePdf(RecoveryCertificateCreateDto createDto, RecoveryCertificateQrCode qrCodeData) {
-        var countryCode = valueSetsService.getCountryCode(createDto.getRecoveryInfo().get(0).getCountryOfTest(), createDto.getLanguage());
-        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getRecoveryInfo().get(0).getCountryOfTest());
+        RecoveryCertificateDataDto recoveryCertificateDataDto = createDto.getRecoveryInfo().get(0);
+        var countryCode = valueSetsService.getCountryCode(recoveryCertificateDataDto.getCountryOfTest(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(recoveryCertificateDataDto.getCountryOfTest());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
         }
@@ -113,14 +123,16 @@ public class CovidCertificateDtoMapperService {
     }
 
     public RecoveryCertificateQrCode toRecoveryRatCertificateQrCode(RecoveryRatCertificateCreateDto createDto) {
-        valueSetsService.validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
+        RecoveryRatCertificateDataDto dataDto = createDto.getTestInfo().get(0);
+        valueSetsService.validateAndGetIssuableTestDto(dataDto.getTypeCode(), dataDto.getManufacturerCode());
         return RecoveryRatCertificateQrCodeMapper.toRecoveryCertificateQrCode(createDto);
     }
 
     public RecoveryCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificateCreateDto createDto, RecoveryCertificateQrCode qrCodeData) {
-        valueSetsService.validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
-        var countryCode = valueSetsService.getCountryCode(createDto.getTestInfo().get(0).getMemberStateOfTest(), createDto.getLanguage());
-        var countryCodeEn = valueSetsService.getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
+        RecoveryRatCertificateDataDto recoveryRatCertificateDataDto = createDto.getTestInfo().get(0);
+        valueSetsService.validateAndGetIssuableTestDto(recoveryRatCertificateDataDto.getTypeCode(), recoveryRatCertificateDataDto.getManufacturerCode());
+        var countryCode = valueSetsService.getCountryCode(recoveryRatCertificateDataDto.getMemberStateOfTest(), createDto.getLanguage());
+        var countryCodeEn = valueSetsService.getCountryCodeEn(recoveryRatCertificateDataDto.getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
         }
@@ -146,7 +158,7 @@ public class CovidCertificateDtoMapperService {
         return ExceptionalCertificateQrCodeMapper.toExceptionalCertificateQrCode(createDto);
     }
 
-    public ExceptionalCertificatePdf toExceptionalCertificatePdf(ExceptionalCertificateCreateDto createDto,ExceptionalCertificateQrCode qrCodeData) {
+    public ExceptionalCertificatePdf toExceptionalCertificatePdf(ExceptionalCertificateCreateDto createDto, ExceptionalCertificateQrCode qrCodeData) {
         var countryCode = valueSetsService.getCountryCode(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND, createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
         if (countryCode == null || countryCodeEn == null) {
