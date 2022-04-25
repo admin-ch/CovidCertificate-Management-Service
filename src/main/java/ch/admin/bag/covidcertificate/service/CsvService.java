@@ -289,14 +289,14 @@ public class CsvService {
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
             }
-            valueSetsService.getIssuableTestDto(dataDto.getTypeCode(), dataDto.getManufacturerCode());
+            valueSetsService.validateAndGetIssuableTestDto(dataDto.getTypeCode(), dataDto.getManufacturerCode());
         } else if (createDto instanceof TestCertificateCreateDto) {
             var dataDto = ((TestCertificateCreateDto) createDto).getTestInfo().get(0);
             var countryCode = valueSetsService.getCountryCode(dataDto.getMemberStateOfTest(), createDto.getLanguage());
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
             }
-            valueSetsService.getIssuableTestDto(dataDto);
+            valueSetsService.validateAndGetIssuableTestDto(dataDto.getTypeCode(), dataDto.getManufacturerCode());
         } else if (createDto instanceof VaccinationCertificateCreateDto) {
             var dataDto = ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(0);
             var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(), createDto.getLanguage());

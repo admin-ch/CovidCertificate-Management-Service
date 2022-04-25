@@ -115,7 +115,7 @@ public class ValueSetsServiceTest {
         @CsvSource(value = {":", "'':''", "' ':' '", "'\t':'\t'", "'\n':'\n'"}, delimiter = ':')
         void shouldThrowCreateCertificateException_ifTestTypeCodeAndManufacturerCodeAreNullOrBlank(String typeCode, String manufacturerCode) {
             var actual = assertThrows(CreateCertificateException.class,
-                    () -> service.getIssuableTestDto(typeCode, manufacturerCode)
+                    () -> service.validateAndGetIssuableTestDto(typeCode, manufacturerCode)
             );
 
             assertEquals(INVALID_TYP_OF_TEST, actual.getError());
@@ -132,7 +132,7 @@ public class ValueSetsServiceTest {
 
             // @Todo: Mock the DB call to include expected at getIssuableRapidTests(), once DB is connected
 
-            var actual = service.getIssuableTestDto(TestType.PCR.typeCode, manufacturerCode);
+            var actual = service.validateAndGetIssuableTestDto(TestType.PCR.typeCode, manufacturerCode);
 
             assertEquals(expected, actual);
         }
@@ -141,7 +141,7 @@ public class ValueSetsServiceTest {
         void shouldThrowCreateCertificateException_ifTypeCodeIsPCR_andManufacturerIsNotBlank() {
             var manufacturer = fixture.create(String.class);
             var actual = assertThrows(CreateCertificateException.class,
-                    () -> service.getIssuableTestDto(TestType.PCR.typeCode, manufacturer)
+                    () -> service.validateAndGetIssuableTestDto(TestType.PCR.typeCode, manufacturer)
             );
 
             assertEquals(INVALID_TYP_OF_TEST, actual.getError());
@@ -157,7 +157,7 @@ public class ValueSetsServiceTest {
 
             // @Todo: Mock the DB call to include expected at getIssuableRapidTests(), once DB is connected
 
-            var actual = service.getIssuableTestDto(TestType.RAPID_TEST.typeCode, manufacturer);
+            var actual = service.validateAndGetIssuableTestDto(TestType.RAPID_TEST.typeCode, manufacturer);
 
             assertEquals(expected, actual);
         }
@@ -174,7 +174,7 @@ public class ValueSetsServiceTest {
 
             // @Todo: Mock the DB call to include expected at getIssuableRapidTests(), once DB is connected
 
-            var actual = service.getIssuableTestDto(typeCode, testCode);
+            var actual = service.validateAndGetIssuableTestDto(typeCode, testCode);
 
             assertEquals(expected, actual);
         }
@@ -182,7 +182,7 @@ public class ValueSetsServiceTest {
         @Test
         void shouldThrowCreateCertificateException_ifTypeCodeIsNotPCR_andManufacturerIsEmpty() {
             var actual = assertThrows(CreateCertificateException.class,
-                    () -> service.getIssuableTestDto(TestType.RAPID_TEST.typeCode, null)
+                    () -> service.validateAndGetIssuableTestDto(TestType.RAPID_TEST.typeCode, null)
             );
 
             assertEquals(INVALID_TYP_OF_TEST, actual.getError());
