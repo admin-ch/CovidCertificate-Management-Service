@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.AntibodyCertificatePdfGenerateRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.mapper.pdfgeneration.ExceptionalCertificatePdfGenerateRequestDtoMapper;
@@ -19,7 +18,6 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouris
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryRatCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
@@ -27,7 +25,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_VACCINATION;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND;
+import static ch.admin.bag.covidcertificate.api.Constants.VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX;
 
 @Service
 @Slf4j
@@ -52,7 +54,7 @@ public class CovidCertificatePdfGenerateRequestDtoMapperService {
     }
 
     public VaccinationTouristCertificatePdf toVaccinationTouristCertificatePdf(VaccinationTouristCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-        var medicinalProductWithoutSuffix=removeSuffixIfExists(pdfGenerateRequestDto.getDecodedCert().getVaccinationTouristInfo().get(0).getMedicinalProduct(), VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX);
+        var medicinalProductWithoutSuffix = removeSuffixIfExists(pdfGenerateRequestDto.getDecodedCert().getVaccinationTouristInfo().get(0).getMedicinalProduct(), VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX);
         var vaccinationValueSet = valueSetsService.getVaccinationValueSet(medicinalProductWithoutSuffix);
         var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getVaccinationTouristInfo().get(0).getCountryOfVaccination(), pdfGenerateRequestDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(pdfGenerateRequestDto.getDecodedCert().getVaccinationTouristInfo().get(0).getCountryOfVaccination());
@@ -83,14 +85,13 @@ public class CovidCertificatePdfGenerateRequestDtoMapperService {
         return RecoveryCertificatePdfGenerateRequestDtoMapper.toRecoveryCertificatePdf(pdfGenerateRequestDto, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
-    public RecoveryRatCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-        var issuableTestDto = valueSetsService.getIssuableTestDto(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTypeOfTest(), pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getTestManufacturer());
+    public RecoveryCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
         var countryCode = valueSetsService.getCountryCode(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest(), pdfGenerateRequestDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(pdfGenerateRequestDto.getDecodedCert().getTestInfo().get(0).getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
         }
-        return RecoveryRatCertificatePdfGenerateRequestDtoMapper.toRecoveryRatCertificatePdf(pdfGenerateRequestDto, issuableTestDto, countryCode.getDisplay(), countryCodeEn.getDisplay());
+        return RecoveryRatCertificatePdfGenerateRequestDtoMapper.toRecoveryCertificatePdf(pdfGenerateRequestDto, countryCode.getDisplay(), countryCodeEn.getDisplay());
     }
 
     public AntibodyCertificatePdf toAntibodyCertificatePdf(AntibodyCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {

@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
+import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RecoveryCertificateQrCodeMapper {

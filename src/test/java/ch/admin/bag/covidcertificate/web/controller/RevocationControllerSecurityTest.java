@@ -94,7 +94,7 @@ class RevocationControllerSecurityTest extends AbstractSecurityTest {
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             when(revocationService.doesUvciExist(anyString())).thenReturn(true);
-            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            when(revocationService.getRevocationDateTime(anyString())).thenReturn(null);
             Jwt jwt = mock(Jwt.class);
             when(jwt.getClaimAsString(anyString())).thenReturn("test");
             JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).build();

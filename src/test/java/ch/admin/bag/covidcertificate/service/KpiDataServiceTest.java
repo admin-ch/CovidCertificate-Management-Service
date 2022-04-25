@@ -402,7 +402,7 @@ class KpiDataServiceTest {
             service.logRecoveryRatCertificateGenerationKpi(
                     createDto, fixture.create(String.class), fixture.create(String.class));
 
-            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_RECOVERY_RAT)));
+            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_RECOVERY_RAT_EU)));
         }
 
         @Test
