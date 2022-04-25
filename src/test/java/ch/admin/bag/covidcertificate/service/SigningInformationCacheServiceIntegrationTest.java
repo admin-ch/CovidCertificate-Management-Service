@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.mapper.SigningInformationMapper;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import ch.admin.bag.covidcertificate.domain.SigningInformationRepository;
 import com.flextrade.jfixture.JFixture;
@@ -55,10 +56,14 @@ class SigningInformationCacheServiceIntegrationTest {
     private final JFixture fixture = new JFixture();
 
     @BeforeEach
-    private void setup(){
+    private void setup() {
         getCache().clear();
-        lenient().when(signingInformationRepository.findSigningInformation(any(), any(), any())).thenReturn(fixture.create(SigningInformation.class));
-        lenient().when(signingInformationRepository.findSigningInformation(any(), any())).thenReturn(Collections.singletonList(fixture.create(SigningInformation.class)));
+        lenient().when(signingInformationRepository
+                               .findSigningInformation(any(), any(), any())).thenReturn(
+                fixture.create(SigningInformation.class));
+        lenient().when(signingInformationRepository
+                               .findSigningInformation(any(), any())).thenReturn(Collections.singletonList(
+                fixture.create(SigningInformation.class)));
     }
 
     private Cache getCache(){
@@ -68,16 +73,20 @@ class SigningInformationCacheServiceIntegrationTest {
     @Nested
     class FindSigningInformationOnlyByCertificateType{
         @Test
-        void shouldCallRepositoryAndWriteResultInCache_ifNotInCache(){
+        void shouldCallRepositoryAndWriteResultInCache_ifNotInCache() {
             var certificateType = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
-            var signingInformationList = Collections.singletonList(fixture.create(SigningInformation.class));
+            var signingInformationList = Collections.singletonList(
+                    fixture.create(SigningInformation.class));
+            var expectedDtoList = SigningInformationMapper.fromEntityList(signingInformationList);
             when(signingInformationRepository.findSigningInformation(any(), any())).thenReturn(signingInformationList);
 
             signingInformationCacheService.findSigningInformation(certificateType, validAt);
 
             verify(signingInformationRepository).findSigningInformation(certificateType, validAt);
-            assertEquals(signingInformationList, Objects.requireNonNull(getCache().get(new SimpleKey(certificateType, validAt))).get());
+            assertEquals(
+                    expectedDtoList,
+                    Objects.requireNonNull(getCache().get(new SimpleKey(certificateType, validAt))).get());
         }
 
         @Test
@@ -105,12 +114,15 @@ class SigningInformationCacheServiceIntegrationTest {
             var code = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
             var signingInformation = fixture.create(SigningInformation.class);
-            when(signingInformationRepository.findSigningInformation(any(), any(), any())).thenReturn(signingInformation);
+            var expectedDto = SigningInformationMapper.fromEntity(signingInformation);
+            when(signingInformationRepository.findSigningInformation(any(), any(), any())).thenReturn(
+                    signingInformation);
 
             signingInformationCacheService.findSigningInformation(certificateType, code, validAt);
 
             verify(signingInformationRepository).findSigningInformation(eq(certificateType), eq(code), any());
-            assertEquals(signingInformation, Objects.requireNonNull(getCache().get(new SimpleKey(certificateType, code, validAt))).get());
+            assertEquals(expectedDto,
+                         Objects.requireNonNull(getCache().get(new SimpleKey(certificateType, code, validAt))).get());
         }
 
         @Test

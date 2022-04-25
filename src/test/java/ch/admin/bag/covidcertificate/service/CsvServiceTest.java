@@ -7,7 +7,7 @@ import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
+import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import com.flextrade.jfixture.JFixture;
@@ -103,7 +103,9 @@ class CsvServiceTest {
 
     //Used in parameterized test
     private static Stream<Arguments> validVaccinationCsv() throws IOException {
-        return readFiles("src/test/resources/csv/vaccination/doses/valid").stream().map(path -> Arguments.of(path.toString()));
+        return readFiles("src/test/resources/csv/vaccination/doses/valid")
+                .stream()
+                .map(path -> Arguments.of(path.toString()));
     }
 
     //Used in parameterized test
@@ -113,11 +115,23 @@ class CsvServiceTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        Mockito.clearInvocations(covidCertificateGenerationService, kpiLogService,valueSetsService, covidCertificateVaccinationValidationService );
-        lenient().when(valueSetsService.getCountryCode(anyString(), anyString())).thenReturn(fixture.create(CountryCode.class));
-        lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(RecoveryCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
-        lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(TestCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
-        lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(VaccinationCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateCreateResponseDto.class));
+        Mockito.clearInvocations(
+                covidCertificateGenerationService,
+                kpiLogService,
+                valueSetsService,
+                covidCertificateVaccinationValidationService);
+
+        lenient().when(valueSetsService.getCountryCode(anyString(), anyString()))
+                 .thenReturn(fixture.create(CountryCode.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(RecoveryCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(TestCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(VaccinationCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
     }
 
     @Test
@@ -179,14 +193,16 @@ class CsvServiceTest {
 
         service.handleCsvRequest(file, CertificateType.RECOVERY.name());
 
-        verify(covidCertificateGenerationService).generateCovidCertificate(argThat(new CertificateCreateDtoFamilyNameMatcher<RecoveryCertificateCreateDto>(expectedFamilyName)));
+        verify(covidCertificateGenerationService).generateCovidCertificate(argThat(
+                new CertificateCreateDtoFamilyNameMatcher<RecoveryCertificateCreateDto>(expectedFamilyName)));
 
         inputStream.close();
         inputStream2.close();
         inputStream3.close();
     }
 
-    private static class CertificateCreateDtoFamilyNameMatcher<T extends CertificateCreateDto> implements ArgumentMatcher<T> {
+    private static class CertificateCreateDtoFamilyNameMatcher<T extends CertificateCreateDto>
+            implements ArgumentMatcher<T> {
         private final String familyName;
 
         private CertificateCreateDtoFamilyNameMatcher(String familyName) {
@@ -195,7 +211,9 @@ class CsvServiceTest {
 
         @Override
         public boolean matches(T t) {
-            if (t == null) return false;
+            if (t == null) {
+                return false;
+            }
             var actual = t.getPersonData().getName().getFamilyName();
             return familyName.equals(actual);
         }
@@ -361,7 +379,8 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validCsvFilePath);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            var exception = assertThrows(CsvException.class, () -> service.handleCsvRequest(file, CertificateType.VACCINATION.name()));
+            var exception = assertThrows(CsvException.class, () -> service
+                    .handleCsvRequest(file, CertificateType.VACCINATION.name()));
             assertEquals(INVALID_CREATE_REQUESTS.getErrorCode(), exception.getError().getErrorCode());
         }
     }
