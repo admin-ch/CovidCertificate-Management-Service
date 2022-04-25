@@ -34,7 +34,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_COD
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_ANTIBODY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_EXCEPTIONAL;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY_RAT;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY_RAT_EU;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_TEST;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_TOURIST;

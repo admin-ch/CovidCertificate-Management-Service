@@ -242,7 +242,7 @@ public class CovidCertificateGenerationService {
         return generateCovidCertificate(
                 qrCodeData,
                 pdfData,
-                qrCodeData.getTestInfo().get(0).getIdentifier(),
+                qrCodeData.getRecoveryInfo().get(0).getIdentifier(),
                 createDto,
                 signingInformation);
     }
