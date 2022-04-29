@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,13 +110,12 @@ public class RevocationService {
     }
 
     @Transactional(readOnly = true)
-    public LocalDateTime getRevocationDateTime(String uvci) {
-        Revocation revocation = revocationRepository.findByUvci(uvci);
-        if (revocation != null) {
+    public boolean isAlreadyRevoked(String uvci) {
+        if (revocationRepository.findByUvci(uvci) != null) {
             log.info("Revocation for {} already exists.", uvci);
-            return revocation.getCreationDateTime();
+            return true;
         }
-        return null;
+        return false;
     }
 
     @Transactional(readOnly = true)
