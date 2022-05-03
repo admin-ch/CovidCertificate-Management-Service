@@ -31,10 +31,11 @@ import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_ANTIBODY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_EXCEPTIONAL;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY_RAT;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY_RAT_EU;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_TEST;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_TOURIST;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_USED_KEY_IDENTIFIER;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -43,6 +44,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 @Slf4j
 public class KpiDataService {
+
     public static final String SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE = "service-account-cc-api-gateway-service";
     public static final String DETAILS_RAPID = "rapid";
     public static final String DETAILS_MEDICAL_EXCEPTION = "medical exception";
@@ -58,14 +60,18 @@ public class KpiDataService {
     }
 
     @Transactional
-    public void logTestCertificateGenerationKpi(TestCertificateCreateDto createDto, String uvci) {
+    public void logTestCertificateGenerationKpi(
+            TestCertificateCreateDto createDto,
+            String uvci,
+            String usedKeyIdentifier) {
         var typeCode = TestType.findByTypeCode(createDto.getTestInfo().get(0).getTypeCode());
         logCertificateGenerationKpi(KPI_TYPE_TEST,
-                uvci,
-                createDto.getSystemSource(),
-                createDto.getUserExtId(),
-                getDetails(typeCode),
-                createDto.getTestInfo().get(0).getMemberStateOfTest());
+                                    uvci,
+                                    createDto.getSystemSource(),
+                                    createDto.getUserExtId(),
+                                    getDetails(typeCode),
+                                    createDto.getTestInfo().get(0).getMemberStateOfTest(),
+                                    usedKeyIdentifier);
     }
 
     private String getDetails(Optional<TestType> typeCode) {
@@ -93,88 +99,153 @@ public class KpiDataService {
     }
 
     @Transactional
-    public void logVaccinationCertificateGenerationKpi(VaccinationCertificateCreateDto createDto, String uvci) {
+    public void logVaccinationCertificateGenerationKpi(
+            VaccinationCertificateCreateDto createDto,
+            String uvci,
+            String usedKeyIdentifier) {
+
         logCertificateGenerationKpi(KPI_TYPE_VACCINATION, uvci,
-                createDto.getSystemSource(),
-                createDto.getUserExtId(),
-                createDto.getVaccinationInfo().get(0).getMedicinalProductCode(),
-                createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
+                                    createDto.getSystemSource(),
+                                    createDto.getUserExtId(),
+                                    createDto.getVaccinationInfo().get(0).getMedicinalProductCode(),
+                                    createDto.getVaccinationInfo().get(0).getCountryOfVaccination(),
+                                    usedKeyIdentifier);
     }
 
     @Transactional
     public void logVaccinationTouristCertificateGenerationKpi(
-            VaccinationTouristCertificateCreateDto createDto, String uvci) {
+            VaccinationTouristCertificateCreateDto createDto,
+            String uvci,
+            String usedKeyIdentifier) {
+
         logCertificateGenerationKpi(KPI_TYPE_VACCINATION_TOURIST, uvci,
-                createDto.getSystemSource(),
-                createDto.getUserExtId(),
-                createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode(),
-                createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination());
+                                    createDto.getSystemSource(),
+                                    createDto.getUserExtId(),
+                                    createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode(),
+                                    createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination(),
+                                    usedKeyIdentifier);
     }
 
     @Transactional
-    public void logRecoveryCertificateGenerationKpi(RecoveryCertificateCreateDto createDto, String uvci) {
-        logCertificateGenerationKpi(KPI_TYPE_RECOVERY, uvci, createDto.getSystemSource(), createDto.getUserExtId(), null, createDto.getRecoveryInfo().get(0).getCountryOfTest());
+    public void logRecoveryCertificateGenerationKpi(
+            RecoveryCertificateCreateDto createDto,
+            String uvci,
+            String usedKeyIdentifier) {
+
+        logCertificateGenerationKpi(KPI_TYPE_RECOVERY,
+                                    uvci,
+                                    createDto.getSystemSource(),
+                                    createDto.getUserExtId(),
+                                    null,
+                                    createDto.getRecoveryInfo().get(0).getCountryOfTest(),
+                                    usedKeyIdentifier);
     }
 
     @Transactional
-    public void logRecoveryRatCertificateGenerationKpi(RecoveryRatCertificateCreateDto createDto, String uvci) {
+    public void logRecoveryRatCertificateGenerationKpi(
+            RecoveryRatCertificateCreateDto createDto,
+            String uvci,
+            String usedKeyIdentifier) {
+
         var typeCode = TestType.findByTypeCode(createDto.getTestInfo().get(0).getTypeCode());
-        logCertificateGenerationKpi(KPI_TYPE_RECOVERY_RAT,
-                uvci,
-                createDto.getSystemSource(),
-                createDto.getUserExtId(),
-                getDetails(typeCode),
-                createDto.getTestInfo().get(0).getMemberStateOfTest());
+        logCertificateGenerationKpi(KPI_TYPE_RECOVERY_RAT_EU,
+                                    uvci,
+                                    createDto.getSystemSource(),
+                                    createDto.getUserExtId(),
+                                    getDetails(typeCode),
+                                    createDto.getTestInfo().get(0).getMemberStateOfTest(),
+                                    usedKeyIdentifier);
     }
 
     @Transactional
-    public void logAntibodyCertificateGenerationKpi(AntibodyCertificateCreateDto createDto, String uvci) {
+    public void logAntibodyCertificateGenerationKpi(
+            AntibodyCertificateCreateDto createDto,
+            String uvci,
+            String usedKeyIdentifier) {
+
         logCertificateGenerationKpi(KPI_TYPE_ANTIBODY,
-                uvci,
-                createDto.getSystemSource(),
-                createDto.getUserExtId(),
-                DETAILS_ANTIBODY,
-                ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+                                    uvci,
+                                    createDto.getSystemSource(),
+                                    createDto.getUserExtId(),
+                                    DETAILS_ANTIBODY,
+                                    ISO_3166_1_ALPHA_2_CODE_SWITZERLAND,
+                                    usedKeyIdentifier);
     }
 
     @Transactional
-    public void logExceptionalCertificateGenerationKpi(ExceptionalCertificateCreateDto createDto, String uvci) {
+    public void logExceptionalCertificateGenerationKpi(
+            ExceptionalCertificateCreateDto createDto,
+            String uvci,
+            String usedKeyIdentifier) {
+
         logCertificateGenerationKpi(KPI_TYPE_EXCEPTIONAL,
-                uvci,
-                createDto.getSystemSource(),
-                createDto.getUserExtId(),
-                DETAILS_MEDICAL_EXCEPTION,
-                ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+                                    uvci,
+                                    createDto.getSystemSource(),
+                                    createDto.getUserExtId(),
+                                    DETAILS_MEDICAL_EXCEPTION,
+                                    ISO_3166_1_ALPHA_2_CODE_SWITZERLAND,
+                                    usedKeyIdentifier);
     }
 
-    private void logCertificateGenerationKpi(String type, String uvci, SystemSource systemSource, String userExtId, String details, String country) {
+    private void logCertificateGenerationKpi(
+            String type,
+            String uvci,
+            SystemSource systemSource,
+            String userExtId,
+            String details,
+            String country,
+            String usedKeyIdentifier) {
+
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
 
         var kpiTimestamp = LocalDateTime.now();
-        writeKpiInLog(type, details, country, kpiTimestamp, systemSource, relevantUserExtId);
+        writeKpiInLog(type, details, country, kpiTimestamp, systemSource, relevantUserExtId, usedKeyIdentifier);
         saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, type, relevantUserExtId, systemSource.category)
                         .withUvci(uvci)
                         .withDetails(details)
                         .withCountry(country)
+                        .withKeyIdentifier(usedKeyIdentifier)
                         .build()
         );
     }
 
 
-    private void writeKpiInLog(String type, String details, String country, LocalDateTime kpiTimestamp, SystemSource systemSource, String userExtId) {
+    private void writeKpiInLog(
+            String type,
+            String details,
+            String country,
+            LocalDateTime kpiTimestamp,
+            SystemSource systemSource,
+            String userExtId,
+            String usedKeyIdentifier) {
+
         var timestampKVPair = kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT));
         var systemKVPair = kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, systemSource.category);
         var kpiTypeKVPair = kv(KPI_TYPE_KEY, type);
         var kpiDetailsKVPair = kv(KPI_DETAILS, details);
         var userIdKVPair = kv(KPI_UUID_KEY, userExtId);
         var kpiCountryKVPair = kv(KPI_COUNTRY, country);
+        var kpiUserKeyIdentifierKVPair = kv(KPI_USED_KEY_IDENTIFIER, usedKeyIdentifier);
 
         if (details == null) {
-            log.info("kpi: {} {} {} {} {}", timestampKVPair, systemKVPair, kpiTypeKVPair, userIdKVPair, kpiCountryKVPair);
+            log.info("kpi: {} {} {} {} {} {}",
+                     timestampKVPair,
+                     systemKVPair,
+                     kpiTypeKVPair,
+                     userIdKVPair,
+                     kpiCountryKVPair,
+                     kpiUserKeyIdentifierKVPair);
         } else {
-            log.info("kpi: {} {} {} {} {} {}", timestampKVPair, systemKVPair, kpiTypeKVPair, kpiDetailsKVPair, userIdKVPair, kpiCountryKVPair);
+            log.info("kpi: {} {} {} {} {} {} {}",
+                     timestampKVPair,
+                     systemKVPair,
+                     kpiTypeKVPair,
+                     kpiDetailsKVPair,
+                     userIdKVPair,
+                     kpiCountryKVPair,
+                     kpiUserKeyIdentifierKVPair);
         }
     }
 }

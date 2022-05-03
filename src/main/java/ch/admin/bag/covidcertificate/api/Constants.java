@@ -38,7 +38,7 @@ public class Constants {
     public static final String KPI_TYPE_VACCINATION_TOURIST = "vt";
     public static final String KPI_TYPE_TEST = "t";
     public static final String KPI_TYPE_RECOVERY = "r";
-    public static final String KPI_TYPE_RECOVERY_RAT = "rr";
+    public static final String KPI_TYPE_RECOVERY_RAT_EU = "rreu";
     public static final String KPI_TYPE_ANTIBODY = "a";
     public static final String KPI_TYPE_EXCEPTIONAL = "me";
     public static final String KPI_TYPE_IN_APP_DELIVERY = "ad";
@@ -52,6 +52,7 @@ public class Constants {
     public static final String KPI_TYPE_KEY = "type";
     public static final String KPI_DETAILS = "details";
     public static final String KPI_COUNTRY = "country";
+    public static final String KPI_USED_KEY_IDENTIFIER = "usedKID";
     public static final String KPI_FRAUD = "fraud";
     public static final String KPI_CREATE_CERTIFICATE_SYSTEM_KEY = "cc";
     public static final String KPI_SYSTEM_UI = "ui";

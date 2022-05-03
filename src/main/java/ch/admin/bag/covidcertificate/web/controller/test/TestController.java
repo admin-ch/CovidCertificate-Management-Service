@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.web.controller.test;
 
+import ch.admin.bag.covidcertificate.api.mapper.SigningInformationMapper;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
@@ -16,6 +17,7 @@ import ch.admin.bag.covidcertificate.service.domain.SigningCertificateCategory;
 import ch.admin.bag.covidcertificate.service.test.TestCovidCertificateGenerationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,17 +50,21 @@ public class TestController {
 
         List<SigningInformation> errors = new ArrayList<>();
         for (SigningCertificateCategory signingCertificateCategory : SigningCertificateCategory.values()) {
-            var signingInformationList = signingInformationRepository.findSigningInformation(signingCertificateCategory.value, validAt);
+            var signingInformationList = signingInformationRepository
+                    .findSigningInformation(signingCertificateCategory.value, validAt);
 
             for (SigningInformation signingInformation : signingInformationList) {
                 try {
                     var messageBytes = UUID.randomUUID().toString().getBytes();
-                    var signatureBytes = signingClient.createSignature(messageBytes, signingInformation);
-                    if (signingInformation.getCertificateAlias() != null && !signingInformation.getCertificateAlias().isBlank()) {
+                    var signatureBytes = signingClient
+                            .createSignature(messageBytes, SigningInformationMapper.fromEntity(signingInformation));
+                    if (StringUtils.isNotBlank(signingInformation.getCertificateAlias())) {
+
                         var message = Base64.getEncoder().encodeToString(messageBytes);
                         var signature = Base64.getEncoder().encodeToString(signatureBytes);
 
-                        var verifySignatureDto = new VerifySignatureRequestDto(message, signature, signingInformation.getCertificateAlias());
+                        var verifySignatureDto = new VerifySignatureRequestDto(
+                                message, signature, signingInformation.getCertificateAlias());
                         var validSignature = signingClient.verifySignature(verifySignatureDto);
                         if (!validSignature) {
                             errors.add(signingInformation);

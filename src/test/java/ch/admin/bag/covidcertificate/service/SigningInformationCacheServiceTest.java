@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.api.mapper.SigningInformationMapper;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import ch.admin.bag.covidcertificate.domain.SigningInformationRepository;
 import com.flextrade.jfixture.JFixture;
@@ -23,25 +24,27 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SigningInformationCacheServiceTest {
+    private final JFixture fixture = new JFixture();
     @InjectMocks
     private SigningInformationCacheService signingInformationCacheService;
-
     @Mock
     private SigningInformationRepository signingInformationRepository;
 
-    private final JFixture fixture = new JFixture();
-
     @BeforeEach
-    private void setup(){
-        lenient().when(signingInformationRepository.findSigningInformation(any(), any(), any())).thenReturn(fixture.create(SigningInformation.class));
-        lenient().when(signingInformationRepository.findSigningInformation(any(), any())).thenReturn(Collections.singletonList(fixture.create(SigningInformation.class)));
+    private void setup() {
+        lenient().when(signingInformationRepository
+                               .findSigningInformation(any(), any(), any())).thenReturn(
+                fixture.create(SigningInformation.class));
+        lenient().when(signingInformationRepository
+                               .findSigningInformation(any(), any())).thenReturn(Collections.singletonList(
+                fixture.create(SigningInformation.class)));
     }
 
 
     @Nested
-    class FindSigningInformationOnlyByCertificateType{
+    class FindSigningInformationOnlyByCertificateType {
         @Test
-        void shouldCallRepositoryWithCorrectParameter(){
+        void shouldCallRepositoryWithCorrectParameter() {
             var certificateType = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
 
@@ -51,22 +54,25 @@ class SigningInformationCacheServiceTest {
         }
 
         @Test
-        void shouldReturnLoadedSigningInformation(){
+        void shouldReturnLoadedSigningInformation() {
             var certificateType = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
-            var signingInformationList = Collections.singletonList(fixture.create(SigningInformation.class));
+            var signingInformationList = Collections.singletonList(
+                    fixture.create(SigningInformation.class));
+            var expectedDtoList = SigningInformationMapper.fromEntityList(signingInformationList);
             when(signingInformationRepository.findSigningInformation(any(), any())).thenReturn(signingInformationList);
 
-            var actual = signingInformationCacheService.findSigningInformation(certificateType, validAt);
+            var actual = signingInformationCacheService
+                    .findSigningInformation(certificateType, validAt);
 
-            assertEquals(signingInformationList, actual);
+            assertEquals(expectedDtoList, actual);
         }
     }
 
     @Nested
-    class FindSigningInformation{
+    class FindSigningInformation {
         @Test
-        void shouldCallRepositoryWithCorrectCertificateType(){
+        void shouldCallRepositoryWithCorrectCertificateType() {
             var certificateType = fixture.create(String.class);
             var code = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
@@ -77,7 +83,7 @@ class SigningInformationCacheServiceTest {
         }
 
         @Test
-        void shouldCallRepositoryWithCorrectCode(){
+        void shouldCallRepositoryWithCorrectCode() {
             var certificateType = fixture.create(String.class);
             var code = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
@@ -86,17 +92,21 @@ class SigningInformationCacheServiceTest {
 
             verify(signingInformationRepository).findSigningInformation(any(), eq(code), any());
         }
+
         @Test
-        void shouldNotCallRepositoryIfSigningInformationAreInCache(){
+        void shouldNotCallRepositoryIfSigningInformationAreInCache() {
             var certificateType = fixture.create(String.class);
             var code = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
             var signingInformation = fixture.create(SigningInformation.class);
-            when(signingInformationRepository.findSigningInformation(any(), any(), any())).thenReturn(signingInformation);
+            var expectedDto = SigningInformationMapper.fromEntity(signingInformation);
+            when(signingInformationRepository
+                         .findSigningInformation(any(), any(), any())).thenReturn(signingInformation);
 
-            var actual = signingInformationCacheService.findSigningInformation(certificateType, code, validAt);
+            var actual = signingInformationCacheService
+                    .findSigningInformation(certificateType, code, validAt);
 
-            assertEquals(signingInformation, actual);
+            assertEquals(expectedDto, actual);
         }
     }
 }

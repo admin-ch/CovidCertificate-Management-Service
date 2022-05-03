@@ -1,6 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import lombok.Builder;
 import org.springframework.stereotype.Service;
 import se.digg.dgc.signatures.DGCSigner;
@@ -13,7 +13,7 @@ public class SwissDGCSigner implements DGCSigner {
 
     private final COSEService coseService;
 
-    public byte[] sign(byte[] dgcCBOR, SigningInformation signingInformation, Instant expiredAt) {
+    public byte[] sign(byte[] dgcCBOR, SigningInformationDto signingInformation, Instant expiredAt) {
         return coseService.getCOSESign1(dgcCBOR, signingInformation, expiredAt);
     }
 

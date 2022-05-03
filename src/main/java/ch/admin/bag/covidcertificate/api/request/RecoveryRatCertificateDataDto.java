@@ -20,7 +20,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
 import static ch.admin.bag.covidcertificate.api.Constants.ONLY_RAPID_TEST_SUPPORTED;
 import static ch.admin.bag.covidcertificate.api.request.validator.LocalDateValidator.validateDateIsNotBeforeLimitDate;
 import static ch.admin.bag.covidcertificate.api.request.validator.LocalDateValidator.validateDateIsNotInTheFuture;
-import static ch.admin.bag.covidcertificate.api.request.validator.TextValidator.validateTextIsNotBlankAndLengthIsNotBiggerThanMaxLength;
+import static ch.admin.bag.covidcertificate.api.request.validator.TextValidator.validateTextLengthIsNotBiggerThanMaxLength;
 
 @Getter
 @ToString
@@ -28,7 +28,7 @@ import static ch.admin.bag.covidcertificate.api.request.validator.TextValidator.
 @AllArgsConstructor
 public class RecoveryRatCertificateDataDto {
 
-    private static final LocalDate LIMIT_MIN_DATE = LocalDate.of(2022, 1, 24);
+    private static final LocalDate LIMIT_MIN_DATE = LocalDate.of(2021, 10, 1);
 
     private String manufacturerCode;
 
@@ -45,7 +45,7 @@ public class RecoveryRatCertificateDataDto {
         LocalDate sampleDate = sampleDateTime.toLocalDate();
         validateDateIsNotInTheFuture(sampleDate, "sampleDateTime");
         validateDateIsNotBeforeLimitDate(sampleDate, "sampleDateTime", LIMIT_MIN_DATE);
-        validateTextIsNotBlankAndLengthIsNotBiggerThanMaxLength(testingCentreOrFacility, "testingCentreOrFacility", MAX_STRING_LENGTH);
+        validateTextLengthIsNotBiggerThanMaxLength(testingCentreOrFacility, "testingCentreOrFacility", MAX_STRING_LENGTH);
 
         if (!ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equals(memberStateOfTest)) {
             throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);

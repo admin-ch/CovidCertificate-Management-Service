@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import com.flextrade.jfixture.JFixture;
 import com.upokecenter.cbor.CBORObject;
 import org.json.JSONObject;
@@ -46,27 +46,30 @@ class BarcodeServiceTest {
 
     @BeforeEach
     void init() throws BarcodeException, IOException, SignatureException {
-        lenient().when(dgcBarcodeEncoder.encodeToBarcode(any(byte[].class), any(SigningInformation.class), any(Instant.class))).thenReturn(fixture.create(Barcode.class));
-        lenient().when(coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS)).thenReturn(fixture.create(Instant.class));
+        lenient().when(dgcBarcodeEncoder.encodeToBarcode(any(byte[].class), any(SigningInformationDto.class),
+                                                         any(Instant.class))).thenReturn(fixture.create(Barcode.class));
+        lenient().when(coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS))
+                 .thenReturn(fixture.create(Instant.class));
     }
 
     @Nested
     class CreateBarcode{
         @Test
         void callsEncoderWithCorrectJson() throws Exception {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var instant = fixture.create(Instant.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
             var dgcCbor = CBORObject.FromJSONString(dgcJson).EncodeToBytes();
 
             barcodeService.createBarcode(dgcJson, signingInformation, instant);
 
-            verify(dgcBarcodeEncoder).encodeToBarcode(eq(dgcCbor), any(SigningInformation.class), any(Instant.class));
+            verify(dgcBarcodeEncoder).encodeToBarcode(eq(dgcCbor), any(SigningInformationDto.class),
+                                                      any(Instant.class));
         }
 
         @Test
         void callsEncoderWithCorrectSigningInformation() throws Exception {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var instant = fixture.create(Instant.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
 
@@ -77,7 +80,7 @@ class BarcodeServiceTest {
 
         @Test
         void callsEncoderWithCorrectExpiration() throws Exception {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var instant = fixture.create(Instant.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
 
@@ -88,11 +91,12 @@ class BarcodeServiceTest {
 
         @Test
         void returnsGeneratedBarcode() throws Exception {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
             var barcode = fixture.create(Barcode.class);
             var instant = fixture.create(Instant.class);
-            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformation.class), any(Instant.class))).thenReturn(barcode);
+            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformationDto.class),
+                                                   any(Instant.class))).thenReturn(barcode);
 
             Barcode result = barcodeService.createBarcode(dgcJson, signingInformation, instant);
 
@@ -102,27 +106,33 @@ class BarcodeServiceTest {
         @ParameterizedTest
         @ValueSource(classes = {BarcodeException.class, IOException.class, SignatureException.class})
         void throwsCreateCertificateException_ifACheckedException(Class<Exception> exceptionClass) throws BarcodeException, IOException, SignatureException {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
             var instant = fixture.create(Instant.class);
-            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformation.class), any(Instant.class))).thenThrow(fixture.create(exceptionClass));
+            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformationDto.class),
+                                                   any(Instant.class))).thenThrow(fixture.create(exceptionClass));
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                    () -> barcodeService.createBarcode(dgcJson, signingInformation, instant));
+                                                                () -> barcodeService.createBarcode(dgcJson,
+                                                                                                   signingInformation,
+                                                                                                   instant));
 
             assertEquals(CREATE_BARCODE_FAILED, exception.getError());
         }
 
         @Test
         void propagatesCreateCertificateException_ifACreateCertificateExceptionIsThrownByTheBarcodeEncoder() throws BarcodeException, IOException, SignatureException {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
             var instant = fixture.create(Instant.class);
             var expectedException = new CreateCertificateException(CREATE_SIGNATURE_FAILED);
-            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformation.class), any(Instant.class))).thenThrow(expectedException);
+            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformationDto.class),
+                                                   any(Instant.class))).thenThrow(expectedException);
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                    () -> barcodeService.createBarcode(dgcJson, signingInformation, instant));
+                                                                () -> barcodeService.createBarcode(dgcJson,
+                                                                                                   signingInformation,
+                                                                                                   instant));
 
             assertEquals(expectedException, exception);
         }
@@ -133,18 +143,20 @@ class BarcodeServiceTest {
     class CreateBarcodeWithDefaultExpiration{
         @Test
         void callsEncoderWithCorrectJson() throws Exception {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
             var dgcCbor = CBORObject.FromJSONString(dgcJson).EncodeToBytes();
 
-            barcodeService.createBarcode(dgcJson, signingInformation, coseTime.calculateExpirationInstantPlusMonths(24));
+            barcodeService.createBarcode(dgcJson, signingInformation,
+                                         coseTime.calculateExpirationInstantPlusMonths(24));
 
-            verify(dgcBarcodeEncoder).encodeToBarcode(eq(dgcCbor), any(SigningInformation.class), any(Instant.class));
+            verify(dgcBarcodeEncoder).encodeToBarcode(eq(dgcCbor), any(SigningInformationDto.class),
+                                                      any(Instant.class));
         }
 
         @Test
         void callsEncoderWithCorrectSigningInformation() throws Exception {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
 
             barcodeService.createBarcode(dgcJson, signingInformation, coseTime.calculateExpirationInstantPlusMonths(24));
@@ -154,7 +166,7 @@ class BarcodeServiceTest {
 
         @Test
         void callsEncoderWithCorrectExpiration() throws Exception {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var instant = fixture.create(Instant.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
             when(coseTime.calculateExpirationInstantPlusMonths(24)).thenReturn(instant);
@@ -166,13 +178,15 @@ class BarcodeServiceTest {
 
         @Test
         void returnsGeneratedBarcode() throws Exception {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
             var barcode = fixture.create(Barcode.class);
 
-            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformation.class), any(Instant.class))).thenReturn(barcode);
+            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformationDto.class),
+                                                   any(Instant.class))).thenReturn(barcode);
 
-            Barcode result = barcodeService.createBarcode(dgcJson, signingInformation, coseTime.calculateExpirationInstantPlusMonths(24));
+            Barcode result = barcodeService.createBarcode(dgcJson, signingInformation,
+                                                          coseTime.calculateExpirationInstantPlusMonths(24));
 
             assertEquals(barcode, result);
         }
@@ -180,25 +194,33 @@ class BarcodeServiceTest {
         @ParameterizedTest
         @ValueSource(classes = {BarcodeException.class, IOException.class, SignatureException.class})
         void throwsCreateCertificateException_ifACheckedException(Class<Exception> exceptionClass) throws BarcodeException, IOException, SignatureException {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
-            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformation.class), any(Instant.class))).thenThrow(fixture.create(exceptionClass));
+            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformationDto.class),
+                                                   any(Instant.class))).thenThrow(fixture.create(exceptionClass));
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                    () -> barcodeService.createBarcode(dgcJson, signingInformation, coseTime.calculateExpirationInstantPlusMonths(24)));
+                                                                () -> barcodeService.createBarcode(dgcJson,
+                                                                                                   signingInformation,
+                                                                                                   coseTime.calculateExpirationInstantPlusMonths(
+                                                                                                           24)));
 
             assertEquals(CREATE_BARCODE_FAILED, exception.getError());
         }
 
         @Test
         void propagatesCreateCertificateException_ifACreateCertificateExceptionIsThrownByTheBarcodeEncoder() throws BarcodeException, IOException, SignatureException {
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var dgcJson = fixture.create(JSONObject.class).toString();
             var expectedException = new CreateCertificateException(CREATE_SIGNATURE_FAILED);
-            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformation.class), any(Instant.class))).thenThrow(expectedException);
+            when(dgcBarcodeEncoder.encodeToBarcode(any(), any(SigningInformationDto.class),
+                                                   any(Instant.class))).thenThrow(expectedException);
 
             CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                    () -> barcodeService.createBarcode(dgcJson, signingInformation, coseTime.calculateExpirationInstantPlusMonths(24)));
+                                                                () -> barcodeService.createBarcode(dgcJson,
+                                                                                                   signingInformation,
+                                                                                                   coseTime.calculateExpirationInstantPlusMonths(
+                                                                                                           24)));
 
             assertEquals(expectedException, exception);
         }

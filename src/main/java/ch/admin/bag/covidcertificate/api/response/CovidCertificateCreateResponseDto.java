@@ -21,16 +21,19 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 public class CovidCertificateCreateResponseDto {
+
     @NonNull
     private byte[] pdf;
+
     @NonNull
     private byte[] qrCode;
+
     @NonNull
     private String uvci;
+
     @Setter
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private CreateCertificateError appDeliveryError;
-
 
     public void validate() {
         if (ArrayUtils.isEmpty(pdf)) throw new CreateCertificateException(Constants.CREATE_PDF_FAILED);

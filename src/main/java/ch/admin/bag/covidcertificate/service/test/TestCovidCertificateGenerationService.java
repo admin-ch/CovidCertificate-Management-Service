@@ -14,7 +14,7 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponse
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.service.BarcodeService;
 import ch.admin.bag.covidcertificate.service.COSETime;
 import ch.admin.bag.covidcertificate.service.CovidCertificateDtoMapperService;
@@ -80,48 +80,56 @@ public class TestCovidCertificateGenerationService {
         var qrCodeData = covidCertificateDtoMapperService.toRecoveryRatCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toRecoveryRatCertificatePdf(createDto, qrCodeData);
         var signingInformation = signingInformationService.getRecoveryRatSigningInformation(validAt);
-        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getTestInfo().get(0).getIdentifier(), createDto, signingInformation);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getRecoveryInfo().get(0).getIdentifier(), createDto, signingInformation);
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(AntibodyCertificateCreateDto createDto, LocalDate validAt) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toAntibodyCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toAntibodyCertificatePdf(createDto, qrCodeData);
         var signingInformation = signingInformationService.getAntibodySigningInformation(validAt);
-        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getAntibodyInfo().get(0).getIdentifier(), createDto, signingInformation);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getAntibodyInfo().get(0).getIdentifier(),
+                                        createDto, signingInformation);
     }
 
-    public CovidCertificateCreateResponseDto generateCovidCertificate(ExceptionalCertificateCreateDto createDto, LocalDate validAt) throws JsonProcessingException {
+    public CovidCertificateCreateResponseDto generateCovidCertificate(
+            ExceptionalCertificateCreateDto createDto, LocalDate validAt) throws JsonProcessingException {
         var qrCodeData = covidCertificateDtoMapperService.toExceptionalCertificateQrCode(createDto);
         var pdfData = covidCertificateDtoMapperService.toExceptionalCertificatePdf(createDto, qrCodeData);
         var signingInformation = signingInformationService.getExceptionalSigningInformation(validAt);
-        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getExceptionalInfo().get(0).getIdentifier(), createDto, signingInformation);
+        return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getExceptionalInfo().get(0).getIdentifier(),
+                                        createDto, signingInformation);
     }
 
-    private CovidCertificateCreateResponseDto generateCovidCertificate(AbstractCertificateQrCode qrCodeData,
-                                                                       AbstractCertificatePdf pdfData,
-                                                                       String uvci,
-                                                                       CertificateCreateDto createDto,
-                                                                       SigningInformation signingInformation) throws JsonProcessingException {
+    private CovidCertificateCreateResponseDto generateCovidCertificate(
+            AbstractCertificateQrCode qrCodeData,
+            AbstractCertificatePdf pdfData,
+            String uvci,
+            CertificateCreateDto createDto,
+            SigningInformationDto signingInformation) throws JsonProcessingException {
         var expiration24Months = coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS);
-        return this.generateCovidCertificate(qrCodeData, pdfData, uvci, createDto, signingInformation, expiration24Months);
+        return this.generateCovidCertificate(qrCodeData, pdfData, uvci, createDto, signingInformation,
+                                             expiration24Months);
     }
 
-    private CovidCertificateCreateResponseDto generateCovidCertificate(AbstractCertificateQrCode qrCodeData,
-                                                                       AbstractCertificatePdf pdfData,
-                                                                       String uvci,
-                                                                       CertificateCreateDto createDto,
-                                                                       SigningInformation signingInformation,
-                                                                       Instant expiration) throws JsonProcessingException {
+    private CovidCertificateCreateResponseDto generateCovidCertificate(
+            AbstractCertificateQrCode qrCodeData,
+            AbstractCertificatePdf pdfData,
+            String uvci,
+            CertificateCreateDto createDto,
+            SigningInformationDto signingInformation,
+            Instant expiration) throws JsonProcessingException {
         var contents = objectMapper.writer().writeValueAsString(qrCodeData);
-        log.info("Create barcode");
+        log.trace("Create barcode");
         var code = barcodeService.createBarcode(contents, signingInformation, expiration);
-        log.info("Create certificate pdf");
-        var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(), LocalDateTime.now());
+        log.trace("Create certificate pdf");
+        var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(),
+                                                                                LocalDateTime.now());
 
         var responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         responseDto.validate();
         if (createDto.sendToPrint()) {
-            printQueueClient.sendPrintJob(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
+            printQueueClient.sendPrintJob(
+                    certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
         } else if (createDto.sendToApp()) {
             var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getAppCode(), code.getPayload(),
                                                                Base64.getEncoder().encodeToString(pdf));
