@@ -765,6 +765,35 @@ services:
 
     functions:
 
+      # ui support for units
+      unit-tree:
+        identifier: "unit-tree"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/unit/tree"
+        one-of: ${roles.groups.any}
+
+      unit-search:
+        identifier: "unit-search"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/unit/search"
+        one-of: ${roles.groups.any}
+
+      unit-profiles:
+        identifier: "unit-profiles"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/unit/profiles"
+        one-of: ${roles.groups.any}
+
+      profile-search:
+        identifier: "profile-search"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/profile/search"
+        one-of: ${roles.groups.any}
+
       # reports
       report-a2:
         identifier: "report-a2"
