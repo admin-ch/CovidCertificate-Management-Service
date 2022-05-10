@@ -123,14 +123,11 @@ public class CovidCertificateDtoMapperService {
     }
 
     public RecoveryCertificateQrCode toRecoveryRatCertificateQrCode(RecoveryRatCertificateCreateDto createDto) {
-        RecoveryRatCertificateDataDto dataDto = createDto.getTestInfo().get(0);
-        valueSetsService.validateAndGetIssuableTestDto(dataDto.getTypeCode(), dataDto.getManufacturerCode());
         return RecoveryRatCertificateQrCodeMapper.toRecoveryCertificateQrCode(createDto);
     }
 
     public RecoveryCertificatePdf toRecoveryRatCertificatePdf(RecoveryRatCertificateCreateDto createDto, RecoveryCertificateQrCode qrCodeData) {
         RecoveryRatCertificateDataDto recoveryRatCertificateDataDto = createDto.getTestInfo().get(0);
-        valueSetsService.validateAndGetIssuableTestDto(recoveryRatCertificateDataDto.getTypeCode(), recoveryRatCertificateDataDto.getManufacturerCode());
         var countryCode = valueSetsService.getCountryCode(recoveryRatCertificateDataDto.getMemberStateOfTest(), createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(recoveryRatCertificateDataDto.getMemberStateOfTest());
         if (countryCode == null || countryCodeEn == null) {

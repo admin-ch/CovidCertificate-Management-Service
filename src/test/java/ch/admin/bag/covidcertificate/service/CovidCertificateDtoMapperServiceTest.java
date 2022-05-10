@@ -764,26 +764,6 @@ class CovidCertificateDtoMapperServiceTest {
 
     @Nested
     class ToRecoveryRatCertificateQrCode {
-        @Test
-        void shouldLoadTestValueSet() {
-            var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
-            service.toRecoveryRatCertificateQrCode(createDto);
-            verify(valueSetsService).validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
-        }
-
-        @Test
-        void throwsCreateCertificateException_ifValueSetServiceThrowsCreateCertificateException() {
-            var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
-            var expected = fixture.create(CreateCertificateException.class);
-            lenient().when(valueSetsService.validateAndGetIssuableTestDto(any(), any())).thenThrow(expected);
-
-            CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                    () -> service.toRecoveryRatCertificateQrCode(createDto)
-            );
-
-            assertEquals(expected.getError(), exception.getError());
-        }
-
 
         @Test
         void shouldMapToTestCertificateQrCode_withCorrectCertificateCreateDto() {
@@ -817,13 +797,6 @@ class CovidCertificateDtoMapperServiceTest {
 
     @Nested
     class ToRecoveryRatCertificatePdf {
-        @Test
-        void shouldLoadTestValueSet() {
-            var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
-            var qrCodeData = fixture.create(RecoveryCertificateQrCode.class);
-            service.toRecoveryRatCertificatePdf(createDto, qrCodeData);
-            verify(valueSetsService).validateAndGetIssuableTestDto(createDto.getTestInfo().get(0).getTypeCode(), createDto.getTestInfo().get(0).getManufacturerCode());
-        }
 
         @Test
         void shouldLoadCountryCodeValueSetForSelectedLanguage() {
@@ -839,20 +812,6 @@ class CovidCertificateDtoMapperServiceTest {
             var qrCodeData = fixture.create(RecoveryCertificateQrCode.class);
             service.toRecoveryRatCertificatePdf(createDto, qrCodeData);
             verify(valueSetsService).getCountryCodeEn(createDto.getTestInfo().get(0).getMemberStateOfTest());
-        }
-
-        @Test
-        void throwsCreateCertificateException_ifValueSetServiceThrowsCreateCertificateException() {
-            var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
-            var qrCodeData = fixture.create(RecoveryCertificateQrCode.class);
-            var expected = fixture.create(CreateCertificateException.class);
-            lenient().when(valueSetsService.validateAndGetIssuableTestDto(any(), any())).thenThrow(expected);
-
-            CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                    () -> service.toRecoveryRatCertificatePdf(createDto, qrCodeData)
-            );
-
-            assertEquals(expected.getError(), exception.getError());
         }
 
         @Test

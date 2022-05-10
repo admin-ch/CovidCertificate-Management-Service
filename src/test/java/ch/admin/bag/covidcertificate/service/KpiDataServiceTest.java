@@ -432,19 +432,8 @@ class KpiDataServiceTest {
         }
 
         @Test
-        void savesKpiDataWithPcrTypeOfTestAsDetails_ifTypeCodeIsPcr() {
+        void savesKpiData_ShouldLogRapid() {
             var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
-            ReflectionTestUtils.setField(createDto.getTestInfo().get(0), "typeCode", PCR.typeCode);
-            service.logRecoveryRatCertificateGenerationKpi(
-                    createDto, fixture.create(String.class), fixture.create(String.class));
-
-            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails().equals("pcr")));
-        }
-
-        @Test
-        void savesKpiDataWithRapidTypeOfTestAsDetails_ifTypeCodeIsRapidTest() {
-            var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
-            ReflectionTestUtils.setField(createDto.getTestInfo().get(0), "typeCode", RAPID_TEST.typeCode);
             service.logRecoveryRatCertificateGenerationKpi(
                     createDto, fixture.create(String.class), fixture.create(String.class));
 
