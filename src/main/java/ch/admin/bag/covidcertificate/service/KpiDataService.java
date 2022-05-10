@@ -147,12 +147,11 @@ public class KpiDataService {
             String uvci,
             String usedKeyIdentifier) {
 
-        var typeCode = TestType.findByTypeCode(createDto.getTestInfo().get(0).getTypeCode());
         logCertificateGenerationKpi(KPI_TYPE_RECOVERY_RAT_EU,
                                     uvci,
                                     createDto.getSystemSource(),
                                     createDto.getUserExtId(),
-                                    getDetails(typeCode),
+                                    DETAILS_RAPID,
                                     createDto.getTestInfo().get(0).getMemberStateOfTest(),
                                     usedKeyIdentifier);
     }

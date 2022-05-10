@@ -17,10 +17,6 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TI
 @AllArgsConstructor
 public class RecoveryRatCertificateCsvBean extends CertificateCsvBean {
 
-    @CsvBindByName(column = "manufacturerCode")
-    private String manufacturerCode;
-    @CsvBindByName(column = "typeCode")
-    private String typeCode;
     @CsvBindByName(column = "sampleDateTime")
     private String sampleDateTime;
     @CsvBindByName(column = "memberStateOfTest")
@@ -36,8 +32,6 @@ public class RecoveryRatCertificateCsvBean extends CertificateCsvBean {
         }
 
         var dataDto = new RecoveryRatCertificateDataDto(
-                (manufacturerCode != null) ? manufacturerCode.trim(): "",
-                (typeCode != null) ? typeCode.trim(): "",
                 sampleDateTimeParsed,
               "",
                 (memberStateOfTest != null) ? memberStateOfTest.trim().toUpperCase(): ""
