@@ -353,7 +353,6 @@ public class CsvService {
             if (countryCode == null) {
                 throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
             }
-            valueSetsService.validateAndGetIssuableTestDto(dataDto.getTypeCode(), dataDto.getManufacturerCode());
         } else if (createDto instanceof TestCertificateCreateDto) {
             var dataDto = ((TestCertificateCreateDto) createDto).getTestInfo().get(0);
             var countryCode = valueSetsService.getCountryCode(dataDto.getMemberStateOfTest(), createDto.getLanguage());
