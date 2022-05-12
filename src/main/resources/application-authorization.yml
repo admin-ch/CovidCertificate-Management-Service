@@ -331,7 +331,7 @@ services:
         identifier: "bulk-revoke-certificates"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
+        one-of: ${roles.id.cert.bulk}
 
       # reports
       report-a2:
@@ -468,6 +468,14 @@ services:
         additionalRef: ${services.api-gateway.functions.create-certificate.identifier}
         one-of: ${roles.groups.legacy},${roles.groups.cert-creators}
         uri: "/api/v1/covidcertificate/revoke"
+
+      bulk-revoke-certificates:
+        identifier: "bulk-revoke-certificates"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        additionalRef: ${services.api-gateway.functions.create-certificate.identifier}
+        one-of: ${roles.id.cert.bulk}
+        uri: "/api/v1/covidcertificate/revoke/mass-revocation"
 
 
   ##   M A N A G E M E N T   ##############################################################################
@@ -669,13 +677,13 @@ services:
         one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus},${roles.id.user.revocator}
         uri: "/api/v1/revocation"
 
-      # Revocation-list
-      revoke-list-certificate:
-        identifier: "revoke-list-certificate"
+      # Mass-Revocation
+      bulk-revoke-certificates:
+        identifier: "bulk-revoke-certificates"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
-        uri: "/api/v1/revocation-list"
+        one-of: ${roles.id.cert.bulk}
+        uri: "/api/v1/revocation/uvcilist"
 
       # one-time-password
       create-otp:

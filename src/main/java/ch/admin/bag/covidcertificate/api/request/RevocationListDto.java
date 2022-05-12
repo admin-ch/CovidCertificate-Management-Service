@@ -16,13 +16,16 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SIZE_OF_UVCI_L
 @AllArgsConstructor
 @Slf4j
 public class RevocationListDto {
-    private List<String> uvcis;
+    private List<UvciForRevocationDto> uvcis;
     private SystemSource systemSource;
     private String userExtId;
 
     public void validateList() {
         if (uvcis.size() > 100) {
             throw new RevocationException(INVALID_SIZE_OF_UVCI_LIST);
+        }
+        for(UvciForRevocationDto uvci: uvcis) {
+            uvci.validate();
         }
     }
 }

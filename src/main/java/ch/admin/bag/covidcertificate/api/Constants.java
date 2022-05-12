@@ -33,7 +33,12 @@ public class Constants {
     public static final int ANTIBODY_CERTIFICATE_VALIDITY_IN_DAYS = 89;
     public static final String ISO_3166_1_ALPHA_2_CODE_SWITZERLAND = "CH";
 
-    // KPI Logs constants
+    // KPI system keys
+    public static final String KPI_CREATE_CERTIFICATE_SYSTEM_KEY = "cc";
+    public static final String KPI_REVOKE_CERTIFICATE_SYSTEM_KEY = "re";
+    public static final String KPI_OTP_SYSTEM_KEY = "otp";
+
+    // KPI Type Logs constants
     public static final String KPI_TYPE_VACCINATION = "v";
     public static final String KPI_TYPE_VACCINATION_TOURIST = "vt";
     public static final String KPI_TYPE_TEST = "t";
@@ -42,6 +47,11 @@ public class Constants {
     public static final String KPI_TYPE_ANTIBODY = "a";
     public static final String KPI_TYPE_EXCEPTIONAL = "me";
     public static final String KPI_TYPE_IN_APP_DELIVERY = "ad";
+    public static final String KPI_TYPE_MASS_REVOCATION_SUCCESS = "mre-s";
+    public static final String KPI_TYPE_MASS_REVOCATION_FAILURE = "mre-f";
+    public static final String KPI_TYPE_MASS_REVOCATION_REDUNDANT = "mre-r";
+
+    // Other KPI Logs constants
     public static final String KPI_IN_APP_DELIVERY_CODE_KEY = "code";
     public static final String KPI_IN_APP_DELIVERY_UVCI_KEY = "uvci";
     public static final String USER_EXT_ID_CLAIM_KEY = "userExtId";
@@ -54,21 +64,16 @@ public class Constants {
     public static final String KPI_COUNTRY = "country";
     public static final String KPI_USED_KEY_IDENTIFIER = "usedKID";
     public static final String KPI_FRAUD = "fraud";
-    public static final String KPI_CREATE_CERTIFICATE_SYSTEM_KEY = "cc";
     public static final String KPI_SYSTEM_UI = "ui";
-    public static final String KPI_REVOKE_CERTIFICATE_SYSTEM_KEY = "re";
-    public static final String KPI_TYPE_MASS_REVOCATION_CHECK = "mre-c";
-    public static final String KPI_TYPE_MASS_REVOCATION_SUCCESS = "mre-s";
-    public static final String KPI_TYPE_MASS_REVOCATION_FAILURE = "mre-f";
-    public static final String KPI_TYPE_MASS_REVOCATION_REDUNDANT = "mre-r";
-    public static final String KPI_OTP_SYSTEM_KEY = "otp";
 
+    // Time, date and relevant formatting
     public static final LocalDate MIN_DATE_OF_BIRTH = LocalDate.of(1900, Month.JANUARY, 1);
     public static final LocalDate MAX_DATE_OF_BIRTH = LocalDate.of(2099, Month.DECEMBER, 31);
     public static final DateTimeFormatter LOCAL_DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     public static final DateTimeFormatter LOG_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     public static final ZoneId SWISS_TIMEZONE = ZoneId.of("Europe/Zurich");
 
+    // Errors
     public static final CreateCertificateError MISSING_PROPERTY = new CreateCertificateError(432, "Property %s is missing!", HttpStatus.BAD_REQUEST);
 
     public static final CreateCertificateError NO_VACCINATION_DATA = new CreateCertificateError(451, "No vaccination data was specified", HttpStatus.BAD_REQUEST);
@@ -92,6 +97,7 @@ public class Constants {
     public static final CreateCertificateError INVALID_LANGUAGE = new CreateCertificateError(469, "The given language does not match any of the supported languages: de, it, fr, rm!", HttpStatus.BAD_REQUEST);
     public static final RevocationError INVALID_UVCI = new RevocationError(470, "Invalid UVCI format.", HttpStatus.BAD_REQUEST);
     public static final RevocationError INVALID_SIZE_OF_UVCI_LIST = new RevocationError(472, "Invalid size of UVCI List.", HttpStatus.BAD_REQUEST);
+    public static final RevocationError INVALID_FRAUD_FLAG = new RevocationError(473, "No fraud flag was specified.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_ADDRESS = new CreateCertificateError(474, "Paper-based delivery requires a valid address.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError DUPLICATE_DELIVERY_METHOD = new CreateCertificateError(475, "Delivery method can either be InApp or print, but not both.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError UNKNOWN_APP_CODE = new CreateCertificateError(476, "Unknown app code.", HttpStatus.NOT_FOUND);
