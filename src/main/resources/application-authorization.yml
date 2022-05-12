@@ -771,63 +771,63 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.detail}
-        uri: "/api/v1/report/fraud/a2/by_uvci"
+        uri: "/api/v2/report/fraud/a2/by_uvci"
 
       report-a3:
         identifier: "report-a3"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
-        uri: "/api/v1/report/fraud/a3/for_timerange_by_users"
+        uri: "/api/v2/report/fraud/a3/for_timerange_by_users"
 
       report-a4:
         identifier: "report-a4"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.detail}
-        uri: "/api/v1/report/fraud/a4/for_timerange_by_users_and_types"
+        uri: "/api/v2/report/fraud/a4/by_users_and_types"
 
       report-a5:
         identifier: "report-a5"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
-        uri: "/api/v1/report/fraud/a5/(Aggregated Rep, URL TBD)" #TODO
+        uri: "/api/v2/report/fraud/a5/(Aggregated Rep, URL TBD)" #TODO
 
       report-a6:
         identifier: "report-a6"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.detail}
-        uri: "/api/v1/report/fraud/a6/(Detail Rep, URL TBD)" #TODO
+        uri: "/api/v2/report/fraud/a6/(Detail Rep, URL TBD)" #TODO
 
       report-a7:
         identifier: "report-a7"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
-        uri: "/api/v1/report/fraud/a7/(Aggregated Rep, URL TBD)" #TODO
+        uri: "/api/v2/report/fraud/a7/(Aggregated Rep, URL TBD)" #TODO
 
       report-a8:
         identifier: "report-a8"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.stats}
-        uri: "/api/v1/report/certificate/statistics/a8/for_timerange_by_week"
+        uri: "/api/v2/report/certificate/statistics/a8/for_timerange_by_week"
 
       report-a9:
         identifier: "report-a9"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.stats}
-        uri: "/api/v1/report/certificate/statistics/a9/full_period"
+        uri: "/api/v2/report/certificate/statistics/a9/full_period"
 
       report-a10:
         identifier: "report-a10"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
-        uri: "/api/v1/report/fraud/a10/for_timerange_by_types"
+        uri: "/api/v2/report/fraud/a10/for_timerange_by_types"
 
       report-a11:
         identifier: "report-a11"
