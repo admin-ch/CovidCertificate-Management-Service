@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 import static ch.admin.bag.covidcertificate.api.Constants.ALREADY_REVOKED_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
-import static ch.admin.bag.covidcertificate.api.Constants.UNKNOWN_UVCI;
 
 @Service
 @RequiredArgsConstructor
@@ -49,11 +48,11 @@ public class RevocationService {
 
     @Transactional(readOnly = true)
     public Map<String, String> getUvcisWithErrorMessage(List<String> uvciList) {
-        Map<String, String> invalidUvcisToErrorMessage = getInvalidUvcis(uvciList);
-        Map<String, String> alreadyRevokedUvcisToErrorMessage = getAlreadyRevokedUvcis(uvciList);
-
         Map<String, String> uvcisToErrorMessage = Stream
-                .concat(invalidUvcisToErrorMessage.entrySet().stream(), alreadyRevokedUvcisToErrorMessage.entrySet().stream())
+                .concat(
+                        getInvalidUvcis(uvciList).entrySet().stream(),
+                        getAlreadyRevokedUvcis(uvciList).entrySet().stream()
+                )
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return uvcisToErrorMessage;
@@ -71,19 +70,6 @@ public class RevocationService {
         }
 
         return invalidUvcisToErrorMessage;
-    }
-
-    @Transactional(readOnly = true)
-    public Map<String, String> getNotExistingUvcis(List<String> uvciList) {
-        Map<String, String> notExistingUvcisToWarningMessage = new HashMap<>();
-
-        for (String uvci : uvciList) {
-            if (!doesUvciExist(uvci)) {
-                notExistingUvcisToWarningMessage.put(uvci, UNKNOWN_UVCI.getErrorMessage());
-            }
-        }
-
-        return notExistingUvcisToWarningMessage;
     }
 
     @Transactional(readOnly = true)
