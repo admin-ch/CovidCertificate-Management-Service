@@ -5,8 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_EXCEPTIONAL_INFO;
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ExceptionalCertificateCreateDto extends CertificateCreateDto {
+public class ExceptionalCertificateCreateDto extends CertificateGenerationCreateDto {
 
     private List<ExceptionalCertificateDataDto> exceptionalInfo;
 

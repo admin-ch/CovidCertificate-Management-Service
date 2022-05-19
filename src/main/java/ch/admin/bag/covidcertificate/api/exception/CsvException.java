@@ -6,9 +6,11 @@ import org.springframework.core.NestedRuntimeException;
 @Getter
 public class CsvException extends NestedRuntimeException {
     private final CsvError error;
+    private final byte[] csv;
 
-    public CsvException(CsvError error) {
+    public CsvException(CsvError error, byte[] csv) {
         super(error.getErrorMessage());
         this.error = error;
+        this.csv = csv;
     }
 }

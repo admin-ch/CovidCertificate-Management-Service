@@ -1,13 +1,8 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
-import ch.admin.bag.covidcertificate.FixtureCustomization;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
-import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
-import ch.admin.bag.covidcertificate.api.request.SystemSource;
-import ch.admin.bag.covidcertificate.api.response.CheckRevocationListResponseDto;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
-import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import ch.admin.bag.covidcertificate.service.RevocationService;
 import ch.admin.bag.covidcertificate.testutil.JeapAuthenticationTestTokenBuilder;
@@ -25,16 +20,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationListDto;
@@ -63,8 +52,7 @@ class RevocationControllerTest {
     private RevocationService revocationService;
     @Mock
     private KpiDataService kpiLogService;
-    @Mock
-    private ServletJeapAuthorization jeapAuthorization;
+
     private MockMvc mockMvc;
 
     @BeforeAll
@@ -82,7 +70,6 @@ class RevocationControllerTest {
                 .thenReturn(fixture.collections().createCollection(List.class, String.class));
         Jwt jwt = mock(Jwt.class);
         JeapAuthenticationToken token = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).build();
-        lenient().when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
     }
 
     @Nested
@@ -92,11 +79,6 @@ class RevocationControllerTest {
         @Test
         @DisplayName("GIVEN a uvci WHEN it is not already revoked THEN we return status 201")
         void revokeCertificateAndReturnCreatedStatus_ifNotRevokedYet() throws Exception {
-            Jwt jwt = mock(Jwt.class);
-            when(jwt.getClaimAsString(anyString())).thenReturn(fixture.create(String.class));
-            JeapAuthenticationToken token = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).build();
-            lenient().when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
-
             var createDto = fixture.create(RevocationDto.class);
             when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
             doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());

@@ -4,7 +4,7 @@ import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateGenerationCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.Issuable;
@@ -97,7 +97,7 @@ public class FixtureCustomization {
         });
     }
 
-    public static void customizeCovidCertificateAddressDto(JFixture fixture, CertificateCreateDto createDto, String field, Object value) {
+    public static void customizeCovidCertificateAddressDto(JFixture fixture, CertificateGenerationCreateDto createDto, String field, Object value) {
         fixture.customise().lazyInstance(CovidCertificateAddressDto.class, () -> {
             var covidCertificateAddressDto = new JFixture().create(CovidCertificateAddressDto.class);
             ReflectionTestUtils.setField(covidCertificateAddressDto, field, value);

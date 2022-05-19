@@ -13,7 +13,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_ANTIBODY_DATA;
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AntibodyCertificateCreateDto extends CertificateCreateDto {
+public class AntibodyCertificateCreateDto extends CertificateGenerationCreateDto {
 
     private List<AntibodyCertificateDataDto> antibodyInfo;
 

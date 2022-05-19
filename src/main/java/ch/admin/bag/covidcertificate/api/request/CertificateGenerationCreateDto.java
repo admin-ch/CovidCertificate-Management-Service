@@ -20,7 +20,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class CertificateCreateDto {
+public abstract class CertificateGenerationCreateDto {
     @JsonUnwrapped
     private CovidCertificatePersonDto personData;
     private String language;
@@ -30,7 +30,7 @@ public abstract class CertificateCreateDto {
     private SystemSource systemSource;
     private String userExtId;
 
-    protected CertificateCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String appCode, SystemSource systemSource) {
+    protected CertificateGenerationCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String appCode, SystemSource systemSource) {
         this.personData = personData;
         this.language = language;
         this.address = address;

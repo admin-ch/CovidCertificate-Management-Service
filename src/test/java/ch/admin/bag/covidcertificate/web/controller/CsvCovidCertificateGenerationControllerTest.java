@@ -1,8 +1,8 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
-import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
-import ch.admin.bag.covidcertificate.service.CsvService;
+import ch.admin.bag.covidcertificate.api.response.CsvCertificateGenerationResponseDto;
+import ch.admin.bag.covidcertificate.service.CsvCovidCertificateGenerationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flextrade.jfixture.JFixture;
@@ -28,14 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @ExtendWith(MockitoExtension.class)
-class CsvControllerTest {
+class CsvCovidCertificateGenerationControllerTest {
     private static final String B_URL = "/api/v1/covidcertificate/csv";
     private static final JFixture fixture = new JFixture();
     private final ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().modules(new JavaTimeModule()).build();
     @InjectMocks
-    private CsvController controller;
+    private CsvCovidCertificateGenerationController controller;
     @Mock
-    private CsvService csvService;
+    private CsvCovidCertificateGenerationService csvCovidCertificateGenerationService;
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -52,8 +52,8 @@ class CsvControllerTest {
                 "text/csv",
                 "Hello, World!".getBytes()
         );
-        CsvResponseDto csvResponseDto = fixture.create(CsvResponseDto.class);
-        when(csvService.handleCsvRequest(any(MultipartFile.class), any(String.class))).thenReturn(csvResponseDto);
+        CsvCertificateGenerationResponseDto csvResponseDto = fixture.create(CsvCertificateGenerationResponseDto.class);
+        when(csvCovidCertificateGenerationService.handleCsvRequest(any(MultipartFile.class), any(String.class))).thenReturn(csvResponseDto);
 
         MvcResult result = mockMvc
                 .perform(multipart(B_URL)
@@ -63,7 +63,7 @@ class CsvControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        CsvResponseDto expectedDto = mapper.readValue(result.getResponse().getContentAsString(), CsvResponseDto.class);
+        CsvCertificateGenerationResponseDto expectedDto = mapper.readValue(result.getResponse().getContentAsString(), CsvCertificateGenerationResponseDto.class);
         assertEquals(csvResponseDto, expectedDto);
     }
 

@@ -5,7 +5,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class TestCertificateCsvBeanTest {
+class TestCertificateGenerationCsvBeanTest {
 
     @Test
     void mapToCreateDto_validFields_dtoCreated(){

@@ -13,7 +13,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_VACCINATION_DATA;
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class VaccinationCertificateCreateDto extends CertificateCreateDto {
+public class VaccinationCertificateCreateDto extends CertificateGenerationCreateDto {
 
     private List<VaccinationCertificateDataDto> vaccinationInfo;
 

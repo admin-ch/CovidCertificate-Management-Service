@@ -2,16 +2,20 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.mapper.RevocationMapper;
+import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
+import ch.admin.bag.covidcertificate.api.request.UvciForRevocationDto;
+import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
+import ch.admin.bag.covidcertificate.api.response.RevocationListResponseDto;
 import ch.admin.bag.covidcertificate.domain.KpiDataRepository;
 import ch.admin.bag.covidcertificate.domain.Revocation;
 import ch.admin.bag.covidcertificate.domain.RevocationRepository;
-import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,12 +24,18 @@ import java.util.stream.Stream;
 import static ch.admin.bag.covidcertificate.api.Constants.ALREADY_REVOKED_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_FAILURE;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_REDUNDANT;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_MASS_REVOCATION_SUCCESS;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class RevocationService {
 
+    private final KpiDataService kpiLogService;
     private final RevocationRepository revocationRepository;
     private final KpiDataRepository kpiDataRepository;
 
@@ -46,6 +56,43 @@ public class RevocationService {
         }
     }
 
+    public RevocationListResponseDto performMassRevocation(RevocationListDto revocationListDto) {
+        Map<String, String> uvcisToErrorMessage = getUvcisWithErrorMessage(
+                revocationListDto.getUvcis().stream()
+                        .map(UvciForRevocationDto::getUvci)
+                        .collect(Collectors.toList())
+        );
+
+        List<String> revokedUvcis = new LinkedList<>();
+        for (UvciForRevocationDto uvciForRevocation : revocationListDto.getUvcis()) {
+
+            String errorMessage = uvcisToErrorMessage.get(uvciForRevocation.getUvci());
+            if (errorMessage == null) {
+                try {
+                    createRevocation(uvciForRevocation.getUvci(), uvciForRevocation.getFraud());
+                    kpiLogService.logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_SUCCESS, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
+                    revokedUvcis.add(uvciForRevocation.getUvci());
+                } catch (Exception ex) {
+                    uvcisToErrorMessage.put(uvciForRevocation.getUvci(), "Error during revocation");
+                }
+            } else {
+                try {
+                    if (errorMessage.startsWith(ALREADY_REVOKED_UVCI.getErrorMessage())) {
+                        kpiLogService.logRevocationKpi(KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_REDUNDANT, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
+                    } else if (errorMessage.equals(INVALID_UVCI.getErrorMessage())) {
+                        kpiLogService.logRevocationKpi(KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_FAILURE, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
+                    } else {
+                        log.warn("Mass-revocation failed for unknown reason: {}.", errorMessage);
+                    }
+                } catch (Exception ex) {
+                    log.error("Mass-revocation KPI Log failed: {}.", ex.getLocalizedMessage(), ex);
+                }
+            }
+        }
+
+        return new RevocationListResponseDto(uvcisToErrorMessage, revokedUvcis);
+    }
+
     @Transactional(readOnly = true)
     public Map<String, String> getUvcisWithErrorMessage(List<String> uvciList) {
         Map<String, String> uvcisToErrorMessage = Stream
@@ -64,7 +111,7 @@ public class RevocationService {
         Map<String, String> invalidUvcisToErrorMessage = new HashMap<>();
 
         for (String uvci : uvciList) {
-            if (!UVCI.isValid(uvci)) {
+            if (!UvciValidator.isValid(uvci)) {
                 invalidUvcisToErrorMessage.put(uvci, INVALID_UVCI.getErrorMessage());
             }
         }
