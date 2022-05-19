@@ -18,11 +18,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ALREADY_REVOKED_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_FRAUD_FLAG;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
@@ -58,9 +60,7 @@ public class RevocationService {
 
     public RevocationListResponseDto performMassRevocation(RevocationListDto revocationListDto) {
         Map<String, String> uvcisToErrorMessage = getUvcisWithErrorMessage(
-                revocationListDto.getUvcis().stream()
-                        .map(UvciForRevocationDto::getUvci)
-                        .collect(Collectors.toList())
+                revocationListDto.getUvcis()
         );
 
         List<String> revokedUvcis = new LinkedList<>();
@@ -94,20 +94,28 @@ public class RevocationService {
     }
 
     @Transactional(readOnly = true)
-    public Map<String, String> getUvcisWithErrorMessage(List<String> uvciList) {
-        Map<String, String> uvcisToErrorMessage = Stream
-                .concat(
-                        getInvalidUvcis(uvciList).entrySet().stream(),
-                        getAlreadyRevokedUvcis(uvciList).entrySet().stream()
+    Map<String, String> getUvcisWithErrorMessage(List<UvciForRevocationDto> uvciForRevocationDtos) {
+        List<String> uvcis = uvciForRevocationDtos.stream()
+                .map(UvciForRevocationDto::getUvci)
+                .collect(Collectors.toList()
+                );
+        Map<String, String> uvcisToErrorMessage = Stream.of(
+                        getInvalidUvcis(uvcis).entrySet(),
+                        getUvcisWithMissingFraudFlag(uvciForRevocationDtos).entrySet(),
+                        getAlreadyRevokedUvcis(uvcis).entrySet()
                 )
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .flatMap(Set::stream)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (left, right) -> { left = left + " " + right; return left; }
+                ));
 
         return uvcisToErrorMessage;
     }
 
-
     @Transactional(readOnly = true)
-    public Map<String, String> getInvalidUvcis(List<String> uvciList) {
+    Map<String, String> getInvalidUvcis(List<String> uvciList) {
         Map<String, String> invalidUvcisToErrorMessage = new HashMap<>();
 
         for (String uvci : uvciList) {
@@ -119,8 +127,20 @@ public class RevocationService {
         return invalidUvcisToErrorMessage;
     }
 
+    private Map<String, String> getUvcisWithMissingFraudFlag(List<UvciForRevocationDto> uvciForRevocationDtos) {
+        Map<String, String> invalidUvcisToErrorMessage = new HashMap<>();
+
+        for (UvciForRevocationDto dto : uvciForRevocationDtos) {
+            if (dto.getFraud() == null) {
+                invalidUvcisToErrorMessage.put(dto.getUvci(), INVALID_FRAUD_FLAG.getErrorMessage());
+            }
+        }
+
+        return invalidUvcisToErrorMessage;
+    }
+
     @Transactional(readOnly = true)
-    public Map<String, String> getAlreadyRevokedUvcis(List<String> uvciList) {
+    Map<String, String> getAlreadyRevokedUvcis(List<String> uvciList) {
         Map<String, String> alreadyRevokedUvciToErrorMessage = new HashMap<>();
 
         for (String uvci : uvciList) {

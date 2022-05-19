@@ -61,7 +61,11 @@ public class CsvRevocationService {
         }
 
         byte[] csv = createCsvResponse(csvBeans, charset);
-        return new CsvRevocationResponseDto(csv);
+        return new CsvRevocationResponseDto(
+                (int) csvBeans.stream().filter(c -> c.getError() != null).count(),
+                (int) csvBeans.stream().filter(c -> c.getError() == null).count(),
+                csv
+        );
     }
 
     private byte[] createCsvResponse(List<RevocationCsvBean> csvBeans, Charset charset) throws IOException {
