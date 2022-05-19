@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.exception.CsvError;
+import ch.admin.bag.covidcertificate.api.exception.CsvErrorWithResponse;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCsvBean;
@@ -146,7 +146,7 @@ public class CsvCovidCertificateGenerationService {
         var returnFile = writeCsv(csvBeans, charset);
         byte[] errorCsv = Files.readAllBytes(returnFile.toPath());
         Files.delete(returnFile.toPath());
-        throw new CsvException(new CsvError(INVALID_CREATE_REQUESTS), errorCsv);
+        throw new CsvException(new CsvErrorWithResponse(INVALID_CREATE_REQUESTS, errorCsv));
     }
 
     private List<CovidCertificateCreateResponseDto> createRecoveryCertificates(
