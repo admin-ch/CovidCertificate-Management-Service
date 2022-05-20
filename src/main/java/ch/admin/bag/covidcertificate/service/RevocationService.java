@@ -96,12 +96,13 @@ public class RevocationService {
     }
 
     @Transactional(readOnly = true)
-    Map<String, String> getUvcisWithErrorMessage(List<UvciForRevocationDto> uvciForRevocationDtos) {
+    public Map<String, String> getUvcisWithErrorMessage(List<UvciForRevocationDto> uvciForRevocationDtos) {
         List<String> uvcis = uvciForRevocationDtos.stream()
                 .map(UvciForRevocationDto::getUvci)
-                .collect(Collectors.toList()
-                );
+                .collect(Collectors.toList());
+
         Map<String, String> uvcisToErrorMessage = Stream.of(
+                        // get all possible errors for uvcis
                         getInvalidUvcis(uvcis).entrySet(),
                         getUvcisWithMissingFraudFlag(uvciForRevocationDtos).entrySet(),
                         getAlreadyRevokedUvcis(uvcis).entrySet()
@@ -110,14 +111,17 @@ public class RevocationService {
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
-                        (left, right) -> { left = left + " " + right; return left; }
+                        // combine messages if there are multiple errors for same uvci
+                        (left, right) -> {
+                            left = left + " " + right;
+                            return left;
+                        }
                 ));
 
         return uvcisToErrorMessage;
     }
 
-    @Transactional(readOnly = true)
-    Map<String, String> getInvalidUvcis(List<String> uvciList) {
+    private Map<String, String> getInvalidUvcis(List<String> uvciList) {
         Map<String, String> invalidUvcisToErrorMessage = new HashMap<>();
 
         for (String uvci : uvciList) {
@@ -142,7 +146,7 @@ public class RevocationService {
     }
 
     @Transactional(readOnly = true)
-    Map<String, String> getAlreadyRevokedUvcis(List<String> uvciList) {
+    public Map<String, String> getAlreadyRevokedUvcis(List<String> uvciList) {
         Map<String, String> alreadyRevokedUvciToErrorMessage = new HashMap<>();
 
         for (String uvci : uvciList) {
