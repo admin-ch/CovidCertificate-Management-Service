@@ -11,4 +11,9 @@ public class RevocationException extends NestedRuntimeException {
         super(error.getErrorMessage());
         this.error = error;
     }
+
+    public RevocationException(CsvError error, Object... objects) {
+        super(String.format(error.getErrorMessage(), objects));
+        this.error = new RevocationError(error.getErrorCode(), String.format(error.getErrorMessage(), objects), error.getHttpStatus());
+    }
 }

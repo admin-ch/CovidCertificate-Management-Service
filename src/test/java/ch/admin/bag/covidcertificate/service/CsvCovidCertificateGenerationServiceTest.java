@@ -8,7 +8,7 @@ import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
-import ch.admin.bag.covidcertificate.api.response.CsvResponseDto;
+import ch.admin.bag.covidcertificate.api.response.CsvCertificateGenerationResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +60,7 @@ import static org.mockito.Mockito.when;
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
-class CsvServiceTest {
+class CsvCovidCertificateGenerationServiceTest {
     private final JFixture fixture = new JFixture();
     private final File validRecoveryFile;
     private final File validTestFile;
@@ -71,7 +71,9 @@ class CsvServiceTest {
     private final File invalidMultipleCsv;
     private final File validMultipleCsv;
     @InjectMocks
-    private CsvService service;
+    private CsvCovidCertificateGenerationService service;
+    @Mock
+    private FileService fileService;
     @Mock
     private CovidCertificateGenerationService covidCertificateGenerationService;
     @Mock
@@ -81,7 +83,7 @@ class CsvServiceTest {
     @Mock
     private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
-    public CsvServiceTest() {
+    public CsvCovidCertificateGenerationServiceTest() {
         validRecoveryFile = new File("src/test/resources/csv/recovery_csv_valid.csv");
         validTestFile = new File("src/test/resources/csv/test_csv_valid.csv");
         invalidTestFile = new File("src/test/resources/csv/test_csv_adress_invalid.csv");
@@ -132,6 +134,7 @@ class CsvServiceTest {
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(
                 any(VaccinationCertificateCreateDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(fileService.getSeparator(any(MultipartFile.class))).thenReturn(';');
     }
 
     @Test
@@ -152,7 +155,7 @@ class CsvServiceTest {
         var recoveryName = CertificateType.RECOVERY.name();
         var exception = assertThrows(CreateCertificateException.class,
                 () -> service.handleCsvRequest(file, recoveryName));
-        assertEquals(INVALID_CSV_SIZE, exception.getError());
+        assertEquals(INVALID_CSV_SIZE.getErrorCode(), exception.getError().getErrorCode());
     }
 
     @Test
@@ -233,7 +236,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validRecoveryFile);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.RECOVERY.name());
+            CsvCertificateGenerationResponseDto response = service.handleCsvRequest(file, CertificateType.RECOVERY.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -242,8 +245,7 @@ class CsvServiceTest {
         @ValueSource(strings = {"src/test/resources/csv/recovery_ansi.csv",
                 "src/test/resources/csv/recovery_print_ansi.csv",
                 "src/test/resources/csv/recovery_print_utf8.csv",
-                "src/test/resources/csv/recovery_utf8.csv",
-                "src/test/resources/csv/recovery_ansi_tab.csv"})
+                "src/test/resources/csv/recovery_utf8.csv"})
         void massTest(String path) throws IOException {
             var file = Mockito.mock(MultipartFile.class);
             var inputStream = new FileInputStream(path);
@@ -251,7 +253,22 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(path);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.RECOVERY.name());
+            CsvCertificateGenerationResponseDto response = service.handleCsvRequest(file, CertificateType.RECOVERY.name());
+            assertNotNull(response.getZip());
+            inputStream.close();
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"src/test/resources/csv/recovery_ansi_tab.csv"})
+        void testWithTabs(String path) throws IOException {
+            var file = Mockito.mock(MultipartFile.class);
+            var inputStream = new FileInputStream(path);
+            var inputStream2 = new FileInputStream(path);
+            var inputStream3 = new FileInputStream(path);
+            when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
+            lenient().when(fileService.getSeparator(any(MultipartFile.class))).thenReturn('\t');
+
+            CsvCertificateGenerationResponseDto response = service.handleCsvRequest(file, CertificateType.RECOVERY.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -267,7 +284,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validTestFile);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.TEST.name());
+            CsvCertificateGenerationResponseDto response = service.handleCsvRequest(file, CertificateType.TEST.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -296,7 +313,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(path);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.TEST.name());
+            CsvCertificateGenerationResponseDto response = service.handleCsvRequest(file, CertificateType.TEST.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -312,7 +329,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validVaccinationFile);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
+            CsvCertificateGenerationResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -325,7 +342,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(validMultipleCsv);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
+            CsvCertificateGenerationResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -342,7 +359,7 @@ class CsvServiceTest {
             var inputStream3 = new FileInputStream(path);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
+            CsvCertificateGenerationResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
@@ -355,7 +372,7 @@ class CsvServiceTest {
     class VaccinationCsvTests {
 
         @ParameterizedTest
-        @MethodSource("ch.admin.bag.covidcertificate.service.CsvServiceTest#validVaccinationCsv")
+        @MethodSource("ch.admin.bag.covidcertificate.service.CsvCovidCertificateGenerationServiceTest#validVaccinationCsv")
         @DisplayName("Given a valid vaccination CSV, when validated, it should not return errors.")
         void validVaccinationCsvTest(String validCsvFilePath) throws IOException {
             var file = Mockito.mock(MultipartFile.class);
@@ -363,14 +380,15 @@ class CsvServiceTest {
             var inputStream2 = new FileInputStream(validCsvFilePath);
             var inputStream3 = new FileInputStream(validCsvFilePath);
             when(file.getInputStream()).thenReturn(inputStream, inputStream2, inputStream3);
+            lenient().when(fileService.getSeparator(any(MultipartFile.class))).thenReturn(',');
 
-            CsvResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
+            CsvCertificateGenerationResponseDto response = service.handleCsvRequest(file, CertificateType.VACCINATION.name());
             assertNotNull(response.getZip());
             inputStream.close();
         }
 
         @ParameterizedTest
-        @MethodSource("ch.admin.bag.covidcertificate.service.CsvServiceTest#invalidVaccinationCsv")
+        @MethodSource("ch.admin.bag.covidcertificate.service.CsvCovidCertificateGenerationServiceTest#invalidVaccinationCsv")
         @DisplayName("Given a invalid vaccination CSV, when validated, it should not return errors.")
         void invalidVaccinationCsvTest(String validCsvFilePath) throws IOException {
             var file = Mockito.mock(MultipartFile.class);

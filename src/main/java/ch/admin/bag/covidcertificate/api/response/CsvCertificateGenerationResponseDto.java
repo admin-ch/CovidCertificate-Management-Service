@@ -7,7 +7,7 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
-public class CsvResponseDto {
+public class CsvCertificateGenerationResponseDto {
     @NonNull
     private byte[] zip;
 }

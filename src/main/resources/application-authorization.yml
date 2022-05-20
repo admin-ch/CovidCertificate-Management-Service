@@ -327,6 +327,7 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
+
       bulk-revoke-certificates:
         identifier: "bulk-revoke-certificates"
         from: 2022-01-01T00:00:00
@@ -677,7 +678,7 @@ services:
         one-of: ${roles.groups.legacy},${roles.groups.cert-creators-plus},${roles.id.user.revocator}
         uri: "/api/v1/revocation"
 
-      # Mass-Revocation
+      # Mass-Revocation (for API Gateway)
       bulk-revoke-certificates:
         identifier: "bulk-revoke-certificates"
         from: 2022-01-01T00:00:00
@@ -693,13 +694,21 @@ services:
         one-of: ${roles.groups.legacy},${roles.id.user.api}
         uri: "/api/v1/otp"
 
-      # bulk operations
+      # bulk operations: create
       bulk-create-certificates:
         identifier: "bulk-create-certificates"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         one-of: ${roles.groups.legacy},${roles.id.cert.bulk}
         uri: "/api/v1/covidcertificate/csv"
+
+      # bulk operations: massrevocation (CSV)
+      csv-bulk-revoke-certificates:
+        identifier: "csv-bulk-revoke-certificates"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.cert.bulk}
+        uri: "/api/v1/revocation/csv"
 
       # valuesets
       valuesets:

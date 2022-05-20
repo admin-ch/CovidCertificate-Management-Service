@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
+import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,5 +22,7 @@ public class UvciForRevocationDto {
         if (fraud == null) {
             throw new RevocationException(INVALID_FRAUD_FLAG);
         }
+
+        UvciValidator.validateUvciMatchesSpecification(uvci);
     }
 }

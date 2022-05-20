@@ -11,4 +11,9 @@ public class CreateCertificateException extends NestedRuntimeException {
         super(String.format(error.getErrorMessage(), objects));
         this.error = new CreateCertificateError(error.getErrorCode(), String.format(error.getErrorMessage(), objects), error.getHttpStatus());
     }
+
+    public CreateCertificateException(CsvError error, Object... objects) {
+        super(String.format(error.getErrorMessage(), objects));
+        this.error = new CreateCertificateError(error.getErrorCode(), String.format(error.getErrorMessage(), objects), error.getHttpStatus());
+    }
 }
