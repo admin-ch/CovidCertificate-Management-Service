@@ -3,7 +3,7 @@ package ch.admin.bag.covidcertificate.service.test;
 import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.CertificateGenerationCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
@@ -104,7 +104,7 @@ public class TestCovidCertificateGenerationService {
             AbstractCertificateQrCode qrCodeData,
             AbstractCertificatePdf pdfData,
             String uvci,
-            CertificateGenerationCreateDto createDto,
+            CertificateCreateDto createDto,
             SigningInformationDto signingInformation) throws JsonProcessingException {
         var expiration24Months = coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS);
         return this.generateCovidCertificate(qrCodeData, pdfData, uvci, createDto, signingInformation,
@@ -115,7 +115,7 @@ public class TestCovidCertificateGenerationService {
             AbstractCertificateQrCode qrCodeData,
             AbstractCertificatePdf pdfData,
             String uvci,
-            CertificateGenerationCreateDto createDto,
+            CertificateCreateDto createDto,
             SigningInformationDto signingInformation,
             Instant expiration) throws JsonProcessingException {
         var contents = objectMapper.writer().writeValueAsString(qrCodeData);

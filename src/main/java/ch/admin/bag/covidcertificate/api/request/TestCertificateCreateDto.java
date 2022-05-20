@@ -13,7 +13,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_TEST_DATA;
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TestCertificateCreateDto extends CertificateGenerationCreateDto {
+public class TestCertificateCreateDto extends CertificateCreateDto {
 
     private List<TestCertificateDataDto> testInfo;
 

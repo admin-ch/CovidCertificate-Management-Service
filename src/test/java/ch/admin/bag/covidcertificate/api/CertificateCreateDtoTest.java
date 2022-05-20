@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.CertificateGenerationCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
@@ -12,13 +12,13 @@ import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class CertificateGenerationCreateDtoTest {
+public class CertificateCreateDtoTest {
 
     private final CovidCertificatePersonDto personDto = mock(CovidCertificatePersonDto.class);
     private final String language = "de";
     private final CovidCertificateAddressDto addressDto = new CovidCertificateAddressDto("street", 1000, "city", "BE");
 
-    private static class CertificateCreateDtoIml extends CertificateGenerationCreateDto {
+    private static class CertificateCreateDtoIml extends CertificateCreateDto {
         public CertificateCreateDtoIml(
                 CovidCertificatePersonDto personData,
                 String language,
@@ -58,7 +58,7 @@ public class CertificateGenerationCreateDtoTest {
 
     @Test
     public void throwsCertificateCreateException__onNoPersonData() {
-        CertificateGenerationCreateDto testee = new CertificateCreateDtoIml(
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
                 null,
                 language,
                 addressDto,
@@ -78,7 +78,7 @@ public class CertificateGenerationCreateDtoTest {
 
     @Test
     public void throwsCertificateCreateException__onInvalidLanguage() {
-        CertificateGenerationCreateDto testee = new CertificateCreateDtoIml(
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 null,
                 addressDto,
@@ -107,7 +107,7 @@ public class CertificateGenerationCreateDtoTest {
 
     @Test
     public void doesValidateSuccessfully() {
-        CertificateGenerationCreateDto testee = new CertificateCreateDtoIml(
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto,
                 "de",
                 addressDto,
@@ -118,7 +118,7 @@ public class CertificateGenerationCreateDtoTest {
 
     @Test
     public void throwsException__ifAddressAndInAppDeliveryCodeArePassed() {
-        CertificateGenerationCreateDto testee = new CertificateCreateDtoIml(
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto, "de", addressDto, RandomStringUtils.randomAlphanumeric(9), SystemSource.WebUI);
 
         CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
@@ -136,26 +136,26 @@ public class CertificateGenerationCreateDtoTest {
 
     @Test
     public void validatesSuccessfully__ifAddressOnlyIsPassed() {
-        CertificateGenerationCreateDto testee = new CertificateCreateDtoIml(personDto, "de", addressDto, SystemSource.WebUI);
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", addressDto, SystemSource.WebUI);
         assertDoesNotThrow(testee::validate);
     }
 
     @Test
     public void validatesSuccessfully__ifInAppDeliveryCodeOnlyIsPassed() {
-        CertificateGenerationCreateDto testee = new CertificateCreateDtoIml(
+        CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto, "de", RandomStringUtils.randomAlphanumeric(9), SystemSource.WebUI);
         assertDoesNotThrow(testee::validate);
     }
 
     @Test
     public void validatesSuccessfully__ifNoDeliveryIsPassed() {
-        CertificateGenerationCreateDto testee = new CertificateCreateDtoIml(personDto, "de", SystemSource.WebUI);
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", SystemSource.WebUI);
         assertDoesNotThrow(testee::validate);
     }
 
     @Test
     public void validatesSuccessfully__ifInAppDeliveryCodeContainsSpaces() {
-        CertificateGenerationCreateDto testee = new CertificateCreateDtoIml(personDto, "de", " 123 456 789 ", SystemSource.WebUI);
+        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", " 123 456 789 ", SystemSource.WebUI);
         assertDoesNotThrow(testee::validate);
         assertEquals("123456789", testee.getAppCode());
     }

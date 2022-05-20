@@ -1,6 +1,6 @@
 package ch.admin.bag.covidcertificate.api.mapper;
 
-import ch.admin.bag.covidcertificate.api.request.CertificateGenerationCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequestDto;
@@ -20,14 +20,14 @@ public class CertificatePrintRequestDtoMapper {
     @Value("${cc-printing-service.billing.since-vaccination-date}")
     private @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate sinceVaccinationDate;
 
-    public CertificatePrintRequestDto toCertificatePrintRequestDto(byte[] pdf, String uvci, CertificateGenerationCreateDto createDto) {
+    public CertificatePrintRequestDto toCertificatePrintRequestDto(byte[] pdf, String uvci, CertificateCreateDto createDto) {
         CovidCertificateAddressDto addressDto = createDto.getAddress();
         String addressLine1 = createDto.getPersonData().getName().getGivenName() + " " + createDto.getPersonData().getName().getFamilyName();
         return new CertificatePrintRequestDto(pdf, uvci, addressLine1, addressDto.getStreetAndNr(),
                 addressDto.getZipCode(), addressDto.getCity(), createDto.getLanguage(), createDto.getAddress().getCantonCodeSender(), isBillable(createDto));
     }
 
-    private boolean isBillable(CertificateGenerationCreateDto createDto){
+    private boolean isBillable(CertificateCreateDto createDto){
         var vaccinationDate = createDto instanceof VaccinationCertificateCreateDto ? ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(0).getVaccinationDate() : null;
         return vaccinationDate != null &&
                 vaccinationDate.compareTo(sinceVaccinationDate) >= 0;

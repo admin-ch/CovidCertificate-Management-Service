@@ -13,7 +13,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_EXCEPTIONAL_INFO;
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ExceptionalCertificateCreateDto extends CertificateGenerationCreateDto {
+public class ExceptionalCertificateCreateDto extends CertificateCreateDto {
 
     private List<ExceptionalCertificateDataDto> exceptionalInfo;
 

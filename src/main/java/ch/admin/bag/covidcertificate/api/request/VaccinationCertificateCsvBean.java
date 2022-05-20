@@ -15,7 +15,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_VACCINATION_DA
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class VaccinationCertificateCsvBean extends CertificateGenerationCsvBean {
+public class VaccinationCertificateCsvBean extends CertificateCreateCsvBean {
 
     @CsvBindByName(column = "medicinalProductCode")
     private String medicinalProductCode;

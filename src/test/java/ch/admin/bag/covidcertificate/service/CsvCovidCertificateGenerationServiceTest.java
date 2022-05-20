@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
-import ch.admin.bag.covidcertificate.api.request.CertificateGenerationCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
@@ -204,7 +204,7 @@ class CsvCovidCertificateGenerationServiceTest {
         inputStream3.close();
     }
 
-    private static class CertificateCreateDtoFamilyNameMatcher<T extends CertificateGenerationCreateDto>
+    private static class CertificateCreateDtoFamilyNameMatcher<T extends CertificateCreateDto>
             implements ArgumentMatcher<T> {
         private final String familyName;
 

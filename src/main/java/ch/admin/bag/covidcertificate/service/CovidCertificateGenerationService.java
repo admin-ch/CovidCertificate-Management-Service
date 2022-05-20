@@ -4,7 +4,7 @@ import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.CertificateGenerationCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
@@ -279,7 +279,7 @@ public class CovidCertificateGenerationService {
             AbstractCertificateQrCode qrCodeData,
             AbstractCertificatePdf pdfData,
             String uvci,
-            CertificateGenerationCreateDto createDto,
+            CertificateCreateDto createDto,
             SigningInformationDto signingInformation)
             throws JsonProcessingException {
 
@@ -297,7 +297,7 @@ public class CovidCertificateGenerationService {
             AbstractCertificateQrCode qrCodeData,
             AbstractCertificatePdf pdfData,
             String uvci,
-            CertificateGenerationCreateDto createDto,
+            CertificateCreateDto createDto,
             SigningInformationDto signingInformation,
             Instant expiration) throws JsonProcessingException {
         var contents = objectMapper.writer().writeValueAsString(qrCodeData);

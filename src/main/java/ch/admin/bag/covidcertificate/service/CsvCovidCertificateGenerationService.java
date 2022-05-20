@@ -5,8 +5,8 @@ import ch.admin.bag.covidcertificate.api.exception.CsvErrorWithResponse;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCsvBean;
-import ch.admin.bag.covidcertificate.api.request.CertificateGenerationCreateDto;
-import ch.admin.bag.covidcertificate.api.request.CertificateGenerationCsvBean;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateCsvBean;
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCsvBean;
@@ -101,13 +101,13 @@ public class CsvCovidCertificateGenerationService {
         }
     }
 
-    private byte[] handleCsvRequest(MultipartFile file, Class<? extends CertificateGenerationCsvBean> csvBeanClass)
+    private byte[] handleCsvRequest(MultipartFile file, Class<? extends CertificateCreateCsvBean> csvBeanClass)
             throws IOException {
         final var charset = Charset.forName(UniversalDetector.detectCharset(file.getInputStream()));
         log.debug("Found charset {} for file", charset);
-        List<CertificateGenerationCsvBean> csvBeans = mapToBean(file, csvBeanClass, charset);
+        List<CertificateCreateCsvBean> csvBeans = mapToBean(file, csvBeanClass, charset);
         checkSize(csvBeans);
-        List<CertificateGenerationCreateDto> createDtos = mapToCreateDtos(csvBeans);
+        List<CertificateCreateDto> createDtos = mapToCreateDtos(csvBeans);
         if (areCreateCertificateRequestsValid(createDtos, csvBeans)) {
             List<CovidCertificateCreateResponseDto> responseDtos = createCertificates(createDtos, csvBeanClass);
             return zipGeneratedCertificates(getPdfMap(responseDtos));
@@ -117,7 +117,7 @@ public class CsvCovidCertificateGenerationService {
     }
 
     private List<CovidCertificateCreateResponseDto> createCertificates(
-            List<CertificateGenerationCreateDto> createDtos, Class<?> csvBeanClass) throws JsonProcessingException {
+            List<CertificateCreateDto> createDtos, Class<?> csvBeanClass) throws JsonProcessingException {
         if (csvBeanClass == RecoveryCertificateCsvBean.class) {
             return createRecoveryCertificates(
                     createDtos.stream().map(RecoveryCertificateCreateDto.class::cast).collect(Collectors.toList()));
@@ -142,7 +142,7 @@ public class CsvCovidCertificateGenerationService {
         }
     }
 
-    private byte[] createCsvException(List<CertificateGenerationCsvBean> csvBeans, Charset charset) throws IOException {
+    private byte[] createCsvException(List<CertificateCreateCsvBean> csvBeans, Charset charset) throws IOException {
         var returnFile = writeCsv(csvBeans, charset);
         byte[] errorCsv = Files.readAllBytes(returnFile.toPath());
         Files.delete(returnFile.toPath());
@@ -267,8 +267,8 @@ public class CsvCovidCertificateGenerationService {
         return responseDtos;
     }
 
-    private List<CertificateGenerationCsvBean> mapToBean(
-            MultipartFile file, Class<? extends CertificateGenerationCsvBean> csvBeanClass,
+    private List<CertificateCreateCsvBean> mapToBean(
+            MultipartFile file, Class<? extends CertificateCreateCsvBean> csvBeanClass,
             Charset charset)
             throws IOException {
 
@@ -276,7 +276,7 @@ public class CsvCovidCertificateGenerationService {
         try (Reader reader = new BufferedReader(new InputStreamReader(
                 new UnicodeBOMInputStream(file.getInputStream()), charset))) {
 
-            CsvToBean<CertificateGenerationCsvBean> csvToBean = new CsvToBeanBuilder<CertificateGenerationCsvBean>(reader)
+            CsvToBean<CertificateCreateCsvBean> csvToBean = new CsvToBeanBuilder<CertificateCreateCsvBean>(reader)
                     .withSeparator(separator)
                     .withType(csvBeanClass)
                     .withIgnoreLeadingWhiteSpace(true)
@@ -289,7 +289,7 @@ public class CsvCovidCertificateGenerationService {
         }
     }
 
-    private List<CertificateGenerationCreateDto> mapToCreateDtos(List<CertificateGenerationCsvBean> csvBeans) {
+    private List<CertificateCreateDto> mapToCreateDtos(List<CertificateCreateCsvBean> csvBeans) {
         return csvBeans
                 .stream()
                 .map(csvBean -> {
@@ -304,8 +304,8 @@ public class CsvCovidCertificateGenerationService {
     }
 
     private boolean areCreateCertificateRequestsValid(
-            List<CertificateGenerationCreateDto> createDtos,
-            List<CertificateGenerationCsvBean> csvBeans) {
+            List<CertificateCreateDto> createDtos,
+            List<CertificateCreateCsvBean> csvBeans) {
 
         var hasError = false;
         for (var i = 0; i < createDtos.size(); i++) {
@@ -325,7 +325,7 @@ public class CsvCovidCertificateGenerationService {
         return !hasError;
     }
 
-    private void validate(CertificateGenerationCreateDto createDto) {
+    private void validate(CertificateCreateDto createDto) {
         createDto.validate();
         if (createDto instanceof RecoveryCertificateCreateDto) {
             var dataDto = ((RecoveryCertificateCreateDto) createDto).getRecoveryInfo().get(0);
@@ -367,11 +367,11 @@ public class CsvCovidCertificateGenerationService {
         }
     }
 
-    private File writeCsv(List<CertificateGenerationCsvBean> certificateCsvBeans, Charset charset) throws IOException {
+    private File writeCsv(List<CertificateCreateCsvBean> certificateCsvBeans, Charset charset) throws IOException {
         var tempId = UUID.randomUUID();
         var file = new File("temp" + tempId + ".csv");
         try (var csvWriter = new CSVWriter(new FileWriter(file, charset))) {
-            StatefulBeanToCsv<CertificateGenerationCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateGenerationCsvBean>(
+            StatefulBeanToCsv<CertificateCreateCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<CertificateCreateCsvBean>(
                     csvWriter)
                     .withSeparator(';')
                     .withApplyQuotesToAll(false)
@@ -384,7 +384,7 @@ public class CsvCovidCertificateGenerationService {
         }
     }
 
-    private void checkSize(List<CertificateGenerationCsvBean> csvBeans) {
+    private void checkSize(List<CertificateCreateCsvBean> csvBeans) {
         if (csvBeans.size() < MIN_CSV_ROWS || csvBeans.size() > MAX_CSV_ROWS) {
             throw new CreateCertificateException(INVALID_CSV_SIZE);
         }
