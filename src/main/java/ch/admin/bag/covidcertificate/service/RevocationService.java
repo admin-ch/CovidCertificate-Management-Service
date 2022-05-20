@@ -66,8 +66,8 @@ public class RevocationService {
         List<String> revokedUvcis = new LinkedList<>();
         for (UvciForRevocationDto uvciForRevocation : revocationListDto.getUvcis()) {
 
-            String errorMessage = uvcisToErrorMessage.get(uvciForRevocation.getUvci());
-            if (errorMessage == null) {
+            // revoke uvci if there are no error messages
+            if (uvcisToErrorMessage.get(uvciForRevocation.getUvci()) == null) {
                 try {
                     createRevocation(uvciForRevocation.getUvci(), uvciForRevocation.getFraud());
                     kpiLogService.logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_SUCCESS, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
@@ -75,14 +75,16 @@ public class RevocationService {
                 } catch (Exception ex) {
                     uvcisToErrorMessage.put(uvciForRevocation.getUvci(), "Error during revocation");
                 }
-            } else {
+            }
+
+            // log error message if we did not attempt to revoke the uvci OR had a problem during revocation
+            if (uvcisToErrorMessage.get(uvciForRevocation.getUvci()) != null) {
+                String errorMessage = uvcisToErrorMessage.get(uvciForRevocation.getUvci());
                 try {
                     if (errorMessage.startsWith(ALREADY_REVOKED_UVCI.getErrorMessage())) {
                         kpiLogService.logRevocationKpi(KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_REDUNDANT, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
-                    } else if (errorMessage.equals(INVALID_UVCI.getErrorMessage())) {
-                        kpiLogService.logRevocationKpi(KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_FAILURE, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
                     } else {
-                        log.warn("Mass-revocation failed for unknown reason: {}.", errorMessage);
+                        kpiLogService.logRevocationKpi(KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_FAILURE, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
                     }
                 } catch (Exception ex) {
                     log.error("Mass-revocation KPI Log failed: {}.", ex.getLocalizedMessage(), ex);
