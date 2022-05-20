@@ -33,7 +33,7 @@ public class DefaultPrintQueueClient implements PrintQueueClient {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUri);
 
         String uri = builder.toUriString();
-        log.debug("Call the PrintingService with url {}", serviceUri);
+        log.debug("Call the PrintingService with url {} for UVCI {}", serviceUri, printRequestDto.getUvci());
         try {
             ResponseEntity<Void> response = defaultWebClient.post()
                     .uri(uri)
@@ -44,10 +44,9 @@ public class DefaultPrintQueueClient implements PrintQueueClient {
 
             log.trace("PrintingService Response: {}", response);
             return response != null && response.getStatusCodeValue() == 201;
-
         } catch (WebClientResponseException e) {
-            log.error("Received error message", e);
-            throw new CreateCertificateException(PRINTING_FAILED);
+            // Message will be logged in ResponseStatusExceptionHandler
+            throw new CreateCertificateException(PRINTING_FAILED, printRequestDto.getUvci());
         }
     }
 }

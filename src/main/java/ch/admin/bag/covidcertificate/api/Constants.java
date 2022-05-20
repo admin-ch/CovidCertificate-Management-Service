@@ -141,9 +141,15 @@ public class Constants {
     public static final CreateCertificateError CREATE_COSE_SIGNATURE_DATA_FAILED = new CreateCertificateError(552, "Creating COSE signature data failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_SIGNATURE_FAILED = new CreateCertificateError(553, "Creating signature failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_COSE_SIGN1_FAILED = new CreateCertificateError(554, "Creating COSE_Sign1 failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555, "Creating barcode failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556, "Printing failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557, "Writing CSV failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555,
+                                                                                                  "Creating barcode failed.",
+                                                                                                  HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556,
+                                                                                            "Printing for UVCI %s failed due to a technical error.",
+                                                                                            HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError WRITING_RETURN_CSV_FAILED = new CreateCertificateError(557,
+                                                                                                      "Writing CSV failed.",
+                                                                                                      HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558, "App delivery failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError SIGNING_CERTIFICATE_MISSING = new CreateCertificateError(559, "No signing certificate was found.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError AMBIGUOUS_SIGNING_CERTIFICATE = new CreateCertificateError(560, "Ambiguous signing certificate. Multiple signing certificates were found.", HttpStatus.INTERNAL_SERVER_ERROR);
