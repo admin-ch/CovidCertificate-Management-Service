@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -54,16 +55,17 @@ public class CsvRevocationService {
                 new RevocationListDto(dtos, SystemSource.CsvUpload)
         );
 
+        // set error as status or default to status OK
         for (RevocationCsvBean bean : csvBeans) {
-            if (responseDto.getUvcisToErrorMessage().containsKey(bean.getUvci())) {
-                bean.setError(responseDto.getUvcisToErrorMessage().get(bean.getUvci()));
-            }
+            bean.setStatus(
+                    responseDto.getUvcisToErrorMessage().getOrDefault(bean.getUvci(), RevocationCsvBean.STATUS_OK)
+            );
         }
 
         byte[] csv = createCsvResponse(csvBeans, charset);
         return new CsvRevocationResponseDto(
-                (int) csvBeans.stream().filter(c -> c.getError() != null).count(),
-                (int) csvBeans.stream().filter(c -> c.getError() == null).count(),
+                (int) csvBeans.stream().filter(c -> !Objects.equals(c.getStatus(), RevocationCsvBean.STATUS_OK)).count(),
+                (int) csvBeans.stream().filter(c -> Objects.equals(c.getStatus(), RevocationCsvBean.STATUS_OK)).count(),
                 csv
         );
     }
@@ -98,7 +100,7 @@ public class CsvRevocationService {
                     try {
                         return csvBean.mapToDto();
                     } catch (RevocationException e) {
-                        csvBean.setError(e.getError().toString());
+                        csvBean.setStatus(e.getError().toString());
                     }
                     return null;
                 })
