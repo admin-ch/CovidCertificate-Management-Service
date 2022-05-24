@@ -17,12 +17,4 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_FRAUD_FLAG;
 public class UvciForRevocationDto {
     private String uvci;
     private Boolean fraud;
-
-    public void validate() {
-        if (fraud == null) {
-            throw new RevocationException(INVALID_FRAUD_FLAG);
-        }
-
-        UvciValidator.validateUvciMatchesSpecification(uvci);
-    }
 }

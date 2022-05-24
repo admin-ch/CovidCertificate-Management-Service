@@ -73,6 +73,7 @@ public class RevocationService {
                     kpiLogService.logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_SUCCESS, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
                     revokedUvcis.add(uvciForRevocation.getUvci());
                 } catch (Exception ex) {
+                    log.error("Error during mass-revocation: {}.", ex.getLocalizedMessage(), ex);
                     uvcisToErrorMessage.put(uvciForRevocation.getUvci(), "Error during revocation");
                 }
             }

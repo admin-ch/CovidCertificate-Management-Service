@@ -123,7 +123,7 @@ public class Constants {
     public static final RevocationError DUPLICATE_UVCI = new RevocationError(480, "Duplicate UVCI.", HttpStatus.CONFLICT);
 
     public static final CsvError INVALID_CSV = new CsvError(481, "The CSV can not be read!", HttpStatus.BAD_REQUEST);
-    public static final CsvError INVALID_CSV_SIZE = new CsvError(482, "The CSV has an ivalid size! Must contain 1 to 100 entries.", HttpStatus.BAD_REQUEST);
+    public static final CsvError INVALID_CSV_SIZE = new CsvError(482, "The CSV has an invalid size! Must contain 1 to 100 entries.", HttpStatus.BAD_REQUEST);
     public static final CsvError NOT_A_CSV = new CsvError(483, "The sent file is not a CSV file.", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_CERTIFICATE_TYPE = new CreateCertificateError(484, "Invalid certificate type! 'vaccination', 'test', and 'recovery' are allowed", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_CREATE_REQUESTS = new CreateCertificateError(485, "One or more of the requests in the CSV contain invalid data. For more detailed error messages check the returned CSV", HttpStatus.BAD_REQUEST);
@@ -140,6 +140,7 @@ public class Constants {
 
     public static final RevocationError UNKNOWN_UVCI = new RevocationError(495, "Uvci is not known.", HttpStatus.BAD_REQUEST);
     public static final RevocationError ALREADY_REVOKED_UVCI = new RevocationError(496, "Uvci is already revoked.", HttpStatus.BAD_REQUEST);
+    public static final RevocationError DUPLICATE_UVCI_IN_REQUEST = new RevocationError(497, "Same UVCI is duplicated in request.", HttpStatus.BAD_REQUEST);
 
     public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550, "Creating COSE protected header failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_COSE_PAYLOAD_FAILED = new CreateCertificateError(551, "Creating COSE payload failed.", HttpStatus.INTERNAL_SERVER_ERROR);

@@ -52,7 +52,7 @@ public class RevocationController {
     public RevocationListResponseDto massRevocation(@Valid @RequestBody RevocationListDto revocationListDto) {
         log.info("Call of mass-revocation.");
 
-        revocationListDto.validateListSize();
+        revocationListDto.validate();
 
         return revocationService.performMassRevocation(revocationListDto);
     }

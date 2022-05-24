@@ -13,13 +13,15 @@ import lombok.ToString;
 @AllArgsConstructor
 public class RevocationCsvBean {
 
+    public static final String STATUS_OK = "OK";
+
     @CsvBindByName(column = "uvci")
     private String uvci;
     @CsvBindByName(column = "fraud")
     private Boolean fraud;
-    @CsvBindByName(column = "error")
+    @CsvBindByName(column = "status")
     @Setter
-    private String error;
+    private String status;
 
     public UvciForRevocationDto mapToDto() {
         UvciForRevocationDto dataDto = new UvciForRevocationDto(

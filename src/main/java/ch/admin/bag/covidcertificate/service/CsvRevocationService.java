@@ -28,9 +28,11 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI_IN_REQUEST;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV_SIZE;
 import static ch.admin.bag.covidcertificate.api.Constants.WRITING_RETURN_CSV_FAILED;
@@ -49,21 +51,23 @@ public class CsvRevocationService {
         List<RevocationCsvBean> csvBeans = mapFileToBean(file, charset);
         checkSize(csvBeans);
         List<UvciForRevocationDto> dtos = mapBeansToDtos(csvBeans);
+        checkDuplicates(dtos);
 
         RevocationListResponseDto responseDto = revocationService.performMassRevocation(
                 new RevocationListDto(dtos, SystemSource.CsvUpload)
         );
 
+        // set error as status or default to status OK
         for (RevocationCsvBean bean : csvBeans) {
-            if (responseDto.getUvcisToErrorMessage().containsKey(bean.getUvci())) {
-                bean.setError(responseDto.getUvcisToErrorMessage().get(bean.getUvci()));
-            }
+            bean.setStatus(
+                    responseDto.getUvcisToErrorMessage().getOrDefault(bean.getUvci(), RevocationCsvBean.STATUS_OK)
+            );
         }
 
         byte[] csv = createCsvResponse(csvBeans, charset);
         return new CsvRevocationResponseDto(
-                (int) csvBeans.stream().filter(c -> c.getError() != null).count(),
-                (int) csvBeans.stream().filter(c -> c.getError() == null).count(),
+                (int) csvBeans.stream().filter(c -> !Objects.equals(c.getStatus(), RevocationCsvBean.STATUS_OK)).count(),
+                (int) csvBeans.stream().filter(c -> Objects.equals(c.getStatus(), RevocationCsvBean.STATUS_OK)).count(),
                 csv
         );
     }
@@ -98,7 +102,7 @@ public class CsvRevocationService {
                     try {
                         return csvBean.mapToDto();
                     } catch (RevocationException e) {
-                        csvBean.setError(e.getError().toString());
+                        csvBean.setStatus(e.getError().toString());
                     }
                     return null;
                 })
@@ -124,6 +128,12 @@ public class CsvRevocationService {
     private void checkSize(List<RevocationCsvBean> csvBeans) {
         if (csvBeans.size() < RevocationListDto.MIN_SIZE_LIST || csvBeans.size() > RevocationListDto.MAX_SIZE_LIST) {
             throw new RevocationException(INVALID_CSV_SIZE);
+        }
+    }
+
+    private void checkDuplicates(List<UvciForRevocationDto> dtos) {
+        if (dtos.stream().map(UvciForRevocationDto::getUvci).collect(Collectors.toSet()).size() < dtos.size()) {
+            throw new RevocationException(DUPLICATE_UVCI_IN_REQUEST);
         }
     }
 }

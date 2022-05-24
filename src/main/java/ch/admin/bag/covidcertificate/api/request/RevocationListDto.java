@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI_IN_REQUEST;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SIZE_OF_UVCI_LIST;
 
 @Getter
@@ -28,9 +30,13 @@ public class RevocationListDto {
         this.systemSource = systemSource;
     }
 
-    public void validateListSize() {
-        if (uvcis.size() < MIN_SIZE_LIST || uvcis.size() > MAX_SIZE_LIST) {
+    public void validate() {
+        if (uvcis == null || uvcis.size() < MIN_SIZE_LIST || uvcis.size() > MAX_SIZE_LIST) {
             throw new RevocationException(INVALID_SIZE_OF_UVCI_LIST);
+        }
+
+        if (uvcis.stream().map(UvciForRevocationDto::getUvci).collect(Collectors.toSet()).size() < uvcis.size()) {
+            throw new RevocationException(DUPLICATE_UVCI_IN_REQUEST);
         }
     }
 }
