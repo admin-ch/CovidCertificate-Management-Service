@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI_IN_REQUEST;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV_SIZE;
 import static ch.admin.bag.covidcertificate.api.Constants.WRITING_RETURN_CSV_FAILED;
@@ -50,6 +51,7 @@ public class CsvRevocationService {
         List<RevocationCsvBean> csvBeans = mapFileToBean(file, charset);
         checkSize(csvBeans);
         List<UvciForRevocationDto> dtos = mapBeansToDtos(csvBeans);
+        checkDuplicates(dtos);
 
         RevocationListResponseDto responseDto = revocationService.performMassRevocation(
                 new RevocationListDto(dtos, SystemSource.CsvUpload)
@@ -126,6 +128,12 @@ public class CsvRevocationService {
     private void checkSize(List<RevocationCsvBean> csvBeans) {
         if (csvBeans.size() < RevocationListDto.MIN_SIZE_LIST || csvBeans.size() > RevocationListDto.MAX_SIZE_LIST) {
             throw new RevocationException(INVALID_CSV_SIZE);
+        }
+    }
+
+    private void checkDuplicates(List<UvciForRevocationDto> dtos) {
+        if (dtos.stream().map(UvciForRevocationDto::getUvci).collect(Collectors.toSet()).size() < dtos.size()) {
+            throw new RevocationException(DUPLICATE_UVCI_IN_REQUEST);
         }
     }
 }

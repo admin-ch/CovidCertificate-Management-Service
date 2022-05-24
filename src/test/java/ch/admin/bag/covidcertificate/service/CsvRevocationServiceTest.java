@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI_IN_REQUEST;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CSV_SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -54,11 +55,10 @@ class CsvRevocationServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"src/test/resources/csv/revocation/empty.csv"})
+    @ValueSource(strings = {"src/test/resources/csv/revocation/invalid_empty.csv"})
     void emptyCsvShouldReturnError(String path) throws Exception {
         var file = Mockito.mock(MultipartFile.class);
-        var inputStream = new FileInputStream(path);
-        when(file.getInputStream()).thenReturn(inputStream);
+        when(file.getInputStream()).thenReturn(new FileInputStream(path), new FileInputStream(path), new FileInputStream(path));
         var exception = assertThrows(RevocationException.class,
                 () -> service.handleCsvRequest(file)
         );
@@ -66,7 +66,29 @@ class CsvRevocationServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"src/test/resources/csv/revocation/invalid_1.csv"})
+    @ValueSource(strings = {"src/test/resources/csv/revocation/invalid_too_many_entries.csv"})
+    void GIVEN_csvWithTooManyEntries_THEN_ReturnError(String path) throws Exception {
+        var file = Mockito.mock(MultipartFile.class);
+        when(file.getInputStream()).thenReturn(new FileInputStream(path), new FileInputStream(path), new FileInputStream(path));
+        var exception = assertThrows(RevocationException.class,
+                () -> service.handleCsvRequest(file)
+        );
+        assertEquals(INVALID_CSV_SIZE.getErrorCode(), exception.getError().getErrorCode());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"src/test/resources/csv/revocation/invalid_duplicate_uvci.csv"})
+    void GIVEN_csvWithDuplicateUVCI_THEN_ReturnError(String path) throws Exception {
+        var file = Mockito.mock(MultipartFile.class);
+        when(file.getInputStream()).thenReturn(new FileInputStream(path), new FileInputStream(path), new FileInputStream(path));
+        var exception = assertThrows(RevocationException.class,
+                () -> service.handleCsvRequest(file)
+        );
+        assertEquals(DUPLICATE_UVCI_IN_REQUEST.getErrorCode(), exception.getError().getErrorCode());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"src/test/resources/csv/revocation/invalid_no_fraud_flag.csv"})
     void invalidFileShouldStillCallService(String path) throws Exception {
         var file = Mockito.mock(MultipartFile.class);
         when(file.getInputStream()).thenReturn(new FileInputStream(path), new FileInputStream(path), new FileInputStream(path));
