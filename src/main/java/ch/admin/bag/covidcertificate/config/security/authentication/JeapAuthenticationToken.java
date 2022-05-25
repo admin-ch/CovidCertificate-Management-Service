@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.config.security.authentication;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -27,7 +28,8 @@ public class JeapAuthenticationToken extends JwtAuthenticationToken {
      * @return The client id specified in this token.
      */
     public String getClientId() {
-        return getToken().getClaimAsString("client_id");
+        String client_id=getToken().getClaimAsString("client_id");
+        return StringUtils.isNotBlank(client_id) ? client_id: getToken().getClaimAsString("clientId");
     }
 
     /**
