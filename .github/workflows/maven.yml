@@ -2,7 +2,10 @@ name: Build, test and analyze
 
 on:
   push:
-    branches: [ develop ]
+    branches: 
+      - 'release/**'
+    tags:        
+      - '*.*.*'
 
 jobs:
   build:
@@ -46,16 +49,3 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Create Snapshot Release
-        uses: ncipollo/release-action@880be3d0a71bc0fa98db60201d2cbdc27324f547
-        if: github.ref == 'refs/heads/develop'
-        id: create_release
-        with:
-          name: Snapshot Release ${{ github.ref }}
-          tag: SNAPSHOT
-          artifacts: target/cc-management-service.jar
-          token: ${{ secrets.GITHUB_TOKEN }}
-          draft: false
-          prerelease: false
-          allowUpdates: true
