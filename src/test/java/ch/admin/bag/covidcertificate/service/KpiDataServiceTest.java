@@ -1,6 +1,8 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.FixtureCustomization;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
@@ -32,7 +34,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_COD
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_ANTIBODY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_EXCEPTIONAL;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY_RAT;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY_RAT_EU;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_TEST;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_TOURIST;
@@ -49,14 +51,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
 class KpiDataServiceTest {
+    private static final JFixture fixture = new JFixture();
     @InjectMocks
     private KpiDataService service;
     @Mock
     private KpiDataRepository logRepository;
     @Mock
     private ServletJeapAuthorization jeapAuthorization;
-
-    private static final JFixture fixture = new JFixture();
 
     @BeforeAll
     private static void setup() {
@@ -98,7 +99,8 @@ class KpiDataServiceTest {
             var now = LocalDateTime.now();
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
-                service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class));
+                service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class),
+                                                        fixture.create(String.class));
 
                 verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getTimestamp() == now));
             }
@@ -107,7 +109,8 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithTestType() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
-            service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class),
+                                                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_TEST)));
         }
@@ -122,7 +125,8 @@ class KpiDataServiceTest {
             when(jwt.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)).thenReturn(usernameClaimKey);
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
 
-            service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class),
+                                                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getValue().equals(usernameClaimKey)));
         }
@@ -131,7 +135,7 @@ class KpiDataServiceTest {
         void savesKpiDataWithCorrectUvci() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var uvci = fixture.create(String.class);
-            service.logTestCertificateGenerationKpi(createDto, uvci);
+            service.logTestCertificateGenerationKpi(createDto, uvci, fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getUvci().equals(uvci)));
         }
@@ -140,7 +144,8 @@ class KpiDataServiceTest {
         void savesKpiDataWithPcrTypeOfTestAsDetails_ifTypeCodeIsPcr() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             ReflectionTestUtils.setField(createDto.getTestInfo().get(0), "typeCode", PCR.typeCode);
-            service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class),
+                                                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails().equals("pcr")));
         }
@@ -149,7 +154,8 @@ class KpiDataServiceTest {
         void savesKpiDataWithRapidTypeOfTestAsDetails_ifTypeCodeIsRapidTest() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             ReflectionTestUtils.setField(createDto.getTestInfo().get(0), "typeCode", RAPID_TEST.typeCode);
-            service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class),
+                                                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails().equals("rapid")));
         }
@@ -158,7 +164,8 @@ class KpiDataServiceTest {
         void savesKpiDataWithCountryOfTest() {
             var createDto = fixture.create(TestCertificateCreateDto.class);
             var countryOfVaccination = createDto.getTestInfo().get(0).getMemberStateOfTest();
-            service.logTestCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logTestCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getCountry().equals(countryOfVaccination)));
         }
@@ -172,7 +179,8 @@ class KpiDataServiceTest {
             var now = LocalDateTime.now();
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
-                service.logVaccinationCertificateGenerationKpi(createDto, fixture.create(String.class));
+                service.logVaccinationCertificateGenerationKpi(
+                        createDto, fixture.create(String.class), fixture.create(String.class));
 
                 verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getTimestamp() == now));
             }
@@ -181,7 +189,8 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithVaccinationType() {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
-            service.logVaccinationCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logVaccinationCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_VACCINATION)));
         }
@@ -196,7 +205,8 @@ class KpiDataServiceTest {
             when(jwt.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)).thenReturn(usernameClaimKey);
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
 
-            service.logVaccinationCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logVaccinationCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getValue().equals(usernameClaimKey)));
         }
@@ -205,7 +215,7 @@ class KpiDataServiceTest {
         void savesKpiDataWithCorrectUvci() {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
             var uvci = fixture.create(String.class);
-            service.logVaccinationCertificateGenerationKpi(createDto, uvci);
+            service.logVaccinationCertificateGenerationKpi(createDto, uvci, fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getUvci().equals(uvci)));
         }
@@ -214,7 +224,8 @@ class KpiDataServiceTest {
         void savesKpiDataWithMedicinalProductAsDetails() {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
             var medicinalProduct = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
-            service.logVaccinationCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logVaccinationCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails().equals(medicinalProduct)));
         }
@@ -223,7 +234,8 @@ class KpiDataServiceTest {
         void savesKpiDataWithCountryOfVaccination() {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
             var countryOfVaccination = createDto.getVaccinationInfo().get(0).getCountryOfVaccination();
-            service.logVaccinationCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logVaccinationCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getCountry().equals(countryOfVaccination)));
         }
@@ -237,7 +249,8 @@ class KpiDataServiceTest {
             var now = LocalDateTime.now();
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
-                service.logVaccinationTouristCertificateGenerationKpi(createDto, fixture.create(String.class));
+                service.logVaccinationTouristCertificateGenerationKpi(
+                        createDto, fixture.create(String.class), fixture.create(String.class));
 
                 verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getTimestamp() == now));
             }
@@ -246,9 +259,11 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithVaccinationTouristType() {
             var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
-            service.logVaccinationTouristCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logVaccinationTouristCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
-            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_VACCINATION_TOURIST)));
+            verify(logRepository).save(
+                    argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_VACCINATION_TOURIST)));
         }
 
         @Test
@@ -261,7 +276,8 @@ class KpiDataServiceTest {
             when(jwt.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)).thenReturn(usernameClaimKey);
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
 
-            service.logVaccinationTouristCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logVaccinationTouristCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getValue().equals(usernameClaimKey)));
         }
@@ -270,7 +286,7 @@ class KpiDataServiceTest {
         void savesKpiDataWithCorrectUvci() {
             var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
             var uvci = fixture.create(String.class);
-            service.logVaccinationTouristCertificateGenerationKpi(createDto, uvci);
+            service.logVaccinationTouristCertificateGenerationKpi(createDto, uvci, fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getUvci().equals(uvci)));
         }
@@ -279,7 +295,8 @@ class KpiDataServiceTest {
         void savesKpiDataWithMedicinalProductAsDetails() {
             var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
             var medicinalProduct = createDto.getVaccinationTouristInfo().get(0).getMedicinalProductCode();
-            service.logVaccinationTouristCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logVaccinationTouristCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails().equals(medicinalProduct)));
         }
@@ -288,7 +305,8 @@ class KpiDataServiceTest {
         void savesKpiDataWithCountryOfVaccination() {
             var createDto = fixture.create(VaccinationTouristCertificateCreateDto.class);
             var countryOfVaccination = createDto.getVaccinationTouristInfo().get(0).getCountryOfVaccination();
-            service.logVaccinationTouristCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logVaccinationTouristCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getCountry().equals(countryOfVaccination)));
         }
@@ -302,7 +320,8 @@ class KpiDataServiceTest {
             var now = LocalDateTime.now();
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
-                service.logRecoveryCertificateGenerationKpi(createDto, fixture.create(String.class));
+                service.logRecoveryCertificateGenerationKpi(
+                        createDto, fixture.create(String.class), fixture.create(String.class));
 
                 verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getTimestamp() == now));
             }
@@ -311,7 +330,8 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithRecoveryType() {
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
-            service.logRecoveryCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logRecoveryCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_RECOVERY)));
         }
@@ -326,7 +346,8 @@ class KpiDataServiceTest {
             when(jwt.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)).thenReturn(usernameClaimKey);
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
 
-            service.logRecoveryCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logRecoveryCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getValue().equals(usernameClaimKey)));
         }
@@ -335,7 +356,7 @@ class KpiDataServiceTest {
         void savesKpiDataWithCorrectUvci() {
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
             var uvci = fixture.create(String.class);
-            service.logRecoveryCertificateGenerationKpi(createDto, uvci);
+            service.logRecoveryCertificateGenerationKpi(createDto, uvci, fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getUvci().equals(uvci)));
         }
@@ -343,7 +364,8 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithNullDetails() {
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
-            service.logRecoveryCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logRecoveryCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails() == null));
         }
@@ -352,7 +374,8 @@ class KpiDataServiceTest {
         void savesKpiDataWithCountryOfTest() {
             var createDto = fixture.create(RecoveryCertificateCreateDto.class);
             var countryOfVaccination = createDto.getRecoveryInfo().get(0).getCountryOfTest();
-            service.logRecoveryCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logRecoveryCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getCountry().equals(countryOfVaccination)));
         }
@@ -366,7 +389,8 @@ class KpiDataServiceTest {
             var now = LocalDateTime.now();
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
-                service.logRecoveryRatCertificateGenerationKpi(createDto, fixture.create(String.class));
+                service.logRecoveryRatCertificateGenerationKpi(
+                        createDto, fixture.create(String.class), fixture.create(String.class));
 
                 verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getTimestamp() == now));
             }
@@ -375,9 +399,10 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithRecoveryRatType() {
             var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
-            service.logRecoveryRatCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logRecoveryRatCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
-            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_RECOVERY_RAT)));
+            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_RECOVERY_RAT_EU)));
         }
 
         @Test
@@ -390,7 +415,8 @@ class KpiDataServiceTest {
             when(jwt.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)).thenReturn(usernameClaimKey);
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
 
-            service.logRecoveryRatCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logRecoveryRatCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getValue().equals(usernameClaimKey)));
         }
@@ -399,25 +425,17 @@ class KpiDataServiceTest {
         void savesKpiDataWithCorrectUvci() {
             var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
             var uvci = fixture.create(String.class);
-            service.logRecoveryRatCertificateGenerationKpi(createDto, uvci);
+            service.logRecoveryRatCertificateGenerationKpi(
+                    createDto, uvci, fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getUvci().equals(uvci)));
         }
 
         @Test
-        void savesKpiDataWithPcrTypeOfTestAsDetails_ifTypeCodeIsPcr() {
+        void savesKpiData_ShouldLogRapid() {
             var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
-            ReflectionTestUtils.setField(createDto.getTestInfo().get(0), "typeCode", PCR.typeCode);
-            service.logRecoveryRatCertificateGenerationKpi(createDto, fixture.create(String.class));
-
-            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails().equals("pcr")));
-        }
-
-        @Test
-        void savesKpiDataWithRapidTypeOfTestAsDetails_ifTypeCodeIsRapidTest() {
-            var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
-            ReflectionTestUtils.setField(createDto.getTestInfo().get(0), "typeCode", RAPID_TEST.typeCode);
-            service.logRecoveryRatCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logRecoveryRatCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails().equals("rapid")));
         }
@@ -426,7 +444,8 @@ class KpiDataServiceTest {
         void savesKpiDataWithCountryOfTest() {
             var createDto = fixture.create(RecoveryRatCertificateCreateDto.class);
             var countryOfVaccination = createDto.getTestInfo().get(0).getMemberStateOfTest();
-            service.logRecoveryRatCertificateGenerationKpi(createDto, fixture.create(String.class));
+            service.logRecoveryRatCertificateGenerationKpi(
+                    createDto, fixture.create(String.class), fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getCountry().equals(countryOfVaccination)));
         }
@@ -439,7 +458,10 @@ class KpiDataServiceTest {
             var now = LocalDateTime.now();
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
-                service.logAntibodyCertificateGenerationKpi(fixture.create(String.class));
+                service.logAntibodyCertificateGenerationKpi(
+                        fixture.create(AntibodyCertificateCreateDto.class),
+                        fixture.create(String.class),
+                        fixture.create(String.class));
 
                 verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getTimestamp() == now));
             }
@@ -447,7 +469,10 @@ class KpiDataServiceTest {
 
         @Test
         void savesKpiDataWithAntibodyType() {
-            service.logAntibodyCertificateGenerationKpi(fixture.create(String.class));
+            service.logAntibodyCertificateGenerationKpi(
+                    fixture.create(AntibodyCertificateCreateDto.class),
+                    fixture.create(String.class),
+                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_ANTIBODY)));
         }
@@ -461,7 +486,10 @@ class KpiDataServiceTest {
             when(jwt.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)).thenReturn(usernameClaimKey);
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
 
-            service.logAntibodyCertificateGenerationKpi(fixture.create(String.class));
+            service.logAntibodyCertificateGenerationKpi(
+                    fixture.create(AntibodyCertificateCreateDto.class),
+                    fixture.create(String.class),
+                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getValue().equals(usernameClaimKey)));
         }
@@ -469,23 +497,31 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithCorrectUvci() {
             var uvci = fixture.create(String.class);
-            service.logAntibodyCertificateGenerationKpi(uvci);
+            service.logAntibodyCertificateGenerationKpi(
+                    fixture.create(AntibodyCertificateCreateDto.class), uvci, fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getUvci().equals(uvci)));
         }
 
         @Test
         void savesKpiDataWithDetails() {
-            service.logAntibodyCertificateGenerationKpi(fixture.create(String.class));
+            service.logAntibodyCertificateGenerationKpi(
+                    fixture.create(AntibodyCertificateCreateDto.class),
+                    fixture.create(String.class),
+                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails() != null));
         }
 
         @Test
         void savesKpiDataWithSwitzerlandAsCountry() {
-            service.logAntibodyCertificateGenerationKpi(fixture.create(String.class));
+            service.logAntibodyCertificateGenerationKpi(
+                    fixture.create(AntibodyCertificateCreateDto.class),
+                    fixture.create(String.class),
+                    fixture.create(String.class));
 
-            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getCountry().equals(ISO_3166_1_ALPHA_2_CODE_SWITZERLAND)));
+            verify(logRepository).save(
+                    argThat((KpiData kpiData) -> kpiData.getCountry().equals(ISO_3166_1_ALPHA_2_CODE_SWITZERLAND)));
         }
     }
 
@@ -496,7 +532,10 @@ class KpiDataServiceTest {
             var now = LocalDateTime.now();
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
-                service.logExceptionalCertificateGenerationKpi(fixture.create(String.class));
+                service.logExceptionalCertificateGenerationKpi(
+                        fixture.create(ExceptionalCertificateCreateDto.class),
+                        fixture.create(String.class),
+                        fixture.create(String.class));
 
                 verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getTimestamp() == now));
             }
@@ -504,7 +543,10 @@ class KpiDataServiceTest {
 
         @Test
         void savesKpiDataWithExceptionalType() {
-            service.logExceptionalCertificateGenerationKpi(fixture.create(String.class));
+            service.logExceptionalCertificateGenerationKpi(
+                    fixture.create(ExceptionalCertificateCreateDto.class),
+                    fixture.create(String.class),
+                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getType().equals(KPI_TYPE_EXCEPTIONAL)));
         }
@@ -518,7 +560,10 @@ class KpiDataServiceTest {
             when(jwt.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY)).thenReturn(usernameClaimKey);
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(token);
 
-            service.logExceptionalCertificateGenerationKpi(fixture.create(String.class));
+            service.logExceptionalCertificateGenerationKpi(
+                    fixture.create(ExceptionalCertificateCreateDto.class),
+                    fixture.create(String.class),
+                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getValue().equals(usernameClaimKey)));
         }
@@ -526,23 +571,33 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithCorrectUvci() {
             var uvci = fixture.create(String.class);
-            service.logExceptionalCertificateGenerationKpi(uvci);
+            service.logExceptionalCertificateGenerationKpi(
+                    fixture.create(ExceptionalCertificateCreateDto.class),
+                    uvci,
+                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getUvci().equals(uvci)));
         }
 
         @Test
         void savesKpiDataWithDetails() {
-            service.logExceptionalCertificateGenerationKpi(fixture.create(String.class));
+            service.logExceptionalCertificateGenerationKpi(
+                    fixture.create(ExceptionalCertificateCreateDto.class),
+                    fixture.create(String.class),
+                    fixture.create(String.class));
 
             verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getDetails() != null));
         }
 
         @Test
         void savesKpiDataWithSwitzerlandAsCountry() {
-            service.logExceptionalCertificateGenerationKpi(fixture.create(String.class));
+            service.logExceptionalCertificateGenerationKpi(
+                    fixture.create(ExceptionalCertificateCreateDto.class),
+                    fixture.create(String.class),
+                    fixture.create(String.class));
 
-            verify(logRepository).save(argThat((KpiData kpiData) -> kpiData.getCountry().equals(ISO_3166_1_ALPHA_2_CODE_SWITZERLAND)));
+            verify(logRepository).save(
+                    argThat((KpiData kpiData) -> kpiData.getCountry().equals(ISO_3166_1_ALPHA_2_CODE_SWITZERLAND)));
         }
     }
 }

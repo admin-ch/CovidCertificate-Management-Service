@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import com.upokecenter.cbor.CBORObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +22,10 @@ public class BarcodeService {
 
     private final SwissDGCBarcodeEncoder dgcBarcodeEncoder;
 
-    public Barcode createBarcode(String dgcJSON, SigningInformation signingInformation, Instant expiredAt) {
+    public Barcode createBarcode(String dgcJSON, SigningInformationDto signingInformation, Instant expiredAt) {
         try {
-            return dgcBarcodeEncoder.encodeToBarcode(CBORObject.FromJSONString(dgcJSON).EncodeToBytes(), signingInformation, expiredAt);
+            return dgcBarcodeEncoder.encodeToBarcode(CBORObject.FromJSONString(dgcJSON).EncodeToBytes(),
+                                                     signingInformation, expiredAt);
         } catch (BarcodeException | IOException | SignatureException e) {
             throw new CreateCertificateException(CREATE_BARCODE_FAILED);
         }

@@ -9,7 +9,10 @@ import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
+import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.UvciForRevocationDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
@@ -33,6 +36,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 
@@ -174,6 +179,7 @@ public class FixtureCustomization {
             return exceptionalCertificateCreateDto;
         });
     }
+
     public static void customizeCreateCertificateException(JFixture fixture) {
         fixture.customise().lazyInstance(CreateCertificateException.class, () -> {
             var createCertificateError = fixture.create(CreateCertificateError.class);
@@ -182,7 +188,19 @@ public class FixtureCustomization {
     }
 
     public static void customizeRevocationDto(JFixture fixture, boolean fraud) {
-        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), fraud));
+        fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), fixture.create(SystemSource.class), null, fraud));
+    }
+
+    public static void customizeUvciForRevocationDto(JFixture fixture, boolean fraud) {
+        fixture.customise().lazyInstance(UvciForRevocationDto.class, () -> new UvciForRevocationDto(createUVCI(), fraud));
+    }
+
+    public static void customizeRevocationListDto(JFixture fixture) {
+        List<UvciForRevocationDto> uvcis = new LinkedList<>();
+        uvcis.add(new UvciForRevocationDto(createUVCI(), false));
+        uvcis.add(new UvciForRevocationDto(createUVCI(), false));
+        uvcis.add(new UvciForRevocationDto(createUVCI(), false));
+        fixture.customise().lazyInstance(RevocationListDto.class, () -> new RevocationListDto(uvcis, fixture.create(SystemSource.class), fixture.create(String.class)));
     }
 
     public static String createUVCI() {

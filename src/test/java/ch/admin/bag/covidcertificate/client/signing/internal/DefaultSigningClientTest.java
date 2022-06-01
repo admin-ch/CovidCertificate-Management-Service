@@ -1,8 +1,8 @@
 package ch.admin.bag.covidcertificate.client.signing.internal;
 
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.client.signing.SigningRequestDto;
 import ch.admin.bag.covidcertificate.client.signing.VerifySignatureRequestDto;
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -70,7 +70,7 @@ class DefaultSigningClientTest {
         void makesRequestToCorrectUrl() {
             var url = fixture.create(String.class);
             ReflectionTestUtils.setField(signingClient, "url", url);
-            var signingInformation =  fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
 
             signingClient.createSignature(fixture.create(byte[].class), signingInformation);
 
@@ -79,7 +79,7 @@ class DefaultSigningClientTest {
 
         @Test
         void makesPostRequest() {
-            signingClient.createSignature(fixture.create(byte[].class), fixture.create(SigningInformation.class));
+            signingClient.createSignature(fixture.create(byte[].class), fixture.create(SigningInformationDto.class));
 
             verify(restTemplate).exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), any(Class.class));
         }
@@ -87,21 +87,26 @@ class DefaultSigningClientTest {
         @Test
         void makesRequestWithCorrectBody() {
             var body = fixture.create(byte[].class);
-            var signingInformation =  fixture.create(SigningInformation.class);
-            var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(body), signingInformation.getAlias());
+            var signingInformation = fixture.create(SigningInformationDto.class);
+            var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(body),
+                                                          signingInformation.getAlias());
 
             signingClient.createSignature(body, signingInformation);
 
-            verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argThat(argument -> Objects.equals(argument.getBody(), signingRequestDto)) , any(Class.class));
+            verify(restTemplate).exchange(anyString(), any(HttpMethod.class),
+                                          argThat(argument -> Objects.equals(argument.getBody(), signingRequestDto)),
+                                          any(Class.class));
         }
 
         @Test
         void returnsResponseBody() {
             ResponseEntity responseEntity = mock(ResponseEntity.class);
             when(responseEntity.getBody()).thenReturn(fixture.create(byte[].class));
-            when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenReturn(responseEntity);
+            when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class),
+                                       any(Class.class))).thenReturn(responseEntity);
 
-            var actual = signingClient.createSignature(fixture.create(byte[].class), fixture.create(SigningInformation.class));
+            var actual = signingClient.createSignature(fixture.create(byte[].class),
+                                                       fixture.create(SigningInformationDto.class));
 
             assertEquals(responseEntity.getBody(), actual);
         }
@@ -109,7 +114,7 @@ class DefaultSigningClientTest {
         @Test
         void throwsExceptionIfRequestThrowsException() {
             var exception = fixture.create(RestClientException.class);
-            var signingInformation = fixture.create(SigningInformation.class);
+            var signingInformation = fixture.create(SigningInformationDto.class);
             var cosePayload = fixture.create(byte[].class);
             when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenThrow(exception);
 

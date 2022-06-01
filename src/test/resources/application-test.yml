@@ -23,6 +23,8 @@ jeap:
           jwk-set-uri: "http://localhost:8182/.well-known/jwks.json"
 
 cc-management-service:
+  auth:
+    allow-unauthenticated: cc-api-gateway-service
   cose:
     key-identifier: "9A6ADFCE9314EB17"
   jwt:

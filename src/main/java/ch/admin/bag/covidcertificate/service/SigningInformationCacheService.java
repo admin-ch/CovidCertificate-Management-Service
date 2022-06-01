@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.api.mapper.SigningInformationMapper;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,15 +21,17 @@ public class SigningInformationCacheService {
     private static final String SIGNING_INFORMATION_CACHE = "signingInformationCache";
 
     @Cacheable(SIGNING_INFORMATION_CACHE)
-    public List<SigningInformation> findSigningInformation(String certificateType, LocalDate validAt){
+    public List<SigningInformationDto> findSigningInformation(String certificateType, LocalDate validAt) {
         log.info("Loading signing information for {} certificate", certificateType);
-        return signingInformationRepository.findSigningInformation(certificateType, validAt);
+        return SigningInformationMapper.fromEntityList(signingInformationRepository
+                                                               .findSigningInformation(certificateType, validAt));
     }
 
     @Cacheable(SIGNING_INFORMATION_CACHE)
-    public SigningInformation findSigningInformation(String certificateType, String code, LocalDate validAt){
+    public SigningInformationDto findSigningInformation(String certificateType, String code, LocalDate validAt) {
         log.info("Loading signing information for {} certificate with code {}", certificateType, code);
-        return signingInformationRepository.findSigningInformation(certificateType, code, validAt);
+        return SigningInformationMapper.fromEntity(signingInformationRepository
+                                                           .findSigningInformation(certificateType, code, validAt));
     }
 
     @Scheduled(fixedRateString = "${cc-management-service.cache-duration}")

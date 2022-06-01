@@ -6,7 +6,6 @@ import ch.admin.bag.covidcertificate.service.SigningInformationCacheService;
 import ch.admin.bag.covidcertificate.service.ValueSetsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +32,6 @@ public class CachesController {
      * @param only OPTIONAL list or single String seperated by "," of caches
      */
     @PostMapping("/clear")
-    @PreAuthorize("hasAnyRole('bag-cc-superuser')")
     public void clear(@RequestParam(required = false) Optional<List<String>> only) {
         log.info("Call of clear all caches.");
 
@@ -49,7 +47,7 @@ public class CachesController {
                     .orElseGet(() -> Arrays.stream(Cache.values()))
                     .forEach(this::cleanCacheFor);
 
-            log.info("Following caches have been reseted: {}",
+            log.info("Following caches have been reset: {}",
                     only.map(Objects::toString)
                             .orElseGet(() -> Arrays.toString(Cache.values()))
             );

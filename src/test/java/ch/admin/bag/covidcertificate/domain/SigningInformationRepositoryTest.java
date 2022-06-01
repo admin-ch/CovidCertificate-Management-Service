@@ -121,16 +121,18 @@ class SigningInformationRepositoryTest {
         @MethodSource("ch.admin.bag.covidcertificate.domain.SigningInformationRepositoryTest#getInvalidIntervals")
         void shouldNotReturnMatchingEntries_whenInvalidAtGivenTimestamp(LocalDate validFrom, LocalDate validTo){
             var type = fixture.create(String.class);
+
             var matchingSigningInformationEntries = fixture.collections().createCollection(SigningInformation.class);
             matchingSigningInformationEntries.forEach(entry -> {
-                        ReflectionTestUtils.setField(entry, "certificateType", type);
-                        ReflectionTestUtils.setField(entry, "validFrom", validFrom);
-                        ReflectionTestUtils.setField(entry, "validTo", validTo);
-                    }
+                                                          ReflectionTestUtils.setField(entry, "certificateType", type);
+                                                          ReflectionTestUtils.setField(entry, "validFrom", validFrom);
+                                                          ReflectionTestUtils.setField(entry, "validTo", validTo);
+                                                      }
             );
+            matchingSigningInformationEntries.forEach(it -> entityManager.persist(it));
+
             var nonMatchingSigningInformationEntries = fixture.collections().createCollection(SigningInformation.class);
-            matchingSigningInformationEntries.forEach( it -> entityManager.persist(it));
-            nonMatchingSigningInformationEntries.forEach( it -> entityManager.persist(it));
+            nonMatchingSigningInformationEntries.forEach(it -> entityManager.persist(it));
 
             var actual = signingInformationRepository.findSigningInformation(type, LocalDate.now());
 

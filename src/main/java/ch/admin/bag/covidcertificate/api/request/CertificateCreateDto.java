@@ -28,6 +28,7 @@ public abstract class CertificateCreateDto {
     @JsonDeserialize(using = StringNotEmptyToUppercaseElseNullDeserializer.class)
     private String appCode;
     private SystemSource systemSource;
+    private String userExtId;
 
     protected CertificateCreateDto(CovidCertificatePersonDto personData, String language, CovidCertificateAddressDto address, String appCode, SystemSource systemSource) {
         this.personData = personData;

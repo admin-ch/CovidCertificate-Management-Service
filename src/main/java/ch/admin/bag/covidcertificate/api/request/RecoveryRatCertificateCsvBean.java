@@ -15,16 +15,10 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TI
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecoveryRatCertificateCsvBean extends CertificateCsvBean {
+public class RecoveryRatCertificateCsvBean extends CertificateCreateCsvBean {
 
-    @CsvBindByName(column = "manufacturerCode")
-    private String manufacturerCode;
-    @CsvBindByName(column = "typeCode")
-    private String typeCode;
     @CsvBindByName(column = "sampleDateTime")
     private String sampleDateTime;
-    @CsvBindByName(column = "testingCentreOrFacility")
-    private String testingCentreOrFacility;
     @CsvBindByName(column = "memberStateOfTest")
     private String memberStateOfTest;
 
@@ -38,10 +32,8 @@ public class RecoveryRatCertificateCsvBean extends CertificateCsvBean {
         }
 
         var dataDto = new RecoveryRatCertificateDataDto(
-                (manufacturerCode != null) ? manufacturerCode.trim(): "",
-                (typeCode != null) ? typeCode.trim(): "",
                 sampleDateTimeParsed,
-                (testingCentreOrFacility != null) ? testingCentreOrFacility.trim(): "",
+              "",
                 (memberStateOfTest != null) ? memberStateOfTest.trim().toUpperCase(): ""
         );
         return super.mapToCreateDto(dataDto);

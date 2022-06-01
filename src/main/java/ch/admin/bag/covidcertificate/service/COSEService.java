@@ -2,9 +2,10 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -22,7 +23,7 @@ public class COSEService {
     private final CBORService cborService;
     private final SigningClient signingClient;
 
-    public byte[] getCOSESign1(byte[] dgcCBOR, SigningInformation signingInformation, Instant expiredAt) {
+    public byte[] getCOSESign1(byte[] dgcCBOR, SigningInformationDto signingInformation, Instant expiredAt) {
         byte[] protectedHeader = getProtectedHeader(signingInformation);
         byte[] payload = getPayload(dgcCBOR, expiredAt);
         byte[] signatureData = getSignatureData(protectedHeader, payload);
@@ -30,17 +31,17 @@ public class COSEService {
         return getCOSESign1(protectedHeader, payload, signature);
     }
 
-    private byte[] getProtectedHeader(SigningInformation signingInformation) {
+    private byte[] getProtectedHeader(SigningInformationDto signingInformation) {
         try {
-            //TODO: keyIdentifier should be deleted. It is deprecated and used only for backwards compatibility.
-            var keyIdentifier = signingInformation.getKeyIdentifier();
-            if(signingInformation.getCertificateAlias() != null && !signingInformation.getCertificateAlias().isBlank()){
-                keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
+            if (StringUtils.isNotBlank(signingInformation.getCertificateAlias())) {
+                var keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
+                signingInformation.setCalculatedKeyIdentifier(keyIdentifier);
+                return cborService.getProtectedHeader(keyIdentifier);
             }
-            return cborService.getProtectedHeader(keyIdentifier);
         } catch (Exception e) {
             throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
         }
+        throw new CreateCertificateException(CREATE_COSE_PROTECTED_HEADER_FAILED);
     }
 
     private byte[] getPayload(byte[] hcert, Instant expiredAt) {
@@ -59,7 +60,7 @@ public class COSEService {
         }
     }
 
-    private byte[] getSignature(byte[] signatureData, SigningInformation signingInformation) {
+    private byte[] getSignature(byte[] signatureData, SigningInformationDto signingInformation) {
         try {
             return signingClient.createSignature(signatureData, signingInformation);
         } catch (Exception e) {

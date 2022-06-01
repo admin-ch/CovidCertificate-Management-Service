@@ -1,6 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import com.upokecenter.cbor.CBORException;
 import lombok.extern.slf4j.Slf4j;
 import se.digg.dgc.encoding.Barcode;
@@ -27,7 +27,8 @@ public class SwissDGCBarcodeEncoder extends DefaultDGCBarcodeEncoder {
         this.barcodeCreator = barcodeCreator;
     }
 
-    public String encode(final byte[] dcc, final SigningInformation signingInformation, Instant expiredAt) throws IOException {
+    public String encode(final byte[] dcc, final SigningInformationDto signingInformation, Instant expiredAt)
+            throws IOException {
 
         log.trace("Encoding to Base45 from CBOR-encoded DCC-payload (length: {}) ...", dcc.length);
 
@@ -48,21 +49,22 @@ public class SwissDGCBarcodeEncoder extends DefaultDGCBarcodeEncoder {
         return DGCConstants.DGC_V1_HEADER + base45;
     }
 
-    public byte[] sign(final byte[] dcc, final SigningInformation signingInformation, Instant expiredAt) throws IOException {
+    public byte[] sign(final byte[] dcc, final SigningInformationDto signingInformation, Instant expiredAt)
+            throws IOException {
 
         try {
             // Sign the DGC ...
             //
             log.trace("Creating CWT and signing CBOR-encoded DCC (length: {}) ...", dcc.length);
             return this.dgcSigner.sign(dcc, signingInformation, expiredAt);
-        }
-        catch (final CBORException e) {
+        } catch (final CBORException e) {
             log.info("Internal CBOR error - {}", e.getMessage(), e);
             throw new IOException("Internal CBOR error - " + e.getMessage(), e);
         }
     }
 
-    public Barcode encodeToBarcode(final byte[] dcc, final SigningInformation signingInformation, Instant expiredAt) throws IOException, SignatureException, BarcodeException {
+    public Barcode encodeToBarcode(final byte[] dcc, final SigningInformationDto signingInformation, Instant expiredAt)
+            throws IOException, SignatureException, BarcodeException {
 
         final String base45 = this.encode(dcc, signingInformation, expiredAt);
 

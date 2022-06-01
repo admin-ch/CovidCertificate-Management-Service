@@ -1,8 +1,10 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
+import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
-import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
-import ch.admin.bag.covidcertificate.domain.KpiData;
+import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
+import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
+import ch.admin.bag.covidcertificate.api.response.RevocationListResponseDto;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import ch.admin.bag.covidcertificate.service.RevocationService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,62 +12,48 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_FRAUD;
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_UVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_SYSTEM_UI;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
-import static ch.admin.bag.covidcertificate.api.Constants.PREFERRED_USERNAME_CLAIM_KEY;
-import static ch.admin.bag.covidcertificate.service.KpiDataService.SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE;
-import static net.logstash.logback.argument.StructuredArguments.kv;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_REVOCATION;
 
 @RestController
 @RequestMapping("/api/v1/revocation")
 @RequiredArgsConstructor
 @Slf4j
 public class RevocationController {
-    private final SecurityHelper securityHelper;
-    private final ServletJeapAuthorization jeapAuthorization;
     private final RevocationService revocationService;
-    private final KpiDataService kpiLogService;
+    private final KpiDataService kpiDataService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
     @ApiResponse(responseCode = "201", description = "CREATED")
-    public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto, HttpServletRequest request) {
-        log.info("Call of create revocation for uvci {}.", revocationDto.getUvci());
-        securityHelper.authorizeUser(request);
-        revocationDto.validate();
-        revocationService.createRevocation(revocationDto);
-        logKpi(revocationDto.getUvci(), revocationDto.isFraud());
+    public ResponseEntity<HttpStatus> create(@Valid @RequestBody RevocationDto revocationDto) {
+        log.info("Call of create revocation.");
+        final String uvci = revocationDto.getUvci();
+        UvciValidator.validateUvciMatchesSpecification(revocationDto.getUvci());
+
+        if (revocationService.isAlreadyRevoked(uvci)) {
+            throw new RevocationException(DUPLICATE_UVCI);
+        }
+
+        revocationService.createRevocation(revocationDto.getUvci(), revocationDto.isFraud());
+        kpiDataService.logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_REVOCATION, revocationDto.getUvci(), revocationDto.getSystemSource(), revocationDto.getUserExtId(), revocationDto.isFraud());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    private void logKpi(String uvci, boolean fraud) {
-        Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
-        if (token == null) {
-            return;
-        }
-        final String claimString = token.getClaimAsString(PREFERRED_USERNAME_CLAIM_KEY);
-        if (claimString != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(claimString)) {
-            // the request is from Web-UI, so we need to log it
-            LocalDateTime kpiTimestamp = LocalDateTime.now();
-            log.info("kpi: {} {} {} {}", kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                     kv(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_SYSTEM_UI), kv(KPI_UUID_KEY, claimString), kv(KPI_FRAUD, fraud));
-            kpiLogService.saveKpiData(new KpiData(kpiTimestamp, KPI_REVOKE_CERTIFICATE_SYSTEM_KEY,
-                                                  claimString, uvci, null, null, fraud));
-        }
+    @PostMapping("/uvcilist")
+    @ApiResponse(responseCode = "201", description = "CREATED")
+    public RevocationListResponseDto massRevocation(@Valid @RequestBody RevocationListDto revocationListDto) {
+        log.info("Call of mass-revocation.");
+
+        revocationListDto.validate();
+
+        return revocationService.performMassRevocation(revocationListDto);
     }
 }

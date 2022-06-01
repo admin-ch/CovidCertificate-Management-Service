@@ -1,10 +1,10 @@
 package ch.admin.bag.covidcertificate.client.signing.internal;
 
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.client.signing.SigningRequestDto;
 import ch.admin.bag.covidcertificate.client.signing.VerifySignatureRequestDto;
 import ch.admin.bag.covidcertificate.config.ProfileRegistry;
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,22 +47,22 @@ public class DefaultSigningClient implements SigningClient {
         this.restTemplate = restTemplate;
     }
 
-    public byte[] createSignature(byte[] cosePayload, SigningInformation signingInformation) {
+    public byte[] createSignature(byte[] cosePayload, SigningInformationDto signingInformation) {
         var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(cosePayload),
-                                                      signingInformation.getAlias());
+                signingInformation.getAlias());
         long start = System.currentTimeMillis();
         log.info("Call signing service with url {}", url);
         HttpHeaders headers = new HttpHeaders();
         headers.put("Content-Type", Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
         try {
             ResponseEntity<byte[]> result = restTemplate.exchange(url, HttpMethod.POST,
-                                                                  new HttpEntity<>(signingRequestDto, headers),
-                                                                  byte[].class);
+                    new HttpEntity<>(signingRequestDto, headers),
+                    byte[].class);
             long end = System.currentTimeMillis();
             log.info("Call of signing service finished with result {} within {} ms.", result.getStatusCode(),
-                     end - start);
+                    end - start);
             return result.getBody();
-        }catch (RestClientException e){
+        } catch (RestClientException e) {
             log.error("Connection with signing service {} could not be established.", url, e);
             throw e;
         }
@@ -75,26 +75,26 @@ public class DefaultSigningClient implements SigningClient {
         try {
             ResponseEntity<Boolean> result = restTemplate.exchange(verifyUrl, HttpMethod.POST, new HttpEntity<>(verifySignatureRequestDto, headers), boolean.class);
             return result.getBody();
-        }catch (RestClientException e){
+        } catch (RestClientException e) {
             log.error("Connection with signing service {} could not be established.", verifyUrl, e);
             throw e;
         }
     }
 
     @Cacheable(KEY_IDENTIFIER_CACHE)
-    public String getKeyIdentifier(String certificateAlias){
+    public String getKeyIdentifier(String certificateAlias) {
         var getKeyUrl = buildSigningUrl(kidUrl, certificateAlias);
         long start = System.currentTimeMillis();
         log.info("Call signing service to retrieve key identifier for certificate {}.", certificateAlias);
 
         try {
             ResponseEntity<String> result = restTemplate.exchange(getKeyUrl, HttpMethod.GET,
-                                                                  new HttpEntity<>(new HttpHeaders()), String.class);
+                    new HttpEntity<>(new HttpHeaders()), String.class);
             long end = System.currentTimeMillis();
             log.info("Call of signing service finished with result {} within {} ms.", result.getStatusCode(),
-                     end - start);
+                    end - start);
             return result.getBody();
-        }catch (RestClientException e){
+        } catch (RestClientException e) {
             log.error("Connection with signing service {} could not be established.", url, e);
             throw e;
         }
@@ -106,7 +106,7 @@ public class DefaultSigningClient implements SigningClient {
         log.info("Cleaning cache of key identifier");
     }
 
-    private String buildSigningUrl(String url, String pathSegment){
+    private String buildSigningUrl(String url, String pathSegment) {
         return new DefaultUriBuilderFactory()
                 .uriString(url)
                 .pathSegment(pathSegment)

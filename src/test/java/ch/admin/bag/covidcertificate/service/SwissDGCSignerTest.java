@@ -1,6 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SwissDGCSignerTest {
+
     private final JFixture fixture = new JFixture();
 
     @Mock
@@ -40,21 +41,23 @@ class SwissDGCSignerTest {
         @Test
         void callsCoseServiceWithCorrectCbor() {
             var dgcCBOR = fixture.create(byte[].class);
-            swissDGCSigner.sign(dgcCBOR, fixture.create(SigningInformation.class), fixture.create(Instant.class));
+            swissDGCSigner.sign(dgcCBOR, fixture.create(SigningInformationDto.class), fixture.create(Instant.class));
             verify(coseService).getCOSESign1(eq(dgcCBOR), any(), any());
         }
 
         @Test
         void callsCoseServiceWithCorrectSigningInformation() {
-            var signingInformation = fixture.create(SigningInformation.class);
-            byte[] result = swissDGCSigner.sign(fixture.create(byte[].class), signingInformation, fixture.create(Instant.class));
+            var signingInformation = fixture.create(SigningInformationDto.class);
+            byte[] result = swissDGCSigner.sign(fixture.create(byte[].class), signingInformation,
+                                                fixture.create(Instant.class));
             verify(coseService).getCOSESign1(any(), eq(signingInformation), any());
         }
 
         @Test
         void callsCoseServiceWithCorrectExpirationInstant() {
             var expirationInstant = fixture.create(Instant.class);
-            byte[] result = swissDGCSigner.sign(fixture.create(byte[].class), fixture.create(SigningInformation.class), expirationInstant);
+            byte[] result = swissDGCSigner.sign(fixture.create(byte[].class),
+                                                fixture.create(SigningInformationDto.class), expirationInstant);
             verify(coseService).getCOSESign1(any(), any(), eq(expirationInstant));
         }
 

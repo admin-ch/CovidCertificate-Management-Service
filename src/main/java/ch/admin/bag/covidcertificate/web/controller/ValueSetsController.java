@@ -12,13 +12,11 @@ import ch.admin.bag.covidcertificate.api.valueset.VaccineDto;
 import ch.admin.bag.covidcertificate.service.ValueSetsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -26,59 +24,40 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ValueSetsController {
-    private final SecurityHelper securityHelper;
     private final ValueSetsService valueSetsService;
 
     @GetMapping("")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public ValueSetsResponseDto get(HttpServletRequest request) {
+    public ValueSetsResponseDto get() {
         log.info("Call to get value sets.");
-        securityHelper.authorizeUser(request);
-
         return ValueSetsResponseDtoMapper.create(valueSetsService.getValueSets());
     }
 
     @GetMapping("/rapid-tests")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<TestDto> getRapidTests(HttpServletRequest request) {
+    public List<TestDto> getRapidTests() {
         log.info("Call of getRapidTests for value sets");
-        securityHelper.authorizeUser(request);
-
         return valueSetsService.getRapidTests();
     }
 
     @GetMapping("/issuable-rapid-tests")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<IssuableTestDto> getIssuableRapidTests(HttpServletRequest request) {
+    public List<IssuableTestDto> getIssuableRapidTests() {
         log.info("Call of getIssuableRapidTests for value sets");
-        securityHelper.authorizeUser(request);
-
         return valueSetsService.getIssuableRapidTests();
     }
 
     @GetMapping("/vaccines")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<VaccineDto> getVaccines(HttpServletRequest request) {
+    public List<VaccineDto> getVaccines() {
         log.info("Call of getVaccines for value sets");
-        securityHelper.authorizeUser(request);
-
         return valueSetsService.getVaccines();
     }
 
     @GetMapping("/issuable-vaccines")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<IssuableVaccineDto> getIssuableVaccines(HttpServletRequest request) {
-        securityHelper.authorizeUser(request);
-
+    public List<IssuableVaccineDto> getIssuableVaccines() {
         log.info("Call of getIssuableVaccines for value sets with systemSource {}", SystemSource.ApiGateway);
         return valueSetsService.getApiGatewayIssuableVaccines();
     }
 
     @GetMapping("/issuable-vaccines/{systemSource}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<IssuableVaccineDto> getIssuableVaccines(@PathVariable String systemSource, HttpServletRequest request) {
-        securityHelper.authorizeUser(request);
-
+    public List<IssuableVaccineDto> getIssuableVaccines(@PathVariable String systemSource) {
         SystemSource localSystemSource = SystemSource.valueOf(systemSource);
         log.info("Call of getIssuableVaccines for value sets with systemSource {}", localSystemSource);
         switch (localSystemSource) {
@@ -94,20 +73,14 @@ public class ValueSetsController {
     }
 
     @GetMapping("/countries")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public CountryCodes getCountryCodes(HttpServletRequest request) {
+    public CountryCodes getCountryCodes() {
         log.info("Call of getCountryCodes for value sets");
-        securityHelper.authorizeUser(request);
-
         return valueSetsService.getCountryCodes();
     }
 
     @GetMapping("/countries/{language}")
-    @PreAuthorize("hasAnyRole('bag-cc-certificatecreator', 'bag-cc-superuser')")
-    public List<CountryCode> getCountryCodesByLanguage(@PathVariable final String language, HttpServletRequest request) {
+    public List<CountryCode> getCountryCodesByLanguage(@PathVariable final String language) {
         log.info("Call of getCountryCodes by language for value sets");
-        securityHelper.authorizeUser(request);
-
         return valueSetsService.getCountryCodesForLanguage(language);
     }
 }

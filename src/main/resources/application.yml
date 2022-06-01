@@ -51,6 +51,8 @@ server:
   servlet:
     context-path: /
 spring:
+  config:
+    import: application-authorization.yml
   application:
     name: cc-management-service
   datasource:
@@ -74,6 +76,9 @@ spring:
   flyway:
     enabled: true
     clean-on-validation-error: false
+    baseline-on-migrate: true
+    table: flyway_schema_history
+    baseline-version: 0
     locations: classpath:db/migration/common, classpath:db/migration/postgresql
   jackson:
     serialization:
@@ -109,6 +114,8 @@ management:
       enabled: true
 
 cc-management-service:
+  auth:
+    allow-unauthenticated: cc-api-gateway-service
   rest:
     connectTimeoutSeconds: 8
     readTimeoutSeconds: 8
@@ -124,12 +131,6 @@ cc-management-service:
       - type: vaccination-tourist
         uris:
           - covidcertificate/vaccination-tourist
-        start: 2020-01-01T00:00:00.000Z
-        end: 2022-02-16T00:00:00.000Z
-
-      - type: recovery-rat
-        uris:
-          - covidcertificate/recovery-rat
         start: 2020-01-01T00:00:00.000Z
         end: 2022-02-16T00:00:00.000Z
 

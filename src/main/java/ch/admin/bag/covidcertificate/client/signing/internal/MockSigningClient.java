@@ -1,9 +1,9 @@
 package ch.admin.bag.covidcertificate.client.signing.internal;
 
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
+import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.client.signing.VerifySignatureRequestDto;
 import ch.admin.bag.covidcertificate.config.ProfileRegistry;
-import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @Profile(ProfileRegistry.SIGNING_SERVICE_MOCK)
 public class MockSigningClient implements SigningClient {
 
-    public byte[] createSignature(byte[] payload, SigningInformation signingInformation){
+    public byte[] createSignature(byte[] payload, SigningInformationDto signingInformation) {
         log.info("Call the mock signing service");
         return payload;
     }

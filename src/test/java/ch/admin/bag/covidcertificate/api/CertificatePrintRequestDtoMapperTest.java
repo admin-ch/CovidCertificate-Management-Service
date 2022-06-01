@@ -4,10 +4,8 @@ import ch.admin.bag.covidcertificate.TestModelProvider;
 import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequestDto;
-import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -49,7 +47,7 @@ public class CertificatePrintRequestDtoMapperTest {
         ReflectionTestUtils.setField(certificatePrintRequestDtoMapper, "sinceVaccinationDate", LocalDate.of(2021, Month.APRIL, 29));
 
         VaccinationCertificateCreateDto createDto = TestModelProvider.getVaccinationCertificateCreateDto("", "");
-        CertificatePrintRequestDto testee = certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(new byte[] {}, "", createDto);
+        CertificatePrintRequestDto testee = certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(new byte[]{}, "", createDto);
 
         assertTrue(testee.getIsBillable());
     }
@@ -60,7 +58,7 @@ public class CertificatePrintRequestDtoMapperTest {
         ReflectionTestUtils.setField(certificatePrintRequestDtoMapper, "sinceVaccinationDate", LocalDate.of(2021, Month.APRIL, 30));
 
         VaccinationCertificateCreateDto createDto = TestModelProvider.getVaccinationCertificateCreateDto("", "");
-        CertificatePrintRequestDto testee = certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(new byte[] {}, "", createDto);
+        CertificatePrintRequestDto testee = certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(new byte[]{}, "", createDto);
 
         assertFalse(testee.getIsBillable());
     }
