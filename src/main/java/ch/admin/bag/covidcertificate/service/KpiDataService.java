@@ -26,6 +26,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_COD
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_COUNTRY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_CREATE_CERTIFICATE_SYSTEM_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_FRAUD;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_ANTIBODY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_EXCEPTIONAL;
@@ -69,12 +70,12 @@ public class KpiDataService {
                                     uvci,
                                     createDto.getSystemSource(),
                                     createDto.getUserExtId(),
-                                    getDetails(typeCode),
+                                    getDetailsForTestCertificate(typeCode),
                                     createDto.getTestInfo().get(0).getMemberStateOfTest(),
                                     usedKeyIdentifier);
     }
 
-    private String getDetails(Optional<TestType> typeCode) {
+    private String getDetailsForTestCertificate(Optional<TestType> typeCode) {
         String typeCodeDetailString = null;
         if (typeCode.isPresent()) {
             TestType foundTestType = typeCode.get();
@@ -199,7 +200,7 @@ public class KpiDataService {
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
 
         var kpiTimestamp = LocalDateTime.now();
-        writeKpiInLog(type, details, country, kpiTimestamp, systemSource, relevantUserExtId, usedKeyIdentifier);
+        writeCertificateCreationKpiInLog(type, details, country, kpiTimestamp, systemSource, relevantUserExtId, usedKeyIdentifier);
         saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, type, relevantUserExtId, systemSource.category)
                         .withUvci(uvci)
@@ -211,7 +212,7 @@ public class KpiDataService {
     }
 
 
-    private void writeKpiInLog(
+    private void writeCertificateCreationKpiInLog(
             String type,
             String details,
             String country,
@@ -246,5 +247,23 @@ public class KpiDataService {
                      kpiCountryKVPair,
                      kpiUserKeyIdentifierKVPair);
         }
+    }
+
+    public void logRevocationKpi(String systemKey, String kpiType, String uvci, SystemSource systemSource, String userExtId, boolean fraud) {
+        Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
+        String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
+        LocalDateTime kpiTimestamp = LocalDateTime.now();
+        log.info("kpi: {} {} {} {} {}",
+                kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                kv(KPI_TYPE_KEY, kpiType),
+                kv(KPI_UUID_KEY, relevantUserExtId),
+                kv(systemKey, systemSource.category),
+                kv(KPI_FRAUD, fraud));
+        saveKpiData(
+                new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, relevantUserExtId, systemSource.category)
+                        .withUvci(uvci)
+                        .withFraud(fraud)
+                        .build()
+        );
     }
 }

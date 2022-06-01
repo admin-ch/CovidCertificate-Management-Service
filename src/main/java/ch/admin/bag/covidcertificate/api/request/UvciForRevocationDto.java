@@ -8,23 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_UVCI;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_FRAUD_FLAG;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Slf4j
-public class RevocationDto {
+public class UvciForRevocationDto {
     private String uvci;
-    private SystemSource systemSource;
-    private String userExtId;
-
-    private boolean fraud;
-
-    public void validate() {
-        if (uvci == null || !UvciValidator.isValid(uvci)) {
-            log.info("Validate revocation for {} failed.", uvci);
-            throw new RevocationException(INVALID_UVCI);
-        }
-    }
+    private Boolean fraud;
 }

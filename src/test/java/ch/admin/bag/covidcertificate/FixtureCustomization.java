@@ -2,7 +2,6 @@ package ch.admin.bag.covidcertificate;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
@@ -10,7 +9,10 @@ import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
+import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.UvciForRevocationDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
@@ -22,7 +24,11 @@ import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.domain.RapidTest;
 import ch.admin.bag.covidcertificate.domain.Vaccine;
-import ch.admin.bag.covidcertificate.service.domain.*;
+import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
 import com.flextrade.jfixture.JFixture;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -173,6 +179,7 @@ public class FixtureCustomization {
             return exceptionalCertificateCreateDto;
         });
     }
+
     public static void customizeCreateCertificateException(JFixture fixture) {
         fixture.customise().lazyInstance(CreateCertificateException.class, () -> {
             var createCertificateError = fixture.create(CreateCertificateError.class);
@@ -184,11 +191,15 @@ public class FixtureCustomization {
         fixture.customise().lazyInstance(RevocationDto.class, () -> new RevocationDto(createUVCI(), fixture.create(SystemSource.class), null, fraud));
     }
 
+    public static void customizeUvciForRevocationDto(JFixture fixture, boolean fraud) {
+        fixture.customise().lazyInstance(UvciForRevocationDto.class, () -> new UvciForRevocationDto(createUVCI(), fraud));
+    }
+
     public static void customizeRevocationListDto(JFixture fixture) {
-        List<String> uvcis = new LinkedList<>();
-        uvcis.add(createUVCI());
-        uvcis.add(createUVCI());
-        uvcis.add(createUVCI());
+        List<UvciForRevocationDto> uvcis = new LinkedList<>();
+        uvcis.add(new UvciForRevocationDto(createUVCI(), false));
+        uvcis.add(new UvciForRevocationDto(createUVCI(), false));
+        uvcis.add(new UvciForRevocationDto(createUVCI(), false));
         fixture.customise().lazyInstance(RevocationListDto.class, () -> new RevocationListDto(uvcis, fixture.create(SystemSource.class), fixture.create(String.class)));
     }
 

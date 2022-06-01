@@ -13,7 +13,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TI
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class AntibodyCertificateCsvBean extends CertificateCsvBean {
+public class AntibodyCertificateCsvBean extends CertificateCreateCsvBean {
 
     @CsvBindByName(column = "sampleDate")
     private String sampleDate;

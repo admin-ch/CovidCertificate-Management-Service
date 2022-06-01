@@ -13,7 +13,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_FIRST_
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecoveryCertificateCsvBean extends CertificateCsvBean {
+public class RecoveryCertificateCsvBean extends CertificateCreateCsvBean {
 
     @CsvBindByName(column = "dateOfFirstPositiveTestResult")
     private String dateOfFirstPositiveTestResult;

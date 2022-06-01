@@ -11,8 +11,12 @@ public final class UvciValidator {
     private UvciValidator() {
     }
 
+    public static boolean isValid(String uvci) {
+        return uvci.matches(REGEX_UVCI);
+    }
+
     public static void validateUvciMatchesSpecification(String uvci) {
-        if (uvci == null || !uvci.matches(REGEX_UVCI)) {
+        if (uvci == null || !isValid(uvci)) {
             throw new RevocationException(INVALID_UVCI);
         }
     }
