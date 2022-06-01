@@ -76,6 +76,9 @@ spring:
   flyway:
     enabled: true
     clean-on-validation-error: false
+    baseline-on-migrate: true
+    table: flyway_schema_history
+    baseline-version: 0
     locations: classpath:db/migration/common, classpath:db/migration/postgresql
   jackson:
     serialization:
