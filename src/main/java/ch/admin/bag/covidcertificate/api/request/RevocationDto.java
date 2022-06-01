@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
-import ch.admin.bag.covidcertificate.util.UVCI;
+import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class RevocationDto {
     private boolean fraud;
 
     public void validate() {
-        if (uvci == null || !UVCI.isValid(uvci)) {
+        if (uvci == null || !UvciValidator.isValid(uvci)) {
             log.info("Validate revocation for {} failed.", uvci);
             throw new RevocationException(INVALID_UVCI);
         }

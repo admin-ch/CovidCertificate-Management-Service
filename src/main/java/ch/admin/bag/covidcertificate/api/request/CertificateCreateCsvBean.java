@@ -19,7 +19,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_APP_CODE_LENGT
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class CertificateCsvBean {
+public abstract class CertificateCreateCsvBean {
 
     @CsvBindByName(column = "givenName")
     private String givenName;
