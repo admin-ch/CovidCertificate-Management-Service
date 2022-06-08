@@ -462,6 +462,13 @@ services:
         one-of: ${roles.groups.legacy},${roles.id.cert.rat}
         uri: "/api/v1/covidcertificate/recovery-rat"
 
+      convert-vaccination-certificate:
+        identifier: "convert-vaccination-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy}
+        uri: "/api/v1/covidcertificate/conversion/vaccination"
+
       revoke-certificate:
         identifier: "revoke-certificate"
         from: 2022-01-01T00:00:00
