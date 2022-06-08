@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_CONVERSION_OLD_UVCI_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_COUNTRY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_CREATE_CERTIFICATE_SYSTEM_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
@@ -40,6 +41,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_C
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_TOURIST;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_USED_KEY_IDENTIFIER;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_UVCI_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -240,13 +242,12 @@ public class KpiDataService {
             ConversionReason conversionReason) {
 
         var kpiTimestamp = LocalDateTime.now();
-        writeCertificateCreationKpiInLog(KPI_TYPE_VACCINATION_CONVERSION,
-                                         null,
-                                         country,
-                                         kpiTimestamp,
-                                         SystemSource.ApiConversion,
-                                         CONVERSION_USER,
-                                         usedKeyIdentifier);
+        writeCertificateConversionKpiInLog(
+                oldUvci,
+                newUvci,
+                country,
+                kpiTimestamp,
+                usedKeyIdentifier);
         saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp,
                                            KPI_TYPE_VACCINATION_CONVERSION,
@@ -296,6 +297,34 @@ public class KpiDataService {
                      kpiCountryKVPair,
                      kpiUsedKeyIdentifierKVPair);
         }
+    }
+
+    private void writeCertificateConversionKpiInLog(
+            String oldUvci,
+            String newUvci,
+            String country,
+            LocalDateTime kpiTimestamp,
+            String usedKeyIdentifier) {
+
+        var timestampKVPair = kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT));
+        var systemKVPair = kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, SystemSource.ApiConversion.category);
+        var kpiTypeKVPair = kv(KPI_TYPE_KEY,
+                               ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_CONVERSION);
+        var kpiOldUvciKVPair = kv(KPI_CONVERSION_OLD_UVCI_KEY, oldUvci);
+        var kpiNewUvciKVPair = kv(KPI_UVCI_KEY, newUvci);
+        var userIdKVPair = kv(KPI_UUID_KEY, KpiDataService.CONVERSION_USER);
+        var kpiCountryKVPair = kv(KPI_COUNTRY, country);
+        var kpiUsedKeyIdentifierKVPair = kv(KPI_USED_KEY_IDENTIFIER, usedKeyIdentifier);
+
+        log.info("kpi: {} {} {} {} {} {} {} {}",
+                 timestampKVPair,
+                 systemKVPair,
+                 kpiTypeKVPair,
+                 userIdKVPair,
+                 kpiCountryKVPair,
+                 kpiOldUvciKVPair,
+                 kpiNewUvciKVPair,
+                 kpiUsedKeyIdentifierKVPair);
     }
 
     public void logRevocationKpi(

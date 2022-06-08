@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 public class Constants {
     // Utils
     public static final String EMPTY_STRING = "";
-    public static final String HYPHEN = "-";
 
     public static final int MIN_NB_OF_DOSES = 1;
     public static final int MAX_NB_OF_DOSES = 9;
@@ -58,7 +57,8 @@ public class Constants {
 
     // Other KPI Logs constants
     public static final String KPI_IN_APP_DELIVERY_CODE_KEY = "code";
-    public static final String KPI_IN_APP_DELIVERY_UVCI_KEY = "uvci";
+    public static final String KPI_UVCI_KEY = "uvci";
+    public static final String KPI_CONVERSION_OLD_UVCI_KEY = "old_uvci";
     public static final String USER_EXT_ID_CLAIM_KEY = "userExtId";
     public static final String PREFERRED_USERNAME_CLAIM_KEY = "preferred_username";
     public static final String USER_ROLES_CLAIM_KEY = "userroles";
@@ -68,7 +68,6 @@ public class Constants {
     public static final String KPI_DETAILS = "details";
     public static final String KPI_COUNTRY = "country";
     public static final String KPI_USED_KEY_IDENTIFIER = "usedKID";
-    public static final String KPI_FRAUD = "fraud";
     public static final String KPI_SYSTEM_UI = "ui";
 
     // Time, date and relevant formatting
@@ -140,7 +139,6 @@ public class Constants {
     public static final AuthorizationError ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN = new AuthorizationError(492, "Access denied for HIN with CH-Login", HttpStatus.FORBIDDEN);
 
 
-    public static final RevocationError UNKNOWN_UVCI = new RevocationError(495, "Uvci is not known.", HttpStatus.BAD_REQUEST);
     public static final RevocationError ALREADY_REVOKED_UVCI = new RevocationError(496, "Uvci is already revoked.", HttpStatus.BAD_REQUEST);
     public static final RevocationError DUPLICATE_UVCI_IN_REQUEST = new RevocationError(497, "Same UVCI is duplicated in request.", HttpStatus.BAD_REQUEST);
 
