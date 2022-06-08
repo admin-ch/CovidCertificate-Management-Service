@@ -27,7 +27,7 @@ public class TestCertificateQrCodeMapper {
     ) {
         return new TestCertificateQrCode(
                 VERSION,
-                CovidCertificatePersonMapper.toCovidCertificatePerson(testCertificateCreateDto.getPersonData()),
+                PersonMapper.toCovidCertificatePerson(testCertificateCreateDto.getPersonData()),
                 TestCertificateQrCodeMapper.toTestCertificateDataList(
                         testCertificateCreateDto.getTestInfo(),
                         testValueSet

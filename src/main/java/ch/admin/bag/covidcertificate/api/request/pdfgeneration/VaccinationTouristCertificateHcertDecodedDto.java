@@ -18,7 +18,7 @@ public class VaccinationTouristCertificateHcertDecodedDto {
     @JsonProperty("ver")
     private String version;
     @JsonUnwrapped
-    private CertificatePdfGeneratePersonDto personData;
+    private CertificatePersonDto personData;
     @JsonProperty("v")
     private List<VaccinationTouristCertificateHcertDecodedDataDto> vaccinationTouristInfo;
 }
