@@ -7,13 +7,6 @@ import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.AntibodyCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.ExceptionalCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryRatCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
@@ -46,7 +39,7 @@ public class CovidCertificateGenerationController {
             @Valid @RequestBody VaccinationCertificateCreateDto createDto)
             throws IOException {
 
-        log.info("Call of Create for vaccination certificate");
+        log.info("Call of create for vaccination certificate");
 
         createDto.validate();
         covidCertificateVaccinationValidationService.validateProductAndCountry(createDto);
@@ -66,7 +59,7 @@ public class CovidCertificateGenerationController {
             @Valid @RequestBody VaccinationTouristCertificateCreateDto createDto)
             throws IOException {
 
-        log.info("Call of Create for vaccination tourist certificate");
+        log.info("Call of create for vaccination tourist certificate");
 
         createDto.validate();
         covidCertificateVaccinationValidationService.validateProductAndCountryForVaccinationTourist(createDto);
@@ -86,7 +79,7 @@ public class CovidCertificateGenerationController {
             @Valid @RequestBody TestCertificateCreateDto createDto)
             throws IOException {
 
-        log.info("Call of Create for test certificate");
+        log.info("Call of create for test certificate");
 
         createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
@@ -105,7 +98,7 @@ public class CovidCertificateGenerationController {
             @Valid @RequestBody RecoveryCertificateCreateDto createDto)
             throws IOException {
 
-        log.info("Call of Create for recovery certificate");
+        log.info("Call of create for recovery certificate");
 
         createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
@@ -124,7 +117,7 @@ public class CovidCertificateGenerationController {
             @Valid @RequestBody RecoveryRatCertificateCreateDto createDto)
             throws IOException {
 
-        log.info("Call of Create for recovery-rat certificate");
+        log.info("Call of create for recovery-rat certificate");
 
         createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
@@ -143,7 +136,7 @@ public class CovidCertificateGenerationController {
             @Valid @RequestBody AntibodyCertificateCreateDto createDto)
             throws IOException {
 
-        log.info("Call of Create for antibody certificate");
+        log.info("Call of create for antibody certificate");
 
         createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
@@ -162,7 +155,7 @@ public class CovidCertificateGenerationController {
             @Valid @RequestBody ExceptionalCertificateCreateDto createDto)
             throws IOException {
 
-        log.info("Call of Create for exceptional certificate");
+        log.info("Call of create for exceptional certificate");
 
         createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
@@ -173,83 +166,6 @@ public class CovidCertificateGenerationController {
                 createDto,
                 responseDto.getUvci(),
                 responseEnvelope.getUsedKeyIdentifier());
-        return responseDto;
-    }
-
-    @PostMapping("/fromexisting/vaccination")
-    public CovidCertificateCreateResponseDto generateVaccinationPdfFromExistingCertificate(
-            @Valid @RequestBody VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-
-        log.info("Call of Create for vaccination certificate");
-        CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
-                .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
-    }
-
-    @PostMapping("/fromexisting/vaccination-tourist")
-    public CovidCertificateCreateResponseDto generateVaccinationTouristPdfFromExistingCertificate(
-            @Valid @RequestBody VaccinationTouristCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-
-        log.info("Call of Create for vaccination-tourist certificate");
-        CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
-                .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
-    }
-
-    @PostMapping("/fromexisting/test")
-    public CovidCertificateCreateResponseDto generateTestPdfFromExistingCertificate(
-            @Valid @RequestBody TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-
-        log.info("Call of Create for test certificate");
-        CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
-                .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
-    }
-
-    @PostMapping("/fromexisting/recovery")
-    public CovidCertificateCreateResponseDto generateRecoveryPdfFromExistingCertificate(
-            @Valid @RequestBody RecoveryCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-
-        log.info("Call of Create for recovery certificate");
-        CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
-                .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
-    }
-
-    @PostMapping("/fromexisting/recovery-rat")
-    public CovidCertificateCreateResponseDto generateRecoveryRatPdfFromExistingCertificate(
-            @Valid @RequestBody RecoveryRatCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-
-        log.info("Call of Create for recovery-rat certificate");
-        CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
-                .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
-    }
-
-    @PostMapping("/fromexisting/antibody")
-    public CovidCertificateCreateResponseDto generateAntibodyPdfFromExistingCertificate(
-            @Valid @RequestBody AntibodyCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-
-        log.info("Call of Create for antibody certificate");
-        CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
-                .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
-    }
-
-    @PostMapping("/fromexisting/exceptional")
-    public CovidCertificateCreateResponseDto generateExceptionalPdfFromExistingCertificate(
-            @Valid @RequestBody ExceptionalCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
-
-        log.info("Call of Create for exceptional certificate");
-        CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
-                .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
         return responseDto;
     }
 }
