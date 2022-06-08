@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/covidcertificate")
+@RequestMapping("/api/v1/covidcertificate/conversion")
 @RequiredArgsConstructor
 @Slf4j
 public class CovidCertificateConversionController {
@@ -26,7 +26,7 @@ public class CovidCertificateConversionController {
     private final CovidCertificateConversionService covidCertificateConversionService;
     private final KpiDataService kpiLogService;
 
-    @PostMapping("/conversion/vaccination")
+    @PostMapping("/vaccination")
     public ConvertedCertificateResponseDto convertVaccinationCertificate(
             @Valid @RequestBody VaccinationCertificateConversionRequestDto conversionRequestDto)
             throws IOException {

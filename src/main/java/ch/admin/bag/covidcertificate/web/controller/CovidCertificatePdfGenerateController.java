@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/covidcertificate")
+@RequestMapping("/api/v1/covidcertificate/fromexisting")
 @RequiredArgsConstructor
 @Slf4j
 public class CovidCertificatePdfGenerateController {
 
     private final CovidCertificateGenerationService covidCertificateGenerationService;
 
-    @PostMapping("/fromexisting/vaccination")
+    @PostMapping("/vaccination")
     public CovidCertificateCreateResponseDto generateVaccinationPdfFromExistingCertificate(
             @Valid @RequestBody VaccinationCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
 
@@ -38,7 +38,7 @@ public class CovidCertificatePdfGenerateController {
         return responseDto;
     }
 
-    @PostMapping("/fromexisting/vaccination-tourist")
+    @PostMapping("/vaccination-tourist")
     public CovidCertificateCreateResponseDto generateVaccinationTouristPdfFromExistingCertificate(
             @Valid @RequestBody VaccinationTouristCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
 
@@ -49,7 +49,7 @@ public class CovidCertificatePdfGenerateController {
         return responseDto;
     }
 
-    @PostMapping("/fromexisting/test")
+    @PostMapping("/test")
     public CovidCertificateCreateResponseDto generateTestPdfFromExistingCertificate(
             @Valid @RequestBody TestCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
 
@@ -60,7 +60,7 @@ public class CovidCertificatePdfGenerateController {
         return responseDto;
     }
 
-    @PostMapping("/fromexisting/recovery")
+    @PostMapping("/recovery")
     public CovidCertificateCreateResponseDto generateRecoveryPdfFromExistingCertificate(
             @Valid @RequestBody RecoveryCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
 
@@ -71,7 +71,7 @@ public class CovidCertificatePdfGenerateController {
         return responseDto;
     }
 
-    @PostMapping("/fromexisting/recovery-rat")
+    @PostMapping("/recovery-rat")
     public CovidCertificateCreateResponseDto generateRecoveryRatPdfFromExistingCertificate(
             @Valid @RequestBody RecoveryRatCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
 
@@ -82,7 +82,7 @@ public class CovidCertificatePdfGenerateController {
         return responseDto;
     }
 
-    @PostMapping("/fromexisting/antibody")
+    @PostMapping("/antibody")
     public CovidCertificateCreateResponseDto generateAntibodyPdfFromExistingCertificate(
             @Valid @RequestBody AntibodyCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
 
@@ -93,7 +93,7 @@ public class CovidCertificatePdfGenerateController {
         return responseDto;
     }
 
-    @PostMapping("/fromexisting/exceptional")
+    @PostMapping("/exceptional")
     public CovidCertificateCreateResponseDto generateExceptionalPdfFromExistingCertificate(
             @Valid @RequestBody ExceptionalCertificatePdfGenerateRequestDto pdfGenerateRequestDto) {
 
