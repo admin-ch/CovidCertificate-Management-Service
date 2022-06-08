@@ -30,7 +30,7 @@ public class CovidCertificateConversionService {
         // map certificate data
         var qrCodeData = ccDtoMapperService.toVaccinationCertificateQrCodeForConversion(conversionDto);
         // take right signing information
-        var signingInformation = signingInformationService.getVaccinationTouristSigningInformation();
+        var signingInformation = signingInformationService.getVaccinationConversionSigningInformation();
         // define expiration of converted certificate
         var expiration24Months = coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS);
         // get the mapped UVCI, see toVaccinationCertificateQrCode

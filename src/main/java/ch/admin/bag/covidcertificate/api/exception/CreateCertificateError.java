@@ -10,6 +10,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter
 public class CreateCertificateError implements Serializable {
+
     private final int errorCode;
     private final String errorMessage;
     private final HttpStatus httpStatus;

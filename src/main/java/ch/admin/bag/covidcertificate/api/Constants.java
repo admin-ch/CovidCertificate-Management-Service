@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.AuthorizationError;
+import ch.admin.bag.covidcertificate.api.exception.ConvertCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CsvError;
 import ch.admin.bag.covidcertificate.api.exception.FeatureToggleError;
@@ -53,6 +54,7 @@ public class Constants {
     public static final String KPI_TYPE_MASS_REVOCATION_SUCCESS = "mre-s";
     public static final String KPI_TYPE_MASS_REVOCATION_FAILURE = "mre-f";
     public static final String KPI_TYPE_MASS_REVOCATION_REDUNDANT = "mre-r";
+    public static final String KPI_TYPE_VACCINATION_CONVERSION = "vc";
 
     // Other KPI Logs constants
     public static final String KPI_IN_APP_DELIVERY_CODE_KEY = "code";
@@ -148,16 +150,36 @@ public class Constants {
     public static final CreateCertificateError CREATE_SIGNATURE_FAILED = new CreateCertificateError(553, "Creating signature failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_COSE_SIGN1_FAILED = new CreateCertificateError(554, "Creating COSE_Sign1 failed.", HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555, "Creating barcode failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556, "Printing failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CsvError WRITING_RETURN_CSV_FAILED = new CsvError(557, "Writing CSV failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558, "App delivery failed due to a technical error.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError SIGNING_CERTIFICATE_MISSING = new CreateCertificateError(559, "No signing certificate was found.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError AMBIGUOUS_SIGNING_CERTIFICATE = new CreateCertificateError(560, "Ambiguous signing certificate. Multiple signing certificates were found.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556,
+                                                                                            "Printing failed due to a technical error.",
+                                                                                            HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CsvError WRITING_RETURN_CSV_FAILED = new CsvError(557, "Writing CSV failed.",
+                                                                          HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError APP_DELIVERY_FAILED = new CreateCertificateError(558,
+                                                                                                "App delivery failed due to a technical error.",
+                                                                                                HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError SIGNING_CERTIFICATE_MISSING = new CreateCertificateError(559,
+                                                                                                        "No signing certificate was found.",
+                                                                                                        HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError AMBIGUOUS_SIGNING_CERTIFICATE = new CreateCertificateError(560,
+                                                                                                          "Ambiguous signing certificate. Multiple signing certificates were found.",
+                                                                                                          HttpStatus.INTERNAL_SERVER_ERROR);
 
-    public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901, "The requested language does not match any of the supported languages: de, it, fr, rm, en!", HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError CREATE_PDF_FAILED = new CreateCertificateError(561, "Creating PDF failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_UVCI_FAILED = new CreateCertificateError(562, "Creating UVCI failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final ValueSetError UNSUPPORTED_LANGUAGE = new ValueSetError(901,
+                                                                               "The requested language does not match any of the supported languages: de, it, fr, rm, en!",
+                                                                               HttpStatus.BAD_REQUEST);
+    public static final CreateCertificateError CREATE_PDF_FAILED = new CreateCertificateError(561,
+                                                                                              "Creating PDF failed.",
+                                                                                              HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_UVCI_FAILED = new CreateCertificateError(562,
+                                                                                               "Creating UVCI failed.",
+                                                                                               HttpStatus.INTERNAL_SERVER_ERROR);
 
+    public static final ConvertCertificateError CREATE_PAYLOAD_FAILED = new ConvertCertificateError(1001, "",
+                                                                                                    HttpStatus.BAD_REQUEST);
+    public static final ConvertCertificateError CREATE_CONVERTED_UVCI_FAILED = new ConvertCertificateError(1002,
+                                                                                                           "Converting UVCI failed.",
+                                                                                                           HttpStatus.INTERNAL_SERVER_ERROR);
 
     public static final String VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX = "_T";
 
