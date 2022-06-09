@@ -5,7 +5,7 @@ public enum SystemSource {
     CsvUpload("UI"),
     ApiGateway("API"),
     ApiPlatform("API"),
-    ApiConversion("CCC"); // CCC = Covid Certificate Conversion
+    Conversion("CCC"); // CCC = Covid Certificate Conversion
 
     public final String category;
 

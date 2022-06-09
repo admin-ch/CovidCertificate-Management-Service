@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api.request.conversion;
 
 public enum ConversionReason {
 
-    U18_CONVERSION("U18");
+    VACCINATION_CONVERSION("VACCINATION_CONVERSION");
 
     public final String reason;
 

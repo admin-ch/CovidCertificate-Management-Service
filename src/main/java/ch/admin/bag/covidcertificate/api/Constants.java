@@ -53,7 +53,7 @@ public class Constants {
     public static final String KPI_TYPE_MASS_REVOCATION_SUCCESS = "mre-s";
     public static final String KPI_TYPE_MASS_REVOCATION_FAILURE = "mre-f";
     public static final String KPI_TYPE_MASS_REVOCATION_REDUNDANT = "mre-r";
-    public static final String KPI_TYPE_VACCINATION_CONVERSION = "vc";
+    public static final String KPI_TYPE_CERTIFICATE_CONVERSION = "cc";
 
     // Other KPI Logs constants
     public static final String KPI_IN_APP_DELIVERY_CODE_KEY = "code";

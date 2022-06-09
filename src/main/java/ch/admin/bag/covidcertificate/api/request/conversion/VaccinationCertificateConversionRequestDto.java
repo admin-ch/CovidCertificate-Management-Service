@@ -24,7 +24,7 @@ public class VaccinationCertificateConversionRequestDto {
 
     public void validate() {
         switch (this.conversionReason) {
-            case U18_CONVERSION:
+            case VACCINATION_CONVERSION:
                 validateU18();
                 break;
             default:

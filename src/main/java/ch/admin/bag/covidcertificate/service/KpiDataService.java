@@ -31,13 +31,13 @@ import static ch.admin.bag.covidcertificate.api.Constants.KPI_CREATE_CERTIFICATE
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_ANTIBODY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_CERTIFICATE_CONVERSION;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_EXCEPTIONAL;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY_RAT_EU;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_TEST;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_CONVERSION;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_TOURIST;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_USED_KEY_IDENTIFIER;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
@@ -207,7 +207,7 @@ public class KpiDataService {
                 newUvci, // existing UVCI column
                 conversionDto.getDecodedCert().getVaccinationInfo().get(0).getIdentifier(), // new origin_uvci column
                 usedKeyIdentifier,
-                conversionDto.getConversionReason()); // conversion reason gets inserted to details column
+                conversionDto.getConversionReason()); // new column conversion_reason
     }
 
     private void logCertificateGenerationKpi(
@@ -250,9 +250,9 @@ public class KpiDataService {
                 usedKeyIdentifier);
         saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp,
-                                           KPI_TYPE_VACCINATION_CONVERSION,
+                                           KPI_TYPE_CERTIFICATE_CONVERSION,
                                            CONVERSION_USER,
-                                           SystemSource.ApiConversion.category)
+                                           SystemSource.Conversion.category)
                         .withUvci(newUvci)
                         .withOriginUvci(oldUvci)
                         .withCountry(country)
@@ -307,9 +307,9 @@ public class KpiDataService {
             String usedKeyIdentifier) {
 
         var timestampKVPair = kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT));
-        var systemKVPair = kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, SystemSource.ApiConversion.category);
+        var systemKVPair = kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, SystemSource.Conversion.category);
         var kpiTypeKVPair = kv(KPI_TYPE_KEY,
-                               ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_CONVERSION);
+                               ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_CERTIFICATE_CONVERSION);
         var kpiOldUvciKVPair = kv(KPI_CONVERSION_OLD_UVCI_KEY, oldUvci);
         var kpiNewUvciKVPair = kv(KPI_UVCI_KEY, newUvci);
         var userIdKVPair = kv(KPI_UUID_KEY, KpiDataService.CONVERSION_USER);
