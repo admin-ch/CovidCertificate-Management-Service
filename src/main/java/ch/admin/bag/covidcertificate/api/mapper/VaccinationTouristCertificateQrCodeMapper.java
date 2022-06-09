@@ -26,7 +26,7 @@ public class VaccinationTouristCertificateQrCodeMapper {
     ) {
         return new VaccinationTouristCertificateQrCode(
                 VERSION,
-                CovidCertificatePersonMapper.toCovidCertificatePerson(vaccinationTouristCertificateCreateDto.getPersonData()),
+                PersonMapper.toCovidCertificatePerson(vaccinationTouristCertificateCreateDto.getPersonData()),
                 toVaccinationTouristCertificateDataList(
                         vaccinationTouristCertificateCreateDto.getVaccinationTouristInfo(),
                         issuableVaccineDto

@@ -2,6 +2,8 @@ package ch.admin.bag.covidcertificate.api.mapper;
 
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificateHcertDecodedDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateData;
@@ -25,7 +27,7 @@ public class VaccinationCertificateQrCodeMapper {
     ) {
         return new VaccinationCertificateQrCode(
                 VERSION,
-                CovidCertificatePersonMapper.toCovidCertificatePerson(vaccinationCertificateCreateDto.getPersonData()),
+                PersonMapper.toCovidCertificatePerson(vaccinationCertificateCreateDto.getPersonData()),
                 VaccinationCertificateQrCodeMapper
                         .toVaccinationCertificateDataList(
                                 vaccinationCertificateCreateDto.getVaccinationInfo(),
@@ -34,16 +36,43 @@ public class VaccinationCertificateQrCodeMapper {
         );
     }
 
+    public static VaccinationCertificateQrCode toVaccinationCertificateQrCodeForConversion(
+            VaccinationCertificateConversionRequestDto vaccinationCertificateCreateDto,
+            IssuableVaccineDto issuableVaccineDto
+    ) {
+        return new VaccinationCertificateQrCode(
+                VERSION,
+                PersonMapper.toCertificatePerson(
+                        vaccinationCertificateCreateDto.getDecodedCert().getPersonData()),
+                VaccinationCertificateQrCodeMapper.toVaccinationCertificateDataListForConversion(
+                        vaccinationCertificateCreateDto.getDecodedCert().getVaccinationInfo(),
+                        issuableVaccineDto
+                )
+        );
+    }
+
     private static List<VaccinationCertificateData> toVaccinationCertificateDataList(
             List<VaccinationCertificateDataDto> vaccinationCertificateDataDtoList,
             IssuableVaccineDto issuableVaccineDto
     ) {
         return vaccinationCertificateDataDtoList.stream().map(vaccinationCertificateDataDto ->
-                toVaccinationCertificateData(
-                        vaccinationCertificateDataDto,
-                        issuableVaccineDto
-                )
+                                                                      toVaccinationCertificateData(
+                                                                              vaccinationCertificateDataDto,
+                                                                              issuableVaccineDto
+                                                                      )
         ).collect(Collectors.toList());
+    }
+
+    private static List<VaccinationCertificateData> toVaccinationCertificateDataListForConversion(
+            List<VaccinationCertificateHcertDecodedDataDto> vaccinationCertificateHcertDecodedDataDtoList
+            ,
+            IssuableVaccineDto issuableVaccineDto
+    ) {
+        return vaccinationCertificateHcertDecodedDataDtoList
+                .stream().map(vaccinationCertificateHcertDecodedDataDto -> toVaccinationCertificateData(
+                        vaccinationCertificateHcertDecodedDataDto,
+                        issuableVaccineDto))
+                .collect(Collectors.toList());
     }
 
     private static VaccinationCertificateData toVaccinationCertificateData(
@@ -61,6 +90,24 @@ public class VaccinationCertificateQrCodeMapper {
                 vaccinationCertificateDataDto.getCountryOfVaccination(),
                 ISSUER,
                 UVCI.generateUVCI(vaccinationCertificateDataDto.toString())
+        );
+    }
+
+    private static VaccinationCertificateData toVaccinationCertificateData(
+            VaccinationCertificateHcertDecodedDataDto vaccinationCertificateHcertDecodedDataDto,
+            IssuableVaccineDto issuableVaccineDto
+    ) {
+        return new VaccinationCertificateData(
+                CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
+                issuableVaccineDto.getProphylaxisCode(),
+                issuableVaccineDto.getProductCode(),
+                issuableVaccineDto.getAuthHolderCode(),
+                vaccinationCertificateHcertDecodedDataDto.getNumberOfDoses(),
+                vaccinationCertificateHcertDecodedDataDto.getTotalNumberOfDoses(),
+                vaccinationCertificateHcertDecodedDataDto.getVaccinationDate(),
+                vaccinationCertificateHcertDecodedDataDto.getCountryOfVaccination(),
+                ISSUER,
+                UVCI.generateUVCI(vaccinationCertificateHcertDecodedDataDto.toString())
         );
     }
 }

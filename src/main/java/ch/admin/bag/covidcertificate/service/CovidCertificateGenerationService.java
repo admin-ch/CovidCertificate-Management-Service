@@ -300,6 +300,7 @@ public class CovidCertificateGenerationService {
             CertificateCreateDto createDto,
             SigningInformationDto signingInformation,
             Instant expiration) throws JsonProcessingException {
+
         var contents = objectMapper.writer().writeValueAsString(qrCodeData);
         log.trace("Create barcode");
         var code = barcodeService.createBarcode(contents, signingInformation, expiration);

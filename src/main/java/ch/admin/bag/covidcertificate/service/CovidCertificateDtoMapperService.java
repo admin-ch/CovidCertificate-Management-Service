@@ -28,6 +28,7 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
@@ -57,19 +58,33 @@ public class CovidCertificateDtoMapperService {
     private final ValueSetsService valueSetsService;
 
     public VaccinationCertificateQrCode toVaccinationCertificateQrCode(VaccinationCertificateCreateDto createDto) {
-        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(
+                createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
         return VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccinationValueSet);
     }
 
-    public VaccinationCertificatePdf toVaccinationCertificatePdf(VaccinationCertificateCreateDto createDto, VaccinationCertificateQrCode qrCodeData) {
+    public VaccinationCertificateQrCode toVaccinationCertificateQrCodeForConversion(
+            VaccinationCertificateConversionRequestDto conversionDto) {
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(
+                conversionDto.getDecodedCert().getVaccinationInfo().get(0).getMedicinalProduct());
+        return VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCodeForConversion(conversionDto,
+                                                                                              vaccinationValueSet);
+    }
+
+    public VaccinationCertificatePdf toVaccinationCertificatePdf(
+            VaccinationCertificateCreateDto createDto, VaccinationCertificateQrCode qrCodeData) {
         VaccinationCertificateDataDto vaccinationCertificateDataDto = createDto.getVaccinationInfo().get(0);
-        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(vaccinationCertificateDataDto.getMedicinalProductCode());
-        var countryCode = valueSetsService.getCountryCode(vaccinationCertificateDataDto.getCountryOfVaccination(), createDto.getLanguage());
+        var vaccinationValueSet = valueSetsService.getVaccinationValueSet(
+                vaccinationCertificateDataDto.getMedicinalProductCode());
+        var countryCode = valueSetsService.getCountryCode(vaccinationCertificateDataDto.getCountryOfVaccination(),
+                                                          createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(vaccinationCertificateDataDto.getCountryOfVaccination());
         if (countryCode == null || countryCodeEn == null) {
             throw new CreateCertificateException(INVALID_COUNTRY_OF_VACCINATION);
         }
-        return VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(createDto, vaccinationValueSet, qrCodeData, countryCode.getDisplay(), countryCodeEn.getDisplay());
+        return VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(createDto, vaccinationValueSet, qrCodeData,
+                                                                           countryCode.getDisplay(),
+                                                                           countryCodeEn.getDisplay());
     }
 
     public VaccinationTouristCertificateQrCode toVaccinationTouristCertificateQrCode(VaccinationTouristCertificateCreateDto createDto) {

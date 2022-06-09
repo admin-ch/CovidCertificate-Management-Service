@@ -25,8 +25,9 @@ public class ExceptionalCertificateQrCodeMapper {
     public static ExceptionalCertificateQrCode toExceptionalCertificateQrCode(ExceptionalCertificateCreateDto exceptionalCertificateCreateDto) {
         return new ExceptionalCertificateQrCode(
                 VERSION,
-                CovidCertificatePersonMapper.toCovidCertificatePerson(exceptionalCertificateCreateDto.getPersonData()),
-                ExceptionalCertificateQrCodeMapper.toExceptionalCertificateDataList(exceptionalCertificateCreateDto.getExceptionalInfo())
+                PersonMapper.toCovidCertificatePerson(exceptionalCertificateCreateDto.getPersonData()),
+                ExceptionalCertificateQrCodeMapper.toExceptionalCertificateDataList(
+                        exceptionalCertificateCreateDto.getExceptionalInfo())
         );
     }
 

@@ -10,6 +10,9 @@ import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
+import ch.admin.bag.covidcertificate.api.response.ConvertedCertificateResponseDto;
+import ch.admin.bag.covidcertificate.api.response.ConvertedCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
@@ -109,6 +112,41 @@ public class TestCovidCertificateGenerationService {
         var expiration24Months = coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS);
         return this.generateCovidCertificate(qrCodeData, pdfData, uvci, createDto, signingInformation,
                                              expiration24Months);
+    }
+
+    public ConvertedCertificateResponseEnvelope convertFromExistingCovidCertificate(
+            VaccinationCertificateConversionRequestDto conversionDto, LocalDate validAt)
+            throws JsonProcessingException {
+
+        // map certificate data
+        var qrCodeData = covidCertificateDtoMapperService
+                .toVaccinationCertificateQrCodeForConversion(conversionDto);
+        // take right signing information
+        var signingInformation = signingInformationService
+                .getVaccinationConversionSigningInformation(validAt);
+        // define expiration of converted certificate
+        var expiration24Months = coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS);
+        // get the mapped UVCI, see toVaccinationCertificateQrCode
+        var uvci = qrCodeData.getVaccinationInfo().get(0).getIdentifier();
+
+        return generateCovidCertificate(qrCodeData, uvci, signingInformation, expiration24Months);
+    }
+
+    private ConvertedCertificateResponseEnvelope generateCovidCertificate(
+            AbstractCertificateQrCode qrCodeData,
+            String uvci,
+            SigningInformationDto signingInformation,
+            Instant expiration) throws JsonProcessingException {
+
+        var contents = objectMapper.writer().writeValueAsString(qrCodeData);
+        log.trace("Create barcode for conversion");
+        var code = barcodeService.createBarcode(contents, signingInformation, expiration);
+        var responseDto = new ConvertedCertificateResponseDto(code.getPayload(), uvci);
+        responseDto.validate();
+        var envelope = new ConvertedCertificateResponseEnvelope(
+                responseDto,
+                signingInformation.getCalculatedKeyIdentifier());
+        return envelope;
     }
 
     private CovidCertificateCreateResponseDto generateCovidCertificate(

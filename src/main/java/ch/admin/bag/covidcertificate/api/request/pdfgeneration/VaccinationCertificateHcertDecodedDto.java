@@ -2,7 +2,11 @@ package ch.admin.bag.covidcertificate.api.request.pdfgeneration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -14,7 +18,7 @@ public class VaccinationCertificateHcertDecodedDto {
     @JsonProperty("ver")
     private String version;
     @JsonUnwrapped
-    private CertificatePdfGeneratePersonDto personData;
+    private CertificatePersonDto personData;
     @JsonProperty("v")
     private List<VaccinationCertificateHcertDecodedDataDto> vaccinationInfo;
 }

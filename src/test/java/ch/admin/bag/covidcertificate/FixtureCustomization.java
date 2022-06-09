@@ -17,6 +17,10 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.CertificatePersonDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.CertificatePersonNameDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificateHcertDecodedDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
@@ -258,6 +262,35 @@ public class FixtureCustomization {
             var pdf = helperFixture.create(VaccinationTouristCertificatePdf.class);
             ReflectionTestUtils.setField(pdf, "dateOfBirth", LocalDate.now().minusYears(5).toString());
             return pdf;
+        });
+    }
+
+    public static void customizeVaccinationCertificateConversionRequestDto(JFixture fixture) {
+        fixture.customise().lazyInstance(VaccinationCertificateConversionRequestDto.class, () -> {
+            var helperFixture = new JFixture();
+            var vaccinationCertificateConversionRequestDto = helperFixture.create(
+                    VaccinationCertificateConversionRequestDto.class);
+            customizeVaccinationCertificateDataDto(helperFixture);
+            var vaccinationCertificateCreateDto = helperFixture.create(VaccinationCertificateCreateDto.class);
+            ReflectionTestUtils.setField(vaccinationCertificateCreateDto, "language", DE);
+            return vaccinationCertificateCreateDto;
+        });
+    }
+
+    private static void customizeVaccinationCertificateHcertDecodedDto(JFixture fixture) {
+        fixture.customise().lazyInstance(VaccinationCertificateHcertDecodedDto.class, () -> {
+            var vaccinationCertificateHcertDecodedDto = new JFixture().create(
+                    VaccinationCertificateHcertDecodedDto.class);
+            var numberOfDoses = fixture.create(Integer.class) % 9 + 1;
+            var totalNumberOfDoses = numberOfDoses + (int) Math.ceil(Math.random() * (9 - numberOfDoses));
+            var name = new JFixture().create(CertificatePersonNameDto.class);
+            ReflectionTestUtils.setField(name, "familyName", LocalDate.now().minusYears(5).toString());
+            ReflectionTestUtils.setField(name, "givenName", LocalDate.now().minusYears(5).toString());
+            var personData = new JFixture().create(CertificatePersonDto.class);
+            ReflectionTestUtils.setField(personData, "dateOfBirth", LocalDate.now().minusYears(5).toString());
+            ReflectionTestUtils.setField(personData, "name", name);
+
+            return vaccinationCertificateHcertDecodedDto;
         });
     }
 }

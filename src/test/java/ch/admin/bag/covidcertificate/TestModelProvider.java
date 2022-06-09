@@ -16,6 +16,12 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.conversion.ConversionReason;
+import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.CertificatePersonDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.CertificatePersonNameDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificateHcertDecodedDataDto;
+import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificateHcertDecodedDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -252,5 +258,37 @@ public class TestModelProvider {
 
     public static CovidCertificateAddressDto getCovidCertificateAddressDto() {
         return new CovidCertificateAddressDto("street 12", 2500, "Bern", "BE");
+    }
+
+    public static VaccinationCertificateConversionRequestDto getVaccinationCertificateConversionRequestDto() {
+        return new VaccinationCertificateConversionRequestDto(
+                ConversionReason.VACCINATION_CONVERSION,
+                new VaccinationCertificateHcertDecodedDto(
+                        "1.3.0",
+                        new CertificatePersonDto(
+                                new CertificatePersonNameDto(
+                                        "Düsentrieb",
+                                        "DUESENTRIEB",
+                                        "Daniel",
+                                        "DANIEL"),
+                                LocalDate.now().minusYears(20).minusMonths(2).minusDays(4).toString()
+                        ),
+                        List.of(getVaccinationCertificateHcertDecodedDataDto())
+                )
+        );
+    }
+
+    public static VaccinationCertificateHcertDecodedDataDto getVaccinationCertificateHcertDecodedDataDto() {
+        return new VaccinationCertificateHcertDecodedDataDto(
+                "840539006",
+                "1119349007",
+                "EU/1/20/1507",
+                "ORG-100031184",
+                Integer.valueOf(2),
+                Integer.valueOf(2),
+                LocalDate.now().minusDays(10),
+                "CH",
+                "Bundesamt für Gesundheit (BAG)",
+                FixtureCustomization.createUVCI());
     }
 }

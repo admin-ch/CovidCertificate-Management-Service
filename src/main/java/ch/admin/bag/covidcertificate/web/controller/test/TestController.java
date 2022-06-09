@@ -8,6 +8,9 @@ import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
+import ch.admin.bag.covidcertificate.api.response.ConvertedCertificateResponseDto;
+import ch.admin.bag.covidcertificate.api.response.ConvertedCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.client.signing.SigningClient;
 import ch.admin.bag.covidcertificate.client.signing.VerifySignatureRequestDto;
@@ -139,5 +142,17 @@ public class TestController {
 
         createDto.validate();
         return testCovidCertificateGenerationService.generateCovidCertificate(createDto, validAt);
+    }
+
+    @PostMapping("/conversion/vaccination/{validAt}")
+    public ConvertedCertificateResponseDto convertVaccinationCertificate(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
+            @Valid @RequestBody VaccinationCertificateConversionRequestDto conversionRequestDto) throws IOException {
+
+        conversionRequestDto.validate();
+        ConvertedCertificateResponseEnvelope convertedCertificateResponseEnvelope =
+                testCovidCertificateGenerationService.convertFromExistingCovidCertificate(conversionRequestDto,
+                                                                                          validAt);
+        return convertedCertificateResponseEnvelope.getResponseDto();
     }
 }

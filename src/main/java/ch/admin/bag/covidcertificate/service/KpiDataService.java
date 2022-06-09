@@ -8,6 +8,8 @@ import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.conversion.ConversionReason;
+import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
@@ -23,12 +25,13 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_CONVERSION_OLD_UVCI_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_COUNTRY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_CREATE_CERTIFICATE_SYSTEM_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_DETAILS;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_FRAUD;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_ANTIBODY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_CERTIFICATE_CONVERSION;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_EXCEPTIONAL;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_RECOVERY;
@@ -38,6 +41,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_VACCINATION_TOURIST;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_USED_KEY_IDENTIFIER;
 import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
+import static ch.admin.bag.covidcertificate.api.Constants.KPI_UVCI_KEY;
 import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -51,6 +55,7 @@ public class KpiDataService {
     public static final String DETAILS_MEDICAL_EXCEPTION = "medical exception";
     public static final String DETAILS_ANTIBODY = "antibody";
     public static final String DETAILS_PCR = "pcr";
+    public static final String CONVERSION_USER = "conversion";
 
     private final KpiDataRepository logRepository;
     private final ServletJeapAuthorization jeapAuthorization;
@@ -187,6 +192,24 @@ public class KpiDataService {
                                     usedKeyIdentifier);
     }
 
+    @Transactional
+    public void logCertificateConversionKpi(
+            VaccinationCertificateConversionRequestDto conversionDto,
+            String newUvci,
+            String usedKeyIdentifier) {
+
+        logCertificateConversionKpi(
+                conversionDto.getDecodedCert()
+                             .getVaccinationInfo()
+                             .get(0)
+                             .getCountryOfVaccination(), // existing country column
+                // existing column system source
+                newUvci, // existing UVCI column
+                conversionDto.getDecodedCert().getVaccinationInfo().get(0).getIdentifier(), // new origin_uvci column
+                usedKeyIdentifier,
+                conversionDto.getConversionReason()); // new column conversion_reason
+    }
+
     private void logCertificateGenerationKpi(
             String type,
             String uvci,
@@ -211,6 +234,33 @@ public class KpiDataService {
         );
     }
 
+    private void logCertificateConversionKpi(
+            String country,
+            String newUvci,
+            String oldUvci,
+            String usedKeyIdentifier,
+            ConversionReason conversionReason) {
+
+        var kpiTimestamp = LocalDateTime.now();
+        writeCertificateConversionKpiInLog(
+                oldUvci,
+                newUvci,
+                country,
+                kpiTimestamp,
+                usedKeyIdentifier);
+        saveKpiData(
+                new KpiData.KpiDataBuilder(kpiTimestamp,
+                                           KPI_TYPE_CERTIFICATE_CONVERSION,
+                                           CONVERSION_USER,
+                                           SystemSource.Conversion.category)
+                        .withUvci(newUvci)
+                        .withOriginUvci(oldUvci)
+                        .withCountry(country)
+                        .withKeyIdentifier(usedKeyIdentifier)
+                        .withConversionReason(conversionReason.name())
+                        .build()
+        );
+    }
 
     private void writeCertificateCreationKpiInLog(
             String type,
@@ -227,7 +277,7 @@ public class KpiDataService {
         var kpiDetailsKVPair = kv(KPI_DETAILS, details);
         var userIdKVPair = kv(KPI_UUID_KEY, userExtId);
         var kpiCountryKVPair = kv(KPI_COUNTRY, country);
-        var kpiUserKeyIdentifierKVPair = kv(KPI_USED_KEY_IDENTIFIER, usedKeyIdentifier);
+        var kpiUsedKeyIdentifierKVPair = kv(KPI_USED_KEY_IDENTIFIER, usedKeyIdentifier);
 
         if (details == null) {
             log.info("kpi: {} {} {} {} {} {}",
@@ -236,7 +286,7 @@ public class KpiDataService {
                      kpiTypeKVPair,
                      userIdKVPair,
                      kpiCountryKVPair,
-                     kpiUserKeyIdentifierKVPair);
+                     kpiUsedKeyIdentifierKVPair);
         } else {
             log.info("kpi: {} {} {} {} {} {} {}",
                      timestampKVPair,
@@ -245,24 +295,51 @@ public class KpiDataService {
                      kpiDetailsKVPair,
                      userIdKVPair,
                      kpiCountryKVPair,
-                     kpiUserKeyIdentifierKVPair);
+                     kpiUsedKeyIdentifierKVPair);
         }
     }
 
-    public void logRevocationKpi(String systemKey, String kpiType, String uvci, SystemSource systemSource, String userExtId, boolean fraud) {
+    private void writeCertificateConversionKpiInLog(
+            String oldUvci,
+            String newUvci,
+            String country,
+            LocalDateTime kpiTimestamp,
+            String usedKeyIdentifier) {
+
+        var timestampKVPair = kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT));
+        var systemKVPair = kv(KPI_CREATE_CERTIFICATE_SYSTEM_KEY, SystemSource.Conversion.category);
+        var kpiTypeKVPair = kv(KPI_TYPE_KEY,
+                               ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_CERTIFICATE_CONVERSION);
+        var kpiOldUvciKVPair = kv(KPI_CONVERSION_OLD_UVCI_KEY, oldUvci);
+        var kpiNewUvciKVPair = kv(KPI_UVCI_KEY, newUvci);
+        var userIdKVPair = kv(KPI_UUID_KEY, KpiDataService.CONVERSION_USER);
+        var kpiCountryKVPair = kv(KPI_COUNTRY, country);
+        var kpiUsedKeyIdentifierKVPair = kv(KPI_USED_KEY_IDENTIFIER, usedKeyIdentifier);
+
+        log.info("kpi: {} {} {} {} {} {} {} {}",
+                 timestampKVPair,
+                 systemKVPair,
+                 kpiTypeKVPair,
+                 userIdKVPair,
+                 kpiCountryKVPair,
+                 kpiOldUvciKVPair,
+                 kpiNewUvciKVPair,
+                 kpiUsedKeyIdentifierKVPair);
+    }
+
+    public void logRevocationKpi(
+            String systemKey, String kpiType, String uvci, SystemSource systemSource, String userExtId) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
-        log.info("kpi: {} {} {} {} {}",
-                kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                kv(KPI_TYPE_KEY, kpiType),
-                kv(KPI_UUID_KEY, relevantUserExtId),
-                kv(systemKey, systemSource.category),
-                kv(KPI_FRAUD, fraud));
+        log.info("kpi: {} {} {} {}",
+                 kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                 kv(KPI_TYPE_KEY, kpiType),
+                 kv(KPI_UUID_KEY, relevantUserExtId),
+                 kv(systemKey, systemSource.category));
         saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, relevantUserExtId, systemSource.category)
                         .withUvci(uvci)
-                        .withFraud(fraud)
                         .build()
         );
     }

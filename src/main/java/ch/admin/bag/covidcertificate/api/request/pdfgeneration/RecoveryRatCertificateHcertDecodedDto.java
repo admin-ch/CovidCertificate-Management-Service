@@ -18,7 +18,7 @@ public class RecoveryRatCertificateHcertDecodedDto {
     @JsonProperty("ver")
     private String version;
     @JsonUnwrapped
-    private CertificatePdfGeneratePersonDto personData;
+    private CertificatePersonDto personData;
     @JsonProperty("t")
     private List<RecoveryRatCertificateHcertDecodedDataDto> testInfo;
 }

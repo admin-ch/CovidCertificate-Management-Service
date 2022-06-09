@@ -17,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "kpi")
 public class KpiData {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;
@@ -28,11 +29,18 @@ public class KpiData {
     String country;
     String systemSource;
     String apiGatewayId;
-    boolean fraud;
+
     @Column(name = "in_app_delivery_code")
     String inAppDeliveryCode;
+
     @Column(name = "key_identifier")
     String keyIdentifier;
+
+    @Column(name = "origin_uvci")
+    String originUvci;
+
+    @Column(name = "conversion_reason")
+    String conversionReason;
 
     private KpiData(
             LocalDateTime timestamp,
@@ -44,7 +52,8 @@ public class KpiData {
             String systemSource,
             String inAppDeliveryCode,
             String keyIdentifier,
-            boolean fraud) {
+            String originUvci,
+            String conversionReason) {
 
         this.timestamp = timestamp;
         this.type = type;
@@ -55,7 +64,8 @@ public class KpiData {
         this.systemSource = systemSource;
         this.inAppDeliveryCode = inAppDeliveryCode;
         this.keyIdentifier = keyIdentifier;
-        this.fraud = fraud;
+        this.originUvci = originUvci;
+        this.conversionReason = conversionReason;
     }
 
     public static class KpiDataBuilder {
@@ -68,14 +78,14 @@ public class KpiData {
         String country;
         String inAppDeliveryCode;
         String keyIdentifier;
-        boolean fraud;
+        String originUvci;
+        String conversionReason;
 
         public KpiDataBuilder(LocalDateTime timestamp, String type, String value, String systemSource) {
             this.timestamp = timestamp;
             this.type = type;
             this.value = value;
             this.systemSource = systemSource;
-            this.fraud = false;
         }
 
         public KpiDataBuilder withUvci(String uvci) {
@@ -103,8 +113,13 @@ public class KpiData {
             return this;
         }
 
-        public KpiDataBuilder withFraud(boolean fraud) {
-            this.fraud = fraud;
+        public KpiDataBuilder withOriginUvci(String originUvci) {
+            this.originUvci = originUvci;
+            return this;
+        }
+
+        public KpiDataBuilder withConversionReason(String conversionReason) {
+            this.conversionReason = conversionReason;
             return this;
         }
 
@@ -119,7 +134,8 @@ public class KpiData {
                     systemSource,
                     inAppDeliveryCode,
                     keyIdentifier,
-                    fraud);
+                    originUvci,
+                    conversionReason);
         }
     }
 }

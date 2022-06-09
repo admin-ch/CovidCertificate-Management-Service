@@ -18,7 +18,7 @@ public class ExceptionalCertificateHcertDecodedDto {
     @JsonProperty("ver")
     private String version;
     @JsonUnwrapped
-    private CertificatePdfGeneratePersonDto personData;
+    private CertificatePersonDto personData;
     @JsonProperty("t")
     private List<ExceptionalCertificateHcertDecodedDataDto> exceptionalInfo;
 }
