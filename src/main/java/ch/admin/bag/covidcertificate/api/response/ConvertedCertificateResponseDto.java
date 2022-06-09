@@ -26,7 +26,7 @@ public class ConvertedCertificateResponseDto {
 
     public void validate() {
         if (StringUtils.isEmpty(payload)) {
-            throw new ConvertCertificateException(Constants.CREATE_PAYLOAD_FAILED);
+            throw new ConvertCertificateException(Constants.CONVERSION_DTO_VALIDATION_FAILED);
         }
         if (StringUtils.isEmpty(uvci)) {
             throw new ConvertCertificateException(Constants.CREATE_CONVERTED_UVCI_FAILED);

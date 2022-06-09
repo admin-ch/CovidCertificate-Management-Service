@@ -1,12 +1,13 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.AuthorizationException;
+import ch.admin.bag.covidcertificate.api.exception.CacheNotFoundException;
+import ch.admin.bag.covidcertificate.api.exception.ConvertCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.exception.FeatureToggleException;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.exception.ValueSetException;
-import ch.admin.bag.covidcertificate.api.exception.CacheNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,22 @@ public class ResponseStatusExceptionHandler {
             }
         } else {
             log.warn("Create certificate exception, errorCode: {}", ex.getError().getErrorCode(), ex);
+            return new ResponseEntity<>(ex.getError(), ex.getError().getHttpStatus());
+        }
+    }
+
+    @ExceptionHandler(value = {ConvertCertificateException.class})
+    protected ResponseEntity<Object> handleConvertCertificateException(ConvertCertificateException ex) {
+        if (ex.getError().getHttpStatus() == HttpStatus.INTERNAL_SERVER_ERROR) {
+            log.error(ex.getError().getErrorMessage(), ex);
+            var error = ex.getError();
+            if (error != null) {
+                return new ResponseEntity<>(ex.getError(), ex.getError().getHttpStatus());
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            log.warn("Convert certificate exception, errorCode: {}", ex.getError().getErrorCode(), ex);
             return new ResponseEntity<>(ex.getError(), ex.getError().getHttpStatus());
         }
     }

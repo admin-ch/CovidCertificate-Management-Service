@@ -139,15 +139,30 @@ public class Constants {
     public static final AuthorizationError ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN = new AuthorizationError(492, "Access denied for HIN with CH-Login", HttpStatus.FORBIDDEN);
 
 
-    public static final RevocationError ALREADY_REVOKED_UVCI = new RevocationError(496, "Uvci is already revoked.", HttpStatus.BAD_REQUEST);
-    public static final RevocationError DUPLICATE_UVCI_IN_REQUEST = new RevocationError(497, "Same UVCI is duplicated in request.", HttpStatus.BAD_REQUEST);
+    public static final RevocationError ALREADY_REVOKED_UVCI = new RevocationError(496, "Uvci is already revoked.",
+                                                                                   HttpStatus.BAD_REQUEST);
+    public static final RevocationError DUPLICATE_UVCI_IN_REQUEST = new RevocationError(497,
+                                                                                        "Same UVCI is duplicated in request.",
+                                                                                        HttpStatus.BAD_REQUEST);
 
-    public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550, "Creating COSE protected header failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_COSE_PAYLOAD_FAILED = new CreateCertificateError(551, "Creating COSE payload failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_COSE_SIGNATURE_DATA_FAILED = new CreateCertificateError(552, "Creating COSE signature data failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_SIGNATURE_FAILED = new CreateCertificateError(553, "Creating signature failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_COSE_SIGN1_FAILED = new CreateCertificateError(554, "Creating COSE_Sign1 failed.", HttpStatus.INTERNAL_SERVER_ERROR);
-    public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555, "Creating barcode failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_COSE_PROTECTED_HEADER_FAILED = new CreateCertificateError(550,
+                                                                                                                "Creating COSE protected header failed.",
+                                                                                                                HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_COSE_PAYLOAD_FAILED = new CreateCertificateError(551,
+                                                                                                       "Creating COSE payload failed.",
+                                                                                                       HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_COSE_SIGNATURE_DATA_FAILED = new CreateCertificateError(552,
+                                                                                                              "Creating COSE signature data failed.",
+                                                                                                              HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_SIGNATURE_FAILED = new CreateCertificateError(553,
+                                                                                                    "Creating signature failed.",
+                                                                                                    HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_COSE_SIGN1_FAILED = new CreateCertificateError(554,
+                                                                                                     "Creating COSE_Sign1 failed.",
+                                                                                                     HttpStatus.INTERNAL_SERVER_ERROR);
+    public static final CreateCertificateError CREATE_BARCODE_FAILED = new CreateCertificateError(555,
+                                                                                                  "Creating barcode failed.",
+                                                                                                  HttpStatus.INTERNAL_SERVER_ERROR);
     public static final CreateCertificateError PRINTING_FAILED = new CreateCertificateError(556,
                                                                                             "Printing failed due to a technical error.",
                                                                                             HttpStatus.INTERNAL_SERVER_ERROR);
@@ -173,9 +188,13 @@ public class Constants {
                                                                                                "Creating UVCI failed.",
                                                                                                HttpStatus.INTERNAL_SERVER_ERROR);
 
-    public static final ConvertCertificateError CREATE_PAYLOAD_FAILED = new ConvertCertificateError(1001, "",
-                                                                                                    HttpStatus.BAD_REQUEST);
-    public static final ConvertCertificateError CREATE_CONVERTED_UVCI_FAILED = new ConvertCertificateError(1002,
+    public static final ConvertCertificateError CONVERSION_DTO_VALIDATION_FAILED = new ConvertCertificateError(1001,
+                                                                                                               "Validation of conversion DTO failed",
+                                                                                                               HttpStatus.BAD_REQUEST);
+    public static final ConvertCertificateError CONVERSION_UVCI_ALREADY_REVOKED = new ConvertCertificateError(1002,
+                                                                                                              "The UVCI: %s sent for conversion is already revoked.",
+                                                                                                              HttpStatus.BAD_REQUEST);
+    public static final ConvertCertificateError CREATE_CONVERTED_UVCI_FAILED = new ConvertCertificateError(1003,
                                                                                                            "Converting UVCI failed.",
                                                                                                            HttpStatus.INTERNAL_SERVER_ERROR);
 

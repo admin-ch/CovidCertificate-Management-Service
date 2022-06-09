@@ -28,7 +28,7 @@ public class VaccinationCertificateConversionRequestDto {
                 validateVaccination();
                 break;
             default:
-                throw new ConvertCertificateException(Constants.CREATE_PAYLOAD_FAILED);
+                throw new ConvertCertificateException(Constants.CONVERSION_DTO_VALIDATION_FAILED);
         }
     }
 

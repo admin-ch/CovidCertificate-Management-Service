@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.Constants;
+import ch.admin.bag.covidcertificate.api.exception.ConvertCertificateException;
 import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
 import ch.admin.bag.covidcertificate.api.response.ConvertedCertificateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.ConvertedCertificateResponseEnvelope;
@@ -23,9 +24,16 @@ public class CovidCertificateConversionService {
     private final CovidCertificateDtoMapperService ccDtoMapperService;
     private final SigningInformationService signingInformationService;
     private final COSETime coseTime;
+    private final RevocationService revocationService;
 
     public ConvertedCertificateResponseEnvelope convertFromExistingCovidCertificate(
             VaccinationCertificateConversionRequestDto conversionDto) throws JsonProcessingException {
+
+        // check if uvci of origin certificate got revoked
+        final String originUvci = conversionDto.getDecodedCert().getVaccinationInfo().get(0).getIdentifier();
+        if (revocationService.isAlreadyRevoked(originUvci)) {
+            throw new ConvertCertificateException(Constants.CONVERSION_UVCI_ALREADY_REVOKED, originUvci);
+        }
 
         // map certificate data
         var qrCodeData = ccDtoMapperService.toVaccinationCertificateQrCodeForConversion(conversionDto);

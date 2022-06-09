@@ -22,7 +22,6 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.CertificatePerson
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.CertificatePersonNameDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificateHcertDecodedDataDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificateHcertDecodedDto;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -290,10 +289,6 @@ public class TestModelProvider {
                 LocalDate.now().minusDays(10),
                 "CH",
                 "Bundesamt für Gesundheit (BAG)",
-                createUVCI());
-    }
-
-    public static String createUVCI() {
-        return "urn:uvci:01:CH:" + RandomStringUtils.randomAlphanumeric(24).toUpperCase();
+                FixtureCustomization.createUVCI());
     }
 }
