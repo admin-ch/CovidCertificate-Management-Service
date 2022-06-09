@@ -25,14 +25,14 @@ public class VaccinationCertificateConversionRequestDto {
     public void validate() {
         switch (this.conversionReason) {
             case VACCINATION_CONVERSION:
-                validateU18();
+                validateVaccination();
                 break;
             default:
                 throw new ConvertCertificateException(Constants.CREATE_PAYLOAD_FAILED);
         }
     }
 
-    private void validateU18() {
-
+    private void validateVaccination() {
+        // no validation so far
     }
 }
