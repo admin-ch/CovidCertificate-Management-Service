@@ -3,9 +3,6 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
@@ -62,7 +59,7 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
     private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
     @BeforeAll
-    private static void setup() throws Exception {
+    static void setup() {
         customizeVaccinationCertificateCreateDto(fixture);
         customizeTestCertificateCreateDto(fixture);
         customizeRecoveryCertificateCreateDto(fixture);
@@ -78,16 +75,6 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
                 fixture.create(CovidCertificateResponseEnvelope.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(
                 any(RecoveryCertificateCreateDto.class))).thenReturn(
-                fixture.create(CovidCertificateResponseEnvelope.class));
-
-        lenient().when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
-                any(VaccinationCertificatePdfGenerateRequestDto.class))).thenReturn(
-                fixture.create(CovidCertificateResponseEnvelope.class));
-        lenient().when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
-                any(TestCertificatePdfGenerateRequestDto.class))).thenReturn(
-                fixture.create(CovidCertificateResponseEnvelope.class));
-        lenient().when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
-                any(RecoveryCertificatePdfGenerateRequestDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
     }
 
