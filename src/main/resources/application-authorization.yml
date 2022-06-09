@@ -170,7 +170,7 @@ roles:
       claim: "bag-cc-dr_ne"
     - intern: ${roles.id.dataroom.dr-nw}
       eiam: "9500.GGG-Covidcertificate.DR_NW"
-      claim: "bag-cc-dr_NW"
+      claim: "bag-cc-dr_nw"
     - intern: ${roles.id.dataroom.dr-ow}
       eiam: "9500.GGG-Covidcertificate.DR_OW"
       claim: "bag-cc-dr_ow"
