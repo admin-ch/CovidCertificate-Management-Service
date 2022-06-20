@@ -158,6 +158,8 @@ public class TestController {
         ConvertedCertificateResponseEnvelope convertedCertificateResponseEnvelope =
                 testCovidCertificateGenerationService.convertFromExistingCovidCertificate(conversionRequestDto,
                                                                                           validAt);
+        log.info("Used key-id for conversion/vaccination: {}", convertedCertificateResponseEnvelope.getUsedKeyIdentifier());
+
         return convertedCertificateResponseEnvelope.getResponseDto();
     }
 }
