@@ -28,8 +28,8 @@ public class JeapAuthenticationToken extends JwtAuthenticationToken {
      * @return The client id specified in this token.
      */
     public String getClientId() {
-        String client_id=getToken().getClaimAsString("client_id");
-        return StringUtils.isNotBlank(client_id) ? client_id: getToken().getClaimAsString("clientId");
+        String client_id = getToken().getClaimAsString("client_id");
+        return StringUtils.isNotBlank(client_id) ? client_id : getToken().getClaimAsString("clientId");
     }
 
     /**
@@ -117,9 +117,9 @@ public class JeapAuthenticationToken extends JwtAuthenticationToken {
 
 
     private String userRolesToString() {
-        return  getUserRoles().stream().
-                    map( r -> "'" + r + "'").
-                    collect(Collectors.joining(", "));
+        return getUserRoles().stream().
+                map(r -> "'" + r + "'").
+                collect(Collectors.joining(", "));
     }
 
 }

@@ -100,7 +100,7 @@ public class SigningInformationService {
     }
 
     public SigningInformationDto getVaccinationConversionSigningInformation() {
-        return getVaccinationTouristSigningInformation(LocalDate.now());
+        return getVaccinationConversionSigningInformation(LocalDate.now());
     }
 
     public SigningInformationDto getVaccinationConversionSigningInformation(LocalDate validAt) {

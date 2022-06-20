@@ -42,7 +42,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 @ExtendWith(MockitoExtension.class)
 class RevocationControllerTest {
     private static final String REVOCATION_URL = "/api/v1/revocation";
-    private static final String REVOCATION_LIST_CHECK_URL = "/api/v1/revocation/uvcilist/check";
     private static final String REVOCATION_LIST_URL = "/api/v1/revocation/uvcilist";
     private static final JFixture fixture = new JFixture();
     private final ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().modules(new JavaTimeModule()).build();

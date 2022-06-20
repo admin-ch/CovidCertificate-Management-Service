@@ -677,6 +677,13 @@ services:
         one-of: ${roles.groups.legacy},${roles.id.cert.exception}
         uri: "/internal/api/v1/test/exceptional/{validAt}"
 
+      test-convert-vaccination-certificate:
+        identifier: "test-convert-vaccination-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.vacc}
+        uri: "/internal/api/v1/test/conversion/vaccination/{validAt}"
+
       # Revocation
       revoke-certificate:
         identifier: "revoke-certificate"

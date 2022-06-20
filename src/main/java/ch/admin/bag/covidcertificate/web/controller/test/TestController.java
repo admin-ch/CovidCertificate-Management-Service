@@ -61,17 +61,22 @@ public class TestController {
                     var messageBytes = UUID.randomUUID().toString().getBytes();
                     var signatureBytes = signingClient
                             .createSignature(messageBytes, SigningInformationMapper.fromEntity(signingInformation));
-                    if (StringUtils.isNotBlank(signingInformation.getCertificateAlias())) {
 
+                    if (StringUtils.isNotBlank(signingInformation.getCertificateAlias())) {
                         var message = Base64.getEncoder().encodeToString(messageBytes);
                         var signature = Base64.getEncoder().encodeToString(signatureBytes);
 
                         var verifySignatureDto = new VerifySignatureRequestDto(
-                                message, signature, signingInformation.getCertificateAlias());
+                                message,
+                                signature,
+                                signingInformation.getCertificateAlias()
+                        );
                         var validSignature = signingClient.verifySignature(verifySignatureDto);
                         if (!validSignature) {
                             errors.add(signingInformation);
                         }
+                    } else {
+                        log.warn("No certificate alias found for signing information {}", signingInformation.getId().toString());
                     }
                 } catch (Exception e) {
                     errors.add(signingInformation);
@@ -153,6 +158,8 @@ public class TestController {
         ConvertedCertificateResponseEnvelope convertedCertificateResponseEnvelope =
                 testCovidCertificateGenerationService.convertFromExistingCovidCertificate(conversionRequestDto,
                                                                                           validAt);
+        log.info("Used key-id for conversion/vaccination: {}", convertedCertificateResponseEnvelope.getUsedKeyIdentifier());
+
         return convertedCertificateResponseEnvelope.getResponseDto();
     }
 }
