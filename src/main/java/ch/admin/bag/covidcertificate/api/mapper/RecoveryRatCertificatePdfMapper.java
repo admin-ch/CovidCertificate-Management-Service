@@ -8,7 +8,10 @@ import ch.admin.bag.covidcertificate.util.DateHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RecoveryRatCertificatePdfMapper {
@@ -20,6 +23,7 @@ public class RecoveryRatCertificatePdfMapper {
             String memberStateOfTestEn
     ) {
         CovidCertificateDiseaseOrAgentTargeted diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
+        LocalDate sampleDate = recoveryRatCertificateCreateDto.getTestInfo().get(0).getSampleDateTime().withZoneSameInstant(SWISS_TIMEZONE).toLocalDate();
         return new RecoveryCertificatePdf(
                 recoveryRatCertificateCreateDto.getPersonData().getName().getFamilyName(),
                 recoveryRatCertificateCreateDto.getPersonData().getName().getGivenName(),
@@ -27,12 +31,12 @@ public class RecoveryRatCertificatePdfMapper {
                 recoveryRatCertificateCreateDto.getLanguage(),
                 diseaseOrAgentTargeted.getCode(),
                 diseaseOrAgentTargeted.getSystem(),
-                recoveryRatCertificateCreateDto.getTestInfo().get(0).getSampleDateTime().toLocalDate(),
+                sampleDate,
                 memberStateOfTest,
                 memberStateOfTestEn,
                 ISSUER,
-                DateHelper.calculateValidFrom(recoveryRatCertificateCreateDto.getTestInfo().get(0).getSampleDateTime().toLocalDate()),
-                DateHelper.calculateValidUntilForRecoveryCertificate(recoveryRatCertificateCreateDto.getTestInfo().get(0).getSampleDateTime().toLocalDate()),
+                DateHelper.calculateValidFrom(sampleDate),
+                DateHelper.calculateValidUntilForRecoveryCertificate(sampleDate),
                 qrCodeData.getRecoveryInfo().get(0).getIdentifier());
     }
 }
