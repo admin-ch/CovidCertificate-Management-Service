@@ -170,7 +170,7 @@ roles:
       claim: "bag-cc-dr_ne"
     - intern: ${roles.id.dataroom.dr-nw}
       eiam: "9500.GGG-Covidcertificate.DR_NW"
-      claim: "bag-cc-dr_NW"
+      claim: "bag-cc-dr_nw"
     - intern: ${roles.id.dataroom.dr-ow}
       eiam: "9500.GGG-Covidcertificate.DR_OW"
       claim: "bag-cc-dr_ow"
@@ -258,7 +258,7 @@ services:
         identifier: "main-reporting-self-service"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.detail}, ${roles.id.report.agg}, ${roles.id.report.stats}
+        one-of: ${roles.id.report.detail}, ${roles.id.report.agg}, ${roles.id.report.stats}
 
       # create/revoke certificates
       create-certificate-web:
@@ -339,65 +339,65 @@ services:
         identifier: "report-a2"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.detail}
+        one-of: ${roles.id.report.detail}
         dataroom: ${roles.groups.data-room}
       report-a3:
         identifier: "report-a3"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         dataroom: ${roles.groups.data-room}
       report-a4:
         identifier: "report-a4"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.detail}
+        one-of: ${roles.id.report.detail}
         dataroom: ${roles.groups.data-room}
       report-a5:
         identifier: "report-a5"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         dataroom: ${roles.groups.data-room}
       report-a6:
         identifier: "report-a6"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.detail}
+        one-of: ${roles.id.report.detail}
         dataroom: ${roles.groups.data-room}
       report-a7:
         identifier: "report-a7"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         dataroom: ${roles.groups.data-room}
       report-a8:
         identifier: "report-a8"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.stats}
+        one-of: ${roles.id.report.stats}
       report-a9:
         identifier: "report-a9"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.stats}
+        one-of: ${roles.id.report.stats}
       report-a10:
         identifier: "report-a10"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         dataroom: ${roles.groups.data-room}
       report-a11:
         identifier: "report-a11"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.details}
+        one-of: ${roles.id.report.detail}
         dataroom: ${roles.groups.data-room}
       report-a12:
         identifier: "report-a12"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        one-of: ${roles.groups.legacy},${roles.id.report.agg}
+        one-of: ${roles.id.report.detail}
         dataroom: ${roles.groups.data-room}
 
   ##   A P I - G A T E W A Y   ##############################################################################
