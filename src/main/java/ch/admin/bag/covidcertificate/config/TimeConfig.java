@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Clock;
 import java.time.ZoneId;
 
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
+
 @Configuration
 public class TimeConfig {
 
-    private static final String EUROPE_ZURICH = "Europe/Zurich";
-
     @Bean
     public Clock getClockInSwissZone() {
-        return Clock.system(ZoneId.of(EUROPE_ZURICH));
+        return Clock.system(SWISS_TIMEZONE);
     }
 }

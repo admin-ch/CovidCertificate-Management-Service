@@ -11,6 +11,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AntibodyCertificatePdfGenerateRequestDtoMapper {
@@ -21,8 +22,7 @@ public class AntibodyCertificatePdfGenerateRequestDtoMapper {
             String countryOfTestEn
     ) {
         ZonedDateTime utcZoned = antibodyCertificateCreateDto.getDecodedCert().getAntibodyInfo().get(0).getSampleDateTime();
-        ZoneId swissZone = ZoneId.of("Europe/Zurich");
-        ZonedDateTime swissZoned = utcZoned.withZoneSameInstant(swissZone);
+        ZonedDateTime swissZoned = utcZoned.withZoneSameInstant(SWISS_TIMEZONE);
         LocalDate swissLocalDate = swissZoned.toLocalDate();
 
         var diseaseOrAgentTargeted = CovidCertificateDiseaseOrAgentTargeted.getStandardInstance();
