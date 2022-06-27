@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.mapper.CovidCertificatePersonMapper;
+import ch.admin.bag.covidcertificate.api.mapper.PersonMapper;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificatePerson;
@@ -11,11 +11,13 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_STANDARDISED_FAMILY_NAME;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_STANDARDISED_GIVEN_NAME;
+import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CovidCertificatePersonMapperTest {
+public class PersonMapperTest {
 
     private final JFixture jFixture = new JFixture();
 
@@ -26,7 +28,7 @@ public class CovidCertificatePersonMapperTest {
     @Test
     public void mapsFamilyName() {
         CovidCertificatePersonDto incoming = jFixture.create(CovidCertificatePersonDto.class);
-        CovidCertificatePerson actual = CovidCertificatePersonMapper.toCovidCertificatePerson(incoming);
+        CovidCertificatePerson actual = PersonMapper.toCovidCertificatePerson(incoming);
         assertEquals(incoming.getName().getFamilyName(), actual.getName().getFamilyName());
     }
 
@@ -34,14 +36,14 @@ public class CovidCertificatePersonMapperTest {
     @Test
     public void mapsGivenName() {
         CovidCertificatePersonDto incoming = jFixture.create(CovidCertificatePersonDto.class);
-        CovidCertificatePerson actual = CovidCertificatePersonMapper.toCovidCertificatePerson(incoming);
+        CovidCertificatePerson actual = PersonMapper.toCovidCertificatePerson(incoming);
         assertEquals(incoming.getName().getGivenName(), actual.getName().getGivenName());
     }
 
     @Test
     public void mapsDateOfBirth() {
         CovidCertificatePersonDto incoming = jFixture.create(CovidCertificatePersonDto.class);
-        CovidCertificatePerson actual = CovidCertificatePersonMapper.toCovidCertificatePerson(incoming);
+        CovidCertificatePerson actual = PersonMapper.toCovidCertificatePerson(incoming);
         assertEquals(incoming.getDateOfBirth(), actual.getDateOfBirth());
     }
 
@@ -58,7 +60,7 @@ public class CovidCertificatePersonMapperTest {
                 dateOfBirth
         );
         var exception = assertThrows(CreateCertificateException.class,
-                () -> CovidCertificatePersonMapper.toCovidCertificatePerson(personDto));
+                                     () -> PersonMapper.toCovidCertificatePerson(personDto));
         assertEquals(INVALID_STANDARDISED_GIVEN_NAME, exception.getError());
     }
 
@@ -75,7 +77,7 @@ public class CovidCertificatePersonMapperTest {
                 dateOfBirth
         );
         var exception = assertThrows(CreateCertificateException.class,
-                () -> CovidCertificatePersonMapper.toCovidCertificatePerson(personDto));
+                                     () -> PersonMapper.toCovidCertificatePerson(personDto));
         assertEquals(INVALID_STANDARDISED_FAMILY_NAME, exception.getError());
     }
 }

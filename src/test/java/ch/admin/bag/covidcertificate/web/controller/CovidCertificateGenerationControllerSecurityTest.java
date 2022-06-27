@@ -3,9 +3,6 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
@@ -62,7 +59,7 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
     private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
     @BeforeAll
-    private static void setup() throws Exception {
+    static void setup() {
         customizeVaccinationCertificateCreateDto(fixture);
         customizeTestCertificateCreateDto(fixture);
         customizeRecoveryCertificateCreateDto(fixture);
@@ -78,16 +75,6 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
                 fixture.create(CovidCertificateResponseEnvelope.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(
                 any(RecoveryCertificateCreateDto.class))).thenReturn(
-                fixture.create(CovidCertificateResponseEnvelope.class));
-
-        lenient().when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
-                any(VaccinationCertificatePdfGenerateRequestDto.class))).thenReturn(
-                fixture.create(CovidCertificateResponseEnvelope.class));
-        lenient().when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
-                any(TestCertificatePdfGenerateRequestDto.class))).thenReturn(
-                fixture.create(CovidCertificateResponseEnvelope.class));
-        lenient().when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
-                any(RecoveryCertificatePdfGenerateRequestDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
     }
 
@@ -196,93 +183,6 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
         private void callCreateRecoveryCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
             var createDto = getRecoveryCertificateCreateDto("de");
             callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole, status);
-        }
-    }
-
-    @Nested
-    class GenerateVaccinationPdfFromExistingCertificate {
-        private static final String URL = BASE_URL + "fromexisting/vaccination";
-
-        @Test
-        void returnsOKIfAuthorizationTokenValid() throws Exception {
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificateGenerationService, times(2)).generateFromExistingCovidCertificate(any(VaccinationCertificatePdfGenerateRequestDto.class));
-        }
-
-        @Test
-        void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
-            Mockito.verify(covidCertificateGenerationService, times(0)).generateFromExistingCovidCertificate(any(VaccinationCertificatePdfGenerateRequestDto.class));
-        }
-
-        @Test
-        void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(covidCertificateGenerationService, times(0)).generateFromExistingCovidCertificate(any(VaccinationCertificatePdfGenerateRequestDto.class));
-        }
-
-        private void callCreateVaccinationCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
-            var pdfGenerateRequestDto = fixture.create(VaccinationCertificatePdfGenerateRequestDto.class);
-            callCreateCertificateWithToken(URL, mapper.writeValueAsString(pdfGenerateRequestDto), tokenExpiration, userRole, status);
-        }
-    }
-
-    @Nested
-    class GenerateTestPdfFromExistingCertificate {
-        private static final String URL = BASE_URL + "fromexisting/test";
-
-        @Test
-        void returnsOKIfAuthorizationTokenValid() throws Exception {
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificateGenerationService, times(2)).generateFromExistingCovidCertificate(any(TestCertificatePdfGenerateRequestDto.class));
-        }
-
-        @Test
-        void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
-            Mockito.verify(covidCertificateGenerationService, times(0)).generateFromExistingCovidCertificate(any(TestCertificatePdfGenerateRequestDto.class));
-        }
-
-        @Test
-        void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(covidCertificateGenerationService, times(0)).generateFromExistingCovidCertificate(any(TestCertificatePdfGenerateRequestDto.class));
-        }
-
-        private void callCreateVaccinationCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
-            var pdfGenerateRequestDto = fixture.create(TestCertificatePdfGenerateRequestDto.class);
-            callCreateCertificateWithToken(URL, mapper.writeValueAsString(pdfGenerateRequestDto), tokenExpiration, userRole, status);
-        }
-    }
-
-    @Nested
-    class GenerateRecoveryPdfFromExistingCertificate {
-        private static final String URL = BASE_URL + "fromexisting/recovery";
-
-        @Test
-        void returnsOKIfAuthorizationTokenValid() throws Exception {
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificateGenerationService, times(2)).generateFromExistingCovidCertificate(any(RecoveryCertificatePdfGenerateRequestDto.class));
-        }
-
-        @Test
-        void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
-            Mockito.verify(covidCertificateGenerationService, times(0)).generateFromExistingCovidCertificate(any(RecoveryCertificatePdfGenerateRequestDto.class));
-        }
-
-        @Test
-        void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(covidCertificateGenerationService, times(0)).generateFromExistingCovidCertificate(any(RecoveryCertificatePdfGenerateRequestDto.class));
-        }
-
-        private void callCreateVaccinationCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
-            var pdfGenerateRequestDto = fixture.create(RecoveryCertificatePdfGenerateRequestDto.class);
-            callCreateCertificateWithToken(URL, mapper.writeValueAsString(pdfGenerateRequestDto), tokenExpiration, userRole, status);
         }
     }
 }

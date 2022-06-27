@@ -99,8 +99,18 @@ public class SigningInformationService {
                                                        ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
     }
 
+    public SigningInformationDto getVaccinationConversionSigningInformation() {
+        return getVaccinationConversionSigningInformation(LocalDate.now());
+    }
+
+    public SigningInformationDto getVaccinationConversionSigningInformation(LocalDate validAt) {
+        return findAndValidateSingleSigningInformation(SigningCertificateCategory.VACCINATION_CONVERTED, validAt,
+                                                       ISO_3166_1_ALPHA_2_CODE_SWITZERLAND);
+    }
+
     private SigningInformationDto findAndValidateSingleSigningInformation(
             SigningCertificateCategory signingCertificateCategory, LocalDate validAt, String country) {
+
         var signingInformationList = signingInformationCacheService.findSigningInformation(
                 signingCertificateCategory.value, validAt);
         if (signingInformationList == null || signingInformationList.isEmpty()) {

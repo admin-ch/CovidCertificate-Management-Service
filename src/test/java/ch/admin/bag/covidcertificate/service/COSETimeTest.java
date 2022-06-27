@@ -14,11 +14,11 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class COSETimeTest {
-    private static final ZoneId ZONE_ID = ZoneId.of("Europe/Zurich");
     private final JFixture jFixture = new JFixture();
     private Instant instant;
     private COSETime coseTime;
@@ -27,7 +27,7 @@ class COSETimeTest {
     void init() {
         // given
         instant = jFixture.create(Instant.class);
-        coseTime = new COSETime(Clock.fixed(instant, ZONE_ID));
+        coseTime = new COSETime(Clock.fixed(instant, SWISS_TIMEZONE));
     }
 
     @Test
@@ -51,7 +51,7 @@ class COSETimeTest {
     @DisplayName("Given the calculateExpirationInstantPlusDays, when called, it should return an Instant ending now + 'days' at the end of the day '23:59:59'")
     void calculateExpirationInstantPlusDays() {
         Instant result = coseTime.calculateExpirationInstantPlusDays(30);
-        LocalDateTime resultLocalDateTime = LocalDateTime.ofInstant(result, ZONE_ID);
+        LocalDateTime resultLocalDateTime = LocalDateTime.ofInstant(result, SWISS_TIMEZONE);
         assertEquals(LocalDateTime.now().plusDays(30).toLocalDate(), resultLocalDateTime.toLocalDate());
         assertEquals(23, resultLocalDateTime.getHour());
         assertEquals(59, resultLocalDateTime.getMinute());
@@ -59,6 +59,6 @@ class COSETimeTest {
     }
 
     private LocalDateTime getLocalDateTime(Instant instant) {
-        return instant.atZone(ZONE_ID).toLocalDateTime();
+        return instant.atZone(SWISS_TIMEZONE).toLocalDateTime();
     }
 }

@@ -25,8 +25,9 @@ public class AntibodyCertificateQrCodeMapper {
     public static AntibodyCertificateQrCode toAntibodyCertificateQrCode(AntibodyCertificateCreateDto antibodyCertificateCreateDto) {
         return new AntibodyCertificateQrCode(
                 VERSION,
-                CovidCertificatePersonMapper.toCovidCertificatePerson(antibodyCertificateCreateDto.getPersonData()),
-                AntibodyCertificateQrCodeMapper.toAntibodyCertificateDataList(antibodyCertificateCreateDto.getAntibodyInfo())
+                PersonMapper.toCovidCertificatePerson(antibodyCertificateCreateDto.getPersonData()),
+                AntibodyCertificateQrCodeMapper.toAntibodyCertificateDataList(
+                        antibodyCertificateCreateDto.getAntibodyInfo())
         );
     }
 

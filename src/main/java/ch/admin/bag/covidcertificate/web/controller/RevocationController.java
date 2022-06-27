@@ -43,7 +43,12 @@ public class RevocationController {
         }
 
         revocationService.createRevocation(revocationDto.getUvci(), revocationDto.isFraud());
-        kpiDataService.logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_REVOCATION, revocationDto.getUvci(), revocationDto.getSystemSource(), revocationDto.getUserExtId(), revocationDto.isFraud());
+        kpiDataService.logRevocationKpi(
+                KPI_REVOKE_CERTIFICATE_SYSTEM_KEY,
+                KPI_TYPE_REVOCATION,
+                revocationDto.getUvci(),
+                revocationDto.getSystemSource(),
+                revocationDto.getUserExtId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

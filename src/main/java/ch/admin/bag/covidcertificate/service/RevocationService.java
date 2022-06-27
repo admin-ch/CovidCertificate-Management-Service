@@ -49,11 +49,11 @@ public class RevocationService {
                 throw new RevocationException(DUPLICATE_UVCI);
             }
             revocationRepository.saveAndFlush(RevocationMapper.toRevocation(uvci, fraud));
-            log.info("Revocation for {} created.", uvci);
+            log.info("Revocation for {} and fraud {} created.", uvci, fraud);
         } catch (RevocationException e) {
             throw e;
         } catch (Exception e) {
-            log.error(String.format("Create revocation for %s failed.", uvci), e);
+            log.error(String.format("Create revocation for %s and fraud %s failed.", uvci, fraud), e);
             throw e;
         }
     }
@@ -70,7 +70,12 @@ public class RevocationService {
             if (uvcisToErrorMessage.get(uvciForRevocation.getUvci()) == null) {
                 try {
                     createRevocation(uvciForRevocation.getUvci(), uvciForRevocation.getFraud());
-                    kpiLogService.logRevocationKpi(KPI_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_SUCCESS, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
+                    kpiLogService.logRevocationKpi(
+                            KPI_REVOKE_CERTIFICATE_SYSTEM_KEY,
+                            KPI_TYPE_MASS_REVOCATION_SUCCESS,
+                            uvciForRevocation.getUvci(),
+                            revocationListDto.getSystemSource(),
+                            revocationListDto.getUserExtId());
                     revokedUvcis.add(uvciForRevocation.getUvci());
                 } catch (Exception ex) {
                     log.error("Error during mass-revocation: {}.", ex.getLocalizedMessage(), ex);
@@ -83,9 +88,19 @@ public class RevocationService {
                 String errorMessage = uvcisToErrorMessage.get(uvciForRevocation.getUvci());
                 try {
                     if (errorMessage.startsWith(ALREADY_REVOKED_UVCI.getErrorMessage())) {
-                        kpiLogService.logRevocationKpi(KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_REDUNDANT, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
+                        kpiLogService.logRevocationKpi(
+                                KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY,
+                                KPI_TYPE_MASS_REVOCATION_REDUNDANT,
+                                uvciForRevocation.getUvci(),
+                                revocationListDto.getSystemSource(),
+                                revocationListDto.getUserExtId());
                     } else {
-                        kpiLogService.logRevocationKpi(KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY, KPI_TYPE_MASS_REVOCATION_FAILURE, uvciForRevocation.getUvci(), revocationListDto.getSystemSource(), revocationListDto.getUserExtId(), uvciForRevocation.getFraud());
+                        kpiLogService.logRevocationKpi(
+                                KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY,
+                                KPI_TYPE_MASS_REVOCATION_FAILURE,
+                                uvciForRevocation.getUvci(),
+                                revocationListDto.getSystemSource(),
+                                revocationListDto.getUserExtId());
                     }
                 } catch (Exception ex) {
                     log.error("Mass-revocation KPI Log failed: {}.", ex.getLocalizedMessage(), ex);
@@ -153,7 +168,11 @@ public class RevocationService {
         for (String uvci : uvciList) {
             Revocation revocation = revocationRepository.findByUvci(uvci);
             if (revocation != null) {
-                alreadyRevokedUvciToErrorMessage.put(uvci, ALREADY_REVOKED_UVCI.getErrorMessage() + " Revocation date: " + revocation.getCreationDateTime());
+                alreadyRevokedUvciToErrorMessage.put(
+                        uvci,
+                        ALREADY_REVOKED_UVCI.getErrorMessage() +
+                                " Revocation date: " +
+                                revocation.getCreationDateTime());
             }
         }
 

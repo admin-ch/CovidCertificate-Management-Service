@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @Getter
-public class CreateCertificateError implements Serializable {
+public class ConvertCertificateError implements Serializable {
 
     private final int errorCode;
     private final String errorMessage;
@@ -24,9 +24,13 @@ public class CreateCertificateError implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CreateCertificateError that = (CreateCertificateError) o;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ConvertCertificateError that = (ConvertCertificateError) o;
         return errorCode == that.errorCode && errorMessage.equals(that.errorMessage) && httpStatus == that.httpStatus;
     }
 

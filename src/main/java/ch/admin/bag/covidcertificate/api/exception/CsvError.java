@@ -2,7 +2,6 @@ package ch.admin.bag.covidcertificate.api.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
@@ -10,7 +9,6 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @Getter
-@ToString
 public class CsvError implements Serializable {
     private final int errorCode;
     private final String errorMessage;

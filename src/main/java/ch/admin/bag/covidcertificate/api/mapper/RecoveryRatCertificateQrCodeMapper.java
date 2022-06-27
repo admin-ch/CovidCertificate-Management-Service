@@ -10,10 +10,12 @@ import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,8 +24,9 @@ public class RecoveryRatCertificateQrCodeMapper {
     public static RecoveryCertificateQrCode toRecoveryCertificateQrCode(RecoveryRatCertificateCreateDto recoveryRatCertificateCreateDto) {
         return new RecoveryCertificateQrCode(
                 VERSION,
-                CovidCertificatePersonMapper.toCovidCertificatePerson(recoveryRatCertificateCreateDto.getPersonData()),
-                RecoveryRatCertificateQrCodeMapper.toRecoveryCertificateDataList(recoveryRatCertificateCreateDto.getTestInfo())
+                PersonMapper.toCovidCertificatePerson(recoveryRatCertificateCreateDto.getPersonData()),
+                RecoveryRatCertificateQrCodeMapper.toRecoveryCertificateDataList(
+                        recoveryRatCertificateCreateDto.getTestInfo())
         );
     }
 
@@ -34,12 +37,13 @@ public class RecoveryRatCertificateQrCodeMapper {
     }
 
     private static RecoveryCertificateData toRecoveryCertificateData(RecoveryRatCertificateDataDto recoveryRatCertificateDataDtoList) {
+        LocalDate sampleDate = recoveryRatCertificateDataDtoList.getSampleDateTime().withZoneSameInstant(SWISS_TIMEZONE).toLocalDate();
         return new RecoveryCertificateData(
                 CovidCertificateDiseaseOrAgentTargeted.getStandardInstance().getCode(),
-                recoveryRatCertificateDataDtoList.getSampleDateTime().toLocalDate(),
+                sampleDate,
                 recoveryRatCertificateDataDtoList.getMemberStateOfTest(),
-                DateHelper.calculateValidFrom(recoveryRatCertificateDataDtoList.getSampleDateTime().toLocalDate()),
-                DateHelper.calculateValidUntilForRecoveryCertificate(recoveryRatCertificateDataDtoList.getSampleDateTime().toLocalDate()),
+                DateHelper.calculateValidFrom(sampleDate),
+                DateHelper.calculateValidUntilForRecoveryCertificate(sampleDate),
                 ISSUER,
                 UVCI.generateUVCI(recoveryRatCertificateDataDtoList.toString())
         );

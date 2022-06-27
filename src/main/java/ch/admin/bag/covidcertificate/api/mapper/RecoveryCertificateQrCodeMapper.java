@@ -22,8 +22,9 @@ public class RecoveryCertificateQrCodeMapper {
     public static RecoveryCertificateQrCode toRecoveryCertificateQrCode(RecoveryCertificateCreateDto recoveryCertificateCreateDto) {
         return new RecoveryCertificateQrCode(
                 VERSION,
-                CovidCertificatePersonMapper.toCovidCertificatePerson(recoveryCertificateCreateDto.getPersonData()),
-                RecoveryCertificateQrCodeMapper.toRecoveryCertificateDataList(recoveryCertificateCreateDto.getRecoveryInfo())
+                PersonMapper.toCovidCertificatePerson(recoveryCertificateCreateDto.getPersonData()),
+                RecoveryCertificateQrCodeMapper.toRecoveryCertificateDataList(
+                        recoveryCertificateCreateDto.getRecoveryInfo())
         );
     }
 

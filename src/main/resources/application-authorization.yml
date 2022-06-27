@@ -613,6 +613,13 @@ services:
         one-of: ${roles.groups.legacy},${roles.id.cert.exception}
         uri: "/api/v1/covidcertificate/fromexisting/exceptional"
 
+      convert-vaccination-certificate:
+        identifier: "convert-vaccination-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy}
+        uri: "/api/v1/covidcertificate/conversion/vaccination"
+
       # internal test
       test-create-all-certificates:
         identifier: "test-create-all-certificates"
@@ -669,6 +676,13 @@ services:
         until: 2099-12-31T23:59:59
         one-of: ${roles.groups.legacy},${roles.id.cert.exception}
         uri: "/internal/api/v1/test/exceptional/{validAt}"
+
+      test-convert-vaccination-certificate:
+        identifier: "test-convert-vaccination-certificate"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.groups.legacy},${roles.id.cert.vacc}
+        uri: "/internal/api/v1/test/conversion/vaccination/{validAt}"
 
       # Revocation
       revoke-certificate:
@@ -781,6 +795,35 @@ services:
   report:
 
     functions:
+
+      # ui support for units
+      unit-tree:
+        identifier: "unit-tree"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/unit/tree"
+        one-of: ${roles.groups.any}
+
+      unit-search:
+        identifier: "unit-search"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/unit/search"
+        one-of: ${roles.groups.any}
+
+      unit-profiles:
+        identifier: "unit-profiles"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/unit/profiles"
+        one-of: ${roles.groups.any}
+
+      profile-search:
+        identifier: "profile-search"
+        from: 2022-01-01T00:00:00
+        to: 2099-12-31T23:59:59
+        uri: "/api/v1/profile/search"
+        one-of: ${roles.groups.any}
 
       # reports
       report-a2:

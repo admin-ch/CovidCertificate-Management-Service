@@ -30,6 +30,7 @@ import java.time.ZoneId;
 import java.util.Objects;
 import java.util.zip.ZipException;
 
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Ignore("Util for automated JSON file generation for EU tests.")
@@ -42,7 +43,6 @@ class DGCTestJSONGenerator {
     private static final Integer VERSION = 1;
     private static final String JSON_SCHEMA = "1.3.0";
     private static final String CERTIFICATE = "TODO: Replace with public key.";
-    private static final String ZONE_ID = "Europe/Zurich";
     private static final String DESCRIPTION = "VALID ";
     private static final String PREFIX = "HC1:";
     private static final String IDENTIFIER_VACCINATION = "\"v\":";
@@ -175,7 +175,7 @@ class DGCTestJSONGenerator {
         dgcTestJSONTestContext.setVersion(VERSION);
         dgcTestJSONTestContext.setJsonSchema(JSON_SCHEMA);
         dgcTestJSONTestContext.setCertificate(CERTIFICATE);
-        dgcTestJSONTestContext.setValidationClock(OffsetDateTime.now(Clock.system(ZoneId.of(ZONE_ID))).withNano(0).toString());
+        dgcTestJSONTestContext.setValidationClock(OffsetDateTime.now(Clock.system(SWISS_TIMEZONE)).withNano(0).toString());
         dgcTestJSONTestContext.setDescription(DESCRIPTION + certificateType);
         dgcTestJSON.setTestContext(dgcTestJSONTestContext);
     }
