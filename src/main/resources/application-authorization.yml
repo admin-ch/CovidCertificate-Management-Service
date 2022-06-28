@@ -866,7 +866,7 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
-        uri: "/api/v2/report/fraud/a7/(Aggregated Rep, URL TBD)" #TODO
+        uri: "/api/v2/report/fraud/a7"
 
       report-a8:
         identifier: "report-a8"
