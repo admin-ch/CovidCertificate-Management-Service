@@ -21,6 +21,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 public class RecoveryRatCertificateCsvBean extends CertificateCreateCsvBean {
 
     public static final String TIME = "T";
+    public static final String ZONED_MARKER = "Z";
 
     @CsvBindByName(column = "sampleDateTime")
     private String sampleDateTime;
@@ -33,7 +34,7 @@ public class RecoveryRatCertificateCsvBean extends CertificateCreateCsvBean {
         try {
             if (this.sampleDateTime.contains(TIME)) {
                 // it contains a time
-                if (this.sampleDateTime.contains("Z")) {
+                if (this.sampleDateTime.contains(ZONED_MARKER)) {
                     // it is UTC zoned
                     ZonedDateTime utcZoned = ZonedDateTime.parse(this.sampleDateTime);
                     sampleDateTimeParsed = utcZoned.withZoneSameInstant(SWISS_TIMEZONE);
