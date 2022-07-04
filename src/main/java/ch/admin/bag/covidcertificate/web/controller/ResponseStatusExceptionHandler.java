@@ -91,13 +91,13 @@ public class ResponseStatusExceptionHandler {
 
     @ExceptionHandler(value = {FeatureToggleException.class})
     protected ResponseEntity<Object> handleFeatureToggleException(FeatureToggleException e) {
-        log.error(e.getMessage());
+        log.warn(e.getMessage());
         return new ResponseEntity<>(e.getError(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = {AuthorizationException.class})
     protected ResponseEntity<Object> handleAuthorizationException(AuthorizationException e) {
-        log.error(e.getMessage());
+        log.warn(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
