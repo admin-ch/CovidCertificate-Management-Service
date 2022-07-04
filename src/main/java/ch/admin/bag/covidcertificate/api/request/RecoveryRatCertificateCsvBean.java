@@ -35,9 +35,9 @@ public class RecoveryRatCertificateCsvBean extends CertificateCreateCsvBean {
             if (this.sampleDateTime.contains(TIME)) {
                 // it contains a time
                 if (this.sampleDateTime.contains(ZONED_MARKER)) {
-                    // it is UTC zoned
-                    ZonedDateTime utcZoned = ZonedDateTime.parse(this.sampleDateTime);
-                    sampleDateTimeParsed = utcZoned.withZoneSameInstant(SWISS_TIMEZONE);
+                    // it is zoned
+                    ZonedDateTime zonedDateTime = ZonedDateTime.parse(this.sampleDateTime);
+                    sampleDateTimeParsed = zonedDateTime.withZoneSameInstant(SWISS_TIMEZONE);
                 } else {
                     // it is un zoned and we interpret it as SWISS_TIMEZONE
                     sampleDateTimeParsed = LocalDateTime.parse(this.sampleDateTime).atZone(SWISS_TIMEZONE);
