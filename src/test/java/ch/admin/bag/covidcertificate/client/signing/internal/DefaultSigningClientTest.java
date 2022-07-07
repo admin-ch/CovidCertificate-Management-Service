@@ -46,9 +46,9 @@ class DefaultSigningClientTest {
     private final JFixture fixture = new JFixture();
 
     @BeforeEach
-    public void init(){
-        String url = fixture.create(String.class);
-        ReflectionTestUtils.setField(signingClient, "url", url);
+    public void init() {
+        String signUrl = fixture.create(String.class);
+        ReflectionTestUtils.setField(signingClient, "signUrl", signUrl);
         String verifyUrl = fixture.create(String.class);
         ReflectionTestUtils.setField(signingClient, "verifyUrl", verifyUrl);
         String kidUrl = fixture.create(String.class);
@@ -65,16 +65,16 @@ class DefaultSigningClientTest {
     }
 
     @Nested
-    class CreateSignature{
+    class CreateSignature {
         @Test
         void makesRequestToCorrectUrl() {
-            var url = fixture.create(String.class);
-            ReflectionTestUtils.setField(signingClient, "url", url);
+            var signUrl = fixture.create(String.class);
+            ReflectionTestUtils.setField(signingClient, "signUrl", signUrl);
             var signingInformation = fixture.create(SigningInformationDto.class);
 
             signingClient.createSignature(fixture.create(byte[].class), signingInformation);
 
-            verify(restTemplate).exchange(eq(url), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
+            verify(restTemplate).exchange(eq(signUrl), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
         }
 
         @Test
@@ -88,14 +88,17 @@ class DefaultSigningClientTest {
         void makesRequestWithCorrectBody() {
             var body = fixture.create(byte[].class);
             var signingInformation = fixture.create(SigningInformationDto.class);
-            var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(body),
-                                                          signingInformation.getAlias());
+            var signingRequestDto = new SigningRequestDto(
+                    Base64.getEncoder().encodeToString(body),
+                    signingInformation.getAlias(),
+                    signingInformation.getSlotNumber()
+            );
 
             signingClient.createSignature(body, signingInformation);
 
             verify(restTemplate).exchange(anyString(), any(HttpMethod.class),
-                                          argThat(argument -> Objects.equals(argument.getBody(), signingRequestDto)),
-                                          any(Class.class));
+                    argThat(argument -> Objects.equals(argument.getBody(), signingRequestDto)),
+                    any(Class.class));
         }
 
         @Test
@@ -103,10 +106,10 @@ class DefaultSigningClientTest {
             ResponseEntity responseEntity = mock(ResponseEntity.class);
             when(responseEntity.getBody()).thenReturn(fixture.create(byte[].class));
             when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class),
-                                       any(Class.class))).thenReturn(responseEntity);
+                    any(Class.class))).thenReturn(responseEntity);
 
             var actual = signingClient.createSignature(fixture.create(byte[].class),
-                                                       fixture.create(SigningInformationDto.class));
+                    fixture.create(SigningInformationDto.class));
 
             assertEquals(responseEntity.getBody(), actual);
         }
@@ -125,7 +128,7 @@ class DefaultSigningClientTest {
     }
 
     @Nested
-    class VerifySignature{
+    class VerifySignature {
         @Test
         void makesRequestToCorrectUrl() {
             var verifyUrl = fixture.create(String.class);
@@ -145,11 +148,11 @@ class DefaultSigningClientTest {
 
         @Test
         void makesRequestWithCorrectBody() {
-            var verifySignatureRequestDto =  fixture.create(VerifySignatureRequestDto.class);
+            var verifySignatureRequestDto = fixture.create(VerifySignatureRequestDto.class);
 
             signingClient.verifySignature(verifySignatureRequestDto);
 
-            verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argThat(argument -> Objects.equals(argument.getBody(), verifySignatureRequestDto)) , any(Class.class));
+            verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argThat(argument -> Objects.equals(argument.getBody(), verifySignatureRequestDto)), any(Class.class));
         }
 
         @Test
@@ -176,22 +179,23 @@ class DefaultSigningClientTest {
     }
 
     @Nested
-    class GetKeyIdentifier{
+    class GetKeyIdentifier {
         @Test
         void makesRequestToCorrectUrl() {
             var url = UUID.randomUUID().toString();
-            var certificateAlias =  fixture.create(String.class);
-            var fullUrl = url+"/"+certificateAlias;
+            var slotNumber = fixture.create(Integer.class);
+            var certificateAlias = fixture.create(String.class);
+            var fullUrl = url + "/" + slotNumber + "/" + certificateAlias;
             ReflectionTestUtils.setField(signingClient, "kidUrl", url);
 
-            signingClient.getKeyIdentifier(certificateAlias);
+            signingClient.getKeyIdentifier(slotNumber, certificateAlias);
 
             verify(restTemplate).exchange(eq(fullUrl), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
         }
 
         @Test
         void makesGetRequest() {
-            signingClient.getKeyIdentifier(fixture.create(String.class));
+            signingClient.getKeyIdentifier(fixture.create(Integer.class), fixture.create(String.class));
 
             verify(restTemplate).exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), any(Class.class));
         }
@@ -202,7 +206,7 @@ class DefaultSigningClientTest {
             when(responseEntity.getBody()).thenReturn(fixture.create(String.class));
             when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenReturn(responseEntity);
 
-            var actual = signingClient.getKeyIdentifier(fixture.create(String.class));
+            var actual = signingClient.getKeyIdentifier(fixture.create(Integer.class), fixture.create(String.class));
 
             assertEquals(responseEntity.getBody(), actual);
         }
@@ -213,7 +217,7 @@ class DefaultSigningClientTest {
             var signingInformation = fixture.create(String.class);
             when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class))).thenThrow(exception);
 
-            var actual = assertThrows(RestClientException.class, () -> signingClient.getKeyIdentifier(signingInformation));
+            var actual = assertThrows(RestClientException.class, () -> signingClient.getKeyIdentifier(fixture.create(Integer.class), signingInformation));
 
             assertEquals(exception, actual);
         }

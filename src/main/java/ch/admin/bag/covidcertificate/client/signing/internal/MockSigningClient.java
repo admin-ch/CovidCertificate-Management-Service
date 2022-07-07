@@ -30,7 +30,7 @@ public class MockSigningClient implements SigningClient {
     }
 
     @SneakyThrows
-    public String getKeyIdentifier(String certificateAlias){
+    public String getKeyIdentifier(Integer slotNumber, String certificateAlias){
         var outputStream = new ByteArrayOutputStream();
         new HexEncoder().encode(UUID.randomUUID().toString().getBytes(), 0, 8, outputStream);
         return outputStream.toString();

@@ -58,20 +58,18 @@ class SigningInformationCacheServiceIntegrationTest {
     @BeforeEach
     private void setup() {
         getCache().clear();
-        lenient().when(signingInformationRepository
-                               .findSigningInformation(any(), any(), any())).thenReturn(
-                fixture.create(SigningInformation.class));
-        lenient().when(signingInformationRepository
-                               .findSigningInformation(any(), any())).thenReturn(Collections.singletonList(
-                fixture.create(SigningInformation.class)));
+        lenient().when(signingInformationRepository.findSigningInformation(any(), any(), any()))
+                .thenReturn(fixture.create(SigningInformation.class));
+        lenient().when(signingInformationRepository.findSigningInformation(any(), any()))
+                .thenReturn(Collections.singletonList(fixture.create(SigningInformation.class)));
     }
 
-    private Cache getCache(){
+    private Cache getCache() {
         return Objects.requireNonNull(cacheManager.getCache("signingInformationCache"));
     }
 
     @Nested
-    class FindSigningInformationOnlyByCertificateType{
+    class FindSigningInformationOnlyByCertificateType {
         @Test
         void shouldCallRepositoryAndWriteResultInCache_ifNotInCache() {
             var certificateType = fixture.create(String.class);
@@ -90,7 +88,7 @@ class SigningInformationCacheServiceIntegrationTest {
         }
 
         @Test
-        void shouldNotCallRepositoryIfSigningInformationAreInCache(){
+        void shouldNotCallRepositoryIfSigningInformationAreInCache() {
             var certificateType = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
             var signingInformationList = Collections.singletonList(fixture.create(SigningInformation.class));
@@ -107,9 +105,9 @@ class SigningInformationCacheServiceIntegrationTest {
     }
 
     @Nested
-    class FindSigningInformation{
+    class FindSigningInformation {
         @Test
-        void shouldCallRepositoryAndWriteResultInCache_ifNotInCache(){
+        void shouldCallRepositoryAndWriteResultInCache_ifNotInCache() {
             var certificateType = fixture.create(String.class);
             var code = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
@@ -122,11 +120,11 @@ class SigningInformationCacheServiceIntegrationTest {
 
             verify(signingInformationRepository).findSigningInformation(eq(certificateType), eq(code), any());
             assertEquals(expectedDto,
-                         Objects.requireNonNull(getCache().get(new SimpleKey(certificateType, code, validAt))).get());
+                    Objects.requireNonNull(getCache().get(new SimpleKey(certificateType, code, validAt))).get());
         }
 
         @Test
-        void shouldNotCallRepositoryIfSigningInformationAreInCache(){
+        void shouldNotCallRepositoryIfSigningInformationAreInCache() {
             var certificateType = fixture.create(String.class);
             var code = fixture.create(String.class);
             var validAt = fixture.create(LocalDate.class);
@@ -144,13 +142,13 @@ class SigningInformationCacheServiceIntegrationTest {
     }
 
     @Nested
-    class CleanSigningInformationCache{
+    class CleanSigningInformationCache {
         @Test
-        void shouldRemoveAllEntriesFromTheCache(){
+        void shouldRemoveAllEntriesFromTheCache() {
             var simpleKeys = new ArrayList<>(fixture.collections().createCollection(SimpleKey.class, 3));
             var values = new ArrayList<>(fixture.collections().createCollection(String.class, 3));
             //setup cache
-            for(int i=0; i<3; i++){
+            for (int i = 0; i < 3; i++) {
                 getCache().put(simpleKeys.get(i), values.get(i));
                 assertNotNull(getCache().get(simpleKeys.get(i)));
             }
@@ -158,7 +156,7 @@ class SigningInformationCacheServiceIntegrationTest {
             //Clean Cache
             signingInformationCacheService.cleanSigningInformationCache();
 
-            for(int i=0; i<3; i++){
+            for (int i = 0; i < 3; i++) {
                 assertNull(getCache().get(simpleKeys.get(i)));
             }
         }
