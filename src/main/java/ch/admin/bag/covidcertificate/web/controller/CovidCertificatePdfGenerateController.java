@@ -9,7 +9,7 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertif
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
-import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.CovidCertificatePdfGenerationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +25,7 @@ import javax.validation.Valid;
 @Slf4j
 public class CovidCertificatePdfGenerateController {
 
-    private final CovidCertificateGenerationService covidCertificateGenerationService;
+    private final CovidCertificatePdfGenerationService covidCertificateGenerationService;
 
     @PostMapping("/vaccination")
     public CovidCertificateCreateResponseDto generateVaccinationPdfFromExistingCertificate(
@@ -34,8 +34,7 @@ public class CovidCertificatePdfGenerateController {
         log.info("Call of create PDF for vaccination certificate");
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
+        return responseEnvelope.getResponseDto();
     }
 
     @PostMapping("/vaccination-tourist")
@@ -45,8 +44,7 @@ public class CovidCertificatePdfGenerateController {
         log.info("Call of create PDF for vaccination-tourist certificate");
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
+        return responseEnvelope.getResponseDto();
     }
 
     @PostMapping("/test")
@@ -56,8 +54,7 @@ public class CovidCertificatePdfGenerateController {
         log.info("Call of create PDF for test certificate");
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
+        return responseEnvelope.getResponseDto();
     }
 
     @PostMapping("/recovery")
@@ -67,8 +64,7 @@ public class CovidCertificatePdfGenerateController {
         log.info("Call of create PDF for recovery certificate");
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
+        return responseEnvelope.getResponseDto();
     }
 
     @PostMapping("/recovery-rat")
@@ -78,8 +74,7 @@ public class CovidCertificatePdfGenerateController {
         log.info("Call of create PDF for recovery-rat certificate");
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
+        return responseEnvelope.getResponseDto();
     }
 
     @PostMapping("/antibody")
@@ -89,8 +84,7 @@ public class CovidCertificatePdfGenerateController {
         log.info("Call of create PDF for antibody certificate");
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
+        return responseEnvelope.getResponseDto();
     }
 
     @PostMapping("/exceptional")
@@ -100,7 +94,6 @@ public class CovidCertificatePdfGenerateController {
         log.info("Call of create PDF for exceptional certificate");
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateFromExistingCovidCertificate(pdfGenerateRequestDto);
-        CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
-        return responseDto;
+        return responseEnvelope.getResponseDto();
     }
 }

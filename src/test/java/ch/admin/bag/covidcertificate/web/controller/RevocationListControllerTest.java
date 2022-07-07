@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @ExtendWith(MockitoExtension.class)
 class RevocationListControllerTest {
+
     @InjectMocks
     private RevocationListController controller;
     @Mock
