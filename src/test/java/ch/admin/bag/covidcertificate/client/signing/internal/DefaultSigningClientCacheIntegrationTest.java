@@ -75,14 +75,15 @@ class DefaultSigningClientCacheIntegrationTest {
         @Test
         void shouldCallSigningServiceAndWriteResultInCache_whenNotAlreadyInCache(){
             var certificateAlias = fixture.create(String.class);
+            Integer slot = fixture.create(Integer.class);
             ResponseEntity responseEntity = mock(ResponseEntity.class);
             lenient().when(responseEntity.getBody()).thenReturn(fixture.create(String.class));
             lenient().when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class))).thenReturn(responseEntity);
 
-            signingClient.getKeyIdentifier(certificateAlias);
+            signingClient.getKeyIdentifier(slot, certificateAlias);
 
             verify(restTemplate).exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class));
-            assertEquals(responseEntity.getBody(), Objects.requireNonNull(getCache().get(certificateAlias)).get());
+            assertEquals(responseEntity.getBody(), Objects.requireNonNull(getCache().get(new SimpleKey(slot, certificateAlias))).get());
         }
 
         @Test
@@ -92,11 +93,12 @@ class DefaultSigningClientCacheIntegrationTest {
             lenient().when(responseEntity.getBody()).thenReturn(fixture.create(String.class));
             lenient().when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class))).thenReturn(responseEntity);
 
-            signingClient.getKeyIdentifier(certificateAlias);
+            Integer slot = fixture.create(Integer.class);
+            signingClient.getKeyIdentifier(slot, certificateAlias);
             verify(restTemplate, times(1)).exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class));
             clearInvocations(restTemplate);
 
-            signingClient.getKeyIdentifier(certificateAlias);
+            signingClient.getKeyIdentifier(slot, certificateAlias);
 
             verifyNoInteractions(restTemplate);
         }

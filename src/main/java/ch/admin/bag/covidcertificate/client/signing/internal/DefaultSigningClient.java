@@ -35,7 +35,7 @@ public class DefaultSigningClient implements SigningClient {
     private final RestTemplate restTemplate;
 
     @Value("${cc-signing-service.url}")
-    private String url;
+    private String signUrl;
 
     @Value("${cc-signing-service.verify-url}")
     private String verifyUrl;
@@ -48,22 +48,30 @@ public class DefaultSigningClient implements SigningClient {
     }
 
     public byte[] createSignature(byte[] cosePayload, SigningInformationDto signingInformation) {
-        var signingRequestDto = new SigningRequestDto(Base64.getEncoder().encodeToString(cosePayload),
-                signingInformation.getAlias());
+        var signingRequestDto = new SigningRequestDto(
+                Base64.getEncoder().encodeToString(cosePayload),
+                signingInformation.getAlias(),
+                signingInformation.getSlotNumber()
+        );
         long start = System.currentTimeMillis();
-        log.info("Call signing service with url {}", url);
+        log.info("Call signing service with url {}", signUrl);
         HttpHeaders headers = new HttpHeaders();
         headers.put("Content-Type", Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
         try {
-            ResponseEntity<byte[]> result = restTemplate.exchange(url, HttpMethod.POST,
+            ResponseEntity<byte[]> result = restTemplate.exchange(
+                    signUrl,
+                    HttpMethod.POST,
                     new HttpEntity<>(signingRequestDto, headers),
-                    byte[].class);
+                    byte[].class
+            );
             long end = System.currentTimeMillis();
-            log.info("Call of signing service finished with result {} within {} ms.", result.getStatusCode(),
+            log.info("Call of signing service url {} finished with result {} within {} ms.",
+                    signUrl,
+                    result.getStatusCode(),
                     end - start);
             return result.getBody();
         } catch (RestClientException e) {
-            log.error("Connection with signing service {} could not be established.", url, e);
+            log.error("Connection with signing service {} could not be established.", signUrl, e);
             throw e;
         }
     }
@@ -73,7 +81,12 @@ public class DefaultSigningClient implements SigningClient {
         HttpHeaders headers = new HttpHeaders();
         headers.put("Content-Type", Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
         try {
-            ResponseEntity<Boolean> result = restTemplate.exchange(verifyUrl, HttpMethod.POST, new HttpEntity<>(verifySignatureRequestDto, headers), boolean.class);
+            ResponseEntity<Boolean> result = restTemplate.exchange(
+                    verifyUrl,
+                    HttpMethod.POST,
+                    new HttpEntity<>(verifySignatureRequestDto, headers),
+                    boolean.class
+            );
             return result.getBody();
         } catch (RestClientException e) {
             log.error("Connection with signing service {} could not be established.", verifyUrl, e);
@@ -82,20 +95,26 @@ public class DefaultSigningClient implements SigningClient {
     }
 
     @Cacheable(KEY_IDENTIFIER_CACHE)
-    public String getKeyIdentifier(String certificateAlias) {
-        var getKeyUrl = buildSigningUrl(kidUrl, certificateAlias);
+    public String getKeyIdentifier(Integer slotNumber, String certificateAlias) {
+        var specificKidUrl = buildKidUrl(this.kidUrl, slotNumber, certificateAlias);
         long start = System.currentTimeMillis();
-        log.info("Call signing service to retrieve key identifier for certificate {}.", certificateAlias);
+        log.info("Call signing service with url {}", specificKidUrl);
 
         try {
-            ResponseEntity<String> result = restTemplate.exchange(getKeyUrl, HttpMethod.GET,
-                    new HttpEntity<>(new HttpHeaders()), String.class);
+            ResponseEntity<String> result = restTemplate.exchange(
+                    specificKidUrl,
+                    HttpMethod.GET,
+                    new HttpEntity<>(new HttpHeaders()),
+                    String.class
+            );
             long end = System.currentTimeMillis();
-            log.info("Call of signing service finished with result {} within {} ms.", result.getStatusCode(),
+            log.info("Call of signing service url {} finished with result {} within {} ms.",
+                    specificKidUrl,
+                    result.getStatusCode(),
                     end - start);
             return result.getBody();
         } catch (RestClientException e) {
-            log.error("Connection with signing service {} could not be established.", url, e);
+            log.error("Connection with signing service {} could not be established.", specificKidUrl, e);
             throw e;
         }
     }
@@ -106,10 +125,10 @@ public class DefaultSigningClient implements SigningClient {
         log.info("Cleaning cache of key identifier");
     }
 
-    private String buildSigningUrl(String url, String pathSegment) {
+    private String buildKidUrl(String url, Integer slotNumber, String kid) {
         return new DefaultUriBuilderFactory()
                 .uriString(url)
-                .pathSegment(pathSegment)
+                .pathSegment(slotNumber.toString(), kid)
                 .build().toString();
     }
 }
