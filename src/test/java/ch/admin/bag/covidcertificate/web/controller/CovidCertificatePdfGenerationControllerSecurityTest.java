@@ -10,7 +10,7 @@ import ch.admin.bag.covidcertificate.authorization.config.AuthorizationConfig;
 import ch.admin.bag.covidcertificate.authorization.config.LocalDateTimeConverter;
 import ch.admin.bag.covidcertificate.authorization.config.RoleConfig;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;
-import ch.admin.bag.covidcertificate.service.CovidCertificatePdfGenerationService;
+import ch.admin.bag.covidcertificate.service.CovidCertificateGeneratePdfFromExistingService;
 import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import ch.admin.bag.covidcertificate.testutil.JwtTestUtil;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = {CovidCertificatePdfGenerateController.class, OAuth2SecuredWebConfiguration.class,
+@WebMvcTest(value = {CovidCertificateGeneratePdfFromExistingController.class, OAuth2SecuredWebConfiguration.class,
         AuthorizationInterceptor.class, AuthorizationService.class, AuthorizationConfig.class, RoleConfig.class,
         LocalDateTimeConverter.class})
 @ActiveProfiles({"test", "authorization"})
@@ -43,7 +43,7 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
     private static final String BASE_URL = "/api/v1/covidcertificate/";
 
     @MockBean
-    private CovidCertificatePdfGenerationService covidCertificatePdfGenerationService;
+    private CovidCertificateGeneratePdfFromExistingService covidCertificateGeneratePdfFromExistingService;
 
     @MockBean
     private KpiDataService kpiDataService;
@@ -63,13 +63,13 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
         //                any(RecoveryCertificateCreateDto.class))).thenReturn(
         //                fixture.create(CovidCertificateResponseEnvelope.class));
 
-        lenient().when(covidCertificatePdfGenerationService.generateFromExistingCovidCertificate(
+        lenient().when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                 any(VaccinationCertificatePdfGenerateRequestDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
-        lenient().when(covidCertificatePdfGenerationService.generateFromExistingCovidCertificate(
+        lenient().when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                 any(TestCertificatePdfGenerateRequestDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
-        lenient().when(covidCertificatePdfGenerationService.generateFromExistingCovidCertificate(
+        lenient().when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                 any(RecoveryCertificatePdfGenerateRequestDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
     }
@@ -107,21 +107,21 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificatePdfGenerationService, times(2))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(2))
                    .generateFromExistingCovidCertificate(any(VaccinationCertificatePdfGenerateRequestDto.class));
         }
 
         @Test
         void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
-            Mockito.verify(covidCertificatePdfGenerationService, times(0))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(0))
                    .generateFromExistingCovidCertificate(any(VaccinationCertificatePdfGenerateRequestDto.class));
         }
 
         @Test
         void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(covidCertificatePdfGenerationService, times(0))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(0))
                    .generateFromExistingCovidCertificate(any(VaccinationCertificatePdfGenerateRequestDto.class));
         }
 
@@ -141,21 +141,21 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificatePdfGenerationService, times(2))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(2))
                    .generateFromExistingCovidCertificate(any(TestCertificatePdfGenerateRequestDto.class));
         }
 
         @Test
         void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
-            Mockito.verify(covidCertificatePdfGenerationService, times(0))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(0))
                    .generateFromExistingCovidCertificate(any(TestCertificatePdfGenerateRequestDto.class));
         }
 
         @Test
         void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(covidCertificatePdfGenerationService, times(0))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(0))
                    .generateFromExistingCovidCertificate(any(TestCertificatePdfGenerateRequestDto.class));
         }
 
@@ -175,21 +175,21 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificatePdfGenerationService, times(2))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(2))
                    .generateFromExistingCovidCertificate(any(RecoveryCertificatePdfGenerateRequestDto.class));
         }
 
         @Test
         void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
-            Mockito.verify(covidCertificatePdfGenerationService, times(0))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(0))
                    .generateFromExistingCovidCertificate(any(RecoveryCertificatePdfGenerateRequestDto.class));
         }
 
         @Test
         void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(covidCertificatePdfGenerationService, times(0))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(0))
                    .generateFromExistingCovidCertificate(any(RecoveryCertificatePdfGenerateRequestDto.class));
         }
 

@@ -9,7 +9,7 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertif
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
-import ch.admin.bag.covidcertificate.service.CovidCertificatePdfGenerationService;
+import ch.admin.bag.covidcertificate.service.CovidCertificateGeneratePdfFromExistingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +23,9 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/covidcertificate/fromexisting")
 @RequiredArgsConstructor
 @Slf4j
-public class CovidCertificatePdfGenerateController {
+public class CovidCertificateGeneratePdfFromExistingController {
 
-    private final CovidCertificatePdfGenerationService covidCertificateGenerationService;
+    private final CovidCertificateGeneratePdfFromExistingService covidCertificateGenerationService;
 
     @PostMapping("/vaccination")
     public CovidCertificateCreateResponseDto generateVaccinationPdfFromExistingCertificate(

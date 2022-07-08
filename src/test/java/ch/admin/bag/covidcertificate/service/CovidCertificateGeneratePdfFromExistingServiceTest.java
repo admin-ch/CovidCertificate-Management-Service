@@ -55,10 +55,10 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
-class CovidCertificatePdfGenerationServiceTest {
+class CovidCertificateGeneratePdfFromExistingServiceTest {
     private final JFixture fixture = new JFixture();
     @InjectMocks
-    private CovidCertificatePdfGenerationService service;
+    private CovidCertificateGeneratePdfFromExistingService service;
     @Mock
     private BarcodeService barcodeService;
     @Mock

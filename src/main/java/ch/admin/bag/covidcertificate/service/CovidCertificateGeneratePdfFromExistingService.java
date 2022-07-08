@@ -29,7 +29,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.CREATE_BARCODE_FAILED;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CovidCertificatePdfGenerationService {
+public class CovidCertificateGeneratePdfFromExistingService {
 
     private final CovidCertificatePdfGenerateRequestDtoMapperService pdfDtoMapperService;
     private final PdfCertificateGenerationService pdfCertificateGenerationService;

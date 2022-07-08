@@ -12,8 +12,6 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelo
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -160,15 +158,6 @@ public class CovidCertificateGenerationController {
         log.info("Call of create for exceptional certificate");
 
         createDto.validate();
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.findAndRegisterModules();
-            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            String demo = objectMapper.writeValueAsString(createDto);
-            log.info("Moinsen demo is: {}", demo);
-        } catch (Exception ex) {
-            log.error("Moinsen writing failed: ", ex);
-        }
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateCovidCertificate(createDto);
         CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
