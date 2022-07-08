@@ -25,7 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -52,17 +51,7 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
     private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
     @BeforeEach
-    void setupMocks() throws IOException {
-        //        lenient().when(covidCertificatePdfGenerationService.generateCovidCertificate(
-        //                any(VaccinationCertificateCreateDto.class))).thenReturn(
-        //                fixture.create(CovidCertificateResponseEnvelope.class));
-        //        lenient().when(covidCertificatePdfGenerationService.generateCovidCertificate(
-        //                any(TestCertificateCreateDto.class))).thenReturn(
-        //                fixture.create(CovidCertificateResponseEnvelope.class));
-        //        lenient().when(covidCertificatePdfGenerationService.generateCovidCertificate(
-        //                any(RecoveryCertificateCreateDto.class))).thenReturn(
-        //                fixture.create(CovidCertificateResponseEnvelope.class));
-
+    void setupMocks() {
         lenient().when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                 any(VaccinationCertificatePdfGenerateRequestDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
