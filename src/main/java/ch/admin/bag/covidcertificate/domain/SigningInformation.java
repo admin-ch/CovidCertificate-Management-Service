@@ -29,6 +29,7 @@ public class SigningInformation {
     private String code;
     private String alias;
     private String certificateAlias;
+    private Integer slotNumber;
     private LocalDate validFrom;
     private LocalDate validTo;
 
@@ -37,6 +38,7 @@ public class SigningInformation {
             String code,
             String alias,
             String certificateAlias,
+            Integer slotNumber,
             LocalDate validFrom,
             LocalDate validTo) {
 
@@ -44,6 +46,7 @@ public class SigningInformation {
         this.code = code;
         this.alias = alias;
         this.certificateAlias = certificateAlias;
+        this.slotNumber = slotNumber;
         this.validFrom = validFrom;
         this.validTo = validTo;
     }
