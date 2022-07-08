@@ -1,8 +1,12 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
@@ -32,9 +36,13 @@ import java.time.LocalDateTime;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRecoveryCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccinationCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getExceptionalCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryRatCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateCreateDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
@@ -71,10 +79,22 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
                 any(VaccinationCertificateCreateDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(VaccinationTouristCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
                 any(TestCertificateCreateDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
         lenient().when(covidCertificateGenerationService.generateCovidCertificate(
                 any(RecoveryCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(RecoveryRatCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(AntibodyCertificateCreateDto.class))).thenReturn(
+                fixture.create(CovidCertificateResponseEnvelope.class));
+        lenient().when(covidCertificateGenerationService.generateCovidCertificate(
+                any(ExceptionalCertificateCreateDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
     }
 
@@ -121,12 +141,52 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
         @Test
         void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(covidCertificateGenerationService, times(0)).generateCovidCertificate(any(VaccinationCertificateCreateDto.class));
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationCertificateCreateDto.class));
         }
 
-        private void callCreateVaccinationCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
+        private void callCreateVaccinationCertificateWithToken(
+                LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
-            callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole, status);
+            callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole,
+                                           status);
+        }
+    }
+
+    @Nested
+    class CreateVaccinationTouristCertificate {
+        private static final String URL = BASE_URL + "vaccination-tourist";
+
+        @Test
+        void returnsOKIfAuthorizationTokenValid() throws Exception {
+            callCreateVaccinationTouristCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.FORBIDDEN);
+            callCreateVaccinationTouristCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE,
+                                                             HttpStatus.FORBIDDEN);
+            // Feature is deactivated
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationTouristCertificateCreateDto.class));
+        }
+
+        @Test
+        void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
+            callCreateVaccinationTouristCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE,
+                                                             HttpStatus.FORBIDDEN);
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationTouristCertificateCreateDto.class));
+        }
+
+        @Test
+        void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
+            callCreateVaccinationTouristCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationTouristCertificateCreateDto.class));
+        }
+
+        private void callCreateVaccinationTouristCertificateWithToken(
+                LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
+            var createDto = getVaccinationTouristCertificateCreateDto("EU/1/20/1507", "de");
+            callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole,
+                                           status);
         }
     }
 
@@ -137,7 +197,8 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             callCreateTestCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificateGenerationService, times(1)).generateCovidCertificate(any(TestCertificateCreateDto.class));
+            Mockito.verify(covidCertificateGenerationService, times(1))
+                   .generateCovidCertificate(any(TestCertificateCreateDto.class));
         }
 
         @Test
@@ -177,12 +238,119 @@ class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityT
         @Test
         void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
             callCreateRecoveryCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
-            Mockito.verify(covidCertificateGenerationService, times(0)).generateCovidCertificate(any(RecoveryCertificateCreateDto.class));
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(RecoveryCertificateCreateDto.class));
         }
 
-        private void callCreateRecoveryCertificateWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
+        private void callCreateRecoveryCertificateWithToken(
+                LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
             var createDto = getRecoveryCertificateCreateDto("de");
-            callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole, status);
+            callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole,
+                                           status);
+        }
+    }
+
+    @Nested
+    class CreateRecoveryRatCertificate {
+        private static final String URL = BASE_URL + "recovery-rat";
+
+        @Test
+        void returnsOKIfAuthorizationTokenValid() throws Exception {
+            callCreateRecoveryRatCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
+            callCreateRecoveryRatCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
+            Mockito.verify(covidCertificateGenerationService, times(2))
+                   .generateCovidCertificate(any(RecoveryRatCertificateCreateDto.class));
+        }
+
+        @Test
+        void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
+            callCreateRecoveryRatCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(RecoveryRatCertificateCreateDto.class));
+        }
+
+        @Test
+        void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
+            callCreateRecoveryRatCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(RecoveryRatCertificateCreateDto.class));
+        }
+
+        private void callCreateRecoveryRatCertificateWithToken(
+                LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
+            var createDto = getRecoveryRatCertificateCreateDto("de", "DB1E7078");
+            callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole,
+                                           status);
+        }
+    }
+
+    @Nested
+    class CreateAntibodyCertificate {
+        private static final String URL = BASE_URL + "antibody";
+
+        @Test
+        void returnsOKIfAuthorizationTokenValid() throws Exception {
+            callCreateAntibodyCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.FORBIDDEN);
+            callCreateAntibodyCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.FORBIDDEN);
+            // Feature is deactivated
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationTouristCertificateCreateDto.class));
+        }
+
+        @Test
+        void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
+            callCreateAntibodyCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationTouristCertificateCreateDto.class));
+        }
+
+        @Test
+        void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
+            callCreateAntibodyCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationTouristCertificateCreateDto.class));
+        }
+
+        private void callCreateAntibodyCertificateWithToken(
+                LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
+            var createDto = getAntibodyCertificateCreateDto("de");
+            callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole,
+                                           status);
+        }
+    }
+
+    @Nested
+    class CreateExceptionalCertificate {
+        private static final String URL = BASE_URL + "exceptional";
+
+        @Test
+        void returnsOKIfAuthorizationTokenValid() throws Exception {
+            callCreateExceptionalCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.FORBIDDEN);
+            callCreateExceptionalCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.FORBIDDEN);
+            // Feature is deactivated
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationTouristCertificateCreateDto.class));
+        }
+
+        @Test
+        void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
+            callCreateExceptionalCertificateWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationTouristCertificateCreateDto.class));
+        }
+
+        @Test
+        void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
+            callCreateExceptionalCertificateWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
+            Mockito.verify(covidCertificateGenerationService, times(0))
+                   .generateCovidCertificate(any(VaccinationTouristCertificateCreateDto.class));
+        }
+
+        private void callCreateExceptionalCertificateWithToken(
+                LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
+            var createDto = getExceptionalCertificateCreateDto("de");
+            callCreateCertificateWithToken(URL, mapper.writeValueAsString(createDto), tokenExpiration, userRole,
+                                           status);
         }
     }
 }

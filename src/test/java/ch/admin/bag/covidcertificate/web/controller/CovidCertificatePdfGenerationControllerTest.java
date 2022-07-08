@@ -8,7 +8,7 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponse
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
-import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
+import ch.admin.bag.covidcertificate.service.CovidCertificateGeneratePdfFromExistingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flextrade.jfixture.JFixture;
@@ -43,10 +43,10 @@ class CovidCertificatePdfGenerationControllerTest {
     private final ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().modules(new JavaTimeModule()).build();
 
     @InjectMocks
-    private CovidCertificatePdfGenerateController controller;
+    private CovidCertificateGeneratePdfFromExistingController controller;
 
     @Mock
-    private CovidCertificateGenerationService covidCertificateGenerationService;
+    private CovidCertificateGeneratePdfFromExistingService covidCertificateGeneratePdfFromExistingService;
 
     @Mock
     private ServletJeapAuthorization jeapAuthorization;
@@ -75,7 +75,7 @@ class CovidCertificatePdfGenerationControllerTest {
                     .create(VaccinationCertificatePdfGenerateRequestDto.class);
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
             var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
-            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
+            when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                     any(VaccinationCertificatePdfGenerateRequestDto.class))).thenReturn(responseEnvelope);
 
             MvcResult result = mockMvc.perform(
@@ -97,7 +97,7 @@ class CovidCertificatePdfGenerationControllerTest {
             var pdfGenerateRequestDto = fixture
                     .create(VaccinationCertificatePdfGenerateRequestDto.class);
             var exception = fixture.create(CreateCertificateException.class);
-            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
+            when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                     any(VaccinationCertificatePdfGenerateRequestDto.class))).thenThrow(exception);
 
             mockMvc.perform(
@@ -119,7 +119,7 @@ class CovidCertificatePdfGenerationControllerTest {
                     .create(TestCertificatePdfGenerateRequestDto.class);
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
             var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
-            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
+            when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                     any(TestCertificatePdfGenerateRequestDto.class))).thenReturn(responseEnvelope);
 
             MvcResult result = mockMvc.perform(
@@ -141,7 +141,7 @@ class CovidCertificatePdfGenerationControllerTest {
             var pdfGenerateRequestDto = fixture
                     .create(TestCertificatePdfGenerateRequestDto.class);
             var exception = fixture.create(CreateCertificateException.class);
-            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
+            when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                     any(TestCertificatePdfGenerateRequestDto.class))).thenThrow(exception);
 
             mockMvc.perform(
@@ -164,7 +164,7 @@ class CovidCertificatePdfGenerationControllerTest {
             var expectedDto = fixture.create(CovidCertificateCreateResponseDto.class);
             var expectedEnvelope = fixture.create(CovidCertificateResponseEnvelope.class);
             expectedEnvelope.setResponseDto(expectedDto);
-            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
+            when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                     any(RecoveryCertificatePdfGenerateRequestDto.class))).thenReturn(expectedEnvelope);
 
             MvcResult result = mockMvc.perform(
@@ -186,7 +186,7 @@ class CovidCertificatePdfGenerationControllerTest {
             var pdfGenerateRequestDto = fixture
                     .create(RecoveryCertificatePdfGenerateRequestDto.class);
             var exception = fixture.create(CreateCertificateException.class);
-            when(covidCertificateGenerationService.generateFromExistingCovidCertificate(
+            when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                     any(RecoveryCertificatePdfGenerateRequestDto.class))).thenThrow(exception);
 
             mockMvc.perform(
