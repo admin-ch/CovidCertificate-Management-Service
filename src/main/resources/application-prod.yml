@@ -38,6 +38,9 @@ cc-management-service:
 
   allowed-origin: "https://www.covidcertificate.admin.ch"
 
+  truststore:
+    password: ${vcap.services.cc_trust_store.credentials.password}
+
 cc-signing-service:
   url: "https://covidcertificate-signing.bag.admin.ch/bag-vaccinecer-webapp/sign"
   verify-url: "https://covidcertificate-signing.bag.admin.ch/bag-vaccinecer-webapp/sign/verify"
@@ -52,7 +55,7 @@ cc-inapp-delivery-service:
 ch-covidcertificate-backend-verifier-service:
   url: "https://ch-covidcertificate-backend-verifier-ws.app.cfap02.atlantica.admin.ch/dcga/v1/valueSets"
 
-## Mutual-SSL configuration
+## Mutual-SSL configuration to connect from management-service to signing-service
 app:
   conn:
     cc-signing-service:
