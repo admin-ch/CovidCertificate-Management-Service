@@ -10,6 +10,7 @@
     <option name="SPRING_BOOT_MAIN_CLASS" value="ch.admin.bag.covidcertificate.CCManagementServiceApplication" />
     <option name="ACTIVE_PROFILES" value="local,mock-printing-service,mock-inapp-delivery-service,mock-value-sets-service,mock-signing-service" />
     <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="SHORTEN_COMMAND_LINE" value="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
