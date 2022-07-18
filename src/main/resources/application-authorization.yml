@@ -801,28 +801,28 @@ services:
         identifier: "unit-tree"
         from: 2022-01-01T00:00:00
         to: 2099-12-31T23:59:59
-        uri: "/api/v1/unit/tree"
+        uri: "/api/v2/report/unit/tree"
         one-of: ${roles.groups.any}
 
       unit-search:
         identifier: "unit-search"
         from: 2022-01-01T00:00:00
         to: 2099-12-31T23:59:59
-        uri: "/api/v1/unit/search"
+        uri: "/api/v2/report/unit/search"
         one-of: ${roles.groups.any}
 
       unit-profiles:
         identifier: "unit-profiles"
         from: 2022-01-01T00:00:00
         to: 2099-12-31T23:59:59
-        uri: "/api/v1/unit/profiles"
+        uri: "/api/v2/report/unit/profiles"
         one-of: ${roles.groups.any}
 
       profile-search:
         identifier: "profile-search"
         from: 2022-01-01T00:00:00
         to: 2099-12-31T23:59:59
-        uri: "/api/v1/profile/search"
+        uri: "/api/v2/report/profile/search"
         one-of: ${roles.groups.any}
 
       # reports
