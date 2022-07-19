@@ -92,6 +92,7 @@ public class TestController {
                         checkedSigningInformationToStatus.put(signingInformation, SigningInformationStatus.WARN_NOT_PRESENT);
                     }
                 } catch (Exception e) {
+                    log.error("Error when testing certificate alias {} from slot {}", signingInformation.getCertificateAlias(), signingInformation.getSlotNumber(),  e);
                     checkedSigningInformationToStatus.put(signingInformation, SigningInformationStatus.ERROR);
                 }
             }
