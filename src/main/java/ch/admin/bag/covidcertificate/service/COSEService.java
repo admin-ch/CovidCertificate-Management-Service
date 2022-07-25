@@ -34,7 +34,10 @@ public class COSEService {
     private byte[] getProtectedHeader(SigningInformationDto signingInformation) {
         try {
             if (StringUtils.isNotBlank(signingInformation.getCertificateAlias())) {
-                var keyIdentifier = signingClient.getKeyIdentifier(signingInformation.getCertificateAlias());
+                var keyIdentifier = signingClient.getKeyIdentifier(
+                        signingInformation.getSlotNumber(),
+                        signingInformation.getCertificateAlias()
+                );
                 signingInformation.setCalculatedKeyIdentifier(keyIdentifier);
                 return cborService.getProtectedHeader(keyIdentifier);
             }

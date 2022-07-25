@@ -32,11 +32,16 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+/**
+ * /internal routes are not allowed to be whitelisted!
+ *
+ * The TestController can be used to verify current and future signing_information configuration.
+ */
 @RestController
 @RequestMapping("/internal/api/v1/test")
 @RequiredArgsConstructor
@@ -48,19 +53,23 @@ public class TestController {
     private final TestCovidCertificateGenerationService testCovidCertificateGenerationService;
 
     @GetMapping("/{validAt}")
-    public List<SigningInformation> testSigningInformationConfiguration(
+    public Map<SigningInformation, SigningInformationStatus> testSigningInformationConfiguration(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt) {
 
-        List<SigningInformation> errors = new ArrayList<>();
+        Map<SigningInformation, SigningInformationStatus> checkedSigningInformationToStatus = new HashMap<>();
         for (SigningCertificateCategory signingCertificateCategory : SigningCertificateCategory.values()) {
-            var signingInformationList = signingInformationRepository
-                    .findSigningInformation(signingCertificateCategory.value, validAt);
+            var signingInformationList = signingInformationRepository.findSigningInformation(
+                    signingCertificateCategory.value,
+                    validAt
+            );
 
             for (SigningInformation signingInformation : signingInformationList) {
                 try {
                     var messageBytes = UUID.randomUUID().toString().getBytes();
-                    var signatureBytes = signingClient
-                            .createSignature(messageBytes, SigningInformationMapper.fromEntity(signingInformation));
+                    var signatureBytes = signingClient.createSignature(
+                            messageBytes,
+                            SigningInformationMapper.fromEntity(signingInformation)
+                    );
 
                     if (StringUtils.isNotBlank(signingInformation.getCertificateAlias())) {
                         var message = Base64.getEncoder().encodeToString(messageBytes);
@@ -69,21 +78,26 @@ public class TestController {
                         var verifySignatureDto = new VerifySignatureRequestDto(
                                 message,
                                 signature,
-                                signingInformation.getCertificateAlias()
+                                signingInformation.getCertificateAlias(),
+                                signingInformation.getSlotNumber()
                         );
                         var validSignature = signingClient.verifySignature(verifySignatureDto);
-                        if (!validSignature) {
-                            errors.add(signingInformation);
+
+                        if (validSignature) {
+                            checkedSigningInformationToStatus.put(signingInformation, SigningInformationStatus.OK);
+                        } else {
+                            checkedSigningInformationToStatus.put(signingInformation, SigningInformationStatus.ERROR_INVALID);
                         }
                     } else {
-                        log.warn("No certificate alias found for signing information {}", signingInformation.getId().toString());
+                        checkedSigningInformationToStatus.put(signingInformation, SigningInformationStatus.WARN_NOT_PRESENT);
                     }
                 } catch (Exception e) {
-                    errors.add(signingInformation);
+                    log.error("Error when testing certificate alias {} from slot {}", signingInformation.getCertificateAlias(), signingInformation.getSlotNumber(),  e);
+                    checkedSigningInformationToStatus.put(signingInformation, SigningInformationStatus.ERROR);
                 }
             }
         }
-        return errors;
+        return checkedSigningInformationToStatus;
     }
 
     @PostMapping("/vaccination/{validAt}")
@@ -156,8 +170,10 @@ public class TestController {
 
         conversionRequestDto.validate();
         ConvertedCertificateResponseEnvelope convertedCertificateResponseEnvelope =
-                testCovidCertificateGenerationService.convertFromExistingCovidCertificate(conversionRequestDto,
-                                                                                          validAt);
+                testCovidCertificateGenerationService.convertFromExistingCovidCertificate(
+                        conversionRequestDto,
+                        validAt
+                );
         log.info("Used key-id for conversion/vaccination: {}", convertedCertificateResponseEnvelope.getUsedKeyIdentifier());
 
         return convertedCertificateResponseEnvelope.getResponseDto();

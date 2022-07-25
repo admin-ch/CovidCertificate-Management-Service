@@ -8,6 +8,7 @@ import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
+import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
@@ -145,11 +146,21 @@ public class FixtureCustomization {
         });
     }
 
+    public static void customizeRecoveryRatCertificateCreateDto(JFixture fixture) {
+        fixture.customise().lazyInstance(RecoveryRatCertificateCreateDto.class, () -> {
+            var helperFixture = new JFixture();
+            var recoveryRatCertificateCreateDto = helperFixture.create(RecoveryRatCertificateCreateDto.class);
+            ReflectionTestUtils.setField(recoveryRatCertificateCreateDto, "language", DE);
+            return recoveryRatCertificateCreateDto;
+        });
+    }
+
     public static void customizeVaccinationTouristCertificateCreateDto(JFixture fixture) {
         fixture.customise().lazyInstance(VaccinationTouristCertificateCreateDto.class, () -> {
             var helperFixture = new JFixture();
             customizeVaccinationTouristCertificateDataDto(helperFixture);
-            var vaccinationTouristCertificateCreateDto = helperFixture.create(VaccinationTouristCertificateCreateDto.class);
+            var vaccinationTouristCertificateCreateDto = helperFixture.create(
+                    VaccinationTouristCertificateCreateDto.class);
             ReflectionTestUtils.setField(vaccinationTouristCertificateCreateDto, "language", DE);
             return vaccinationTouristCertificateCreateDto;
         });

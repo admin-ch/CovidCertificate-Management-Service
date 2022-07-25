@@ -6,7 +6,7 @@ public interface SigningClient {
 
     boolean verifySignature(VerifySignatureRequestDto verifySignatureRequestDto);
 
-    String getKeyIdentifier(String certificateAlias);
+    String getKeyIdentifier(Integer slotNumber, String certificateAlias);
 
     void cleanKeyIdentifierCache();
 

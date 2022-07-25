@@ -1,9 +1,12 @@
 package ch.admin.bag.covidcertificate.util;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -13,13 +16,19 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_EXCEPTIONAL_VALID_FROM_DATE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TIME;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_VACCINATION_DATE;
 
 public class DateDeserializer extends JsonDeserializer<LocalDate> {
 
+    static final String vaccinationTouristCertificate = VaccinationTouristCertificateDataDto.class.getSimpleName();
     static final String vaccinationCertificate = VaccinationCertificateDataDto.class.getSimpleName();
     static final String recoveryCertificate = RecoveryCertificateDataDto.class.getSimpleName();
+    static final String antibodyCertificate = AntibodyCertificateDataDto.class.getSimpleName();
     static final String testCertificate = TestCertificateDataDto.class.getSimpleName();
+    static final String exceptionalCertificate = ExceptionalCertificateDataDto.class.getSimpleName();
 
     @Override
     public LocalDate deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException {
@@ -29,15 +38,18 @@ public class DateDeserializer extends JsonDeserializer<LocalDate> {
             try {
                 String dateAsString = jsonparser.getText();
                 return LocalDate.parse(dateAsString);
-            } catch(DateTimeParseException dateTimeParseException) {
+            } catch (DateTimeParseException dateTimeParseException) {
                 String origin = jsonparser.getParsingContext().getCurrentValue().getClass().getSimpleName();
-
-                if (vaccinationCertificate.equals(origin)) {
-                   throw new CreateCertificateException(INVALID_VACCINATION_DATE);
-                } else if(recoveryCertificate.equals(origin)) {
+                if (vaccinationCertificate.equals(origin) ||
+                        vaccinationTouristCertificate.equals(origin)) {
+                    throw new CreateCertificateException(INVALID_VACCINATION_DATE);
+                } else if (recoveryCertificate.equals(origin) ||
+                        antibodyCertificate.equals(origin)) {
                     throw new CreateCertificateException(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT);
-                } else if(testCertificate.equals(origin)) {
+                } else if (testCertificate.equals(origin)) {
                     throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
+                } else if (exceptionalCertificate.equals(origin)) {
+                    throw new CreateCertificateException(INVALID_EXCEPTIONAL_VALID_FROM_DATE);
                 } else {
                     throw dateTimeParseException;
                 }

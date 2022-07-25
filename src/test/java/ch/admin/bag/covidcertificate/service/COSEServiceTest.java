@@ -61,14 +61,14 @@ class COSEServiceTest {
             var signingInformation = fixture.create(SigningInformationDto.class);
             coseService.getCOSESign1(fixture.create(byte[].class), signingInformation, fixture.create(Instant.class));
             // then
-            verify(signingClient).getKeyIdentifier(signingInformation.getCertificateAlias());
+            verify(signingClient).getKeyIdentifier(signingInformation.getSlotNumber(), signingInformation.getCertificateAlias());
         }
 
         @Test
         void callsCBORServiceGetProtectedHeader_withIdentifierFromSigningService_whenCertificateAliasIsPresent() throws Exception {
             var signingInformation = fixture.create(SigningInformationDto.class);
             var keyIdentifier = fixture.create(String.class);
-            when(signingClient.getKeyIdentifier(any())).thenReturn(keyIdentifier);
+            when(signingClient.getKeyIdentifier(any(), any())).thenReturn(keyIdentifier);
             coseService.getCOSESign1(fixture.create(byte[].class), signingInformation, fixture.create(Instant.class));
             // then
             verify(cborService).getProtectedHeader(keyIdentifier);
