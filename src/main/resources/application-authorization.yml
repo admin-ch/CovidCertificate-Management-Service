@@ -894,7 +894,7 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.agg}
-        #TODO: uri
+        uri: "/api/v2/report/fraud/a11/for_timerange_by_canton"
 
       report-a12:
         identifier: "report-a12"
