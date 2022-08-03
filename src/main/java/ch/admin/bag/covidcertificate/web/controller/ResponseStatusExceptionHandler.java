@@ -72,7 +72,7 @@ public class ResponseStatusExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         Throwable cause = e.getCause().getCause();
 
-        if(cause instanceof CreateCertificateException) {
+        if (cause instanceof CreateCertificateException) {
             return this.handleCreateCertificateException((CreateCertificateException) cause);
         }
         return new ResponseEntity<>("Malformed Request", HttpStatus.BAD_REQUEST);

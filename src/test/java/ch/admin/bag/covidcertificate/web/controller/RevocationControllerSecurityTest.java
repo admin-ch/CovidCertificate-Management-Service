@@ -78,8 +78,8 @@ class RevocationControllerSecurityTest extends AbstractSecurityTest {
 
     private ResultMatcher getResultMatcher(HttpStatus status) {
         switch (status) {
-            case CREATED:
-                return status().isCreated();
+            case OK:
+                return status().isOk();
             case FORBIDDEN:
                 return status().isForbidden();
             case UNAUTHORIZED:
@@ -94,13 +94,13 @@ class RevocationControllerSecurityTest extends AbstractSecurityTest {
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
             when(revocationService.doesUvciExist(anyString())).thenReturn(true);
-            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            when(revocationService.getRevocationDateTime(anyString())).thenReturn(null);
             Jwt jwt = mock(Jwt.class);
             when(jwt.getClaimAsString(anyString())).thenReturn("test");
             JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).build();
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
 
-            callGetValueSetsWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.CREATED);
+            callGetValueSetsWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
             Mockito.verify(revocationService, times(1)).createRevocation(anyString(), anyBoolean());
         }
 

@@ -79,7 +79,7 @@ class RevocationControllerTest {
         @DisplayName("GIVEN a uvci WHEN it is not already revoked THEN we return status 201")
         void revokeCertificateAndReturnCreatedStatus_ifNotRevokedYet() throws Exception {
             var createDto = fixture.create(RevocationDto.class);
-            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            when(revocationService.getRevocationDateTime(anyString())).thenReturn(null);
             doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
 
             mockMvc.perform(post(REVOCATION_URL)
@@ -87,7 +87,7 @@ class RevocationControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .header("Authorization", fixture.create(String.class))
                             .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().isCreated());
+                    .andExpect(status().isOk());
         }
 
         @Test
@@ -95,7 +95,7 @@ class RevocationControllerTest {
         void returnsStatusCodeOfRevocationException_ifOneWasThrown() throws Exception {
             var createDto = fixture.create(RevocationDto.class);
             var exception = fixture.create(RevocationException.class);
-            when(revocationService.isAlreadyRevoked(anyString())).thenReturn(false);
+            when(revocationService.getRevocationDateTime(anyString())).thenReturn(null);
             doThrow(exception).when(revocationService).createRevocation(anyString(), anyBoolean());
 
             mockMvc.perform(post(REVOCATION_URL)
