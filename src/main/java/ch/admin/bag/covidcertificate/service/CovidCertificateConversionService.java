@@ -31,7 +31,7 @@ public class CovidCertificateConversionService {
 
         // check if uvci of origin certificate got revoked
         final String originUvci = conversionDto.getDecodedCert().getVaccinationInfo().get(0).getIdentifier();
-        if (revocationService.isAlreadyRevoked(originUvci)) {
+        if (revocationService.getRevocationDateTime(originUvci) != null) {
             throw new ConvertCertificateException(Constants.CONVERSION_UVCI_ALREADY_REVOKED, originUvci);
         }
 
