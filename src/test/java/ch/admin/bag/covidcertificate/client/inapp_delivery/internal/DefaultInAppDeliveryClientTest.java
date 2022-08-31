@@ -1,8 +1,11 @@
 package ch.admin.bag.covidcertificate.client.inapp_delivery.internal;
 
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
+import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
+import ch.admin.bag.covidcertificate.util.UserExtIdHelper;
 import com.flextrade.jfixture.JFixture;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -11,6 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -19,15 +23,9 @@ import java.io.IOException;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.createUVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
 import static ch.admin.bag.covidcertificate.api.Constants.UNKNOWN_APP_CODE;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class DefaultInAppDeliveryClientTest {
 
@@ -35,6 +33,11 @@ class DefaultInAppDeliveryClientTest {
     static MockWebServer mockInAppDeliveryService;
 
     static ServletJeapAuthorization jeapAuthorization;
+
+    static JeapAuthenticationToken jeapAuthenticationToken;
+
+    static Jwt token;
+
     static KpiDataService kpiLogService;
 
     @InjectMocks
@@ -45,6 +48,8 @@ class DefaultInAppDeliveryClientTest {
     @BeforeAll
     static void setUp() throws IOException {
         jeapAuthorization = mock(ServletJeapAuthorization.class);
+        jeapAuthenticationToken = mock(JeapAuthenticationToken.class);
+        token = mock(Jwt.class);
         kpiLogService = mock(KpiDataService.class);
         mockInAppDeliveryService = new MockWebServer();
         mockInAppDeliveryService.start();
@@ -62,9 +67,14 @@ class DefaultInAppDeliveryClientTest {
     @Test
     void doesSendInAppDeliverySuccessfully() {
         mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(200));
+        when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
+        when(jeapAuthenticationToken.getToken()).thenReturn(token);
+        when(UserExtIdHelper.extractUserExtId(token, anyString(), SystemSource.WebUI)).thenReturn("test_ext_id");
 
         var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
                 createUVCI(),
+                SystemSource.WebUI,
+                "0815",
                 this.requestDto));
         assertNull(deliveryStatus);
     }
@@ -75,6 +85,8 @@ class DefaultInAppDeliveryClientTest {
 
         var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
                 createUVCI(),
+                SystemSource.WebUI,
+                "0815",
                 this.requestDto));
         assertEquals(UNKNOWN_APP_CODE, deliveryStatus);
     }
@@ -85,6 +97,8 @@ class DefaultInAppDeliveryClientTest {
 
         var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
                 createUVCI(),
+                SystemSource.WebUI,
+                "0815",
                 this.requestDto));
         assertEquals(APP_DELIVERY_FAILED, deliveryStatus);
     }
@@ -95,17 +109,23 @@ class DefaultInAppDeliveryClientTest {
 
         var deliveryStatus = assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
                 createUVCI(),
+                SystemSource.WebUI,
+                "0815",
                 this.requestDto));
         assertEquals(APP_DELIVERY_FAILED, deliveryStatus);
     }
 
     @Test
     void logsKpi__ifDeliverySuccessful() {
-        when(jeapAuthorization.getExtIdInAuthentication()).thenReturn("test_ext_id");
+        when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
+        when(jeapAuthenticationToken.getToken()).thenReturn(token);
+        when(UserExtIdHelper.extractUserExtId(token, anyString(), SystemSource.WebUI)).thenReturn("test_ext_id");
         mockInAppDeliveryService.enqueue(new MockResponse().setResponseCode(200));
 
         assertDoesNotThrow(() -> this.inAppDeliveryClient.deliverToApp(
                 createUVCI(),
+                SystemSource.WebUI,
+                "0815",
                 this.requestDto));
         verify(kpiLogService, times(1)).saveKpiData(any());
     }

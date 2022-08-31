@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.client.inapp_delivery.internal;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -11,9 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.createUVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(properties = {
         "spring.jpa.hibernate.ddl-auto=create",
@@ -36,15 +35,16 @@ class DefaultInAppDeliveryClientITTest {
     @Test
     void deliverToApp_invalid() {
         var requestDto = new InAppDeliveryRequestDto("test", "test", "test");
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                                                            () -> client.deliverToApp(createUVCI(), requestDto));
+        CreateCertificateException exception = assertThrows(
+                CreateCertificateException.class,
+                () -> client.deliverToApp(createUVCI(), SystemSource.WebUI, "0815", requestDto));
 
-        assertEquals(APP_DELIVERY_FAILED,exception.getError());
+        assertEquals(APP_DELIVERY_FAILED, exception.getError());
     }
 
     @Test
     void deliverToApp_valid() {
         var requestDto = new InAppDeliveryRequestDto(validTestCode, "test", "test");
-        assertDoesNotThrow(() -> client.deliverToApp(createUVCI(), requestDto));
+        assertDoesNotThrow(() -> client.deliverToApp(createUVCI(), SystemSource.WebUI, "0815", requestDto));
     }
 }

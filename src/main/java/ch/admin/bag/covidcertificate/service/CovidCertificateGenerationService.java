@@ -191,7 +191,8 @@ public class CovidCertificateGenerationService {
         } else if (createDto.sendToApp()) {
             var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getAppCode(), code.getPayload(),
                                                                Base64.getEncoder().encodeToString(pdf));
-            var createError = this.inAppDeliveryClient.deliverToApp(uvci, inAppDeliveryDto); // null if no error
+            var createError = this.inAppDeliveryClient.deliverToApp(
+                    uvci, createDto.getSystemSource(), createDto.getUserExtId(), inAppDeliveryDto); // null if no error
             responseDto.setAppDeliveryError(createError);
         }
         return new CovidCertificateResponseEnvelope(responseDto,

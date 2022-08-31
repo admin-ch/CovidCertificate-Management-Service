@@ -9,11 +9,13 @@ import ch.admin.bag.covidcertificate.config.ProfileRegistry;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcertificate.domain.KpiData;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
+import ch.admin.bag.covidcertificate.util.UserExtIdHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
@@ -23,16 +25,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_IN_APP_DELIVERY_CODE_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TIMESTAMP_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_IN_APP_DELIVERY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_UUID_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_UVCI_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.LOG_FORMAT;
-import static ch.admin.bag.covidcertificate.api.Constants.UNKNOWN_APP_CODE;
-import static ch.admin.bag.covidcertificate.service.KpiDataService.SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
@@ -49,7 +42,9 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
     private final KpiDataService kpiLogService;
 
     @Override
-    public CreateCertificateError deliverToApp(String uvci, InAppDeliveryRequestDto requestDto) {
+    public CreateCertificateError deliverToApp(
+            String uvci, SystemSource systemSource, String userExtId, InAppDeliveryRequestDto requestDto) {
+
         final var uri = UriComponentsBuilder.fromHttpUrl(serviceUri).toUriString();
         log.debug("Call the InApp Delivery Backend with url {}", uri);
         try {
@@ -62,7 +57,7 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
             log.trace("InApp Delivery Backend Response: {}", response);
             if (response != null && response.getStatusCode().value() == 200) {
                 final String code = requestDto.getCode();
-                logKpi(uvci, code);
+                logKpi(uvci, systemSource, userExtId, code);
                 return null;
             } else {
                 throw new CreateCertificateException(APP_DELIVERY_FAILED);
@@ -85,26 +80,25 @@ public class DefaultInAppDeliveryClient implements InAppDeliveryClient {
         }
     }
 
-    private void logKpi(String uvci, String inAppDeliveryCode) {
-        String extId = jeapAuthorization.getExtIdInAuthentication();
+    private void logKpi(String uvci, SystemSource systemSource, String userExtId, String inAppDeliveryCode) {
 
-        // kpi is only logged here if we don't already log it in the api-gateway
-        if (extId != null && !SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE.equalsIgnoreCase(extId)) {
-            final var kpiTimestamp = LocalDateTime.now();
-            log.info("kpi: {} {} {} {} {}",
-                     kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                     kv(KPI_TYPE_KEY, KPI_TYPE_IN_APP_DELIVERY),
-                     kv(KPI_UUID_KEY, extId),
-                     kv(KPI_IN_APP_DELIVERY_CODE_KEY, inAppDeliveryCode),
-                     kv(KPI_UVCI_KEY, uvci)
-            );
-            kpiLogService.saveKpiData(
-                    new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, extId,
-                            SystemSource.WebUI.category)
-                            .withUvci(uvci)
-                            .withInAppDeliveryCode(inAppDeliveryCode)
-                            .build()
-            );
-        }
+        Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
+        String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
+
+        final var kpiTimestamp = LocalDateTime.now();
+        log.info("kpi: {} {} {} {} {}",
+                 kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                 kv(KPI_TYPE_KEY, KPI_TYPE_IN_APP_DELIVERY),
+                 kv(KPI_UUID_KEY, relevantUserExtId),
+                 kv(KPI_IN_APP_DELIVERY_CODE_KEY, inAppDeliveryCode),
+                 kv(KPI_UVCI_KEY, uvci)
+        );
+        kpiLogService.saveKpiData(
+                new KpiData.KpiDataBuilder(kpiTimestamp, KPI_TYPE_IN_APP_DELIVERY, relevantUserExtId,
+                        systemSource.category)
+                        .withUvci(uvci)
+                        .withInAppDeliveryCode(inAppDeliveryCode)
+                        .build()
+        );
     }
 }
