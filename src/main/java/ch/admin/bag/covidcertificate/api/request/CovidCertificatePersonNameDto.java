@@ -24,11 +24,12 @@ public class CovidCertificatePersonNameDto {
     private String givenName;
 
     public void validate() {
-        if (!StringUtils.hasText(givenName) || givenName.length() > MAX_STRING_LENGTH) {
-            throw new CreateCertificateException(INVALID_GIVEN_NAME);
-        }
-        if (!StringUtils.hasText(familyName) || familyName.length() > MAX_STRING_LENGTH) {
+        if (familyName == null) {
             throw new CreateCertificateException(INVALID_FAMILY_NAME);
+        }
+
+        if (givenName == null) {
+            throw new CreateCertificateException(INVALID_GIVEN_NAME);
         }
 
         Matcher givenNameMatcher = invalidCharactersRegex.matcher(givenName);
@@ -38,6 +39,16 @@ public class CovidCertificatePersonNameDto {
 
         Matcher familyNameMatcher = invalidCharactersRegex.matcher(familyName);
         if(familyNameMatcher.find()) {
+            throw new CreateCertificateException(INVALID_FAMILY_NAME);
+        }
+
+        familyName = familyName.replaceAll("\\h", " ").trim();
+        givenName = givenName.replaceAll("\\h", " ").trim();
+
+        if (!StringUtils.hasText(givenName) || givenName.length() > MAX_STRING_LENGTH) {
+            throw new CreateCertificateException(INVALID_GIVEN_NAME);
+        }
+        if (!StringUtils.hasText(familyName) || familyName.length() > MAX_STRING_LENGTH) {
             throw new CreateCertificateException(INVALID_FAMILY_NAME);
         }
 
