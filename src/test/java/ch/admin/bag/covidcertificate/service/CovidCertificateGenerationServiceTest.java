@@ -3,24 +3,14 @@ package ch.admin.bag.covidcertificate.service;
 import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.CertificatePrintRequestDtoMapper;
+import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequestDto;
 import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
-import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.flextrade.jfixture.JFixture;
@@ -29,11 +19,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.digg.dgc.encoding.Barcode;
@@ -43,25 +29,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
-import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getExceptionalCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryRatCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateCreateDto;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ch.admin.bag.covidcertificate.TestModelProvider.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -280,6 +251,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
@@ -287,7 +260,10 @@ class CovidCertificateGenerationServiceTest {
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
-                    uvciArgumentCaptor.capture(), inAppDeliveryRequestDtoArgumentCaptor.capture());
+                    uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
             assertNotNull(uvciArgumentCaptor.getValue());
         }
@@ -296,6 +272,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
@@ -306,6 +284,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
             assertNotNull(uvciArgumentCaptor.getValue());
@@ -318,6 +298,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
@@ -331,6 +313,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
             assertNotNull(uvciArgumentCaptor.getValue());
@@ -546,6 +530,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getVaccinationTouristCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
@@ -553,7 +539,10 @@ class CovidCertificateGenerationServiceTest {
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
-                    uvciArgumentCaptor.capture(), inAppDeliveryRequestDtoArgumentCaptor.capture());
+                    uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
+                    inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
             assertNotNull(uvciArgumentCaptor.getValue());
         }
@@ -562,6 +551,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
             var createDto = getVaccinationTouristCertificateCreateDto("EU/1/20/1507", "de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor = ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
@@ -572,6 +563,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
             assertNotNull(uvciArgumentCaptor.getValue());
@@ -584,6 +577,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
@@ -597,6 +592,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
             assertNotNull(uvciArgumentCaptor.getValue());
@@ -847,6 +844,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var signingInformation = fixture.create(SigningInformationDto.class);
@@ -856,6 +855,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
             assertNotNull(uvciArgumentCaptor.getValue());
@@ -869,6 +870,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
@@ -880,6 +883,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
@@ -893,6 +898,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
@@ -906,6 +913,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
@@ -1075,6 +1084,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var signingInformation = fixture.create(SigningInformationDto.class);
@@ -1084,6 +1095,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
@@ -1095,6 +1108,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
@@ -1106,6 +1121,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
@@ -1117,6 +1134,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
@@ -1130,6 +1149,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
@@ -1337,6 +1358,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var signingInformation = fixture.create(SigningInformationDto.class);
@@ -1346,6 +1369,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
@@ -1357,6 +1382,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
@@ -1368,6 +1395,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
@@ -1379,6 +1408,8 @@ class CovidCertificateGenerationServiceTest {
                     "de",
                     "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
@@ -1392,6 +1423,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
@@ -1597,6 +1630,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getAntibodyCertificateCreateDto("de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var signingInformation = fixture.create(SigningInformationDto.class);
@@ -1606,6 +1641,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
@@ -1615,6 +1652,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
             var createDto = getAntibodyCertificateCreateDto("de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
@@ -1626,6 +1665,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
@@ -1635,6 +1676,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectPdfData_whenAppCodeIsPassed() {
             var createDto = getAntibodyCertificateCreateDto("de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
@@ -1648,6 +1691,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
@@ -1851,6 +1896,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectAppCode_whenAppCodeIsPassed() {
             var createDto = getExceptionalCertificateCreateDto("de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var signingInformation = fixture.create(SigningInformationDto.class);
@@ -1860,6 +1907,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(createDto.getAppCode(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getCode());
@@ -1869,6 +1918,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectHCert_whenAppCodeIsPassed() {
             var createDto = getExceptionalCertificateCreateDto("de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var barcode = fixture.create(Barcode.class);
@@ -1880,6 +1931,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(barcode.getPayload(), inAppDeliveryRequestDtoArgumentCaptor.getValue().getHcert());
@@ -1889,6 +1942,8 @@ class CovidCertificateGenerationServiceTest {
         void shouldSendInAppDelivery_withCorrectPdfData_whenAppCodeIsPassed() {
             var createDto = getExceptionalCertificateCreateDto("de", "BITBITBIT");
             var uvciArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            var systemSourceArgumentCaptor = ArgumentCaptor.forClass(SystemSource.class);
+            var userExtIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
             var inAppDeliveryRequestDtoArgumentCaptor =
                     ArgumentCaptor.forClass(InAppDeliveryRequestDto.class);
             var pdfByteArray = fixture.create(byte[].class);
@@ -1902,6 +1957,8 @@ class CovidCertificateGenerationServiceTest {
 
             verify(inAppDeliveryClient, times(1)).deliverToApp(
                     uvciArgumentCaptor.capture(),
+                    systemSourceArgumentCaptor.capture(),
+                    userExtIdArgumentCaptor.capture(),
                     inAppDeliveryRequestDtoArgumentCaptor.capture());
             assertNotNull(uvciArgumentCaptor.getValue());
             assertEquals(pdf, inAppDeliveryRequestDtoArgumentCaptor.getValue().getPdf());
