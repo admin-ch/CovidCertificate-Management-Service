@@ -8,6 +8,8 @@ import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
 
+import java.time.ZonedDateTime;
+
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -53,7 +55,8 @@ public class TestCertificatePdfMapperTest {
     @Test
     public void mapsSampleDateTime() {
         TestCertificatePdf actual = TestCertificatePdfMapper.toTestCertificatePdf(incoming, testValueSet, qrCode, memberStateOfTest, memberStateOfTestEn);
-        assertEquals(incoming.getTestInfo().get(0).getSampleDateTime(), actual.getSampleDateTime());
+        ZonedDateTime expected = incoming.getTestInfo().get(0).getSampleDateTime().withZoneSameInstant(Constants.SWISS_TIMEZONE);
+        assertEquals(expected, actual.getSampleDateTime());
     }
 
     @Test
