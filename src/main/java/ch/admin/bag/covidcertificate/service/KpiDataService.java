@@ -65,7 +65,6 @@ public class KpiDataService {
         logRepository.save(kpiLog);
     }
 
-    @Transactional
     public void logTestCertificateGenerationKpi(
             TestCertificateCreateDto createDto,
             String uvci,
@@ -104,7 +103,6 @@ public class KpiDataService {
         return typeCodeDetailString;
     }
 
-    @Transactional
     public void logVaccinationCertificateGenerationKpi(
             VaccinationCertificateCreateDto createDto,
             String uvci,
@@ -118,7 +116,6 @@ public class KpiDataService {
                                     usedKeyIdentifier);
     }
 
-    @Transactional
     public void logVaccinationTouristCertificateGenerationKpi(
             VaccinationTouristCertificateCreateDto createDto,
             String uvci,
@@ -132,7 +129,6 @@ public class KpiDataService {
                                     usedKeyIdentifier);
     }
 
-    @Transactional
     public void logRecoveryCertificateGenerationKpi(
             RecoveryCertificateCreateDto createDto,
             String uvci,
@@ -147,7 +143,6 @@ public class KpiDataService {
                                     usedKeyIdentifier);
     }
 
-    @Transactional
     public void logRecoveryRatCertificateGenerationKpi(
             RecoveryRatCertificateCreateDto createDto,
             String uvci,
@@ -162,7 +157,6 @@ public class KpiDataService {
                                     usedKeyIdentifier);
     }
 
-    @Transactional
     public void logAntibodyCertificateGenerationKpi(
             AntibodyCertificateCreateDto createDto,
             String uvci,
@@ -177,7 +171,6 @@ public class KpiDataService {
                                     usedKeyIdentifier);
     }
 
-    @Transactional
     public void logExceptionalCertificateGenerationKpi(
             ExceptionalCertificateCreateDto createDto,
             String uvci,
@@ -192,7 +185,6 @@ public class KpiDataService {
                                     usedKeyIdentifier);
     }
 
-    @Transactional
     public void logCertificateConversionKpi(
             VaccinationCertificateConversionRequestDto conversionDto,
             String newUvci,

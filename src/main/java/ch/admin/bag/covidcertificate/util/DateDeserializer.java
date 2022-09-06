@@ -23,12 +23,12 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_VACCINATION_DA
 
 public class DateDeserializer extends JsonDeserializer<LocalDate> {
 
-    static final String vaccinationTouristCertificate = VaccinationTouristCertificateDataDto.class.getSimpleName();
-    static final String vaccinationCertificate = VaccinationCertificateDataDto.class.getSimpleName();
-    static final String recoveryCertificate = RecoveryCertificateDataDto.class.getSimpleName();
-    static final String antibodyCertificate = AntibodyCertificateDataDto.class.getSimpleName();
-    static final String testCertificate = TestCertificateDataDto.class.getSimpleName();
-    static final String exceptionalCertificate = ExceptionalCertificateDataDto.class.getSimpleName();
+    static final String VACCINATION_TOURIST_CERTIFICATE = VaccinationTouristCertificateDataDto.class.getSimpleName();
+    static final String VACCINATION_CERTIFICATE = VaccinationCertificateDataDto.class.getSimpleName();
+    static final String RECOVERY_CERTIFICATE = RecoveryCertificateDataDto.class.getSimpleName();
+    static final String ANTIBODY_CERTIFICATE = AntibodyCertificateDataDto.class.getSimpleName();
+    static final String TEST_CERTIFICATE = TestCertificateDataDto.class.getSimpleName();
+    static final String EXCEPTIONAL_CERTIFICATE = ExceptionalCertificateDataDto.class.getSimpleName();
 
     @Override
     public LocalDate deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException {
@@ -40,15 +40,15 @@ public class DateDeserializer extends JsonDeserializer<LocalDate> {
                 return LocalDate.parse(dateAsString);
             } catch (DateTimeParseException dateTimeParseException) {
                 String origin = jsonparser.getParsingContext().getCurrentValue().getClass().getSimpleName();
-                if (vaccinationCertificate.equals(origin) ||
-                        vaccinationTouristCertificate.equals(origin)) {
+                if (VACCINATION_CERTIFICATE.equals(origin) ||
+                        VACCINATION_TOURIST_CERTIFICATE.equals(origin)) {
                     throw new CreateCertificateException(INVALID_VACCINATION_DATE);
-                } else if (recoveryCertificate.equals(origin) ||
-                        antibodyCertificate.equals(origin)) {
+                } else if (RECOVERY_CERTIFICATE.equals(origin) ||
+                        ANTIBODY_CERTIFICATE.equals(origin)) {
                     throw new CreateCertificateException(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT);
-                } else if (testCertificate.equals(origin)) {
+                } else if (TEST_CERTIFICATE.equals(origin)) {
                     throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
-                } else if (exceptionalCertificate.equals(origin)) {
+                } else if (EXCEPTIONAL_CERTIFICATE.equals(origin)) {
                     throw new CreateCertificateException(INVALID_EXCEPTIONAL_VALID_FROM_DATE);
                 } else {
                     throw dateTimeParseException;

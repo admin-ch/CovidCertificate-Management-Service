@@ -115,6 +115,11 @@ public class Vaccine {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.code);
+    }
+
     public boolean isTouristVaccine() {
         return isWhoEul() && !isEmea() && !isSwissMedic() && !StringUtils.hasText(getAnalogVaccine());
     }
