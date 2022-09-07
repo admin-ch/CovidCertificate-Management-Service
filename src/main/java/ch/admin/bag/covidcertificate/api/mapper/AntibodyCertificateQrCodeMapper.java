@@ -5,7 +5,7 @@ import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestResult;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
-import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateData;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.AntibodyCertificateData;
 import ch.admin.bag.covidcertificate.service.domain.qrcode.AntibodyCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.util.UVCI;

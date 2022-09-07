@@ -5,7 +5,7 @@ import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestResult;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificateData;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.TestCertificateData;
 import ch.admin.bag.covidcertificate.service.domain.qrcode.TestCertificateQrCode;
 import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.AccessLevel;

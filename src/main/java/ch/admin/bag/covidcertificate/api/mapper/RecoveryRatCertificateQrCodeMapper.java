@@ -3,7 +3,7 @@ package ch.admin.bag.covidcertificate.api.mapper;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateDataDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateData;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.RecoveryCertificateData;
 import ch.admin.bag.covidcertificate.service.domain.qrcode.RecoveryCertificateQrCode;
 import ch.admin.bag.covidcertificate.util.DateHelper;
 import ch.admin.bag.covidcertificate.util.UVCI;

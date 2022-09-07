@@ -1,8 +1,12 @@
-package ch.admin.bag.covidcertificate.service.domain;
+package ch.admin.bag.covidcertificate.service.domain.qrcode;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.ZonedDateTime;
 
@@ -10,14 +14,11 @@ import java.time.ZonedDateTime;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class TestCertificateData {
+public class ExceptionalCertificateData {
     @JsonProperty("tg")
     private String diseaseOrAgentTargeted;
     @JsonProperty("tt")
     private String typeOfTest;
-    @JsonProperty("ma")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private String testManufacturer;
     @JsonProperty("sc")
     private ZonedDateTime sampleDateTime;
     @JsonProperty("tr")
