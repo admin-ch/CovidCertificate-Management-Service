@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Tag("CovidCertificatePersonNameDtoTest")
 @DisplayName("Tests for the CovidCertificatePersonNameDto")
@@ -75,6 +76,15 @@ public class CovidCertificatePersonNameDtoTest {
             var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto("f".repeat(length), validGivenName);
             assertInvalidFamilyName(covidCertificatePersonNameDto);
         }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"Hans Ueli", " Hans Ueli ", " Hans\tUeli"})
+        @DisplayName("Given 'familyName' contain an none-breaking characters, tabs or is untrimmed, when validated, it sanitize the 'familyName'.")
+        void validationTest7(String unsanitizedName) {
+            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(unsanitizedName, validGivenName);
+            assertDoesNotThrow(covidCertificatePersonNameDto::validate);
+            assertEquals("Hans Ueli", covidCertificatePersonNameDto.getFamilyName());
+        }
     }
 
     @Nested
@@ -112,6 +122,15 @@ public class CovidCertificatePersonNameDtoTest {
         void validationTest8(int length) {
             var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName, "g".repeat(length));
             assertInvalidGivenName(covidCertificatePersonNameDto);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"Franz Mann", " Franz Mann ", " Franz\tMann"})
+        @DisplayName("Given 'givenName' contain an none-breaking characters, tabs or is untrimmed, when validated, it sanitize the 'givenName'.")
+        void validationTest9(String unsanitizedName) {
+            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName, unsanitizedName);
+            assertDoesNotThrow(covidCertificatePersonNameDto::validate);
+            assertEquals("Franz Mann", covidCertificatePersonNameDto.getGivenName());
         }
     }
 }

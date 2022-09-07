@@ -46,13 +46,7 @@ public class AuthorizationInterceptorTest {
 
     @Test
     public void testAllowUnauthenticated() {
-        SecurityContextHolder.getContext()
-                .setAuthentication(JeapAuthenticationTestTokenBuilder.create()
-                        .withClaim("client_id", allowUnauthenticated)
-                        .build());
-
-        MockHttpServletRequest request = get("/uriToNowhere")
-                .buildRequest(mockServletContext);
+        MockHttpServletRequest request = mockRequestWithClientId("/uriToNowhere", allowUnauthenticated);
         assertTrue(interceptor.preHandle(request, response, handler));
     }
 
@@ -150,9 +144,13 @@ public class AuthorizationInterceptorTest {
     }
 
     private MockHttpServletRequest mockRequest(String uri, String... roles) {
+        return mockRequestWithClientId(uri, "cc-management-ui", roles);
+    }
+
+    private MockHttpServletRequest mockRequestWithClientId(String uri, String clientId, String... roles) {
         SecurityContextHolder.getContext()
                 .setAuthentication(JeapAuthenticationTestTokenBuilder.create()
-                        .withClaim("client_id", "cc-management-ui")
+                        .withClaim("clientId", clientId)
                         .withUserRoles(roles)
                         .build());
 
@@ -164,6 +162,5 @@ public class AuthorizationInterceptorTest {
                 () -> interceptor.preHandle(request, response, handler));
         assertEquals(error.getErrorCode(), exception.getError().getErrorCode());
     }
-
 }
 

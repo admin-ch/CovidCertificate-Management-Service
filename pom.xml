@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ch.admin.bag.covidcertificate</groupId>
 	<artifactId>cc-management-service</artifactId>
-	<version>4.5.4</version>
+	<version>4.6.1</version>
 	<name>cc-management-service</name>
 	<description>Service for generating Covid Certificates</description>
 
@@ -282,12 +282,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>junit-vintage-engine</artifactId>
-					<groupId>org.junit.vintage</groupId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<dependency>
+			<!-- added for JUnit 5 "Jupiter" tests -->
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<!-- added for JUnit 4 "Vintage" tests -->
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.flextrade.jfixture</groupId>

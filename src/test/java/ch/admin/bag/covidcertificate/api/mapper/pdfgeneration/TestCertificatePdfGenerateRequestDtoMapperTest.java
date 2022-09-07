@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.api.mapper.pdfgeneration;
 
+import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestResult;
@@ -7,6 +8,8 @@ import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAge
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
+
+import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,7 +73,8 @@ public class TestCertificatePdfGenerateRequestDtoMapperTest {
     @Test
     public void mapsSampleDateTime() {
         TestCertificatePdf actual = TestCertificatePdfGenerateRequestDtoMapper.toTestCertificatePdf(incoming, testValueSet, memberStateOfTest, memberStateOfTestEn);
-        assertEquals(incoming.getDecodedCert().getTestInfo().get(0).getSampleDateTime(), actual.getSampleDateTime());
+        ZonedDateTime expected = incoming.getDecodedCert().getTestInfo().get(0).getSampleDateTime().withZoneSameInstant(Constants.SWISS_TIMEZONE);
+        assertEquals(expected, actual.getSampleDateTime());
     }
 
     @Test
