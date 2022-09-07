@@ -7,7 +7,7 @@ import ch.admin.bag.covidcertificate.api.valueset.TestResult;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificateData;
-import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.ExceptionalCertificateQrCode;
 import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

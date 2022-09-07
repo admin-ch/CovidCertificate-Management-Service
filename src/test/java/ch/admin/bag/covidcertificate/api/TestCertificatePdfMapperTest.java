@@ -4,7 +4,7 @@ import ch.admin.bag.covidcertificate.api.mapper.TestCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.TestCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
 

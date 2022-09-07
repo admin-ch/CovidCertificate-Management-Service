@@ -18,7 +18,7 @@ import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.AbstractCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.AbstractCertificateQrCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

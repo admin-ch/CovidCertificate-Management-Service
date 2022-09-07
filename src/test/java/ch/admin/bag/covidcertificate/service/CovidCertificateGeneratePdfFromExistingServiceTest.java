@@ -13,11 +13,11 @@ import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationSe
 import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.RecoveryCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.TestCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;

@@ -11,6 +11,12 @@ import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequ
 import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.*;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.AntibodyCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.ExceptionalCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationTouristCertificateQrCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.flextrade.jfixture.JFixture;

@@ -4,7 +4,7 @@ import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateData;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.RecoveryCertificateQrCode;
 import ch.admin.bag.covidcertificate.util.DateHelper;
 import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.AccessLevel;

@@ -2,9 +2,8 @@ package ch.admin.bag.covidcertificate.api.mapper;
 
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
 import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.ExceptionalCertificateQrCode;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
-import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificatePdf;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

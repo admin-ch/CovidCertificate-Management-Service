@@ -1,5 +1,8 @@
-package ch.admin.bag.covidcertificate.service.domain;
+package ch.admin.bag.covidcertificate.service.domain.qrcode;
 
+import ch.admin.bag.covidcertificate.service.domain.CovidCertificatePerson;
+import ch.admin.bag.covidcertificate.service.domain.ExceptionalCertificateData;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.AbstractCertificateQrCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AccessLevel;
