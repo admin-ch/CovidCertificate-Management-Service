@@ -44,6 +44,10 @@ public class RevocationService {
 
     @Transactional
     public void createRevocation(String uvci, boolean fraud) {
+        this.createRevocationInternal(uvci, fraud);
+    }
+
+    private void createRevocationInternal(String uvci, boolean fraud) {
         try {
             if (revocationRepository.findByUvci(uvci) != null) {
                 log.info("Revocation for {} already exists.", uvci);
@@ -59,6 +63,7 @@ public class RevocationService {
         }
     }
 
+    @Transactional
     public RevocationListResponseDto performMassRevocation(RevocationListDto revocationListDto) {
         Map<String, String> uvcisToErrorMessage = getUvcisWithErrorMessage(
                 revocationListDto.getUvcis()
@@ -70,7 +75,7 @@ public class RevocationService {
             // revoke uvci if there are no error messages
             if (uvcisToErrorMessage.get(uvciForRevocation.getUvci()) == null) {
                 try {
-                    createRevocation(uvciForRevocation.getUvci(), uvciForRevocation.getFraud());
+                    createRevocationInternal(uvciForRevocation.getUvci(), uvciForRevocation.getFraud());
                     kpiLogService.logRevocationKpi(
                             KPI_REVOKE_CERTIFICATE_SYSTEM_KEY,
                             KPI_TYPE_MASS_REVOCATION_SUCCESS,
@@ -118,7 +123,7 @@ public class RevocationService {
                 .map(UvciForRevocationDto::getUvci)
                 .collect(Collectors.toList());
 
-        Map<String, String> uvcisToErrorMessage = Stream.of(
+        return Stream.of(
                         // get all possible errors for uvcis
                         getInvalidUvcis(uvcis).entrySet(),
                         getUvcisWithMissingFraudFlag(uvciForRevocationDtos).entrySet(),
@@ -134,8 +139,6 @@ public class RevocationService {
                             return left;
                         }
                 ));
-
-        return uvcisToErrorMessage;
     }
 
     private Map<String, String> getInvalidUvcis(List<String> uvciList) {
