@@ -50,7 +50,7 @@
 			**/*Dto.java
 		</sonar.cpd.exclusions>
 		<sonar.coverage.exclusions>
-			**/*Dto.java,**/config/*,**/*Exception.java,**/*Constants.java,**/*Registry.java,**/*Config.java,**/*Mock*,**/*Application.java,**/*HttpResponseHeaderFilter.java,**/*ActuatorSecurity.java,**/TestCovidCertificateGenerationService,java
+			**/*Dto.java,**/config/*,**/*Exception.java,**/*Constants.java,**/*Registry.java,**/*Config.java,**/*Mock*,**/*Application.java,**/*HttpResponseHeaderFilter.java,**/*ActuatorSecurity.java,**/*TestCovidCertificateGenerationService,java
 		</sonar.coverage.exclusions>
 
         <sonar.projectKey>admin-ch_CovidCertificate-Management-Service</sonar.projectKey>
