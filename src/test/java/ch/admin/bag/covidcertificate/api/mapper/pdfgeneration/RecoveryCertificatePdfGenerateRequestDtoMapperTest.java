@@ -2,7 +2,7 @@ package ch.admin.bag.covidcertificate.api.mapper.pdfgeneration;
 
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.RecoveryCertificatePdf;
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
 

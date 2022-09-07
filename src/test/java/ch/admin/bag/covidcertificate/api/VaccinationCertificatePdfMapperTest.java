@@ -3,7 +3,7 @@ package ch.admin.bag.covidcertificate.api;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.VaccinationCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;

@@ -5,7 +5,7 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePd
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestResult;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.TestCertificatePdf;
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
 

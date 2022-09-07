@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.service.document;
 
 import ch.admin.bag.covidcertificate.service.document.util.PdfHtmlRenderer;
-import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.AbstractCertificatePdf;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
