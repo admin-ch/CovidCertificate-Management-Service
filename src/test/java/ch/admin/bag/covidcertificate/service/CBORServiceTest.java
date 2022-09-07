@@ -142,11 +142,8 @@ class CBORServiceTest {
 
         @Test
         void throwsCBORException_ifHCertIsNotAValidCborObject() {
-            var hcert = fixture.create(byte[].class);
+            var hcert = new byte[] {38, 41, 89};
             var expiredAt = fixture.create(Instant.class);
-            // during release build this test sometimes failes as no exception is thrown
-            // this because a fixture might create a byte[] with invalid content
-            // just rerun build
             assertThrows(CBORException.class,
                     () -> cborService.getPayload(hcert, expiredAt));
         }
