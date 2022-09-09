@@ -880,7 +880,7 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         mandatory: ${roles.id.report.stats}
-        uri: "/api/v2/report/certificate/statistics/a9/full_period"
+        uri: "/api/v2/report/certificate/statistics/a9/for_timerange_by_types"
 
       report-a10:
         identifier: "report-a10"
