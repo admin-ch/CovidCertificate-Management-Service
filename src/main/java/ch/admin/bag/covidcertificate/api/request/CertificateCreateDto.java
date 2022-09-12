@@ -3,6 +3,7 @@ package ch.admin.bag.covidcertificate.api.request;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.parsing.StringNotEmptyToUppercaseElseNullDeserializer;
 import ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages;
+import ch.admin.bag.covidcertificate.util.DateHelper;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
@@ -11,11 +12,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.StringUtils;
 
-import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_DELIVERY_METHOD;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_APP_CODE;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_LANGUAGE;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_PRINT_FOR_TEST;
-import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 
 @Getter
 @ToString
@@ -76,6 +76,23 @@ public abstract class CertificateCreateDto {
 
     public boolean isDeliverablePerPost() {
         return true;
+    }
+
+    public boolean isBirthdateAfter(final LocalDate date) {
+        if (personData == null || date == null) {
+            return false;
+        }
+        final var parsedDateOfBirth = DateHelper.parseDateOfBirth(personData.getDateOfBirth());
+        return date.isBefore(parsedDateOfBirth);
+    }
+
+    public boolean isBirthdateAfter(final ZonedDateTime date) {
+        if (personData == null || date == null) {
+            return false;
+        }
+        final var parsedDateOfBirth = DateHelper.parseDateOfBirth(personData.getDateOfBirth());
+        final var swissDate = date.withZoneSameInstant(SWISS_TIMEZONE).toLocalDate();
+        return swissDate.isBefore(parsedDateOfBirth);
     }
 }
 
