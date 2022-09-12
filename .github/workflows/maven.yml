@@ -1,9 +1,11 @@
 name: Build, test and analyze
 
 on:
+  workflow_dispatch:
   push:
     branches: 
       - 'release/**'
+      - 'master'
     tags:        
       - '*.*.*'
 

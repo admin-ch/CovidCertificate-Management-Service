@@ -74,7 +74,7 @@ class CBORServiceTest {
 
         @Test
         void throwsDecoderException_ifKeyIdentifierIsNotAValidHexString() {
-            DecoderException exception = assertThrows(DecoderException.class,
+            assertThrows(DecoderException.class,
                     () -> cborService.getProtectedHeader(fixture.create(String.class)));
         }
     }
@@ -142,9 +142,9 @@ class CBORServiceTest {
 
         @Test
         void throwsCBORException_ifHCertIsNotAValidCborObject() {
-            var hcert = fixture.create(byte[].class);
+            var hcert = new byte[] {38, 41, 89};
             var expiredAt = fixture.create(Instant.class);
-            var exception = assertThrows(CBORException.class,
+            assertThrows(CBORException.class,
                     () -> cborService.getPayload(hcert, expiredAt));
         }
     }
@@ -267,7 +267,7 @@ class CBORServiceTest {
             byte[] payload = fixture.create(byte[].class);
             // when then
             IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    () -> cborService.getCOSESign1(protectedHeader, protectedHeader, signature));
+                    () -> cborService.getCOSESign1(protectedHeader, payload, signature));
             assertTrue(exception.getMessage().toLowerCase().contains("signature"));
         }
     }
