@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import java.util.List;
 
+import static ch.admin.bag.covidcertificate.api.Constants.DATE_OF_BIRTH_CERTIFICATE_DATE;
 import static ch.admin.bag.covidcertificate.api.Constants.NO_RECOVERY_DATA;
 
 @Getter
@@ -37,6 +38,10 @@ public class RecoveryCertificateCreateDto extends CertificateCreateDto {
         } else {
             recoveryInfo.forEach(
                     recoveryCertificateDataDto -> recoveryCertificateDataDto.validate(this.getSystemSource()));
+        }
+
+        if (recoveryInfo.stream().anyMatch((dto) -> isBirthdateAfter(dto.getDateOfFirstPositiveTestResult()))) {
+            throw new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE);
         }
     }
 }
