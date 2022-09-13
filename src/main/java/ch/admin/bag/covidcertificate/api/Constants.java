@@ -83,7 +83,6 @@ public class Constants {
     public static final CreateCertificateError NO_VACCINATION_DATA = new CreateCertificateError(451, "No vaccination data was specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError NO_PERSON_DATA = new CreateCertificateError(452, "No person data was specified", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_DATE_OF_BIRTH = new CreateCertificateError(453, "Invalid dateOfBirth! Must be younger than 1900-01-01", HttpStatus.BAD_REQUEST);
-    public static final CreateCertificateError DATE_OF_BIRTH_CERTIFICATE_DATE = new CreateCertificateError(453, "Invalid dateOfBirth! Must be before the certificate date", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_MEDICINAL_PRODUCT = new CreateCertificateError(454, "Invalid medicinal product", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_DOSES = new CreateCertificateError(455, "Invalid number of doses", HttpStatus.BAD_REQUEST);
     public static final CreateCertificateError INVALID_VACCINATION_DATE = new CreateCertificateError(456, "Invalid vaccination date! Date cannot be in the future", HttpStatus.BAD_REQUEST);
@@ -203,6 +202,8 @@ public class Constants {
     public static final ConvertCertificateError CREATE_CONVERTED_UVCI_FAILED = new ConvertCertificateError(1003,
                                                                                                            "Converting UVCI failed.",
                                                                                                            HttpStatus.INTERNAL_SERVER_ERROR);
+
+    public static final CreateCertificateError DATE_OF_BIRTH_CERTIFICATE_DATE = new CreateCertificateError(1004, "Invalid dateOfBirth! Must be before the certificate date", HttpStatus.BAD_REQUEST);
 
     public static final String VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX = "_T";
 
