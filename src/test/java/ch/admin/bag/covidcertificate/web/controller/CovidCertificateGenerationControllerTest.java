@@ -42,8 +42,32 @@ import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRecove
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccinationCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccinationTouristCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.*;
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateJSONWithInvalidBirthdateSampleDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateJSONWithInvalidPositiveTestResultDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getExceptionalCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getExceptionalCertificateCreateDtoJSONWithInvalidBirthdateSampleDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getExceptionalCertificateCreateDtoJSONWithInvalidSampleDateTime;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateJSONWithInvalidBirthdateSampleDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateJSONWithInvalidPositiveTestResultDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryRatCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryRatCertificateCreateJSONWithInvalidBirthdateSampleDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryRatCertificateCreateJSONWithInvalidPositiveTestResultDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDtoJSONWithInvalidBirthdateSampleDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDtoJSONWithInvalidSampleDateTime;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateJSONWithInvalidBirthdateSampleDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateJSONWithInvalidVaccinationDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateCreateDtoWithoutAddress;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateJSONWithInvalidBirthdateSampleDate;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateJSONWithInvalidVaccinationDate;
+import static ch.admin.bag.covidcertificate.api.Constants.DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_EXCEPTIONAL_VALID_FROM_DATE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TIME;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_VACCINATION_DATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -97,7 +121,7 @@ class CovidCertificateGenerationControllerTest {
     void setupMocks() {
         this.mockMvc = standaloneSetup(controller, new ResponseStatusExceptionHandler()).build();
         lenient().when(jeapAuthorization.getJeapAuthenticationToken())
-                 .thenReturn(fixture.create(JeapAuthenticationToken.class));
+                .thenReturn(fixture.create(JeapAuthenticationToken.class));
     }
 
     @Nested
@@ -115,12 +139,12 @@ class CovidCertificateGenerationControllerTest {
                     any(VaccinationCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
             MvcResult result = mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                                      .andExpect(status().isOk())
-                                      .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
 
             CovidCertificateCreateResponseDto expectedDto = mapper.readValue(
                     result.getResponse().getContentAsString(),
@@ -138,11 +162,11 @@ class CovidCertificateGenerationControllerTest {
                     any(VaccinationCertificateCreateDto.class))).thenThrow(exception);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().is(exception.getError().getHttpStatus().value()));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
 
         @Test
@@ -152,12 +176,12 @@ class CovidCertificateGenerationControllerTest {
             var errorCode = new CreateCertificateException(INVALID_VACCINATION_DATE).getError().getErrorCode();
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(JSON))
-                   .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                   .andExpect(jsonPath("$.errorCode").value(errorCode));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
 
         @Test
@@ -190,12 +214,12 @@ class CovidCertificateGenerationControllerTest {
                     any(VaccinationTouristCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
             MvcResult result = mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                                      .andExpect(status().isOk())
-                                      .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
 
             CovidCertificateCreateResponseDto expectedDto = mapper.readValue(
                     result.getResponse().getContentAsString(),
@@ -213,11 +237,11 @@ class CovidCertificateGenerationControllerTest {
                     any(VaccinationTouristCertificateCreateDto.class))).thenThrow(exception);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().is(exception.getError().getHttpStatus().value()));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
 
         @Test
@@ -227,12 +251,12 @@ class CovidCertificateGenerationControllerTest {
             var errorCode = new CreateCertificateException(INVALID_VACCINATION_DATE).getError().getErrorCode();
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(JSON))
-                   .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                   .andExpect(jsonPath("$.errorCode").value(errorCode));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
 
         @Test
@@ -262,32 +286,32 @@ class CovidCertificateGenerationControllerTest {
             customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 0);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().isBadRequest())
-                   .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
 
             customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 999);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().isBadRequest())
-                   .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
 
             customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 10000);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().isBadRequest())
-                   .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
         }
 
         @Test
@@ -296,12 +320,12 @@ class CovidCertificateGenerationControllerTest {
             customizeCovidCertificateAddressDto(fixture, createDto, "city", null);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().isBadRequest())
-                   .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
         }
 
         @Test
@@ -310,12 +334,12 @@ class CovidCertificateGenerationControllerTest {
             customizeCovidCertificateAddressDto(fixture, createDto, "streetAndNr", null);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().isBadRequest())
-                   .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
         }
     }
 
@@ -335,12 +359,12 @@ class CovidCertificateGenerationControllerTest {
                     any(TestCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
             MvcResult result = mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                                      .andExpect(status().isOk())
-                                      .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
 
             CovidCertificateCreateResponseDto expectedDto = mapper.readValue(
                     result.getResponse().getContentAsString(),
@@ -359,11 +383,11 @@ class CovidCertificateGenerationControllerTest {
                     any(TestCertificateCreateDto.class))).thenThrow(exception);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().is(exception.getError().getHttpStatus().value()));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
 
 
@@ -374,12 +398,12 @@ class CovidCertificateGenerationControllerTest {
             var errorCode = new CreateCertificateException(INVALID_SAMPLE_DATE_TIME).getError().getErrorCode();
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(JSON))
-                   .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                   .andExpect(jsonPath("$.errorCode").value(errorCode));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
 
         @Test
@@ -410,12 +434,12 @@ class CovidCertificateGenerationControllerTest {
                     any(RecoveryCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
             MvcResult result = mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                                      .andExpect(status().isOk())
-                                      .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
 
             CovidCertificateCreateResponseDto expectedDto = mapper.readValue(
                     result.getResponse().getContentAsString(),
@@ -431,11 +455,11 @@ class CovidCertificateGenerationControllerTest {
                     any(RecoveryCertificateCreateDto.class))).thenThrow(exception);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().is(exception.getError().getHttpStatus().value()));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
 
 
@@ -444,15 +468,15 @@ class CovidCertificateGenerationControllerTest {
             var JSON = getRecoveryCertificateCreateJSONWithInvalidPositiveTestResultDate();
 
             var errorCode = new CreateCertificateException(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT).getError()
-                                                                                                      .getErrorCode();
+                    .getErrorCode();
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(JSON))
-                   .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                   .andExpect(jsonPath("$.errorCode").value(errorCode));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
 
         @Test
@@ -483,12 +507,12 @@ class CovidCertificateGenerationControllerTest {
                     any(RecoveryRatCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
             MvcResult result = mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                                      .andExpect(status().isOk())
-                                      .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
 
             CovidCertificateCreateResponseDto expectedDto = mapper.readValue(
                     result.getResponse().getContentAsString(),
@@ -504,11 +528,11 @@ class CovidCertificateGenerationControllerTest {
                     any(RecoveryRatCertificateCreateDto.class))).thenThrow(exception);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().is(exception.getError().getHttpStatus().value()));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
 
 
@@ -519,12 +543,12 @@ class CovidCertificateGenerationControllerTest {
             var errorCode = new CreateCertificateException(INVALID_SAMPLE_DATE_TIME).getError().getErrorCode();
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(JSON))
-                   .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                   .andExpect(jsonPath("$.errorCode").value(errorCode));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
 
         @Test
@@ -555,12 +579,12 @@ class CovidCertificateGenerationControllerTest {
                     any(AntibodyCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
             MvcResult result = mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                                      .andExpect(status().isOk())
-                                      .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
 
             CovidCertificateCreateResponseDto expectedDto = mapper.readValue(
                     result.getResponse().getContentAsString(),
@@ -576,11 +600,11 @@ class CovidCertificateGenerationControllerTest {
                     any(AntibodyCertificateCreateDto.class))).thenThrow(exception);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().is(exception.getError().getHttpStatus().value()));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
 
 
@@ -592,12 +616,12 @@ class CovidCertificateGenerationControllerTest {
                     INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT).getError().getErrorCode();
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(JSON))
-                   .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                   .andExpect(jsonPath("$.errorCode").value(errorCode));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
 
         @Test
@@ -628,12 +652,12 @@ class CovidCertificateGenerationControllerTest {
                     any(ExceptionalCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
             MvcResult result = mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                                      .andExpect(status().isOk())
-                                      .andReturn();
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().isOk())
+                    .andReturn();
 
             CovidCertificateCreateResponseDto expectedDto = mapper.readValue(
                     result.getResponse().getContentAsString(),
@@ -649,11 +673,11 @@ class CovidCertificateGenerationControllerTest {
                     any(ExceptionalCertificateCreateDto.class))).thenThrow(exception);
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(mapper.writeValueAsString(createDto)))
-                   .andExpect(status().is(exception.getError().getHttpStatus().value()));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(mapper.writeValueAsString(createDto)))
+                    .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
 
 
@@ -665,12 +689,12 @@ class CovidCertificateGenerationControllerTest {
                     INVALID_EXCEPTIONAL_VALID_FROM_DATE).getError().getErrorCode();
 
             mockMvc.perform(
-                    post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                             .header("Authorization", fixture.create(String.class))
-                             .content(JSON))
-                   .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                   .andExpect(jsonPath("$.errorCode").value(errorCode));
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
 
         @Test

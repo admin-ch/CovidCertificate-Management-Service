@@ -15,7 +15,12 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_DELIVERY_METHOD;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_APP_CODE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_LANGUAGE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_PRINT_FOR_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 
 @Getter
 @ToString
