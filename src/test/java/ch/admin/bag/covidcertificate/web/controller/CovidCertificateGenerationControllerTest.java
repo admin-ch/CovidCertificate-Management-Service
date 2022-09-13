@@ -42,24 +42,8 @@ import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRecove
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccinationCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeVaccinationTouristCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateJSONWithInvalidPositiveTestResultDate;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getExceptionalCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getExceptionalCertificateCreateDtoJSONWithInvalidSampleDateTime;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateJSONWithInvalidPositiveTestResultDate;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryRatCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryRatCertificateCreateJSONWithInvalidPositiveTestResultDate;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDtoJSONWithInvalidSampleDateTime;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateJSONWithInvalidVaccinationDate;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateCreateDtoWithoutAddress;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateJSONWithInvalidVaccinationDate;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_EXCEPTIONAL_VALID_FROM_DATE;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TIME;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_VACCINATION_DATE;
+import static ch.admin.bag.covidcertificate.TestModelProvider.*;
+import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -175,6 +159,20 @@ class CovidCertificateGenerationControllerTest {
                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
+
+        @Test
+        void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
+            var JSON = getVaccinationCertificateJSONWithInvalidBirthdateSampleDate();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+
+            mockMvc.perform(
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
+        }
     }
 
     @Nested
@@ -235,6 +233,20 @@ class CovidCertificateGenerationControllerTest {
                              .content(JSON))
                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                    .andExpect(jsonPath("$.errorCode").value(errorCode));
+        }
+
+        @Test
+        void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
+            var JSON = getVaccinationTouristCertificateJSONWithInvalidBirthdateSampleDate();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+
+            mockMvc.perform(
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
     }
 
@@ -369,6 +381,20 @@ class CovidCertificateGenerationControllerTest {
                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
+
+        @Test
+        void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
+            var JSON = getTestCertificateCreateDtoJSONWithInvalidBirthdateSampleDate();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+
+            mockMvc.perform(
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
+        }
     }
 
     @Nested
@@ -428,6 +454,20 @@ class CovidCertificateGenerationControllerTest {
                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
+
+        @Test
+        void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
+            var JSON = getRecoveryCertificateCreateJSONWithInvalidBirthdateSampleDate();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+
+            mockMvc.perform(
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
+        }
     }
 
     @Nested
@@ -485,6 +525,20 @@ class CovidCertificateGenerationControllerTest {
                              .content(JSON))
                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                    .andExpect(jsonPath("$.errorCode").value(errorCode));
+        }
+
+        @Test
+        void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
+            var JSON = getRecoveryRatCertificateCreateJSONWithInvalidBirthdateSampleDate();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+
+            mockMvc.perform(
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
     }
 
@@ -545,6 +599,20 @@ class CovidCertificateGenerationControllerTest {
                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
+
+        @Test
+        void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
+            var JSON = getAntibodyCertificateCreateJSONWithInvalidBirthdateSampleDate();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+
+            mockMvc.perform(
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
+        }
     }
 
     @Nested
@@ -603,6 +671,20 @@ class CovidCertificateGenerationControllerTest {
                              .content(JSON))
                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                    .andExpect(jsonPath("$.errorCode").value(errorCode));
+        }
+
+        @Test
+        void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
+            var JSON = getExceptionalCertificateCreateDtoJSONWithInvalidBirthdateSampleDate();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+
+            mockMvc.perform(
+                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
+                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                    .header("Authorization", fixture.create(String.class))
+                                    .content(JSON))
+                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                    .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
     }
 }
