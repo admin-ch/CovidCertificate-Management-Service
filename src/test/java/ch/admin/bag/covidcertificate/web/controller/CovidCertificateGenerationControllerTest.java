@@ -163,7 +163,7 @@ class CovidCertificateGenerationControllerTest {
         @Test
         void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
             var JSON = getVaccinationCertificateJSONWithInvalidBirthdateSampleDate();
-            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE).getError().getErrorCode();
 
             mockMvc.perform(
                             post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
@@ -238,7 +238,7 @@ class CovidCertificateGenerationControllerTest {
         @Test
         void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
             var JSON = getVaccinationTouristCertificateJSONWithInvalidBirthdateSampleDate();
-            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE).getError().getErrorCode();
 
             mockMvc.perform(
                             post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
@@ -385,7 +385,7 @@ class CovidCertificateGenerationControllerTest {
         @Test
         void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
             var JSON = getTestCertificateCreateDtoJSONWithInvalidBirthdateSampleDate();
-            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE).getError().getErrorCode();
 
             mockMvc.perform(
                             post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
@@ -458,7 +458,7 @@ class CovidCertificateGenerationControllerTest {
         @Test
         void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
             var JSON = getRecoveryCertificateCreateJSONWithInvalidBirthdateSampleDate();
-            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE).getError().getErrorCode();
 
             mockMvc.perform(
                             post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
@@ -530,7 +530,7 @@ class CovidCertificateGenerationControllerTest {
         @Test
         void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
             var JSON = getRecoveryRatCertificateCreateJSONWithInvalidBirthdateSampleDate();
-            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE).getError().getErrorCode();
 
             mockMvc.perform(
                             post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
@@ -603,7 +603,7 @@ class CovidCertificateGenerationControllerTest {
         @Test
         void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
             var JSON = getAntibodyCertificateCreateJSONWithInvalidBirthdateSampleDate();
-            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE).getError().getErrorCode();
 
             mockMvc.perform(
                             post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
@@ -676,7 +676,7 @@ class CovidCertificateGenerationControllerTest {
         @Test
         void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
             var JSON = getExceptionalCertificateCreateDtoJSONWithInvalidBirthdateSampleDate();
-            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE).getError().getErrorCode();
+            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE).getError().getErrorCode();
 
             mockMvc.perform(
                             post(URL).accept(MediaType.APPLICATION_JSON_VALUE)

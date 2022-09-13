@@ -8,7 +8,7 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static ch.admin.bag.covidcertificate.api.Constants.DATE_OF_BIRTH_CERTIFICATE_DATE;
+import static ch.admin.bag.covidcertificate.api.Constants.DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE;
 import static ch.admin.bag.covidcertificate.api.Constants.NO_ANTIBODY_DATA;
 
 @Getter
@@ -41,7 +41,7 @@ public class AntibodyCertificateCreateDto extends CertificateCreateDto {
         }
 
         if (antibodyInfo.stream().anyMatch((dto) -> isBirthdateAfter(dto.getSampleDate()))) {
-            throw new CreateCertificateException(DATE_OF_BIRTH_CERTIFICATE_DATE);
+            throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
         }
     }
 }
