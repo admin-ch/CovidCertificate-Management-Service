@@ -111,7 +111,7 @@ public class CsvRevocationService {
 
     private File writeCsv(List<RevocationCsvBean> certificateCsvBeans, Charset charset) throws IOException {
         var tempId = UUID.randomUUID();
-        var file = new File("temp" + tempId + ".csv");
+        var file = File.createTempFile("temp"+tempId, ".csv");
         try (var csvWriter = new CSVWriter(new FileWriter(file, charset))) {
             StatefulBeanToCsv<RevocationCsvBean> beanToCsv = new StatefulBeanToCsvBuilder<RevocationCsvBean>(csvWriter)
                     .withSeparator(';')

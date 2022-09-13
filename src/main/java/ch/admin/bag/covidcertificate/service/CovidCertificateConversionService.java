@@ -6,7 +6,7 @@ import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertifica
 import ch.admin.bag.covidcertificate.api.response.ConvertedCertificateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.ConvertedCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
-import ch.admin.bag.covidcertificate.service.domain.AbstractCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.AbstractCertificateQrCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

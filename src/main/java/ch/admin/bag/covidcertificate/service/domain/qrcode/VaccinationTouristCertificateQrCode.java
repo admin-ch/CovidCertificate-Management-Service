@@ -1,5 +1,6 @@
-package ch.admin.bag.covidcertificate.service.domain;
+package ch.admin.bag.covidcertificate.service.domain.qrcode;
 
+import ch.admin.bag.covidcertificate.service.domain.CovidCertificatePerson;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AccessLevel;
@@ -14,11 +15,11 @@ import java.util.List;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class VaccinationCertificateQrCode implements AbstractCertificateQrCode {
+public class VaccinationTouristCertificateQrCode implements AbstractCertificateQrCode {
     @JsonProperty("ver")
     private String version;
     @JsonUnwrapped
     private CovidCertificatePerson personData;
     @JsonProperty("v")
-    private List<VaccinationCertificateData> vaccinationInfo;
+    private List<VaccinationTouristCertificateData> vaccinationTouristInfo;
 }

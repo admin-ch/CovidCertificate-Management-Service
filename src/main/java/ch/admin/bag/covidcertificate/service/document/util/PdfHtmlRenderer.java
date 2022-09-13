@@ -3,7 +3,7 @@ package ch.admin.bag.covidcertificate.service.document.util;
 import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.service.document.CustomMessageResolver;
-import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.util.DateHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.thymeleaf.TemplateEngine;

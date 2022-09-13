@@ -1,29 +1,17 @@
 package ch.admin.bag.covidcertificate.api;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.mapper.PersonMapper;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificatePerson;
 import com.flextrade.jfixture.JFixture;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_STANDARDISED_FAMILY_NAME;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_STANDARDISED_GIVEN_NAME;
-import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PersonMapperTest {
 
     private final JFixture jFixture = new JFixture();
-
-    private final String givenName = "GivenName";
-    private final String familyName = "FamilyName";
-    private final String dateOfBirth = jFixture.create(LocalDate.class).format(LOCAL_DATE_FORMAT);
 
     @Test
     public void mapsFamilyName() {
@@ -31,7 +19,6 @@ public class PersonMapperTest {
         CovidCertificatePerson actual = PersonMapper.toCovidCertificatePerson(incoming);
         assertEquals(incoming.getName().getFamilyName(), actual.getName().getFamilyName());
     }
-
 
     @Test
     public void mapsGivenName() {
@@ -41,43 +28,39 @@ public class PersonMapperTest {
     }
 
     @Test
+    public void mapsStandardisedWith_Az09() {
+        CovidCertificatePersonDto incoming = create("familyName", "givenName");
+        CovidCertificatePerson actual = PersonMapper.toCovidCertificatePerson(incoming);
+        assertEquals("FAMILYNAME", actual.getName().getFamilyNameStandardised());
+        assertEquals("GIVENNAME", actual.getName().getGivenNameStandardised());
+    }
+
+    @Test
+    public void mapsStandardisedWith_SpecialAz() {
+        CovidCertificatePersonDto incoming = create("åÅäÄÆæöÖøØĲĳÜüßœŒÐ", "ÐŒœßüÜåÅĳĲØøÖöæÆÄä");
+        CovidCertificatePerson actual = PersonMapper.toCovidCertificatePerson(incoming);
+        assertEquals("AAAAAEAEAEAEOEOEOEOEIJIJUEUESSOEOED", actual.getName().getFamilyNameStandardised());
+        assertEquals("DOEOESSUEUEAAAAIJIJOEOEOEOEAEAEAEAE", actual.getName().getGivenNameStandardised());
+    }
+
+    @Test
+    public void mapsStandardisedWith_NonAz09() {
+        CovidCertificatePersonDto incoming = create("f-a[m$i^l§y_N;a}m(e", "g/i|v#e&n%N~a!m\"e");
+        CovidCertificatePerson actual = PersonMapper.toCovidCertificatePerson(incoming);
+        assertEquals("F<A<M<I<LY<N<A<M<E", actual.getName().getFamilyNameStandardised());
+        assertEquals("G<I<V<E<N<N<A<M<E", actual.getName().getGivenNameStandardised());
+    }
+
+    @Test
     public void mapsDateOfBirth() {
         CovidCertificatePersonDto incoming = jFixture.create(CovidCertificatePersonDto.class);
         CovidCertificatePerson actual = PersonMapper.toCovidCertificatePerson(incoming);
         assertEquals(incoming.getDateOfBirth(), actual.getDateOfBirth());
     }
 
-    @Test
-    @Disabled("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
-            "The new version of the library we use truncates the name and thus the exception is never thrown, " +
-            "since the standardised name never exceeds the maximum.")
-    public void testInvalidStandardisedGivenName() {
-        final var personDto = new CovidCertificatePersonDto(
-                new CovidCertificatePersonNameDto(
-                        familyName,
-                        "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöüABCDEFGHIJKLMNOPQRSTUV"
-                ),
-                dateOfBirth
-        );
-        var exception = assertThrows(CreateCertificateException.class,
-                                     () -> PersonMapper.toCovidCertificatePerson(personDto));
-        assertEquals(INVALID_STANDARDISED_GIVEN_NAME, exception.getError());
-    }
-
-    @Test
-    @Disabled("This test checks that an exception is thrown if the standardised name exceeds the maximum number of characters. " +
-            "The new version of the library we use truncates the name and thus the exception is never thrown, " +
-            "since the standardised name never exceeds the maximum.")
-    public void testInvalidStandardisedFamilyName() {
-        final var personDto = new CovidCertificatePersonDto(
-                new CovidCertificatePersonNameDto(
-                        "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöüABCDEFGHIJKLMNOPQRSTUV",
-                        givenName
-                ),
-                dateOfBirth
-        );
-        var exception = assertThrows(CreateCertificateException.class,
-                                     () -> PersonMapper.toCovidCertificatePerson(personDto));
-        assertEquals(INVALID_STANDARDISED_FAMILY_NAME, exception.getError());
+    private CovidCertificatePersonDto create(String familyName, String givenName) {
+        CovidCertificatePersonNameDto personName = new CovidCertificatePersonNameDto(familyName, givenName);
+        CovidCertificatePersonDto person = new CovidCertificatePersonDto(personName, "01.01.1970");
+        return person;
     }
 }

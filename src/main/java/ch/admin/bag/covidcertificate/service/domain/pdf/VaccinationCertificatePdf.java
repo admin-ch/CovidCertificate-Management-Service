@@ -1,4 +1,4 @@
-package ch.admin.bag.covidcertificate.service.domain;
+package ch.admin.bag.covidcertificate.service.domain.pdf;
 
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import lombok.EqualsAndHashCode;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
+public class VaccinationCertificatePdf extends AbstractCertificatePdf {
     private final String diseaseOrAgentTargetedCode;
     private final String diseaseOrAgentTargetedSystem;
     private final String vaccineProphylaxis;
@@ -24,7 +24,7 @@ public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
 
     private final String issuer;
 
-    public VaccinationTouristCertificatePdf(
+    public VaccinationCertificatePdf(
             String familyName,
             String givenName,
             String dateOfBirth,
@@ -42,7 +42,7 @@ public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
             String issuer,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language, CertificateType.VACCINATION_TOURIST);
+        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.VACCINATION);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
         this.vaccineProphylaxis = vaccineProphylaxis;
@@ -61,8 +61,4 @@ public class VaccinationTouristCertificatePdf extends AbstractCertificatePdf {
         return this.numberOfDoses < this.totalNumberOfDoses;
     }
 
-    @Override
-    public boolean showValidOnlyInSwitzerland() {
-        return true;
-    }
 }
