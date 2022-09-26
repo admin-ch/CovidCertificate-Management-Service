@@ -1,12 +1,12 @@
 package ch.admin.bag.covidcertificate.service.document;
 
 import ch.admin.bag.covidcertificate.service.document.util.PdfHtmlRenderer;
-import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.AbstractCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.AntibodyCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.RecoveryCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.TestCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.VaccinationTouristCertificatePdf;
 import com.flextrade.jfixture.JFixture;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.junit.jupiter.api.BeforeEach;

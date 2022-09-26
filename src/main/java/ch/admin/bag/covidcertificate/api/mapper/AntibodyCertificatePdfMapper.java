@@ -2,8 +2,8 @@ package ch.admin.bag.covidcertificate.api.mapper;
 
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
-import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificatePdf;
-import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.pdf.AntibodyCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.AntibodyCertificateQrCode;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

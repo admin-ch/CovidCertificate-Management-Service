@@ -3,7 +3,7 @@ package ch.admin.bag.covidcertificate.api.mapper.pdfgeneration;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.VaccinationCertificatePdf;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

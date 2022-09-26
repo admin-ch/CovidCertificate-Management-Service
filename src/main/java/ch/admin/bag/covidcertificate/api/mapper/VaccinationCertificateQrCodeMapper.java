@@ -6,8 +6,8 @@ import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertifica
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificateHcertDecodedDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateData;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationCertificateData;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationCertificateQrCode;
 import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

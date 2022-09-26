@@ -5,8 +5,8 @@ import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCr
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificateData;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationTouristCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationTouristCertificateData;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationTouristCertificateQrCode;
 import ch.admin.bag.covidcertificate.util.UVCI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

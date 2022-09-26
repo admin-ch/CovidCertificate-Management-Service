@@ -3,7 +3,7 @@ package ch.admin.bag.covidcertificate.api;
 import ch.admin.bag.covidcertificate.api.mapper.AntibodyCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
-import ch.admin.bag.covidcertificate.service.domain.AntibodyCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.AntibodyCertificateQrCode;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

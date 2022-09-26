@@ -1,4 +1,4 @@
-package ch.admin.bag.covidcertificate.service.domain;
+package ch.admin.bag.covidcertificate.service.domain.pdf;
 
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import lombok.EqualsAndHashCode;
@@ -10,40 +10,42 @@ import java.time.LocalDate;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class AntibodyCertificatePdf extends AbstractCertificatePdf {
+public class RecoveryCertificatePdf extends AbstractCertificatePdf {
     private final String diseaseOrAgentTargetedCode;
     private final String diseaseOrAgentTargetedSystem;
-    private final LocalDate sampleDate;
-    private final String testingCentreOrFacility;
+    private final LocalDate dateOfFirstPositiveTestResult;
     private final String countryOfTest;
     private final String countryOfTestEn;
 
     private final String issuer;
+    private final LocalDate validFrom;
+    private final LocalDate validUntil;
 
-    public AntibodyCertificatePdf(
+    public RecoveryCertificatePdf(
             String familyName,
             String givenName,
             String dateOfBirth,
             String language,
             String diseaseOrAgentTargetedCode,
             String diseaseOrAgentTargetedSystem,
-            LocalDate sampleDate,
-            String testingCentreOrFacility,
+            LocalDate dateOfFirstPositiveTestResult,
             String countryOfTest,
             String countryOfTestEn,
             String issuer,
+            LocalDate validFrom,
+            LocalDate validUntil,
             String identifier
     ) {
-        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.ANTIBODY);
+        super(familyName, givenName, dateOfBirth, identifier, language,  CertificateType.RECOVERY);
         this.diseaseOrAgentTargetedCode = diseaseOrAgentTargetedCode;
         this.diseaseOrAgentTargetedSystem = diseaseOrAgentTargetedSystem;
-        this.sampleDate = sampleDate;
-        this.testingCentreOrFacility = testingCentreOrFacility;
+        this.dateOfFirstPositiveTestResult = dateOfFirstPositiveTestResult;
         this.countryOfTest = countryOfTest;
         this.countryOfTestEn = countryOfTestEn;
         this.issuer = issuer;
+        this.validFrom = validFrom;
+        this.validUntil = validUntil;
     }
 
 
-    public boolean showValidOnlyInSwitzerland() { return true; }
 }

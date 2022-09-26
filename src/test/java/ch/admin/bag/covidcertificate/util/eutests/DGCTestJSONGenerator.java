@@ -1,8 +1,8 @@
 package ch.admin.bag.covidcertificate.util.eutests;
 
-import ch.admin.bag.covidcertificate.service.domain.RecoveryCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.TestCertificateQrCode;
-import ch.admin.bag.covidcertificate.service.domain.VaccinationCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.RecoveryCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.TestCertificateQrCode;
+import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationCertificateQrCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.zxing.*;
@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Clock;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.Objects;
 import java.util.zip.ZipException;
 

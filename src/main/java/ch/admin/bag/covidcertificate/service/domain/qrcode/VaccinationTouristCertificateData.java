@@ -1,7 +1,11 @@
-package ch.admin.bag.covidcertificate.service.domain;
+package ch.admin.bag.covidcertificate.service.domain.qrcode;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
@@ -9,7 +13,7 @@ import java.time.LocalDate;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class VaccinationCertificateData {
+public class VaccinationTouristCertificateData {
     @JsonProperty("tg")
     private String diseaseOrAgentTargeted;
     @JsonProperty("vp")

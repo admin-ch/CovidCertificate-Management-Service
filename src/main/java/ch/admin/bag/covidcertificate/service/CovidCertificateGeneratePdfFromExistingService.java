@@ -11,7 +11,7 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouris
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
-import ch.admin.bag.covidcertificate.service.domain.AbstractCertificatePdf;
+import ch.admin.bag.covidcertificate.service.domain.pdf.AbstractCertificatePdf;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
