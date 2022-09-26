@@ -203,6 +203,8 @@ public class Constants {
                                                                                                            "Converting UVCI failed.",
                                                                                                            HttpStatus.INTERNAL_SERVER_ERROR);
 
+    public static final CreateCertificateError DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE = new CreateCertificateError(1004, "Invalid dateOfBirth! Must be before the certificate date", HttpStatus.BAD_REQUEST);
+
     public static final String VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX = "_T";
 
     public static final Integer EXPIRATION_PERIOD_24_MONTHS = 24;
