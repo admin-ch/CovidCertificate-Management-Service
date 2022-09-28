@@ -40,7 +40,7 @@ public class RecoveryCertificateCreateDto extends CertificateCreateDto {
                     recoveryCertificateDataDto -> recoveryCertificateDataDto.validate(this.getSystemSource()));
         }
 
-        if (recoveryInfo.stream().anyMatch((dto) -> isBirthdateAfter(dto.getDateOfFirstPositiveTestResult()))) {
+        if (recoveryInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getDateOfFirstPositiveTestResult()))) {
             throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
         }
     }

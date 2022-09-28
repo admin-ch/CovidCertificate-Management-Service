@@ -40,14 +40,13 @@ public class TestCertificateCreateDto extends CertificateCreateDto {
             testInfo.forEach(TestCertificateDataDto::validate);
         }
 
-        if (testInfo.stream().anyMatch((dto) -> isBirthdateAfter(dto.getSampleDateTime()))) {
+        if (testInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getSampleDateTime()))) {
             throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
         }
     }
 
     @Override
-    public boolean isDeliverablePerPost()
-    {
+    public boolean isDeliverablePerPost() {
         return false;
     }
 }
