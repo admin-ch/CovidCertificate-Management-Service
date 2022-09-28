@@ -40,7 +40,7 @@ public class AntibodyCertificateCreateDto extends CertificateCreateDto {
                     antibodyCertificateDataDto -> antibodyCertificateDataDto.validate(this.getSystemSource()));
         }
 
-        if (antibodyInfo.stream().anyMatch((dto) -> isBirthdateAfter(dto.getSampleDate()))) {
+        if (antibodyInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getSampleDate()))) {
             throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
         }
     }

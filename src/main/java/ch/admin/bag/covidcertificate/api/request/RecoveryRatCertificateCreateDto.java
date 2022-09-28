@@ -40,7 +40,7 @@ public class RecoveryRatCertificateCreateDto extends CertificateCreateDto {
             testInfo.forEach(RecoveryRatCertificateDataDto::validate);
         }
 
-        if (testInfo.stream().anyMatch((dto) -> isBirthdateAfter(dto.getSampleDateTime()))) {
+        if (testInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getSampleDateTime()))) {
             throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
         }
     }

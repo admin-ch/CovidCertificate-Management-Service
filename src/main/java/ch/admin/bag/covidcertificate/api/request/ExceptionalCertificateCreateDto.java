@@ -33,14 +33,14 @@ public class ExceptionalCertificateCreateDto extends CertificateCreateDto {
     @Override
     public void validate() {
         super.validate();
-        if ( exceptionalInfo == null || exceptionalInfo.isEmpty()) {
+        if (exceptionalInfo == null || exceptionalInfo.isEmpty()) {
             throw new CreateCertificateException(NO_EXCEPTIONAL_INFO);
         } else {
             exceptionalInfo.forEach(
                     ExceptionalCertificateDataDto -> ExceptionalCertificateDataDto.validate(this.getSystemSource()));
         }
 
-        if (exceptionalInfo.stream().anyMatch((dto) -> isBirthdateAfter(dto.getValidFrom()))) {
+        if (exceptionalInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getValidFrom()))) {
             throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
         }
     }

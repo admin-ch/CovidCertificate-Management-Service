@@ -39,7 +39,7 @@ public class VaccinationCertificateCreateDto extends CertificateCreateDto {
             vaccinationInfo.forEach(VaccinationCertificateDataDto::validate);
         }
 
-        if (vaccinationInfo.stream().anyMatch((dto) -> isBirthdateAfter(dto.getVaccinationDate()))) {
+        if (vaccinationInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getVaccinationDate()))) {
             throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
         }
     }
