@@ -98,7 +98,7 @@ class RevocationServiceTest {
         @Test
         void givenNoRevocationInDB_whenGetRevocations_thenReturnEmptyList() {
             // given
-            when(revocationRepository.findAllUvcis()).thenReturn(List.of());
+            when(revocationRepository.findNotDeletedUvcis()).thenReturn(List.of());
             // when
             List<String> result = revocationService.getRevocations();
             // then
@@ -109,7 +109,7 @@ class RevocationServiceTest {
         void givenRevocationsInDB_whenGetRevocations_thenReturnRevocations() {
             // given
             String uvci = jFixture.create(String.class);
-            when(revocationRepository.findAllUvcis()).thenReturn(List.of(uvci));
+            when(revocationRepository.findNotDeletedUvcis()).thenReturn(List.of(uvci));
             // when
             List<String> result = revocationService.getRevocations();
             // then
@@ -120,7 +120,7 @@ class RevocationServiceTest {
         void givenExceptionIsThrown_whenGetRevocations_thenThrowsException() {
             // given
             RuntimeException exception = jFixture.create(RuntimeException.class);
-            when(revocationRepository.findAllUvcis()).thenThrow(exception);
+            when(revocationRepository.findNotDeletedUvcis()).thenThrow(exception);
             // when then
             Exception result = assertThrows(Exception.class, () -> revocationService.getRevocations());
             assertEquals(exception, result);

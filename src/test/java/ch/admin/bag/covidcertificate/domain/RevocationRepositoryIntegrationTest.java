@@ -13,7 +13,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(properties = {
         "spring.jpa.hibernate.ddl-auto=create",
@@ -57,7 +59,7 @@ class RevocationRepositoryIntegrationTest {
     @Transactional
     void givenNoRevocationInDB_whenFindAllUvcis_thenReturnEmptyList() {
         // given when
-        List<String> result = revocationRepository.findAllUvcis();
+        List<String> result = revocationRepository.findNotDeletedUvcis();
         // then
         assertTrue(result.isEmpty());
     }
@@ -70,14 +72,14 @@ class RevocationRepositoryIntegrationTest {
         persistRevocation(uvci);
         persistRevocation("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53F");
         // when
-        List<String> result = revocationRepository.findAllUvcis();
+        List<String> result = revocationRepository.findNotDeletedUvcis();
         // then
         assertEquals(2, result.size());
         assertTrue(result.contains(uvci));
     }
 
     private void persistRevocation(String uvci) {
-        Revocation revocation = new Revocation(uvci, false);
+        Revocation revocation = new Revocation(uvci, false, null);
         entityManager.persist(revocation);
     }
 }
