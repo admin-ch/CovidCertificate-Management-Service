@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +27,8 @@ import java.util.List;
         "spring.datasource.password=sa",
         "spring.flyway.clean-on-validation-error=true"
 })
-@ActiveProfiles({"local"})
+@ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
+@MockBean(InMemoryClientRegistrationRepository.class)
 public class DeletionMarkerServiceIntegrationTest {
 
     @Autowired
