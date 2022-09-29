@@ -51,6 +51,8 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class KpiDataService {
 
     public static final String SERVICE_ACCOUNT_CC_API_GATEWAY_SERVICE = "service-account-cc-api-gateway-service";
+
+    public static final String CRON_ACCOUNT_CC_MANAGEMENT_SERVICE = "cron-account-cc-management-service";
     public static final String DETAILS_RAPID = "rapid";
     public static final String DETAILS_MEDICAL_EXCEPTION = "medical exception";
     public static final String DETAILS_ANTIBODY = "antibody";
@@ -331,6 +333,21 @@ public class KpiDataService {
                  kv(systemKey, systemSource.category));
         saveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, relevantUserExtId, systemSource.category)
+                        .withUvci(uvci)
+                        .build()
+        );
+    }
+
+    public void logRevocationListReductionKpiWithoutSecurityContext(
+            String systemKey, String kpiType, String uvci, SystemSource systemSource, String userExtId) {
+        LocalDateTime kpiTimestamp = LocalDateTime.now();
+        log.info("kpi: {} {} {} {}",
+                kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                kv(KPI_TYPE_KEY, kpiType),
+                kv(KPI_UUID_KEY, userExtId),
+                kv(systemKey, systemSource.category));
+        saveKpiData(
+                new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, userExtId, systemSource.category)
                         .withUvci(uvci)
                         .build()
         );

@@ -38,6 +38,8 @@ public class Constants {
     public static final String KPI_CREATE_CERTIFICATE_SYSTEM_KEY = "cc";
     public static final String KPI_REVOKE_CERTIFICATE_SYSTEM_KEY = "re";
     public static final String KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY = "mre";
+
+    public static final String KPI_REVOCATION_LIST_REDUCTION_SYSTEM_KEY = "re-d";
     public static final String KPI_OTP_SYSTEM_KEY = "otp";
 
     // KPI Type Logs constants
@@ -49,6 +51,8 @@ public class Constants {
     public static final String KPI_TYPE_ANTIBODY = "a";
     public static final String KPI_TYPE_EXCEPTIONAL = "me";
     public static final String KPI_TYPE_REVOCATION = KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
+
+    public static final String KPI_TYPE_REVOCATION_LIST_REDUCTION = KPI_REVOCATION_LIST_REDUCTION_SYSTEM_KEY;
     public static final String KPI_TYPE_IN_APP_DELIVERY = "ad";
     public static final String KPI_TYPE_MASS_REVOCATION_SUCCESS = "mre-s";
     public static final String KPI_TYPE_MASS_REVOCATION_FAILURE = "mre-f";

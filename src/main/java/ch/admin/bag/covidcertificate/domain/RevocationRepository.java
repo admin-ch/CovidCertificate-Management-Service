@@ -14,10 +14,11 @@ public interface RevocationRepository extends JpaRepository<Revocation, UUID> {
     Revocation findByUvci(String uvci);
 
     @Query("SELECT r.uvci FROM Revocation r WHERE r.deletedDateTime IS NULL")
-    List<String> findAllUvcis();
+    List<String> findNotDeletedUvcis();
 
-    @Query(value = "SELECT * FROM revocation r WHERE r.fraud = false AND r.creation_date_time < :latestValidDate AND " +
-            "EXISTS (SELECT * FROM kpi WHERE type = 't' AND uvci = r.uvci) ORDER BY r.creation_date_time ASC LIMIT :batchSize", nativeQuery = true)
+    @Query(value = "SELECT * FROM revocation r WHERE r.fraud = false AND r.deleted_date_time IS NULL AND " +
+            "EXISTS (SELECT * FROM kpi k WHERE k.type = 't' AND k.uvci = r.uvci AND k.timestamp < :latestValidDate) " +
+            "ORDER BY r.creation_date_time ASC LIMIT :batchSize", nativeQuery = true)
     List<Revocation> findDeletableUvcis(@Param("latestValidDate") LocalDateTime latestValidDate, @Param("batchSize") int batchSize);
 
 }

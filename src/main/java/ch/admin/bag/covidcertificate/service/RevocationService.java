@@ -205,7 +205,7 @@ public class RevocationService {
     @Transactional(readOnly = true)
     public List<String> getRevocations() {
         try {
-            return revocationRepository.findAllUvcis();
+            return revocationRepository.findNotDeletedUvcis();
         } catch (Exception e) {
             log.error("Get revocations failed.", e);
             throw e;
