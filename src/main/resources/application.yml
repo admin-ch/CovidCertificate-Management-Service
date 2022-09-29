@@ -126,7 +126,7 @@ cc-management-service:
     cron: "0 0 03 * * *" ## At 03:00 AM
   update-deleted-marker:
     cron: "0 0 3 * * ?" ## Once at 3 o'clock in the morning
-    batch-size: 1000
+    batch-size: 10000
     days-protected: 30
   pdf:
     show-watermark: true
