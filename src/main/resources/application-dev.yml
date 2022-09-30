@@ -37,6 +37,8 @@ cc-management-service:
   allowed-origin: "https://www.covidcertificate-d.admin.ch"
   rapid-test-import:
     cron: "0 0 */1 * * ?" ## Every hour
+  update-deleted-marker:
+    cron: "0 0 */1 * * ?" ## Every hour
 
   truststore:
     password: ${vcap.services.cc_trust_store.credentials.password}
