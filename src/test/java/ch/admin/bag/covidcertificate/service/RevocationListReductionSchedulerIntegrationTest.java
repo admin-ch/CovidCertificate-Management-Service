@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +28,13 @@ import java.util.List;
         "spring.datasource.password=sa",
         "spring.flyway.clean-on-validation-error=true"
 })
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
-public class DeletionMarkerServiceIntegrationTest {
+public class RevocationListReductionSchedulerIntegrationTest {
 
     @Autowired
-    DeletionMarkerService deletionMarkerService;
+    RevocationListReductionScheduler revocationListReductionScheduler;
 
     @Autowired
     RevocationService revocationService;
@@ -71,7 +73,7 @@ public class DeletionMarkerServiceIntegrationTest {
         // create creation KPI and prepare revocation
         createCreationKpiDataAndPrepareRevocation();
         // call deletion batch job on service level
-        this.deletionMarkerService.updateDeletedMarker();
+        this.revocationListReductionScheduler.updateDeletedMarker();
         // get list of revoked UVCIs
         List<String> listedUvcis = this.revocationService.getRevocations();
         // check this list against prepared test data
