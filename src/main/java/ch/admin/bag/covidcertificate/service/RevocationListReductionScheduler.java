@@ -39,7 +39,7 @@ public class RevocationListReductionScheduler {
     @Scheduled(cron = "${cc-management-service.update-deleted-marker.cron}")
     public void updateDeletedMarker() {
         final var jobDateTime = LocalDateTime.now();
-        log.info("Starting reduction of revocation list, updating deleted marker at {}",
+        log.info("Starting reduction of list with revocations at {}",
                 jobDateTime.format(DateTimeFormatter.ISO_DATE_TIME));
 
         LocalDate deleteDay = LocalDate.now();
@@ -48,10 +48,13 @@ public class RevocationListReductionScheduler {
         LocalDateTime latestValidDate = LocalDateTime.of(deleteDay.minusDays(daysProtected), LocalTime.MIDNIGHT);
 
         List<Revocation> deletableUvcis = revocationRepository.findDeletableUvcis(latestValidDate, batchSize);
+        log.info("Identified {} revocations to be marked as deleted", deletableUvcis.size());
+        int markedCounter = 0;
         for (Revocation revocation : deletableUvcis) {
             revocation.setDeletedDateTime(deleteDate);
             try {
                 revocationRepository.save(revocation);
+                markedCounter++;
                 kpiDataService.logRevocationListReductionKpiWithoutSecurityContext(
                         KPI_REVOCATION_LIST_REDUCTION_SYSTEM_KEY,
                         KPI_TYPE_REVOCATION_LIST_REDUCTION,
@@ -60,9 +63,9 @@ public class RevocationListReductionScheduler {
                         CRON_ACCOUNT_CC_MANAGEMENT_SERVICE);
             } catch (Exception ex) {
                 // keep rolling but log the issue
-                log.error("Exception updating deleted marker", ex);
+                log.error("Exception updating revocations with deleted marker", ex);
             }
         }
-        log.info("Ending update deleted marker");
+        log.info("Ending update of {} revocations marked as deleted", markedCounter);
     }
 }
