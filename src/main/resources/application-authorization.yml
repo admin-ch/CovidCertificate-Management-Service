@@ -54,10 +54,12 @@ roles:
       dr-armee: "DR_Armee"
       dr-bv-intern: "DR_BV-Intern"
       dr-ggg: "DR_GGG"
+    bi:
+      data-access: "BI_DATA_ACCESS"
 
   groups:
     any:
-      ${roles.id.legacy.super-user},${roles.id.legacy.creator},${roles.id.user.api},${roles.id.user.web},${roles.id.user.revocator},${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat},${roles.id.cert.exception},${roles.id.report.detail},${roles.id.report.agg},${roles.id.report.stats},${roles.id.cert.bulk},${roles.id.app.manager}}
+      ${roles.id.legacy.super-user},${roles.id.legacy.creator},${roles.id.user.api},${roles.id.user.web},${roles.id.user.revocator},${roles.id.cert.vacc},${roles.id.cert.tourist},${roles.id.cert.test},${roles.id.cert.antibody},${roles.id.cert.recovery},${roles.id.cert.rat},${roles.id.cert.exception},${roles.id.report.detail},${roles.id.report.agg},${roles.id.report.stats},${roles.id.cert.bulk},${roles.id.app.manager},${roles.id.bi.data-access}}
     legacy:
       ${roles.id.legacy.super-user},${roles.id.legacy.creator}
     users:
@@ -207,6 +209,9 @@ roles:
     - intern: ${roles.id.dataroom.dr-zh}
       eiam: "9500.GGG-Covidcertificate.DR_ZH"
       claim: "bag-cc-dr_zh"
+    - intern: ${roles.id.bi.data-access}
+      eiam: "9500.GGG-Covidcertificate.BI_DATA_ACCESS"
+      claim: "bag-cc-bi-data-access"
 
 # 1st level:  SERVICE
 #   2nd level:  FUNCTION
@@ -786,9 +791,15 @@ services:
         identifier: "clear-caches"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.legacy.super-user}
+        one-of: ${roles.id.app.manager}
         uri: "/api/v1/caches/clear"
 
+      bi-data-access:
+        identifier: "bi-data-access"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.bi.data-access}
+        uri: "/api/v1/bi-data/{fromDate}/{toDate}"
 
   ##   R E P O R T   ##############################################################################
 
@@ -830,77 +841,77 @@ services:
         identifier: "report-a2"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.detail}
+        one-of: ${roles.id.report.detail}
         uri: "/api/v2/report/fraud/a2/by_uvci"
 
       report-a3:
         identifier: "report-a3"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         uri: "/api/v2/report/fraud/a3/for_timerange_by_users"
 
       report-a4:
         identifier: "report-a4"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.detail}
+        one-of: ${roles.id.report.detail}
         uri: "/api/v2/report/fraud/a4/by_users_and_types"
 
       report-a5:
         identifier: "report-a5"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         uri: "/api/v2/report/fraud/a5/(Aggregated Rep, URL TBD)" #TODO
 
       report-a6:
         identifier: "report-a6"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.detail}
+        one-of: ${roles.id.report.detail}
         uri: "/api/v2/report/fraud/a6/(Detail Rep, URL TBD)" #TODO
 
       report-a7:
         identifier: "report-a7"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         uri: "/api/v2/report/fraud/a7"
 
       report-a8:
         identifier: "report-a8"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.stats}
+        one-of: ${roles.id.report.stats}
         uri: "/api/v2/report/certificate/statistics/a8/for_timerange_by_week"
 
       report-a9:
         identifier: "report-a9"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.stats}
+        one-of: ${roles.id.report.stats}
         uri: "/api/v2/report/certificate/statistics/a9/for_timerange_by_types"
 
       report-a10:
         identifier: "report-a10"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         uri: "/api/v2/report/fraud/a10/for_timerange_by_types"
 
       report-a11:
         identifier: "report-a11"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         uri: "/api/v2/report/fraud/a11/for_timerange_by_canton"
 
       report-a12:
         identifier: "report-a12"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
-        mandatory: ${roles.id.report.agg}
+        one-of: ${roles.id.report.agg}
         uri: "/api/v2/report/fraud/a12/for_transfer_codes"
 
   ##   N O T I F I C A T I O N S   ##############################################################################
@@ -922,3 +933,4 @@ services:
         one-of: ${roles.id.app.manager}
         uri: "/api/v1/notifications"
         http: POST, DELETE
+
