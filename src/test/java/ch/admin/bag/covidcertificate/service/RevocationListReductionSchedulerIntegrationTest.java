@@ -73,7 +73,7 @@ public class RevocationListReductionSchedulerIntegrationTest {
         // create creation KPI and prepare revocation
         createCreationKpiDataAndPrepareRevocation();
         // call deletion batch job on service level
-        this.revocationListReductionScheduler.updateDeletedMarker();
+        this.revocationListReductionScheduler.detectRevocationsToBeMarkedAsDeleted();
         // get list of revoked UVCIs
         List<String> listedUvcis = this.revocationService.getRevocations();
         // check this list against prepared test data
@@ -83,8 +83,6 @@ public class RevocationListReductionSchedulerIntegrationTest {
 
     /**
      * Method to create 3 vaccine KPI and 3 test KPI and prepare 4 of them for revocation.
-     *
-     * @return a list of 4 KPI to be revoked.
      */
     private void createCreationKpiDataAndPrepareRevocation() {
         String uvci = this.persistVaccineCreationKpi();
