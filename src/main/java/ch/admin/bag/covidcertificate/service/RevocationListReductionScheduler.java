@@ -1,8 +1,5 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.api.request.SystemSource;
-import ch.admin.bag.covidcertificate.domain.Revocation;
-import ch.admin.bag.covidcertificate.domain.RevocationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_REVOCATION_LIST_REDUCTION_SYSTEM_KEY;
-import static ch.admin.bag.covidcertificate.api.Constants.KPI_TYPE_REVOCATION_LIST_REDUCTION;
-import static ch.admin.bag.covidcertificate.service.KpiDataService.CRON_ACCOUNT_CC_MANAGEMENT_SERVICE;
 
 @Component
 @RequiredArgsConstructor
@@ -27,17 +19,24 @@ import static ch.admin.bag.covidcertificate.service.KpiDataService.CRON_ACCOUNT_
 @ConditionalOnProperty(value = "CF_INSTANCE_INDEX", havingValue = "0")
 public class RevocationListReductionScheduler {
 
-    private final RevocationRepository revocationRepository;
-    private final KpiDataService kpiDataService;
+    private final RevocationListReductionService revocationListReductionService;
 
     @Value("${cc-management-service.update-deleted-marker.batch-size}")
     private int batchSize;
     @Value("${cc-management-service.update-deleted-marker.days-protected}")
     private int daysProtected;
 
-    @Transactional
+    /**
+     * Method scheduled with Shedlock to detect revocations to be taken from the list of all revocations as the
+     * underlying covid certificates are no longer valid.
+     * To do so those revocations are marked as deleted. The covid certificate still is shown as invalid as the
+     * valid to date is in the past.
+     * Important is, that we don't touch revocations that got marked as fraud as those need to be 100% revoked
+     * and not only invalid.
+     */
     @Scheduled(cron = "${cc-management-service.update-deleted-marker.cron}")
-    public void updateDeletedMarker() {
+    @Transactional
+    public void detectRevocationsToBeMarkedAsDeleted() {
         final var jobDateTime = LocalDateTime.now();
         log.info("Starting reduction of list with revocations at {}",
                 jobDateTime.format(DateTimeFormatter.ISO_DATE_TIME));
@@ -46,26 +45,13 @@ public class RevocationListReductionScheduler {
         LocalTime deleteTime = LocalTime.now();
         LocalDateTime deleteDate = LocalDateTime.of(deleteDay, deleteTime);
         LocalDateTime latestValidDate = LocalDateTime.of(deleteDay.minusDays(daysProtected), LocalTime.MIDNIGHT);
-
-        List<Revocation> deletableUvcis = revocationRepository.findDeletableUvcis(latestValidDate, batchSize);
-        log.info("Identified {} revocations to be marked as deleted", deletableUvcis.size());
-        int markedCounter = 0;
-        for (Revocation revocation : deletableUvcis) {
-            revocation.setDeletedDateTime(deleteDate);
-            try {
-                revocationRepository.save(revocation);
-                markedCounter++;
-                kpiDataService.logRevocationListReductionKpiWithoutSecurityContext(
-                        KPI_REVOCATION_LIST_REDUCTION_SYSTEM_KEY,
-                        KPI_TYPE_REVOCATION_LIST_REDUCTION,
-                        revocation.getUvci(),
-                        SystemSource.RevocationListReduction,
-                        CRON_ACCOUNT_CC_MANAGEMENT_SERVICE);
-            } catch (Exception ex) {
-                // keep rolling but log the issue
-                log.error("Exception updating revocations with deleted marker", ex);
+        for (int repeat = 0; repeat < 10; repeat++) {
+            log.info("Portion {} of {} each revocations to be marked as deleted", repeat, batchSize);
+            boolean toBeContinued = this.revocationListReductionService.updateDeletedMarker(
+                    latestValidDate, deleteDate, batchSize);
+            if(toBeContinued == false) {
+                break;
             }
         }
-        log.info("Ending update of {} revocations marked as deleted", markedCounter);
     }
 }
