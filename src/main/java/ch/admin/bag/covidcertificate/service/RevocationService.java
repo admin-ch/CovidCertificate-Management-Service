@@ -53,7 +53,7 @@ public class RevocationService {
                 log.info("Revocation for {} already exists.", uvci);
                 throw new RevocationException(DUPLICATE_UVCI);
             }
-            revocationRepository.saveAndFlush(RevocationMapper.toRevocation(uvci, fraud));
+            revocationRepository.saveAndFlush(RevocationMapper.toRevocation(uvci, fraud, null));
             log.info("Revocation for {} and fraud {} created.", uvci, fraud);
         } catch (RevocationException e) {
             throw e;
@@ -205,7 +205,7 @@ public class RevocationService {
     @Transactional(readOnly = true)
     public List<String> getRevocations() {
         try {
-            return revocationRepository.findAllUvcis();
+            return revocationRepository.findNotDeletedUvcis();
         } catch (Exception e) {
             log.error("Get revocations failed.", e);
             throw e;

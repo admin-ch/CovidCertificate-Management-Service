@@ -37,7 +37,9 @@ cc-management-service:
       password: "{noop}secret"
   allowed-origin: "*"
   rapid-test-import:
-    cron: "0 * * * * *" ## Every minute
+    cron: "-" ## Don't ever
+  update-deleted-marker:
+    cron: "-" ## Don't ever
 
   # truststore password is not set locally since we don't need it
   truststore:

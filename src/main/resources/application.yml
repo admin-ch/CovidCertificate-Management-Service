@@ -124,6 +124,10 @@ cc-management-service:
       secure: false
   rapid-test-import:
     cron: "0 0 03 * * *" ## At 03:00 AM
+  update-deleted-marker:
+    cron: "0 0 03 * * *" ## At 03:00 AM
+    batch-size: 10000
+    days-protected: 30
   pdf:
     show-watermark: true
   feature-toggle:

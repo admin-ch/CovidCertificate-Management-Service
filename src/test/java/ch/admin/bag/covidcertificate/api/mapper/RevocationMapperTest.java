@@ -17,7 +17,7 @@ class RevocationMapperTest {
         //given
         String uvci = fixture.create(String.class);
         // when
-        Revocation result = RevocationMapper.toRevocation(uvci, fixture.create(Boolean.class));
+        Revocation result = RevocationMapper.toRevocation(uvci, fixture.create(Boolean.class), null);
         // then
         assertEquals(uvci, result.getUvci());
     }

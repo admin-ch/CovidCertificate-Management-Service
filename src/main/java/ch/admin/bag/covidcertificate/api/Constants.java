@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.AuthorizationError;
+import ch.admin.bag.covidcertificate.api.exception.BiDataError;
 import ch.admin.bag.covidcertificate.api.exception.ConvertCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CsvError;
@@ -38,6 +39,8 @@ public class Constants {
     public static final String KPI_CREATE_CERTIFICATE_SYSTEM_KEY = "cc";
     public static final String KPI_REVOKE_CERTIFICATE_SYSTEM_KEY = "re";
     public static final String KPI_MASS_REVOKE_CERTIFICATE_SYSTEM_KEY = "mre";
+
+    public static final String KPI_REVOCATION_LIST_REDUCTION_SYSTEM_KEY = "re-d";
     public static final String KPI_OTP_SYSTEM_KEY = "otp";
 
     // KPI Type Logs constants
@@ -49,6 +52,8 @@ public class Constants {
     public static final String KPI_TYPE_ANTIBODY = "a";
     public static final String KPI_TYPE_EXCEPTIONAL = "me";
     public static final String KPI_TYPE_REVOCATION = KPI_REVOKE_CERTIFICATE_SYSTEM_KEY;
+
+    public static final String KPI_TYPE_REVOCATION_LIST_REDUCTION = KPI_REVOCATION_LIST_REDUCTION_SYSTEM_KEY;
     public static final String KPI_TYPE_IN_APP_DELIVERY = "ad";
     public static final String KPI_TYPE_MASS_REVOCATION_SUCCESS = "mre-s";
     public static final String KPI_TYPE_MASS_REVOCATION_FAILURE = "mre-f";
@@ -202,6 +207,11 @@ public class Constants {
     public static final ConvertCertificateError CREATE_CONVERTED_UVCI_FAILED = new ConvertCertificateError(1003,
                                                                                                            "Converting UVCI failed.",
                                                                                                            HttpStatus.INTERNAL_SERVER_ERROR);
+
+    public static final CreateCertificateError DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE = new CreateCertificateError(1004, "Invalid dateOfBirth! Must be before the certificate date", HttpStatus.BAD_REQUEST);
+
+    public static final BiDataError DATES_NOT_VALID = new BiDataError(1101, "The given dates sent to request BI data are not valid. Please define a week or a month e.g. from 2022-10-10 to 2022-10-16.", HttpStatus.BAD_REQUEST);
+    public static final BiDataError WRITING_CSV_RESULT_FAILED = new BiDataError(1102, "Writing the CSV result of the BI data export failed.", HttpStatus.INTERNAL_SERVER_ERROR);
 
     public static final String VACCINATION_TOURIST_PRODUCT_CODE_SUFFIX = "_T";
 

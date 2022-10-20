@@ -98,22 +98,14 @@ public class AuthorizationService {
     }
 
     /**
-     * Returns <code>true</code> for given function IF:
-     * <ul>
-     *     <li>mandatory</li>
-     *     is valid when either is <code>null</code> or the given role is part of the user's roles
-     *     <li>one-of</li>
-     *     is valid when either is <code>null</code> or one of the given roles is part of the user's roles
-     * </ul>
-     * <li>
-     * The given function is only permitted when both conditions are valid.
+     * Returns <code>true</code> for given function if the one-of setting contains the role needed
+     * for the function to be accessed. If one-of isn't configured false will be returned.
      *
      * @param roles    the user's roles
      * @param function the function to check
-     * @return <code>true</code> only if both mandatory and one-of are valid
+     * @return <code>true</code> for given function if the one-of setting contains the role needed
+     *         for the function to be accessed. If one-of isn't configured false will be returned.
      */
-
-
     public boolean isGranted(Set<String> roles, ServiceData.Function function) {
         boolean isActive = function.isBetween(LocalDateTime.now());
         if (!isActive) {

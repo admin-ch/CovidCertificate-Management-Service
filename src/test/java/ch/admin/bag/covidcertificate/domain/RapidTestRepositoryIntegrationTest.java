@@ -40,8 +40,9 @@ class RapidTestRepositoryIntegrationTest {
     @Transactional
     void givenRapidTestsInDB_whenFindAllByActiveAndModifiedAtIsNot_thenReturnRapidTest() {
         // given
-        LocalDateTime modifiedAt = LocalDateTime.now().minusDays(1);
-        LocalDateTime current = LocalDateTime.now();
+        final var current = LocalDateTime.now().withNano(0);
+        final var modifiedAt = current.minusDays(1);
+
         persistRapidTest("1", true, modifiedAt);
         persistRapidTest("2", true, modifiedAt);
         persistRapidTest("3", true, current);
