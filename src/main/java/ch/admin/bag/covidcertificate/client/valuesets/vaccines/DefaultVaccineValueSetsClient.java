@@ -27,31 +27,27 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
 
     private final WebClient defaultWebClient;
 
-    @Value("${cc-management-service.vaccine-value-set-import.vaccine-base-url}")
-    private String vaccineBaseUrl;
+    @Value("${ch-covidcertificate-backend-verifier-service.url}")
+    private String serviceUri;
 
-    @Value("${cc-management-service.vaccine-value-set-import.auth-holder-base-url}")
-    private String authHolderBaseUrl;
+    @Value("${cc-management-service.vaccine-value-set-import.vaccine-id}")
+    private String vaccineId;
 
-    @Value("${cc-management-service.vaccine-value-set-import.prophylaxis-base-url}")
-    private String prophylaxisBaseUrl;
+    @Value("${cc-management-service.vaccine-value-set-import.auth-holder-id}")
+    private String authHolderId;
 
-    /**
-     *         String vaccineUrl = this.vaccineBaseUrl.replace("<version>", vaccineImportControl.getImportVersion());
-     *         String authHolderUrl = this.authHolderBaseUrl.replace("<version>", vaccineImportControl.getImportVersion());
-     *         String prophylaxisUrl = this.prophylaxisBaseUrl.replace("<version>", vaccineImportControl.getImportVersion());
-     */
+    @Value("${cc-management-service.vaccine-value-set-import.prophylaxis-id}")
+    private String prophylaxisId;
 
     @Override
     public Map<String, VaccineValueSetDto> getVaccineValueSet(VaccineImportControl vaccineImportControl) {
-        var builder = UriComponentsBuilder
-                .fromHttpUrl(this.vaccineBaseUrl)
-                .uriVariables(Map.of("<version>", vaccineImportControl.getImportVersion()));
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUri)
+                .queryParam("valueSetId", vaccineId);
 
-        var uri = builder.build().toString();
+        String uri = builder.build().toString();
         log.debug("Call GitHub with url {}", uri);
         try {
-            var response = defaultWebClient
+            VaccineValueSetResponseDto response = defaultWebClient
                     .get()
                     .uri(uri)
                     .accept(MediaType.APPLICATION_JSON)
@@ -74,14 +70,13 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
 
     @Override
     public Map<String, AuthHolderValueSetDto> getAuthHolderValueSet(VaccineImportControl vaccineImportControl) {
-        var builder = UriComponentsBuilder
-                .fromHttpUrl(this.authHolderBaseUrl)
-                .uriVariables(Map.of("<version>", vaccineImportControl.getImportVersion()));
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUri)
+                .queryParam("valueSetId", authHolderId);
 
-        var uri = builder.build().toString();
+        String uri = builder.build().toString();
         log.debug("Call GitHub with url {}", uri);
         try {
-            var response = defaultWebClient
+            AuthHolderValueSetResponseDto response = defaultWebClient
                     .get()
                     .uri(uri)
                     .accept(MediaType.APPLICATION_JSON)
@@ -104,14 +99,13 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
 
     @Override
     public Map<String, ProphylaxisValueSetDto> getProphylaxisValueSet(VaccineImportControl vaccineImportControl) {
-        var builder = UriComponentsBuilder
-                .fromHttpUrl(this.prophylaxisBaseUrl)
-                .uriVariables(Map.of("<version>", vaccineImportControl.getImportVersion()));
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUri)
+                .queryParam("valueSetId", prophylaxisId);
 
-        var uri = builder.build().toString();
+        String uri = builder.build().toString();
         log.debug("Call GitHub with url {}", uri);
         try {
-            var response = defaultWebClient
+            ProphylaxisValueSetResponseDto response = defaultWebClient
                     .get()
                     .uri(uri)
                     .accept(MediaType.APPLICATION_JSON)

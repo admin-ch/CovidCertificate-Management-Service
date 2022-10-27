@@ -19,9 +19,9 @@ public class VaccineImportScheduler {
 
     private final VaccineImportService vaccineImportService;
 
-    @Scheduled(cron = "${cc-management-service.update-deleted-marker.cron}")
+    @Scheduled(cron = "${cc-management-service.vaccine-value-set-import.cron}")
     @Transactional
-    public void detectRevocationsToBeMarkedAsDeleted() {
+    public void processVaccineValueSetUpdate() {
         final var jobDateTime = LocalDateTime.now();
         log.info("Starting check of new vaccine value sets at {}",
                 jobDateTime.format(DateTimeFormatter.ISO_DATE_TIME));

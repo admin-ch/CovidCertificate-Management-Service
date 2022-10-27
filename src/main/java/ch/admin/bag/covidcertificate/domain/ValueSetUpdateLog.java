@@ -1,5 +1,7 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.domain.enums.EntityType;
+import ch.admin.bag.covidcertificate.domain.enums.UpdateAction;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
