@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,4 +37,10 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "order by v.display asc")
     List<Vaccine> findAllPlatformApiActive();
 
+    @Query(value = "select v from Vaccine v " +
+            "where v.code = :code ")
+    List<Vaccine> findByCode(@Param("code") String code);
+
+    @Query(value = "select distinct v.code from Vaccine v ")
+    List<String> findAllCodes();
 }
