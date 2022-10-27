@@ -1,4 +1,4 @@
-package ch.admin.bag.covidcertificate.domain;
+package ch.admin.bag.covidcertificate.domain.enums.converter;
 
 import ch.admin.bag.covidcertificate.api.request.Issuable;
 
@@ -24,8 +24,8 @@ public class IssuableConverter implements AttributeConverter<Issuable, String> {
         }
 
         return Stream.of(Issuable.values())
-                     .filter(issuable -> issuable.getCode().equalsIgnoreCase(code))
-                     .findFirst()
-                     .orElseThrow(() -> new IllegalArgumentException("Could not parse issuable: " + code));
+                .filter(issuable -> issuable.getCode().equalsIgnoreCase(code))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Could not parse issuable: " + code));
     }
 }
