@@ -130,9 +130,9 @@ cc-management-service:
     days-protected: 30
   vaccine-value-set-import:
     cron: "0 0 02 * * *" ## At 02:00 AM
-    vaccine-base-url: "https://github.com/ehn-dcc-development/eu-dcc-valuesets/blob/<version>/vaccine-medicinal-product.json"
-    auth-holder-base-url: "https://github.com/ehn-dcc-development/eu-dcc-valuesets/blob/<version>/vaccine-mah-manf.json"
-    prophylaxis-base-url: "https://github.com/ehn-dcc-development/eu-dcc-valuesets/blob/<version>/vaccine-prophylaxis.json"
+    vaccine-id: "vaccines-covid-19-names"
+    auth-holder-id: "vaccines-covid-19-auth-holders"
+    prophylaxis-id: "sct-vaccines-covid-19"
   pdf:
     show-watermark: true
   feature-toggle:
