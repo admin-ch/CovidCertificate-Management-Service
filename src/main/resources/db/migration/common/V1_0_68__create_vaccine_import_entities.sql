@@ -9,7 +9,8 @@ create table value_set_update_log
 
 create table display_name_modification
 (
-    code varchar(50) not null primary key,
+    id uuid not null primary key,
+    code varchar(50) not null,
     display varchar(100) not null,
     entity_type varchar(50) not null
 );
