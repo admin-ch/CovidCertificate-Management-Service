@@ -80,8 +80,8 @@ public class FixtureCustomization {
             ReflectionTestUtils.setField(vaccine, "code", fixture.create(String.class));
             ReflectionTestUtils.setField(vaccine, "display", fixture.create(String.class));
             ReflectionTestUtils.setField(vaccine, "active", fixture.create(Boolean.class));
-            ReflectionTestUtils.setField(vaccine, "chIssuable", fixture.create(Boolean.class));
             ReflectionTestUtils.setField(vaccine, "modifiedAt", fixture.create(LocalDateTime.class));
+            ReflectionTestUtils.setField(vaccine, "createdAt", fixture.create(LocalDateTime.class));
             return vaccine;
         });
     }
