@@ -26,6 +26,7 @@ public class RestClientConfig {
     public WebClient defaultWebClient(JeapOAuth2WebclientBuilderFactory jeapOAuth2WebclientBuilderFactory) {
         // Config Timeout
         HttpClient httpClient = HttpClient.create()
+                .proxyWithSystemProperties()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout * 1000)
                 .doOnConnected(conn -> conn
                 .addHandlerLast(new ReadTimeoutHandler(readTimeout)));

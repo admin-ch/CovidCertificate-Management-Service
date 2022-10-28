@@ -27,22 +27,20 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
 
     private final WebClient defaultWebClient;
 
-    @Value("${ch-covidcertificate-backend-verifier-service.url}")
-    private String serviceUri;
+    @Value("${cc-management-service.vaccine-value-set-import.vaccine-base-url}")
+    private String vaccineBaseUrl;
 
-    @Value("${cc-management-service.vaccine-value-set-import.vaccine-id}")
-    private String vaccineId;
+    @Value("${cc-management-service.vaccine-value-set-import.auth-holder-base-url}")
+    private String authHolderBaseUrl;
 
-    @Value("${cc-management-service.vaccine-value-set-import.auth-holder-id}")
-    private String authHolderId;
-
-    @Value("${cc-management-service.vaccine-value-set-import.prophylaxis-id}")
-    private String prophylaxisId;
+    @Value("${cc-management-service.vaccine-value-set-import.prophylaxis-base-url}")
+    private String prophylaxisBaseUrl;
 
     @Override
     public Map<String, VaccineValueSetDto> getVaccineValueSet(VaccineImportControl vaccineImportControl) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUri)
-                .queryParam("valueSetId", vaccineId);
+        String vaccineUrl = this.vaccineBaseUrl.replace("<version>", vaccineImportControl.getImportVersion());
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(vaccineUrl);
 
         String uri = builder.build().toString();
         log.debug("Call GitHub with url {}", uri);
@@ -70,8 +68,9 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
 
     @Override
     public Map<String, AuthHolderValueSetDto> getAuthHolderValueSet(VaccineImportControl vaccineImportControl) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUri)
-                .queryParam("valueSetId", authHolderId);
+        String authHolderUrl = this.authHolderBaseUrl.replace("<version>", vaccineImportControl.getImportVersion());
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(authHolderUrl);
 
         String uri = builder.build().toString();
         log.debug("Call GitHub with url {}", uri);
@@ -99,8 +98,9 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
 
     @Override
     public Map<String, ProphylaxisValueSetDto> getProphylaxisValueSet(VaccineImportControl vaccineImportControl) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUri)
-                .queryParam("valueSetId", prophylaxisId);
+        String prophylaxisUrl = this.prophylaxisBaseUrl.replace("<version>", vaccineImportControl.getImportVersion());
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(prophylaxisUrl);
 
         String uri = builder.build().toString();
         log.debug("Call GitHub with url {}", uri);

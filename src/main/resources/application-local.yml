@@ -41,7 +41,7 @@ cc-management-service:
   update-deleted-marker:
     cron: "-" ## Don't ever
   vaccine-value-set-import:
-    cron: "0 0 */1 * * ?" ## Every hour
+    cron: "-" ## Don't ever
 
   # truststore password is not set locally since we don't need it
   truststore:
