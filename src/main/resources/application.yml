@@ -28,7 +28,12 @@ logging:
               resource:
                 web:
                   BearerTokenAuthenticationFilter: INFO
-        web: DEBUG
+        web:
+          servlet:
+            resource:
+              ResourceHttpRequestHandler: INFO
+          filter:
+            CommonsRequestLoggingFilter: INFO
     springfox:
       documentation:
         spring:
@@ -127,7 +132,7 @@ cc-management-service:
     cron: "0 0 02 * * *" ## At 02:00 AM
     vaccine-base-url: "https://raw.githubusercontent.com/ehn-dcc-development/eu-dcc-valuesets/<version>/vaccine-medicinal-product.json"
     auth-holder-base-url: "https://raw.githubusercontent.com/ehn-dcc-development/eu-dcc-valuesets/<version>/vaccine-mah-manf.json"
-    prophylaxis-base-url: "https://raw.githubusercontent.com/ehn-dcc-development/eu-dcc-valuesets/vaccine-prophylaxis.json"
+    prophylaxis-base-url: "https://raw.githubusercontent.com/ehn-dcc-development/eu-dcc-valuesets/<version>/vaccine-prophylaxis.json"
   pdf:
     show-watermark: true
   feature-toggle:
