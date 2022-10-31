@@ -15,7 +15,7 @@
 	<description>Service for generating Covid Certificates</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 
 		<cc-backend-logging.version>1.0.4</cc-backend-logging.version>
 		<com.github.tomakehurst.version>2.27.2</com.github.tomakehurst.version>
