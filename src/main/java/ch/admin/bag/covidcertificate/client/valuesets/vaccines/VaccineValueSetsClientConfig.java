@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 @Configuration
-public class HttpClientConfig {
+public class VaccineValueSetsClientConfig {
     @Value("${cc-management-service.rest.connectTimeoutSeconds}")
     private int connectTimeout;
 
