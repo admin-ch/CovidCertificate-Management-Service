@@ -11,10 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(properties = {
@@ -28,58 +29,62 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
-class RevocationRepositoryIntegrationTest {
+class VaccineImportControlRepositoryIntegrationTest {
     @Autowired
-    private RevocationRepository revocationRepository;
+    private VaccineImportControlRepository vaccineImportControlRepository;
     @PersistenceContext
     private EntityManager entityManager;
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindByUvci_thenReturnNull() {
+    void givenNoVaccineImportControlInDB_whenFindByImportDate_thenReturnNull() {
         // given when
-        Revocation result = revocationRepository.findByUvci("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E");
+        Optional<VaccineImportControl> resultOptional = vaccineImportControlRepository.findByImportDate(LocalDate.now());
         // then
-        assertNull(result);
+        assertTrue(resultOptional.isEmpty());
     }
 
     @Test
     @Transactional
-    void givenRevocationInDB_whenFindByUvci_thenReturnRevocation() {
+    void givenVaccineImportControlInDB_whenFindByImportDate_thenReturnVaccineImportControl() {
         // given
-        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
+        String version = "2.9.0";
+        persistVaccineImportControl(version, false);
         // when
-        Revocation result = revocationRepository.findByUvci(uvci);
+        Optional<VaccineImportControl> resultOptional = vaccineImportControlRepository.findByImportDate(LocalDate.now());
         // then
-        assertEquals(uvci, result.getUvci());
+        assertTrue(resultOptional.isPresent());
+        assertEquals(version, resultOptional.get().getImportVersion());
     }
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindAllUvcis_thenReturnEmptyList() {
+    void givenNoVaccineImportControlInDB_whenFindAll_thenReturnEmptyList() {
         // given when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        List<VaccineImportControl> result = vaccineImportControlRepository.findAll();
         // then
         assertTrue(result.isEmpty());
     }
 
     @Test
     @Transactional
-    void givenRevocationsInDB_whenFindNotDeletedUvcis_thenReturnRevocations() {
+    void givenVaccineImportControlsInDB_whenFindAllUvcis_thenReturnVaccineImportControls() {
         // given
-        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
-        persistRevocation("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53F");
+        String version = "2.9.0";
+        persistVaccineImportControl(version, true);
+        persistVaccineImportControl("2.10.0", false);
         // when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        List<VaccineImportControl> result = vaccineImportControlRepository.findAll();
         // then
         assertEquals(2, result.size());
-        assertTrue(result.contains(uvci));
     }
 
-    private void persistRevocation(String uvci) {
-        Revocation revocation = new Revocation(uvci, false, null);
-        entityManager.persist(revocation);
+    private void persistVaccineImportControl(String version, boolean done) {
+        VaccineImportControl vaccineImportControl = VaccineImportControl.builder()
+                .importVersion(version)
+                .importDate(LocalDate.now())
+                .done(done)
+                .build();
+        entityManager.persist(vaccineImportControl);
     }
 }

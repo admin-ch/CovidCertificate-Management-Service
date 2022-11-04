@@ -1,5 +1,7 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.domain.enums.EntityType;
+import ch.admin.bag.covidcertificate.domain.enums.UpdateAction;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,58 +31,63 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
-class RevocationRepositoryIntegrationTest {
+class ValueSetUpdateLogRepositoryIntegrationTest {
     @Autowired
-    private RevocationRepository revocationRepository;
+    private ValueSetUpdateLogRepository valueSetUpdateLogRepository;
     @PersistenceContext
     private EntityManager entityManager;
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindByUvci_thenReturnNull() {
+    void givenNoValueSetUpdateLogInDB_whenFindByCode_thenReturnNull() {
         // given when
-        Revocation result = revocationRepository.findByUvci("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E");
+        ValueSetUpdateLog result = valueSetUpdateLogRepository.findByCode("Test-Code");
         // then
         assertNull(result);
     }
 
     @Test
     @Transactional
-    void givenRevocationInDB_whenFindByUvci_thenReturnRevocation() {
+    void givenValueSetUpdateLogInDB_whenFindByCode_thenReturnValueSetUpdateLog() {
         // given
-        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
+        String code = "Test-Code";
+        persistValueSetUpdateLog(code, EntityType.VACCINE);
         // when
-        Revocation result = revocationRepository.findByUvci(uvci);
+        ValueSetUpdateLog result = valueSetUpdateLogRepository.findByCode(code);
         // then
-        assertEquals(uvci, result.getUvci());
+        assertEquals(code, result.getCode());
     }
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindAllUvcis_thenReturnEmptyList() {
+    void givenNoValueSetUpdateLogInDB_whenFindAllCodes_thenReturnEmptyList() {
         // given when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        List<String> result = valueSetUpdateLogRepository.findAllCodes();
         // then
         assertTrue(result.isEmpty());
     }
 
     @Test
     @Transactional
-    void givenRevocationsInDB_whenFindNotDeletedUvcis_thenReturnRevocations() {
+    void givenValueSetUpdateLogsInDB_whenFindAllCodes_thenReturnValueSetUpdateLogs() {
         // given
-        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
-        persistRevocation("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53F");
+        String code = "Test-Code";
+        persistValueSetUpdateLog(code, EntityType.VACCINE);
+        persistValueSetUpdateLog("Test-Code2", EntityType.PROPHYLAXIS);
         // when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        List<String> result = valueSetUpdateLogRepository.findAllCodes();
         // then
         assertEquals(2, result.size());
-        assertTrue(result.contains(uvci));
+        assertTrue(result.contains(code));
     }
 
-    private void persistRevocation(String uvci) {
-        Revocation revocation = new Revocation(uvci, false, null);
-        entityManager.persist(revocation);
+    private void persistValueSetUpdateLog(String code, EntityType entityType) {
+        ValueSetUpdateLog valueSetUpdateLog = ValueSetUpdateLog.builder()
+                .code(code)
+                .entityType(entityType)
+                .updatedAt(LocalDateTime.now())
+                .updateAction(UpdateAction.UPDATE)
+                .build();
+        entityManager.persist(valueSetUpdateLog);
     }
 }
