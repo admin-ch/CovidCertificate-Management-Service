@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -23,63 +24,68 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         "spring.datasource.url=jdbc:h2:mem:testDb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
         "spring.datasource.username=sa",
         "spring.datasource.password=sa",
-        "spring.flyway.clean-on-validation-error=true",
+        "spring.flyway.clean-on-validation-error=true"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service"})
+@ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
-class RevocationRepositoryIntegrationTest {
+class AuthHolderRepositoryIntegrationTest {
     @Autowired
-    private RevocationRepository revocationRepository;
+    private AuthHolderRepository authHolderRepository;
     @PersistenceContext
     private EntityManager entityManager;
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindByUvci_thenReturnNull() {
+    void givenNoAuthHolderInDB_whenFindByCode_thenReturnNull() {
         // given when
-        Revocation result = revocationRepository.findByUvci("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E");
+        AuthHolder result = authHolderRepository.findByCode("Test-Code");
         // then
         assertNull(result);
     }
 
     @Test
     @Transactional
-    void givenRevocationInDB_whenFindByUvci_thenReturnRevocation() {
+    void givenAuthHolderInDB_whenFindByCode_thenReturnAuthHolder() {
         // given
-        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
+        String code = "Test-Code";
+        persistAuthHolder(code);
         // when
-        Revocation result = revocationRepository.findByUvci(uvci);
+        AuthHolder result = authHolderRepository.findByCode(code);
         // then
-        assertEquals(uvci, result.getUvci());
+        assertEquals(code, result.getCode());
     }
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindAllUvcis_thenReturnEmptyList() {
+    void givenNoAuthHolderInDB_whenFindAllCodes_thenReturnEmptyList() {
         // given when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        List<String> codes = authHolderRepository.findAllCodes();
         // then
-        assertTrue(result.isEmpty());
+        assertTrue(codes.isEmpty());
     }
 
     @Test
     @Transactional
-    void givenRevocationsInDB_whenFindNotDeletedUvcis_thenReturnRevocations() {
+    void givenAuthHoldersInDB_whenFindAllCodes_thenReturnAuthHolders() {
         // given
-        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
-        persistRevocation("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53F");
+        long countBefore = authHolderRepository.count();
+        String code = "Test-Code";
+        persistAuthHolder(code);
+        persistAuthHolder("Test-Code2");
         // when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        List<String> result = authHolderRepository.findAllCodes();
         // then
-        assertEquals(2, result.size());
-        assertTrue(result.contains(uvci));
+        long countExpected = countBefore + 2;
+        assertEquals(countExpected, result.size());
+        assertTrue(result.contains(code));
     }
 
-    private void persistRevocation(String uvci) {
-        Revocation revocation = new Revocation(uvci, false, null);
-        entityManager.persist(revocation);
+    private void persistAuthHolder(String code) {
+        AuthHolder authHolder = AuthHolder.builder()
+                .code(code)
+                .display("Junit AuthHolder " + code)
+                .build();
+        entityManager.persist(authHolder);
     }
 }
