@@ -41,7 +41,7 @@
 		<spring-cloud.version>2021.0.4</spring-cloud.version>
 		<springdoc.version>1.6.11</springdoc.version>
 		<java-cfenv-boot.version>2.4.0</java-cfenv-boot.version>
-		
+
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<log4j2.version>2.18.0</log4j2.version>
 
