@@ -264,6 +264,11 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         one-of: ${roles.id.report.detail}, ${roles.id.report.agg}, ${roles.id.report.stats}
+      main-notification-management:
+        identifier: main-notification-management
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.app.manager}
 
       # create/revoke certificates
       create-certificate-web:
@@ -926,11 +931,19 @@ services:
         uri: "/api/v1/notifications"
         http: GET
 
-      writeOrDeleteNotifications:
-        identifier: "writeOrDeleteNotifications"
+      writeNotifications:
+        identifier: "writeNotifications"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         one-of: ${roles.id.app.manager}
         uri: "/api/v1/notifications"
-        http: POST, DELETE
+        http: POST, PUT
+
+      deleteNotifications:
+        identifier: "deleteNotifications"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.app.manager}
+        uri: "/api/v1/notifications/{notificationId}"
+        http: DELETE
 
