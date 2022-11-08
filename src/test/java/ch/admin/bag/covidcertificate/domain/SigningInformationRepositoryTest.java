@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         "spring.flyway.clean-on-validation-error=true"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
+@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
 class SigningInformationRepositoryTest {
     @Autowired
