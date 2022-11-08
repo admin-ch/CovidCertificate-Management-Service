@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface AuthHolderRepository extends JpaRepository<AuthHolder, UUID> {
-    @Query(value = "select ah from AuthHolder ah " +
-            "where ah.code = :code ")
-    AuthHolder findByCode(@Param("code") String code);
+public interface ValueSetUpdateLogRepository extends JpaRepository<ValueSetUpdateLog, UUID> {
 
-    @Query(value = "select distinct ah.code from AuthHolder ah ")
+    @Query(value = "select vsul from ValueSetUpdateLog vsul " +
+            "where vsul.code = :code ")
+    ValueSetUpdateLog findByCode(@Param("code") String code);
+
+    @Query(value = "select distinct vsul.code from ValueSetUpdateLog vsul ")
     List<String> findAllCodes();
 }

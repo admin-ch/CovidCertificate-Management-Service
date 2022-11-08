@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,58 +30,79 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
-class RevocationRepositoryIntegrationTest {
+class KpiDataRepositoryIntegrationTest {
     @Autowired
-    private RevocationRepository revocationRepository;
+    private KpiDataRepository kpiDataRepository;
     @PersistenceContext
     private EntityManager entityManager;
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindByUvci_thenReturnNull() {
+    void givenNoKpiDataInDB_whenFindByUvci_thenReturnNull() {
         // given when
-        Revocation result = revocationRepository.findByUvci("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E");
+        KpiData result = kpiDataRepository.findByUvci("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E");
         // then
         assertNull(result);
     }
 
     @Test
     @Transactional
-    void givenRevocationInDB_whenFindByUvci_thenReturnRevocation() {
+    void givenKpiDataInDB_whenFindByUvci_thenReturnKpiData() {
         // given
         String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
+        persistKpiData(uvci);
         // when
-        Revocation result = revocationRepository.findByUvci(uvci);
+        KpiData result = kpiDataRepository.findByUvci(uvci);
         // then
         assertEquals(uvci, result.getUvci());
     }
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindAllUvcis_thenReturnEmptyList() {
+    void givenNoKpiDataInDB_whenFindAll_thenReturnEmptyList() {
         // given when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        List<KpiData> result = kpiDataRepository.findAll();
         // then
         assertTrue(result.isEmpty());
     }
 
     @Test
     @Transactional
-    void givenRevocationsInDB_whenFindNotDeletedUvcis_thenReturnRevocations() {
+    void givenKpiDataInDB_whenFindByUvci_thenReturnOneKpiData() {
         // given
         String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
-        persistRevocation("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53F");
+        persistKpiData(uvci);
+        persistKpiData("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53F");
         // when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        KpiData result = kpiDataRepository.findByUvci(uvci);
         // then
-        assertEquals(2, result.size());
-        assertTrue(result.contains(uvci));
+        assertNotNull(result);
+        assertTrue(result.getUvci().equals(uvci));
     }
 
-    private void persistRevocation(String uvci) {
-        Revocation revocation = new Revocation(uvci, false, null);
-        entityManager.persist(revocation);
+    @Test
+    @Transactional
+    void givenKpiDataInDB_whenFindAllUvcis_thenReturnKpiData() {
+        // given
+        LocalDateTime from = LocalDateTime.now().minusDays(1l);
+        LocalDateTime to = LocalDateTime.now().plusDays(1l);
+        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
+        persistKpiData(uvci);
+        persistKpiData("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53F");
+        // when
+        List<BiData> result = kpiDataRepository.findAllByDateRange(from, to);
+        // then
+        assertNotNull(result);
+        assertEquals(2l, result.size());
+    }
+
+    private void persistKpiData(String uvci) {
+        KpiData kpiData = new KpiData.KpiDataBuilder(
+                LocalDateTime.now(), "z", "11223344", "API")
+                .withUvci(uvci)
+                .withCountry("CH")
+                .withDetails("junit_kpi")
+                .build();
+        entityManager.persist(kpiData);
     }
 }

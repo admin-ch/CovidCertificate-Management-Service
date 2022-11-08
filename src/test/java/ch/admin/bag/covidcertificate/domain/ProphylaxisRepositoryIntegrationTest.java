@@ -28,58 +28,61 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
-class RevocationRepositoryIntegrationTest {
+class ProphylaxisRepositoryIntegrationTest {
     @Autowired
-    private RevocationRepository revocationRepository;
+    private ProphylaxisRepository prophylaxisRepository;
     @PersistenceContext
     private EntityManager entityManager;
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindByUvci_thenReturnNull() {
+    void givenNoProphylaxisInDB_whenFindByCode_thenReturnNull() {
         // given when
-        Revocation result = revocationRepository.findByUvci("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E");
+        Prophylaxis result = prophylaxisRepository.findByCode("Test-Code");
         // then
         assertNull(result);
     }
 
     @Test
     @Transactional
-    void givenRevocationInDB_whenFindByUvci_thenReturnRevocation() {
+    void givenProphylaxisInDB_whenFindByCode_thenReturnProphylaxis() {
         // given
-        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
+        String code = "Test-Code";
+        persistProphylaxis(code);
         // when
-        Revocation result = revocationRepository.findByUvci(uvci);
+        Prophylaxis result = prophylaxisRepository.findByCode(code);
         // then
-        assertEquals(uvci, result.getUvci());
+        assertEquals(code, result.getCode());
     }
 
     @Test
     @Transactional
-    void givenNoRevocationInDB_whenFindAllUvcis_thenReturnEmptyList() {
+    void givenNoProphylaxisInDB_whenFindAllCodes_thenReturnEmptyList() {
         // given when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        List<String> result = prophylaxisRepository.findAllCodes();
         // then
         assertTrue(result.isEmpty());
     }
 
     @Test
     @Transactional
-    void givenRevocationsInDB_whenFindNotDeletedUvcis_thenReturnRevocations() {
+    void givenProphylaxisInDB_whenFindAllCodes_thenReturnProphylaxis() {
         // given
-        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistRevocation(uvci);
-        persistRevocation("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53F");
+        String code = "Test-Code";
+        persistProphylaxis(code);
+        persistProphylaxis("Test-Code2");
         // when
-        List<String> result = revocationRepository.findNotDeletedUvcis();
+        List<String> result = prophylaxisRepository.findAllCodes();
         // then
         assertEquals(2, result.size());
-        assertTrue(result.contains(uvci));
+        assertTrue(result.contains(code));
     }
 
-    private void persistRevocation(String uvci) {
-        Revocation revocation = new Revocation(uvci, false, null);
-        entityManager.persist(revocation);
+    private void persistProphylaxis(String code) {
+        Prophylaxis prophylaxis = Prophylaxis.builder()
+                .code(code)
+                .display("Junit Prophylaxis " + code)
+                .build();
+        entityManager.persist(prophylaxis);
     }
 }
