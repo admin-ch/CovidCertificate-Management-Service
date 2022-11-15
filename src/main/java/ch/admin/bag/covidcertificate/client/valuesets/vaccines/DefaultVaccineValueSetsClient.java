@@ -21,6 +21,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Map;
 
 @Service
@@ -78,7 +79,7 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
             log.error(MESSAGE_REQUEST_TO_FAILED, vaccineUrl, e);
             Thread.currentThread().interrupt();
         }
-        return null;
+        return Collections.emptyMap();
     }
 
     @Override
@@ -105,7 +106,7 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
             log.error(MESSAGE_REQUEST_TO_FAILED, authHolderUrl, e);
             Thread.currentThread().interrupt();
         }
-        return null;
+        return Collections.emptyMap();
     }
 
     @Override
@@ -132,6 +133,6 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
             log.error(MESSAGE_REQUEST_TO_FAILED, prophylaxisUrl, e);
             Thread.currentThread().interrupt();
         }
-        return null;
+        return Collections.emptyMap();
     }
 }

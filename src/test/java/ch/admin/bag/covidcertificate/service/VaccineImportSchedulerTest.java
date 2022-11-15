@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles({"local", "mock-signing-service", "mock-printing-service", "mock-vaccine-value-sets-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
 @Slf4j
-public class VaccineImportSchedulerTest {
+class VaccineImportSchedulerTest {
 
     @Autowired
     VaccineImportScheduler vaccineImportScheduler;
@@ -125,9 +125,9 @@ public class VaccineImportSchedulerTest {
         boolean vaccineMatched = false;
         boolean authHolderMatched = false;
         boolean prophylaxisMatched = false;
-        for(ValueSetUpdateLog valueSetUpdateLog : valueSetUpdateLogList) {
+        for (ValueSetUpdateLog valueSetUpdateLog : valueSetUpdateLogList) {
             EntityType entityType = valueSetUpdateLog.getEntityType();
-            if(entityType.getCode().equals(EntityType.VACCINE.getCode())) {
+            if (entityType.getCode().equals(EntityType.VACCINE.getCode())) {
                 vaccineMatched = true;
             } else if (entityType.getCode().equals(EntityType.AUTH_HOLDER.getCode())) {
                 authHolderMatched = true;
