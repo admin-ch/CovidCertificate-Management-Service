@@ -17,11 +17,10 @@ public class VaccineValueSetsClientConfig {
     @Bean
     public HttpClient proxyAwareHttpClient() {
         // Config Timeout
-        HttpClient httpClient = HttpClient.newBuilder()
+        return HttpClient.newBuilder()
                 .connectTimeout(Duration.of(connectTimeout, ChronoUnit.SECONDS))
                 .proxy(ProxySelector.getDefault())
                 .followRedirects(HttpClient.Redirect.ALWAYS)
                 .build();
-        return httpClient;
     }
 }
