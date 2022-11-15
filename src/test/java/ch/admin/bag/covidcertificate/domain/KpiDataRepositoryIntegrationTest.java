@@ -77,7 +77,7 @@ class KpiDataRepositoryIntegrationTest {
         KpiData result = kpiDataRepository.findByUvci(uvci);
         // then
         assertNotNull(result);
-        assertTrue(result.getUvci().equals(uvci));
+        assertEquals(uvci, result.getUvci());
     }
 
     @Test
