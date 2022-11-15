@@ -63,12 +63,13 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
                 return response.getValueSetValues();
             } else {
                 log.error("Response from {} is null", vaccineUrl);
-                throw new IllegalStateException("Response is null");
+                Thread.currentThread().interrupt();
             }
         } catch (Exception e) {
             log.error("Request to {} failed", vaccineUrl, e);
-            throw new IllegalStateException(e);
+            Thread.currentThread().interrupt();
         }
+        return null;
     }
 
     @Override
@@ -93,8 +94,9 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
             }
         } catch (Exception e) {
             log.error("Request to {} failed", authHolderUrl, e);
-            throw new IllegalStateException(e);
+            Thread.currentThread().interrupt();
         }
+        return null;
     }
 
     @Override
@@ -119,7 +121,8 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
             }
         } catch (Exception e) {
             log.error("Request to {} failed", prophylaxisUrl, e);
-            throw new IllegalStateException(e);
+            Thread.currentThread().interrupt();
         }
+        return null;
     }
 }
