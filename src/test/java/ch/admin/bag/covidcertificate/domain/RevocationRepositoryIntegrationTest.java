@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         "spring.datasource.url=jdbc:h2:mem:testDb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
         "spring.datasource.username=sa",
         "spring.datasource.password=sa",
-        "spring.flyway.clean-on-validation-error=true"
+        "spring.flyway.clean-on-validation-error=true",
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service"})
