@@ -13,9 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -36,9 +39,12 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
     public static final String MESSAGE_GIT_HUB_AUTH_HOLDER_VALUE_SET_RESPONSE = "GitHub auth holder value set response: {}";
     public static final String MESSAGE_GIT_HUB_PROPHYLAXIS_VALUE_SET_RESPONSE = "GitHub prophylaxis value set response: {}";
     public static final String MESSAGE_RESPONSE_FROM_IS_NULL = "Response from {} is null";
+    public static final String MESSAGE_URI_SYNTAX_IS_NOT_VALID = "URI syntax of %s is not valid";
+
     public static final String MESSAGE_RESPONSE_IS_NULL = "Response is null";
-    public static final String MESSAGE_REQUEST_TO_FAILED = "Request to {} failed";
+    public static final String MESSAGE_REQUEST_TO_FAILED = "Request to %s failed";
     public static final String VERSION_PLACEHOLDER = "<version>";
+
     private final HttpClient proxyAwareHttpClient;
 
     private final ObjectMapper objectMapper;
@@ -66,8 +72,8 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
                     .GET()
                     .build();
             HttpResponse<String> answer = this.proxyAwareHttpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            VaccineValueSetResponseDto response = objectMapper.readValue(answer.body(), VaccineValueSetResponseDto.class);
-            if (response != null) {
+            if (answer != null && answer.statusCode() == HttpStatus.OK.value()) {
+                VaccineValueSetResponseDto response = objectMapper.readValue(answer.body(), VaccineValueSetResponseDto.class);
                 log.trace(MESSAGE_GIT_HUB_VACCINE_VALUE_SET_RESPONSE, response);
                 log.debug(MESSAGE_RECEIVED_ENTRIES_OF_VALUE_SET_ID, response.getValueSetValues().size(), response.getValueSetId());
                 return response.getValueSetValues();
@@ -75,9 +81,14 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
                 log.error(MESSAGE_RESPONSE_FROM_IS_NULL, vaccineUrl);
                 throw new IllegalStateException(MESSAGE_RESPONSE_IS_NULL);
             }
-        } catch (Exception e) {
-            log.error(MESSAGE_REQUEST_TO_FAILED, vaccineUrl, e);
+        } catch (InterruptedException | IOException ex) {
+            final String message = String.format(MESSAGE_REQUEST_TO_FAILED, vaccineUrl);
+            log.error(message, ex);
             Thread.currentThread().interrupt();
+        } catch (URISyntaxException | IllegalArgumentException ex) {
+            final String message = String.format(MESSAGE_URI_SYNTAX_IS_NOT_VALID, vaccineUrl);
+            log.error(message, ex);
+            throw new IllegalStateException(message);
         }
         return Collections.emptyMap();
     }
@@ -93,8 +104,8 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
                     .GET()
                     .build();
             HttpResponse<String> answer = this.proxyAwareHttpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            AuthHolderValueSetResponseDto response = objectMapper.readValue(answer.body(), AuthHolderValueSetResponseDto.class);
-            if (response != null) {
+            if (answer != null && answer.statusCode() == HttpStatus.OK.value()) {
+                AuthHolderValueSetResponseDto response = objectMapper.readValue(answer.body(), AuthHolderValueSetResponseDto.class);
                 log.trace(MESSAGE_GIT_HUB_AUTH_HOLDER_VALUE_SET_RESPONSE, response);
                 log.debug(MESSAGE_RECEIVED_ENTRIES_OF_VALUE_SET_ID, response.getValueSetValues().size(), response.getValueSetId());
                 return response.getValueSetValues();
@@ -102,9 +113,14 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
                 log.error(MESSAGE_RESPONSE_FROM_IS_NULL, authHolderUrl);
                 throw new IllegalStateException(MESSAGE_RESPONSE_IS_NULL);
             }
-        } catch (Exception e) {
-            log.error(MESSAGE_REQUEST_TO_FAILED, authHolderUrl, e);
+        } catch (InterruptedException | IOException ex) {
+            final String message = String.format(MESSAGE_REQUEST_TO_FAILED, authHolderUrl);
+            log.error(message, ex);
             Thread.currentThread().interrupt();
+        } catch (URISyntaxException | IllegalArgumentException ex) {
+            final String message = String.format(MESSAGE_URI_SYNTAX_IS_NOT_VALID, authHolderUrl);
+            log.error(message, ex);
+            throw new IllegalStateException(message);
         }
         return Collections.emptyMap();
     }
@@ -120,8 +136,8 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
                     .GET()
                     .build();
             HttpResponse<String> answer = this.proxyAwareHttpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            ProphylaxisValueSetResponseDto response = objectMapper.readValue(answer.body(), ProphylaxisValueSetResponseDto.class);
-            if (response != null) {
+            if (answer != null && answer.statusCode() == HttpStatus.OK.value()) {
+                ProphylaxisValueSetResponseDto response = objectMapper.readValue(answer.body(), ProphylaxisValueSetResponseDto.class);
                 log.trace(MESSAGE_GIT_HUB_PROPHYLAXIS_VALUE_SET_RESPONSE, response);
                 log.debug(MESSAGE_RECEIVED_ENTRIES_OF_VALUE_SET_ID, response.getValueSetValues().size(), response.getValueSetId());
                 return response.getValueSetValues();
@@ -129,9 +145,14 @@ public class DefaultVaccineValueSetsClient implements VaccineValueSetsClient {
                 log.error(MESSAGE_RESPONSE_FROM_IS_NULL, prophylaxisUrl);
                 throw new IllegalStateException(MESSAGE_RESPONSE_IS_NULL);
             }
-        } catch (Exception e) {
-            log.error(MESSAGE_REQUEST_TO_FAILED, prophylaxisUrl, e);
+        } catch (InterruptedException | IOException ex) {
+            final String message = String.format(MESSAGE_REQUEST_TO_FAILED, prophylaxisUrl);
+            log.error(message, ex);
             Thread.currentThread().interrupt();
+        } catch (URISyntaxException | IllegalArgumentException ex) {
+            final String message = String.format(MESSAGE_URI_SYNTAX_IS_NOT_VALID, prophylaxisUrl);
+            log.error(message, ex);
+            throw new IllegalStateException(message);
         }
         return Collections.emptyMap();
     }
