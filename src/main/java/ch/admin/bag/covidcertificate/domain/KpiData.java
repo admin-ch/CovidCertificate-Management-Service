@@ -23,6 +23,7 @@ public class KpiData {
     UUID id;
     LocalDateTime timestamp;
     String type;
+    @Column(name = "`value`")
     String value;
     String uvci;
     String details;
