@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
-public class DefaultVaccineValueSetsClientExceptionTest {
+class DefaultVaccineValueSetsClientExceptionTest {
     static MockWebServer mockWebServer;
 
     private HttpClient mockedHttpClient;
@@ -58,8 +58,7 @@ public class DefaultVaccineValueSetsClientExceptionTest {
                 .done(false)
                 .build();
         Map<String, VaccineValueSetDto> result = this.client.getVaccineValueSet(importControl);
-        assertThat(result).isNotNull();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
@@ -71,8 +70,7 @@ public class DefaultVaccineValueSetsClientExceptionTest {
                 .done(false)
                 .build();
         Map<String, AuthHolderValueSetDto> result = this.client.getAuthHolderValueSet(importControl);
-        assertThat(result).isNotNull();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
@@ -84,8 +82,7 @@ public class DefaultVaccineValueSetsClientExceptionTest {
                 .done(false)
                 .build();
         Map<String, ProphylaxisValueSetDto> result = this.client.getProphylaxisValueSet(importControl);
-        assertThat(result).isNotNull();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
@@ -97,8 +94,7 @@ public class DefaultVaccineValueSetsClientExceptionTest {
                 .done(false)
                 .build();
         Map<String, VaccineValueSetDto> result = this.client.getVaccineValueSet(importControl);
-        assertThat(result).isNotNull();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
@@ -110,8 +106,7 @@ public class DefaultVaccineValueSetsClientExceptionTest {
                 .done(false)
                 .build();
         Map<String, AuthHolderValueSetDto> result = this.client.getAuthHolderValueSet(importControl);
-        assertThat(result).isNotNull();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
@@ -123,7 +118,6 @@ public class DefaultVaccineValueSetsClientExceptionTest {
                 .done(false)
                 .build();
         Map<String, ProphylaxisValueSetDto> result = this.client.getProphylaxisValueSet(importControl);
-        assertThat(result).isNotNull();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotNull().isEmpty();
     }
 }
