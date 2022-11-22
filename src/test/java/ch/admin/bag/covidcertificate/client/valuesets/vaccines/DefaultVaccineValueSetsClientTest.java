@@ -59,8 +59,7 @@ class DefaultVaccineValueSetsClientTest {
                 .done(false)
                 .build();
         Map<String, VaccineValueSetDto> result = this.client.getVaccineValueSet(importControl);
-        assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(1);
+        assertThat(result).isNotNull().hasSize(1);
         assertThat(result.get("EU/1/20/1528").getDisplay()).isEqualTo("Comirnaty");
     }
 
@@ -76,8 +75,7 @@ class DefaultVaccineValueSetsClientTest {
                 .done(false)
                 .build();
         Map<String, AuthHolderValueSetDto> result = this.client.getAuthHolderValueSet(importControl);
-        assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(1);
+        assertThat(result).isNotNull().hasSize(1);
         assertThat(result.get("ORG-100001699").getDisplay()).isEqualTo("AstraZeneca AB");
     }
 
@@ -93,8 +91,7 @@ class DefaultVaccineValueSetsClientTest {
                 .done(false)
                 .build();
         Map<String, ProphylaxisValueSetDto> result = this.client.getProphylaxisValueSet(importControl);
-        assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(1);
+        assertThat(result).isNotNull().hasSize(1);
         assertThat(result.get("1119349007").getDisplay()).isEqualTo("SARS-CoV-2 mRNA vaccine");
     }
 
