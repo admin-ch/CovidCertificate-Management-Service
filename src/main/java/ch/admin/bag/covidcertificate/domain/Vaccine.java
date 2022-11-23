@@ -29,53 +29,53 @@ public class Vaccine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    UUID id;
 
-    private String code;
-
-    @Setter
-    private String display;
+    String code;
 
     @Setter
-    private boolean active;
+    String display;
+
+    @Setter
+    boolean active;
 
     /**
      * This attribute tells us if a vaccine is issuable in CH_ONLY,
      * CH_AND_ABROAD or ABROAD_ONLY and it is based on its stored enum value
      * in the database.
      */
-    private Issuable issuable;
+    Issuable issuable;
 
-    private int vaccineOrder;
+    int vaccineOrder;
 
-    private boolean webUiSelectable;
+    boolean webUiSelectable;
 
-    private boolean apiGatewaySelectable;
+    boolean apiGatewaySelectable;
 
-    private boolean apiPlatformSelectable;
+    boolean apiPlatformSelectable;
 
-    private boolean swissMedic;
+    boolean swissMedic;
 
-    private boolean emea;
+    boolean emea;
 
-    private boolean whoEul;
+    boolean whoEul;
 
-    private String analogVaccine;
+    String analogVaccine;
 
     @Setter
-    private LocalDateTime modifiedAt;
+    LocalDateTime modifiedAt;
 
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "auth_holder")
     @Setter
-    private AuthHolder authHolder;
+    AuthHolder authHolder;
 
     @ManyToOne
     @Setter
     @JoinColumn(name = "prophylaxis")
-    private Prophylaxis prophylaxis;
+    Prophylaxis prophylaxis;
 
     @Override
     public boolean equals(Object obj) {
