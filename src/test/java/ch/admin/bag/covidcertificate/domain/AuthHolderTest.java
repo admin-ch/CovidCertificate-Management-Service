@@ -77,7 +77,7 @@ class AuthHolderTest {
         // the objects from setUp
 
         // when then
-        assertThat(newObject.hashCode()).isEqualTo(source.hashCode());
+        assertThat(newObject).hasSameHashCodeAs(source);
     }
 
     @Test
@@ -88,6 +88,6 @@ class AuthHolderTest {
         newObject.id = UUID.randomUUID();
 
         // when then
-        assertThat(newObject.hashCode()).isNotEqualTo(source.hashCode());
+        assertThat(newObject).hasSameHashCodeAs(source);
     }
 }
