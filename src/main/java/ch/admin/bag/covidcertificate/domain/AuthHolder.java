@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,9 +37,9 @@ public class AuthHolder {
     boolean active;
 
     @Setter
-    private LocalDateTime modifiedAt;
+    LocalDateTime modifiedAt;
 
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "authHolder")
     List<Vaccine> vaccines;

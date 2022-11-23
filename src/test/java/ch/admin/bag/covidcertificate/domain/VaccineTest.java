@@ -1,0 +1,128 @@
+package ch.admin.bag.covidcertificate.domain;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class VaccineTest {
+
+    private Vaccine source;
+
+    private Vaccine newObject;
+
+    @BeforeEach
+    void setUp() {
+        // source equals newObject before any test
+        LocalDateTime now = LocalDateTime.now();
+        source = Vaccine.builder()
+                .id(UUID.randomUUID())
+                .code("someCode")
+                .display("some display name")
+                .active(true)
+                .createdAt(now)
+                .modifiedAt(now)
+                .whoEul(true)
+                .emea(false)
+                .swissMedic(false)
+                .build();
+        newObject = Vaccine.builder()
+                .id(source.getId())
+                .code(source.getCode())
+                .display(source.getDisplay())
+                .active(source.isActive())
+                .createdAt(source.getCreatedAt())
+                .modifiedAt(source.getModifiedAt())
+                .whoEul(source.isWhoEul())
+                .emea(source.isEmea())
+                .swissMedic(source.isSwissMedic())
+                .build();
+    }
+
+    @Test
+    void calling_equals_results_true() {
+        // given
+        // the objects from setUp
+
+        // when
+        boolean result = newObject.equals(source);
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void calling_equals_results_false_differentObject() {
+        // given
+        // the objects from setUp
+
+        // when
+        boolean result = newObject.equals("a string");
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void calling_equals_results_false_differentId() {
+        // given
+        // the objects from setUp
+        // modified Id
+        newObject.id = UUID.randomUUID();
+
+        // when
+        boolean result = newObject.equals(source);
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void calling_hashCode_delivers_same_value_as_we_have_sameId() {
+        // given
+        // the objects from setUp
+
+        // when then
+        assertThat(newObject.hashCode()).isEqualTo(source.hashCode());
+    }
+
+    @Test
+    void calling_hashCode_delivers_different_values_as_we_have_differentIds() {
+        // given
+        // the objects from setUp
+        // modified Id
+        newObject.id = UUID.randomUUID();
+
+        // when then
+        assertThat(newObject.hashCode()).isNotEqualTo(source.hashCode());
+    }
+
+    @Test
+    void isTouristVaccine_true() {
+        assertThat(newObject.isTouristVaccine()).isTrue();
+    }
+
+    @Test
+    void isTouristVaccine_false_as_emea_is_true() {
+        this.newObject.emea = true;
+        assertThat(newObject.isTouristVaccine()).isFalse();
+    }
+
+    @Test
+    void isTouristVaccine_false_as_swissMedic_is_true() {
+        this.newObject.swissMedic = true;
+        assertThat(newObject.isTouristVaccine()).isFalse();
+    }
+
+    @Test
+    void isTouristVaccine_false_as_whoEul_is_false() {
+        this.newObject.whoEul = false;
+        assertThat(newObject.isTouristVaccine()).isFalse();
+    }
+
+    @Test
+    void isTouristVaccine_false_as_analogVaccine_is_set() {
+        this.newObject.analogVaccine = "analog code value";
+        assertThat(newObject.isTouristVaccine()).isFalse();
+    }
+}
