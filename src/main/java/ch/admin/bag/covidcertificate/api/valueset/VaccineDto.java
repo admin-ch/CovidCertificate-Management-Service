@@ -1,6 +1,6 @@
 package ch.admin.bag.covidcertificate.api.valueset;
 
-import ch.admin.bag.covidcertificate.api.request.Issuable;
+import ch.admin.bag.covidcertificate.domain.enums.Issuable;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;

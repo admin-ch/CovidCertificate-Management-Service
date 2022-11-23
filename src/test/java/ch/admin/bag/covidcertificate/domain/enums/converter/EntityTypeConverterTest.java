@@ -21,6 +21,7 @@ class EntityTypeConverterTest {
         assertThat(this.converter.convertToDatabaseColumn(EntityType.VACCINE)).isEqualTo("Vaccine");
         assertThat(this.converter.convertToDatabaseColumn(EntityType.AUTH_HOLDER)).isEqualTo("AuthHolder");
         assertThat(this.converter.convertToDatabaseColumn(EntityType.PROPHYLAXIS)).isEqualTo("Prophylaxis");
+        assertThat(this.converter.convertToDatabaseColumn(null)).isNull();
     }
 
     @Test
@@ -28,6 +29,7 @@ class EntityTypeConverterTest {
         assertThat(this.converter.convertToEntityAttribute("Vaccine")).isEqualTo(EntityType.VACCINE);
         assertThat(this.converter.convertToEntityAttribute("AuthHolder")).isEqualTo(EntityType.AUTH_HOLDER);
         assertThat(this.converter.convertToEntityAttribute("Prophylaxis")).isEqualTo(EntityType.PROPHYLAXIS);
+        assertThat(this.converter.convertToEntityAttribute(null)).isNull();
     }
 
     @Test

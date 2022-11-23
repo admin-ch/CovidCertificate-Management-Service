@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.domain.AuthHolder;
 import ch.admin.bag.covidcertificate.domain.AuthHolderRepository;
 import ch.admin.bag.covidcertificate.domain.Prophylaxis;
@@ -11,6 +10,7 @@ import ch.admin.bag.covidcertificate.domain.VaccineRepository;
 import ch.admin.bag.covidcertificate.domain.ValueSetUpdateLog;
 import ch.admin.bag.covidcertificate.domain.ValueSetUpdateLogRepository;
 import ch.admin.bag.covidcertificate.domain.enums.EntityType;
+import ch.admin.bag.covidcertificate.domain.enums.Issuable;
 import ch.admin.bag.covidcertificate.domain.enums.UpdateAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

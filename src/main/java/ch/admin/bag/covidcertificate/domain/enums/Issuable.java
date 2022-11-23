@@ -1,4 +1,4 @@
-package ch.admin.bag.covidcertificate.api.request;
+package ch.admin.bag.covidcertificate.domain.enums;
 
 public enum Issuable {
 

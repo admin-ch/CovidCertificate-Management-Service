@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.domain.enums.UpdateAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,31 +9,27 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ProphylaxisTest {
+class ValueSetUpdateLogTest {
 
-    private Prophylaxis source;
+    private ValueSetUpdateLog source;
 
-    private Prophylaxis newObject;
+    private ValueSetUpdateLog newObject;
 
     @BeforeEach
     void setUp() {
         // source equals newObject before any test
         LocalDateTime now = LocalDateTime.now();
-        source = Prophylaxis.builder()
+        source = ValueSetUpdateLog.builder()
                 .id(UUID.randomUUID())
                 .code("someCode")
-                .display("some display name")
-                .active(true)
-                .createdAt(now)
-                .modifiedAt(now)
+                .updateAction(UpdateAction.UPDATE)
+                .updatedAt(LocalDateTime.now())
                 .build();
-        newObject = Prophylaxis.builder()
+        newObject = ValueSetUpdateLog.builder()
                 .id(source.getId())
                 .code(source.getCode())
-                .display(source.getDisplay())
-                .active(source.isActive())
-                .createdAt(source.getCreatedAt())
-                .modifiedAt(source.getModifiedAt())
+                .updateAction(source.getUpdateAction())
+                .updatedAt(source.getUpdatedAt())
                 .build();
     }
 

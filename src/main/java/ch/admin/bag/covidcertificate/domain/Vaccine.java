@@ -1,6 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
-import ch.admin.bag.covidcertificate.api.request.Issuable;
+import ch.admin.bag.covidcertificate.domain.enums.Issuable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
