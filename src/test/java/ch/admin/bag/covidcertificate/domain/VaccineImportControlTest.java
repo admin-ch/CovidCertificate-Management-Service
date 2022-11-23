@@ -3,36 +3,30 @@ package ch.admin.bag.covidcertificate.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ProphylaxisTest {
+class VaccineImportControlTest {
 
-    private Prophylaxis source;
+    private VaccineImportControl source;
 
-    private Prophylaxis newObject;
+    private VaccineImportControl newObject;
 
     @BeforeEach
     void setUp() {
         // source equals newObject before any test
         LocalDateTime now = LocalDateTime.now();
-        source = Prophylaxis.builder()
-                .id(UUID.randomUUID())
-                .code("someCode")
-                .display("some display name")
-                .active(true)
-                .createdAt(now)
-                .modifiedAt(now)
+        source = VaccineImportControl.builder()
+                .importVersion("2.9.0")
+                .importDate(LocalDate.now())
+                .done(false)
                 .build();
-        newObject = Prophylaxis.builder()
-                .id(source.getId())
-                .code(source.getCode())
-                .display(source.getDisplay())
-                .active(source.isActive())
-                .createdAt(source.getCreatedAt())
-                .modifiedAt(source.getModifiedAt())
+        newObject = VaccineImportControl.builder()
+                .importVersion(source.getImportVersion())
+                .importDate(source.getImportDate())
+                .done(source.isDone())
                 .build();
     }
 
@@ -63,7 +57,7 @@ class ProphylaxisTest {
         // given
         // the objects from setUp
         // modified ID
-        newObject.id = UUID.randomUUID();
+        newObject.importVersion = "2.10.0";
 
         // when
         boolean result = newObject.equals(source);
@@ -85,7 +79,7 @@ class ProphylaxisTest {
         // given
         // the objects from setUp
         // modified ID
-        newObject.id = UUID.randomUUID();
+        newObject.importVersion = "2.10.0";
 
         // when then
         assertThat(newObject).doesNotHaveSameHashCodeAs(source);

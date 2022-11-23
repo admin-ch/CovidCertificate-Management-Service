@@ -21,6 +21,7 @@ class UpdateActionConverterTest {
         assertThat(this.converter.convertToDatabaseColumn(UpdateAction.NEW)).isEqualTo("new");
         assertThat(this.converter.convertToDatabaseColumn(UpdateAction.UPDATE)).isEqualTo("update");
         assertThat(this.converter.convertToDatabaseColumn(UpdateAction.DELETE)).isEqualTo("delete");
+        assertThat(this.converter.convertToDatabaseColumn(null)).isNull();
     }
 
     @Test
@@ -28,6 +29,7 @@ class UpdateActionConverterTest {
         assertThat(this.converter.convertToEntityAttribute("new")).isEqualTo(UpdateAction.NEW);
         assertThat(this.converter.convertToEntityAttribute("update")).isEqualTo(UpdateAction.UPDATE);
         assertThat(this.converter.convertToEntityAttribute("delete")).isEqualTo(UpdateAction.DELETE);
+        assertThat(this.converter.convertToEntityAttribute(null)).isNull();
     }
 
     @Test

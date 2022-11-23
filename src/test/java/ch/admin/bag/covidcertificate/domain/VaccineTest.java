@@ -68,7 +68,7 @@ class VaccineTest {
     void calling_equals_results_false_differentId() {
         // given
         // the objects from setUp
-        // modified Id
+        // modified ID
         newObject.id = UUID.randomUUID();
 
         // when
@@ -90,11 +90,11 @@ class VaccineTest {
     void calling_hashCode_delivers_different_values_as_we_have_differentIds() {
         // given
         // the objects from setUp
-        // modified Id
+        // modified ID
         newObject.id = UUID.randomUUID();
 
         // when then
-        assertThat(newObject).hasSameHashCodeAs(source);
+        assertThat(newObject).doesNotHaveSameHashCodeAs(source);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package ch.admin.bag.covidcertificate.domain.enums.converter;
 
-import ch.admin.bag.covidcertificate.api.request.Issuable;
+import ch.admin.bag.covidcertificate.domain.enums.Issuable;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
