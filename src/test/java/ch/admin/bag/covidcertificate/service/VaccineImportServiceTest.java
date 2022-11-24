@@ -104,7 +104,7 @@ class VaccineImportServiceTest {
                 .thenReturn(Optional.of(prophylaxisModification));
 
         VaccineImportControl vaccineImportControl = new VaccineImportControl("2.9.0", LocalDate.now(), false);
-        lenient().when(vaccineImportControlRepository.findByImportDate(any()))
+        lenient().when(vaccineImportControlRepository.findByImportDateLessThanEqualAndDoneFalse(any()))
                 .thenReturn(Optional.of(vaccineImportControl));
     }
 

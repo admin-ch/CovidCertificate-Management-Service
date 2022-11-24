@@ -11,8 +11,6 @@ import java.util.UUID;
 @Repository
 public interface ValueSetUpdateLogRepository extends JpaRepository<ValueSetUpdateLog, UUID> {
 
-    @Query(value = "select vsul from ValueSetUpdateLog vsul " +
-            "where vsul.code = :code ")
     ValueSetUpdateLog findByCode(@Param("code") String code);
 
     @Query(value = "select distinct vsul.code from ValueSetUpdateLog vsul ")

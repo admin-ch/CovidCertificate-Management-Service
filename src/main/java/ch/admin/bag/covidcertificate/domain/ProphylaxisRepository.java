@@ -10,8 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface ProphylaxisRepository extends JpaRepository<Prophylaxis, UUID> {
-    @Query(value = "select p from Prophylaxis p " +
-            "where p.code = :code ")
     Prophylaxis findByCode(@Param("code") String code);
 
     @Query(value = "select distinct p.code from Prophylaxis p ")

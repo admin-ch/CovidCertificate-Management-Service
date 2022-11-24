@@ -53,7 +53,7 @@ public class VaccineImportService {
     @Transactional
     public boolean updateValueSetOfVaccines(LocalDate importDate) {
         Optional<VaccineImportControl> importControlOptional =
-                this.vaccineImportControlRepository.findByImportDate(importDate);
+                this.vaccineImportControlRepository.findByImportDateLessThanEqualAndDoneFalse(importDate);
         if (importControlOptional.isPresent()) {
             VaccineImportControl vaccineImportControl = importControlOptional.get();
             log.info("Identified value set update version {} for date {} to be processed",

@@ -37,8 +37,6 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
             "order by v.display asc")
     List<Vaccine> findAllPlatformApiActive();
 
-    @Query(value = "select v from Vaccine v " +
-            "where v.code = :code ")
     List<Vaccine> findByCode(@Param("code") String code);
 
     @Query(value = "select distinct v.code from Vaccine v ")
