@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="CCManagementServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <option name="ACTIVE_PROFILES" value="local,mock-printing-service,mock-inapp-delivery-service,mock-value-sets-service,mock-signing-service,mock-vaccine-value-sets-service" />
-    <module name="cc-management-service" />
+    <module name="CovidCertificate-Management-Service"/>
     <option name="SPRING_BOOT_MAIN_CLASS" value="ch.admin.bag.covidcertificate.CCManagementServiceApplication" />
     <extension name="coverage">
       <pattern>

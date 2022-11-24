@@ -39,7 +39,7 @@ class VaccineImportControlRepositoryIntegrationTest {
     @Transactional
     void givenNoVaccineImportControlInDB_whenFindByImportDate_thenReturnNull() {
         // given when
-        Optional<VaccineImportControl> resultOptional = vaccineImportControlRepository.findByImportDate(LocalDate.now());
+        Optional<VaccineImportControl> resultOptional = vaccineImportControlRepository.findByImportDateLessThanEqualAndDoneFalse(LocalDate.now());
         // then
         assertTrue(resultOptional.isEmpty());
     }
@@ -51,7 +51,7 @@ class VaccineImportControlRepositoryIntegrationTest {
         String version = "2.9.0";
         persistVaccineImportControl(version, false);
         // when
-        Optional<VaccineImportControl> resultOptional = vaccineImportControlRepository.findByImportDate(LocalDate.now());
+        Optional<VaccineImportControl> resultOptional = vaccineImportControlRepository.findByImportDateLessThanEqualAndDoneFalse(LocalDate.now());
         // then
         assertTrue(resultOptional.isPresent());
         assertEquals(version, resultOptional.get().getImportVersion());
