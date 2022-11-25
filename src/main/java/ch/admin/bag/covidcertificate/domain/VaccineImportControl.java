@@ -22,14 +22,14 @@ import java.util.Objects;
 public class VaccineImportControl {
     @Id
     @Column(name = "import_version", nullable = false, columnDefinition = "varchar(50)")
-    private String importVersion;
+    String importVersion;
 
     @Column(name = "import_date", nullable = false, columnDefinition = "timestamp default current_timestamp")
-    private LocalDate importDate;
+    LocalDate importDate;
 
     @Column(name = "done", nullable = false, columnDefinition = "boolean default false")
     @Setter
-    private boolean done;
+    boolean done;
 
     @Override
     public boolean equals(Object obj) {

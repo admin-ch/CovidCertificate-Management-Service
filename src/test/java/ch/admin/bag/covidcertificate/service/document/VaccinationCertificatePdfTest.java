@@ -2,11 +2,11 @@ package ch.admin.bag.covidcertificate.service.document;
 
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
-import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
+import ch.admin.bag.covidcertificate.domain.enums.Issuable;
 import ch.admin.bag.covidcertificate.service.CountryCodesLoader;
 import ch.admin.bag.covidcertificate.service.domain.pdf.VaccinationCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationCertificateQrCode;

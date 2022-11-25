@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.service;
 
-import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.client.valuesets.dto.AuthHolderValueSetDto;
 import ch.admin.bag.covidcertificate.client.valuesets.dto.ProphylaxisValueSetDto;
 import ch.admin.bag.covidcertificate.client.valuesets.dto.VaccineValueSetDto;
@@ -9,16 +8,17 @@ import ch.admin.bag.covidcertificate.domain.AuthHolder;
 import ch.admin.bag.covidcertificate.domain.AuthHolderRepository;
 import ch.admin.bag.covidcertificate.domain.DisplayNameModification;
 import ch.admin.bag.covidcertificate.domain.DisplayNameModificationRepository;
-import ch.admin.bag.covidcertificate.domain.enums.EntityType;
 import ch.admin.bag.covidcertificate.domain.Prophylaxis;
 import ch.admin.bag.covidcertificate.domain.ProphylaxisRepository;
-import ch.admin.bag.covidcertificate.domain.enums.UpdateAction;
 import ch.admin.bag.covidcertificate.domain.Vaccine;
 import ch.admin.bag.covidcertificate.domain.VaccineImportControl;
 import ch.admin.bag.covidcertificate.domain.VaccineImportControlRepository;
 import ch.admin.bag.covidcertificate.domain.VaccineRepository;
 import ch.admin.bag.covidcertificate.domain.ValueSetUpdateLog;
 import ch.admin.bag.covidcertificate.domain.ValueSetUpdateLogRepository;
+import ch.admin.bag.covidcertificate.domain.enums.EntityType;
+import ch.admin.bag.covidcertificate.domain.enums.Issuable;
+import ch.admin.bag.covidcertificate.domain.enums.UpdateAction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,7 +53,7 @@ public class VaccineImportService {
     @Transactional
     public boolean updateValueSetOfVaccines(LocalDate importDate) {
         Optional<VaccineImportControl> importControlOptional =
-                this.vaccineImportControlRepository.findByImportDate(importDate);
+                this.vaccineImportControlRepository.findByImportDateLessThanEqualAndDoneFalse(importDate);
         if (importControlOptional.isPresent()) {
             VaccineImportControl vaccineImportControl = importControlOptional.get();
             log.info("Identified value set update version {} for date {} to be processed",

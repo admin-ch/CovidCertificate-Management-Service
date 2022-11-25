@@ -37,9 +37,9 @@ public class Prophylaxis {
     boolean active;
 
     @Setter
-    private LocalDateTime modifiedAt;
+    LocalDateTime modifiedAt;
 
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "prophylaxis")
     List<Vaccine> vaccines;

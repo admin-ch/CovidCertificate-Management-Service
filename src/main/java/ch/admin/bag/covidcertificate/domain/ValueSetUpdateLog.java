@@ -27,19 +27,19 @@ public class ValueSetUpdateLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    UUID id;
 
     @Column(name = "entity_type", nullable = false, columnDefinition = "varchar(50)")
-    private EntityType entityType;
+    EntityType entityType;
 
     @Column(name = "code", nullable = false, columnDefinition = "varchar(50)")
-    private String code;
+    String code;
 
     @Column(name = "update_action", nullable = false, columnDefinition = "varchar(50)")
-    private UpdateAction updateAction;
+    UpdateAction updateAction;
 
     @Column(name = "updated_at", nullable = false, columnDefinition = "timestamp default current_timestamp")
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
     @Override
     public boolean equals(Object obj) {

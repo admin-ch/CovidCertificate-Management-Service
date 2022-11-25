@@ -10,8 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface AuthHolderRepository extends JpaRepository<AuthHolder, UUID> {
-    @Query(value = "select ah from AuthHolder ah " +
-            "where ah.code = :code ")
     AuthHolder findByCode(@Param("code") String code);
 
     @Query(value = "select distinct ah.code from AuthHolder ah ")
