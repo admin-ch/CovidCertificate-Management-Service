@@ -6,7 +6,6 @@ import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
 import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.Issuable;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
@@ -29,6 +28,7 @@ import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
 import ch.admin.bag.covidcertificate.domain.RapidTest;
 import ch.admin.bag.covidcertificate.domain.Vaccine;
+import ch.admin.bag.covidcertificate.domain.enums.Issuable;
 import ch.admin.bag.covidcertificate.service.domain.pdf.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.pdf.RecoveryCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.pdf.TestCertificatePdf;
@@ -80,8 +80,8 @@ public class FixtureCustomization {
             ReflectionTestUtils.setField(vaccine, "code", fixture.create(String.class));
             ReflectionTestUtils.setField(vaccine, "display", fixture.create(String.class));
             ReflectionTestUtils.setField(vaccine, "active", fixture.create(Boolean.class));
-            ReflectionTestUtils.setField(vaccine, "chIssuable", fixture.create(Boolean.class));
             ReflectionTestUtils.setField(vaccine, "modifiedAt", fixture.create(LocalDateTime.class));
+            ReflectionTestUtils.setField(vaccine, "createdAt", fixture.create(LocalDateTime.class));
             return vaccine;
         });
     }

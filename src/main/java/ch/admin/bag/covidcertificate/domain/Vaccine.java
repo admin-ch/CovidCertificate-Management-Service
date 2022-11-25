@@ -1,6 +1,8 @@
 package ch.admin.bag.covidcertificate.domain;
 
-import ch.admin.bag.covidcertificate.api.request.Issuable;
+import ch.admin.bag.covidcertificate.domain.enums.Issuable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,104 +22,72 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "vaccines_covid_19_names")
 public class Vaccine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    UUID id;
 
-    private String code;
+    String code;
 
-    private String display;
+    @Setter
+    String display;
 
-    private boolean active;
-
-    /**
-     * This attribute is a simple boolean based on it's database value
-     *
-     * @deprecated This attribute is legacy and should be replaced by issuable.
-     * <p> Use {@link Vaccine#issuable} instead.
-     */
-    @Deprecated(since = "2.5.8")
-    private boolean chIssuable;
+    @Setter
+    boolean active;
 
     /**
      * This attribute tells us if a vaccine is issuable in CH_ONLY,
      * CH_AND_ABROAD or ABROAD_ONLY and it is based on its stored enum value
      * in the database.
      */
-    private Issuable issuable;
+    Issuable issuable;
 
-    private int vaccineOrder;
+    int vaccineOrder;
 
-    private boolean webUiSelectable;
+    boolean webUiSelectable;
 
-    private boolean apiGatewaySelectable;
+    boolean apiGatewaySelectable;
 
-    private boolean apiPlatformSelectable;
+    boolean apiPlatformSelectable;
 
-    private boolean swissMedic;
+    boolean swissMedic;
 
-    private boolean emea;
+    boolean emea;
 
-    private boolean whoEul;
+    boolean whoEul;
 
-    private String analogVaccine;
+    String analogVaccine;
 
-    private LocalDateTime modifiedAt;
+    @Setter
+    LocalDateTime modifiedAt;
+
+    LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "auth_holder")
     @Setter
-    private AuthHolder authHolder;
+    AuthHolder authHolder;
 
     @ManyToOne
     @Setter
     @JoinColumn(name = "prophylaxis")
-    private Prophylaxis prophylaxis;
-
-    public Vaccine(
-            String code,
-            String display,
-            boolean active,
-            boolean chIssuable,
-            Issuable issuable,
-            int vaccineOrder,
-            boolean webUiSelectable,
-            boolean apiGatewaySelectable,
-            boolean apiPlatformSelectable,
-            boolean swissMedic,
-            boolean emea,
-            boolean whoEul,
-            String analogVaccine
-    ) {
-        this.code = code;
-        this.display = display;
-        this.active = active;
-        this.chIssuable = chIssuable;
-        this.issuable = issuable;
-        this.vaccineOrder = vaccineOrder;
-        this.webUiSelectable = webUiSelectable;
-        this.apiGatewaySelectable = apiGatewaySelectable;
-        this.apiPlatformSelectable = apiPlatformSelectable;
-        this.swissMedic = swissMedic;
-        this.emea = emea;
-        this.whoEul = whoEul;
-        this.analogVaccine = analogVaccine;
-    }
+    Prophylaxis prophylaxis;
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Vaccine) {
-            return Objects.equals(this.code, ((Vaccine) obj).getCode());
+            return Objects.equals(this.id, ((Vaccine) obj).getId());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.code);
+        return Objects.hash(this.id);
     }
 
     public boolean isTouristVaccine() {

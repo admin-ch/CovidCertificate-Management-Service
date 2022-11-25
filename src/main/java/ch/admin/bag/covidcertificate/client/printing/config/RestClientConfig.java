@@ -27,8 +27,7 @@ public class RestClientConfig {
         // Config Timeout
         HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout * 1000)
-                .doOnConnected(conn -> conn
-                .addHandlerLast(new ReadTimeoutHandler(readTimeout)));
+                .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(readTimeout)));
 
         ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient.wiretap(false));
 

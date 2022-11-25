@@ -66,7 +66,7 @@ class RevocationRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void givenRevocationsInDB_whenFindAllUvcis_thenReturnRevocations() {
+    void givenRevocationsInDB_whenFindNotDeletedUvcis_thenReturnRevocations() {
         // given
         String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
         persistRevocation(uvci);

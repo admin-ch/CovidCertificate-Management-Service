@@ -39,6 +39,8 @@ cc-management-service:
     cron: "0 0 */1 * * ?" ## Every hour
   update-deleted-marker:
     cron: "0 0 */1 * * ?" ## Every hour
+  vaccine-value-set-import:
+    cron: "0 0 */1 * * ?" ## Every hour
 
   truststore:
     password: ${vcap.services.cc_trust_store.credentials.password}
