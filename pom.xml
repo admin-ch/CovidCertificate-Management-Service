@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ch.admin.bag.covidcertificate</groupId>
 	<artifactId>cc-management-service</artifactId>
-	<version>4.8.3</version>
+	<version>4.9.0</version>
 	<name>cc-management-service</name>
 	<description>Service for generating Covid Certificates</description>
 
@@ -40,7 +40,8 @@
 		<spring-cloud-starter-sleuth.version>3.1.4</spring-cloud-starter-sleuth.version>
 		<spring-cloud.version>2021.0.4</spring-cloud.version>
 		<springdoc.version>1.6.11</springdoc.version>
-
+		<java-cfenv-boot.version>2.4.0</java-cfenv-boot.version>
+		
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<log4j2.version>2.18.0</log4j2.version>
 
@@ -106,6 +107,22 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>io.pivotal.cfenv</groupId>
+		    <artifactId>java-cfenv-boot</artifactId>
+		    <version>${java-cfenv-boot.version}</version>
+		    <exclusions>
+			<!-- Avoid versions from java-cfenv-boot / java-cfenv-jdbc leaking into starters -->
+			<exclusion>
+			    <groupId>org.springframework.boot</groupId>
+			    <artifactId>spring-boot</artifactId>
+			</exclusion>
+			<exclusion>
+			    <groupId>com.fasterxml.jackson.core</groupId>
+			    <artifactId>jackson-databind</artifactId>
+			</exclusion>
+		    </exclusions>
 		</dependency>
 
 		<!-- jsoup HTML parser library @ https://jsoup.org/ -->
