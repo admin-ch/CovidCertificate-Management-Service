@@ -29,7 +29,7 @@ class RapidTestMapperTest {
     @BeforeEach
     void setUpSourceObjects() {
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-        ZonedDateTime tomorrow = ZonedDateTime.of(2023, 12, 31, 23, 59, 59, 999999, ZoneId.systemDefault());
+        ZonedDateTime tomorrow = ZonedDateTime.of(2023, 12, 31, 23, 59, 59, 999999, ZoneId.of("Europe/Zurich"));
         rapidTest = RapidTest.builder()
                 .id(UUID.randomUUID())
                 .code(RAPID_TEST_CODE_ONE)
