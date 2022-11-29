@@ -34,14 +34,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(properties = {
         "spring.jpa.hibernate.ddl-auto=create",
         "spring.datasource.driver-class-name=org.h2.Driver",
-        "spring.datasource.url=jdbc:h2:~/test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
+        "spring.datasource.url=jdbc:h2:mem:testDb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
         "spring.datasource.username=sa",
         "spring.datasource.password=sa",
         "spring.flyway.clean-on-validation-error=true"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 // mock-vaccine-value-sets-service as we don't test the real web request to GitHub here
-@ActiveProfiles({"local", "mock-signing-service", "mock-printing-service", "mock-vaccine-value-sets-service"})
+@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service", "mock-vaccine-value-sets-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
 @Slf4j
 class VaccineImportSchedulerTest {

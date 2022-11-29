@@ -14,6 +14,12 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
     @Query(value = "select v from Vaccine v " +
             "join AuthHolder a on a.id = v.authHolder.id " +
             "join Prophylaxis p on p.id = v.prophylaxis.id " +
+            "order by v.display asc")
+    List<Vaccine> findAllValid();
+
+    @Query(value = "select v from Vaccine v " +
+            "join AuthHolder a on a.id = v.authHolder.id " +
+            "join Prophylaxis p on p.id = v.prophylaxis.id " +
             "where v.active = true " +
             "and a.active = true " +
             "and p.active = true " +

@@ -1730,3 +1730,161 @@ VALUES ( '7cac86f1-ada1-4fa2-98b6-278e06385445'
        , '2022-09-30'
        , '2999-12-31'
        , 0);
+
+
+-- VERSION V1_0_68__create_vaccine_import_entities.sql
+create table value_set_update_log
+(
+    id            uuid        not null primary key,
+    entity_type   varchar(50) not null,
+    code          varchar(50) not null,
+    update_action varchar(50) not null,
+    updated_at    timestamp   not null default now()
+);
+
+create table display_name_modification
+(
+    id          uuid         not null primary key,
+    code        varchar(50)  not null,
+    display     varchar(100) not null,
+    entity_type varchar(50)  not null
+);
+
+create table vaccine_import_control
+(
+    import_version varchar(50) not null primary key,
+    import_date    date        not null default now(),
+    done           boolean     not null default false
+);
+
+alter table vaccines_covid_19_names
+    add column created_at timestamp default now();
+alter table vaccines_covid_19_names drop column ch_issuable;
+
+alter table vaccines_covid_19_auth_holders
+    add column created_at timestamp default now();
+
+alter table sct_vaccines_covid_19
+    add column created_at timestamp default now();
+
+
+-- VERSION V1_0_69__maintain_created_at_dates_of_vaccine_value_set_entities.sql
+update vaccines_covid_19_names vn1
+set created_at = (select modified_at from vaccines_covid_19_names vn2 where vn1.id = vn2.id);
+
+update vaccines_covid_19_auth_holders ah1
+set created_at = (select modified_at from vaccines_covid_19_auth_holders ah2 where ah1.id = ah2.id);
+
+update sct_vaccines_covid_19 sct1
+set created_at = (select modified_at from sct_vaccines_covid_19 sct2 where sct1.id = sct2.id);
+
+
+-- VERSION V1_0_70__remove_not_null_constraint_on_associations_for_Vaccines.sql
+ALTER TABLE vaccines_covid_19_names
+    ALTER COLUMN prophylaxis DROP NOT NULL;
+ALTER TABLE vaccines_covid_19_names
+    ALTER COLUMN auth_holder DROP NOT NULL;
+
+
+-- VERSION V1_0_71__maintain_associations_for_Vaccines.sql
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'ORG-100000788'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'Vidprevtyn';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'Finlay-Institute'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'Soberana-Plus';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'Vector-Institute'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'EpiVacCorona-N';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'Gamaleya-Research-Institute'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'Sputnik-M';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'Instituto-Butantan'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'Covid-19-adsorvida-inativada';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'NVSI'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'NVSI-06-08';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'Yisheng-Biopharma'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'YS-SC2-010';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'ORG-100026614'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'SCTV01C';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'ORG-100008549'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'Covifenz';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'ORG-100001699'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'AZD2816';
+
+update vaccines_covid_19_names
+set auth_holder = (select id from vaccines_covid_19_auth_holders where code = 'Finlay-Institute'),
+    prophylaxis = (select id from sct_vaccines_covid_19 where code = 'J07BX03')
+where code = 'Soberana-02';
+
+
+-- VERSION V1_0_72__maintain_overwritten_texts_for_Vaccines.sql
+insert into display_name_modification ( id
+                                      , code
+                                      , display
+                                      , entity_type)
+values ( 'de6e4c65-ae1f-85ec-4cd6-7ed62db56e9f'
+       , 'BBIBP-CorV'
+       , 'BBIBP-CorV / Covilo'
+       , 'Vaccine');
+
+insert into display_name_modification ( id
+                                      , code
+                                      , display
+                                      , entity_type)
+values ( '9f657e7e-840d-7067-33f2-0255f2a043a9'
+       , 'Covaxin'
+       , 'Covaxin (also known as BBV152 A, B, C)'
+       , 'Vaccine');
+
+insert into display_name_modification ( id
+                                      , code
+                                      , display
+                                      , entity_type)
+values ( '06dcb1b5-ad07-a0d2-e7d4-17b4df4e4fb2'
+       , 'Covishield'
+       , 'Covishield (ChAdOx1_nCoV-19)'
+       , 'Vaccine');
+
+insert into display_name_modification ( id
+                                      , code
+                                      , display
+                                      , entity_type)
+values ( '4c90b3b1-4c0d-8599-2679-5a198394b07e'
+       , 'Covovax'
+       , 'COVOVAX (Novavax formulation)'
+       , 'Vaccine');
+
+insert into display_name_modification ( id
+                                      , code
+                                      , display
+                                      , entity_type)
+values ( '0220d7dd-ffa8-7fe0-1ef4-9daa24f55c48'
+       , 'EU/1/20/1525'
+       , 'COVID-19 Vaccine Janssen'
+       , 'Vaccine');

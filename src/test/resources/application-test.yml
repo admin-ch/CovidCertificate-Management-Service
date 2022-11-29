@@ -1,7 +1,7 @@
 spring:
   flyway:
     locations: classpath:db/migration/common, classpath:db/migration/h2
-    baseline-version: "1.0.66"
+    baseline-version: "1.0.72"
   security:
     oauth2:
       client:
