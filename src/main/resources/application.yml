@@ -64,6 +64,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
+      minimum-idle: 2
       pool-name: hikari-cp-${spring.application.name}
   jpa:
     hibernate:
