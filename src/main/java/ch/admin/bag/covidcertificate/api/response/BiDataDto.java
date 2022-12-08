@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.api.response;
 
-import ch.admin.bag.covidcertificate.domain.BiData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
