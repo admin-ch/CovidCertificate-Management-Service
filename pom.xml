@@ -5,41 +5,42 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.10</version>
+		<version>2.7.5</version>
 		<relativePath/>
 	</parent>
 	<groupId>ch.admin.bag.covidcertificate</groupId>
 	<artifactId>cc-management-service</artifactId>
-	<version>4.8.3</version>
+	<version>4.9.3</version>
 	<name>cc-management-service</name>
 	<description>Service for generating Covid Certificates</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 
 		<cc-backend-logging.version>1.0.4</cc-backend-logging.version>
 		<com.github.tomakehurst.version>2.27.2</com.github.tomakehurst.version>
 		<com.openhtmltopdf.version>1.0.10</com.openhtmltopdf.version>
 		<com.squareup.okhttp3.version>4.10.0</com.squareup.okhttp3.version>
 		<dgc-java.version>1.0.2</dgc-java.version>
-		<google-zxing.version>3.4.1</google-zxing.version>
-		<guava.version>31.0.1-jre</guava.version>
+		<google-zxing.version>3.5.1</google-zxing.version>
+		<guava.version>31.1-jre</guava.version>
 		<httpclient.version>4.5.13</httpclient.version>
 		<jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
-		<janino.version>3.1.8</janino.version>
+		<janino.version>3.1.9</janino.version>
 		<jfixture-mockito.version>2.7.2</jfixture-mockito.version>
 		<jjwt.version>0.11.5</jjwt.version>
 		<juniversalchardet.version>2.4.0</juniversalchardet.version>
 		<logstash.version>7.2</logstash.version>
 		<net.therore.logback.version>1.0.0</net.therore.logback.version>
-		<opencsv.version>5.6</opencsv.version>
-		<openpdf.version>1.3.27</openpdf.version>
+		<opencsv.version>5.7.1</opencsv.version>
+		<openpdf.version>1.3.30</openpdf.version>
 		<org.jsoup.jsoup.version>1.15.3</org.jsoup.jsoup.version>
-		<org.thymeleaf.thymeleaf.version>3.0.15.RELEASE</org.thymeleaf.thymeleaf.version>
+		<org.thymeleaf.thymeleaf.version>3.1.0.RELEASE</org.thymeleaf.thymeleaf.version>
 		<shedlock.version>4.35.0</shedlock.version>
-		<spring-cloud-starter-sleuth.version>3.1.4</spring-cloud-starter-sleuth.version>
+		<spring-cloud-starter-sleuth.version>3.1.5</spring-cloud-starter-sleuth.version>
 		<spring-cloud.version>2021.0.4</spring-cloud.version>
-		<springdoc.version>1.6.11</springdoc.version>
+		<springdoc.version>1.6.13</springdoc.version>
+		<java-cfenv-boot.version>2.4.1</java-cfenv-boot.version>
 
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<log4j2.version>2.18.0</log4j2.version>
@@ -106,6 +107,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>io.pivotal.cfenv</groupId>
+		    <artifactId>java-cfenv-boot</artifactId>
+		    <version>${java-cfenv-boot.version}</version>
 		</dependency>
 
 		<!-- jsoup HTML parser library @ https://jsoup.org/ -->

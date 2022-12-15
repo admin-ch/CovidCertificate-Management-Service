@@ -1,0 +1,6 @@
+spring:
+  flyway:
+    locations: classpath:db/migration/common, classpath:db/migration/local, classpath:db/migration/h2
+    baseline-on-migrate: false
+    baseline-version: "1.0.72"
+    validate-migration-naming: true

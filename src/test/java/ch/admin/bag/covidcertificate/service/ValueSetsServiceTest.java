@@ -5,9 +5,7 @@ import ch.admin.bag.covidcertificate.api.exception.ValueSetException;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCode;
 import ch.admin.bag.covidcertificate.api.valueset.CountryCodes;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableTestDto;
-import ch.admin.bag.covidcertificate.api.valueset.TestDto;
 import ch.admin.bag.covidcertificate.api.valueset.TestType;
-import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
 import ch.admin.bag.covidcertificate.domain.RapidTest;
 import ch.admin.bag.covidcertificate.domain.RapidTestRepository;
 import ch.admin.bag.covidcertificate.domain.Vaccine;
@@ -15,7 +13,6 @@ import ch.admin.bag.covidcertificate.domain.VaccineRepository;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +25,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCountryCode;
@@ -42,6 +41,7 @@ import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.DE;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.FR;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.IT;
 import static ch.admin.bag.covidcertificate.api.valueset.AcceptedLanguages.RM;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -64,22 +64,34 @@ public class ValueSetsServiceTest {
 
     private final JFixture fixture = new JFixture();
 
+    private LocalDateTime ldtNow = LocalDateTime.now();
+    private ZonedDateTime zdtNow = ZonedDateTime.now();
+
+    private RapidTest expectedRapidTest;
+
     @BeforeEach
     public void setUp() {
+
         customizeIssuableVaccineDto(fixture);
         customizeTestValueSet(fixture);
         customizeCountryCode(fixture);
         customizeVaccine(fixture);
         customizeRapidTest(fixture);
         lenient().when(countryCodesLoader.getCountryCodes()).thenReturn(fixture.create(CountryCodes.class));
-        lenient().when(vaccineRepository.findAll()).thenReturn(
+        lenient().when(vaccineRepository.findAllValid()).thenReturn(
                 fixture.collections().createCollection(List.class, Vaccine.class));
         lenient().when(vaccineRepository.findAllGatewayApiActive()).thenReturn(
                 fixture.collections().createCollection(List.class, Vaccine.class));
-        lenient().when(rapidTestRepository.findAll()).thenReturn(
-                fixture.collections().createCollection(List.class, RapidTest.class));
-        lenient().when(rapidTestRepository.findAllActiveAndChIssuable()).thenReturn(
-                fixture.collections().createCollection(List.class, RapidTest.class));
+        List<RapidTest> rapidTests = createRapidTestList();
+        lenient().when(rapidTestRepository.findAll()).thenReturn(rapidTests);
+        lenient().when(rapidTestRepository.findAllActiveAndChIssuable()).thenReturn(rapidTests);
+    }
+
+    private List<RapidTest> createRapidTestList() {
+        RapidTest one = new RapidTest("one", "ONE", true, ldtNow, zdtNow);
+        this.expectedRapidTest = new RapidTest("two", "TWO", true, ldtNow, zdtNow);
+        RapidTest three = new RapidTest("three", "THREE", true, ldtNow, zdtNow);
+        return List.of(one, expectedRapidTest, three);
     }
 
     @Nested
@@ -90,7 +102,7 @@ public class ValueSetsServiceTest {
             var vaccine = (Vaccine) vaccines.stream().findFirst().or(Assertions::fail).get();
             var expected = vaccine.getCode();
 
-            lenient().when(vaccineRepository.findAll()).thenReturn(vaccines);
+            lenient().when(vaccineRepository.findAllValid()).thenReturn(vaccines);
 
             var actual = service.getVaccinationValueSet(expected).getProductCode();
 
@@ -109,7 +121,6 @@ public class ValueSetsServiceTest {
     }
 
     @Nested
-    @Disabled
     class GetAllTestValueSet {
         @ParameterizedTest
         @CsvSource(value = {":", "'':''", "' ':' '", "'\t':'\t'", "'\n':'\n'"}, delimiter = ':')
@@ -121,20 +132,15 @@ public class ValueSetsServiceTest {
             assertEquals(INVALID_TYP_OF_TEST, actual.getError());
         }
 
-        @Disabled("see todo")
         @ParameterizedTest
         @NullAndEmptySource
         @ValueSource(strings = {"  ", "\t", "\n"})
         void shouldReturnTestValueSetUsingTheTestTypeCode_ifTypeCodeIsPCR_andManufacturerIsNullOrBlank(String manufacturerCode) {
-            var expected = fixture.create(IssuableTestDto.class);
-            ReflectionTestUtils.setField(expected, "testType", TestType.PCR);
-            var valueSetsDto = fixture.create(ValueSetsDto.class);
-
-            // @Todo: Mock the DB call to include expected at getIssuableRapidTests(), once DB is connected
+            var expected = new IssuableTestDto("", "PCR", TestType.PCR, null);
 
             var actual = service.validateAndGetIssuableTestDto(TestType.PCR.typeCode, manufacturerCode);
 
-            assertEquals(expected, actual);
+            assertEquals(expected.getTestType(), actual.getTestType());
         }
 
         @Test
@@ -147,36 +153,22 @@ public class ValueSetsServiceTest {
             assertEquals(INVALID_TYP_OF_TEST, actual.getError());
         }
 
-        @Disabled("see todo")
         @Test
         void shouldReturnTestValueSetUsingTheManufacturerCode_ifTypeCodeIsNotPCR_andManufacturerIsNotEmpty() {
-            var manufacturer = fixture.create(String.class);
-            var expected = fixture.create(IssuableTestDto.class);
-            ReflectionTestUtils.setField(expected, "manufacturerCodeEu", manufacturer);
-            var valueSetsDto = fixture.create(ValueSetsDto.class);
+            var manufacturerCode = "two";
+            var actual = service.validateAndGetIssuableTestDto(TestType.RAPID_TEST.typeCode, manufacturerCode);
 
-            // @Todo: Mock the DB call to include expected at getIssuableRapidTests(), once DB is connected
-
-            var actual = service.validateAndGetIssuableTestDto(TestType.RAPID_TEST.typeCode, manufacturer);
-
-            assertEquals(expected, actual);
+            assertThat(actual.getCode()).isEqualTo(expectedRapidTest.getCode());
         }
 
-        @Disabled("see todo")
         @ParameterizedTest
         @NullAndEmptySource
         @ValueSource(strings = {"  ", "\t", "\n"})
         void shouldReturnTestValueSetUsingTheManufacturerCode_ifTypeCodeIsNullOrBlank_andManufacturerIsNotEmpty(String typeCode) {
-            var testCode = fixture.create(String.class);
-            var expected = fixture.create(TestDto.class);
-            ReflectionTestUtils.setField(expected, "code", testCode);
-            var valueSetsDto = fixture.create(ValueSetsDto.class);
-
-            // @Todo: Mock the DB call to include expected at getIssuableRapidTests(), once DB is connected
-
+            var testCode = "two";
             var actual = service.validateAndGetIssuableTestDto(typeCode, testCode);
 
-            assertEquals(expected, actual);
+            assertThat(actual.getCode()).isEqualTo(expectedRapidTest.getCode());
         }
 
         @Test

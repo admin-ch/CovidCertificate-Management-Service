@@ -183,14 +183,14 @@ public class ValueSetsService {
     @Cacheable(VACCINE_CACHE_NAME)
     public List<VaccineDto> getVaccines() {
         log.info("Loading vaccines");
-        List<Vaccine> vaccines = this.vaccineRepository.findAll();
+        List<Vaccine> vaccines = this.vaccineRepository.findAllValid();
         return VaccineMapper.uniqueVaccines(vaccines);
     }
 
     @Cacheable(ISSUABLE_VACCINE_NAME)
     public List<IssuableVaccineDto> getIssuableVaccines() {
         log.info("Loading all issuable vaccines");
-        List<Vaccine> vaccines = this.vaccineRepository.findAll();
+        List<Vaccine> vaccines = this.vaccineRepository.findAllValid();
         return IssuableVaccineMapper.fromVaccines(vaccines);
     }
 

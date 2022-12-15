@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         "spring.flyway.clean-on-validation-error=true"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
+@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
 class KpiDataRepositoryIntegrationTest {
     @Autowired
@@ -78,22 +78,6 @@ class KpiDataRepositoryIntegrationTest {
         // then
         assertNotNull(result);
         assertEquals(uvci, result.getUvci());
-    }
-
-    @Test
-    @Transactional
-    void givenKpiDataInDB_whenFindAllUvcis_thenReturnKpiData() {
-        // given
-        LocalDateTime from = LocalDateTime.now().minusDays(1l);
-        LocalDateTime to = LocalDateTime.now().plusDays(1l);
-        String uvci = "urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53E";
-        persistKpiData(uvci);
-        persistKpiData("urn:uvci:01:CH:97DAB5E31B589AF3CAE2F53F");
-        // when
-        List<BiData> result = kpiDataRepository.findAllByDateRange(from, to);
-        // then
-        assertNotNull(result);
-        assertEquals(2l, result.size());
     }
 
     private void persistKpiData(String uvci) {

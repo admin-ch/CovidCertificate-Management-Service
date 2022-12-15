@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "spring.flyway.clean-on-validation-error=true"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@ActiveProfiles({"local", "mock-signing-service", "mock-printing-service"})
+@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service"})
 @MockBean(InMemoryClientRegistrationRepository.class)
 class VaccineRepositoryIntegrationTest {
     @Autowired
@@ -36,7 +36,7 @@ class VaccineRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void findAllActiveAndChIssuable_ok_one_match_of_one() {
+    void findAllGatewayApiActive_ok_one_match_of_one() {
         // given
         persistVaccine("EU/1/20/1528",
                 "Comirnaty",
@@ -68,7 +68,7 @@ class VaccineRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void findAllActiveAndChIssuable_ok_no_match_of_four() {
+    void findAllGatewayApiActive_ok_no_match_of_four() {
         // given
         persistVaccine("EU/1/20/0001",
                 "Test not active",
@@ -240,7 +240,7 @@ class VaccineRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void findAll_ok_one_match_of_one() {
+    void findAll_ok_two_match_of_two() {
         // given
         persistVaccine("EU/1/20/1528",
                 "Comirnaty",
@@ -260,8 +260,63 @@ class VaccineRepositoryIntegrationTest {
                 false,
                 null
         );
+        persistInvalidVaccine("EU/1/20/1528",
+                "Comirnaty",
+                true,
+                200,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false,
+                null
+        );
         // when
         List<Vaccine> result = vaccineRepository.findAll();
+        // then
+        assertThat(result).isNotNull().isNotEmpty().hasSize(2);
+
+        Vaccine vaccine = result.get(0);
+        assertThat(vaccine.isActive()).isTrue();
+    }
+
+    @Test
+    @Transactional
+    void findAllValid_ok_one_match_of_two() {
+        // given
+        persistVaccine("EU/1/20/1528",
+                "Comirnaty",
+                true,
+                "1119349007",
+                "SARS-CoV-2 mRNA vaccine",
+                true,
+                "ORG-100030215",
+                "Biontech Manufacturing GmbH",
+                false,
+                200,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false,
+                null
+        );
+        persistInvalidVaccine("EU/1/20/1528",
+                "Comirnaty",
+                true,
+                200,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false,
+                null
+        );
+        // when
+        List<Vaccine> result = vaccineRepository.findAllValid();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(1);
 
@@ -271,7 +326,7 @@ class VaccineRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void findAll_ok_four_match_of_four() {
+    void findAllValid_ok_four_match_of_four() {
         // given
         persistVaccine("EU/1/20/0001",
                 "Test not active 01",
@@ -346,7 +401,7 @@ class VaccineRepositoryIntegrationTest {
                 null
         );
         // when
-        List<Vaccine> result = vaccineRepository.findAll();
+        List<Vaccine> result = vaccineRepository.findAllValid();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(4);
 
@@ -373,7 +428,7 @@ class VaccineRepositoryIntegrationTest {
 
     @Test
     @Transactional
-    void findAll_ok_four_matches_of_four() {
+    void findAllValid_ok_four_matches_of_four() {
         // given
         persistVaccine("EU/1/20/0005",
                 "Test active 05",
@@ -448,7 +503,7 @@ class VaccineRepositoryIntegrationTest {
                 null
         );
         // when
-        List<Vaccine> result = vaccineRepository.findAll();
+        List<Vaccine> result = vaccineRepository.findAllValid();
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(4);
 
@@ -615,6 +670,38 @@ class VaccineRepositoryIntegrationTest {
                 .build();
         vaccine.setAuthHolder(authHolder);
         entityManager.persist(authHolder);
+
+        entityManager.persist(vaccine);
+    }
+
+    private void persistInvalidVaccine(
+            String code,
+            String display,
+            boolean active,
+            int vaccineOrder,
+            boolean webUiSelectable,
+            boolean apiGatewaySelectable,
+            boolean apiPlatformSelectable,
+            boolean swissMedic,
+            boolean emea,
+            boolean whoEul,
+            String analogVaccine
+    ) {
+
+        Vaccine vaccine = Vaccine.builder()
+                .code(code)
+                .display(display)
+                .active(active)
+                .issuable(Issuable.CH_ONLY)
+                .vaccineOrder(vaccineOrder)
+                .webUiSelectable(webUiSelectable)
+                .apiGatewaySelectable(apiGatewaySelectable)
+                .apiPlatformSelectable(apiPlatformSelectable)
+                .swissMedic(swissMedic)
+                .emea(emea)
+                .whoEul(whoEul)
+                .analogVaccine(analogVaccine)
+                .build();
 
         entityManager.persist(vaccine);
     }

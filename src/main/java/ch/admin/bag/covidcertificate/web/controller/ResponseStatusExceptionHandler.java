@@ -1,7 +1,6 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.exception.AuthorizationException;
-import ch.admin.bag.covidcertificate.api.exception.BiDataException;
 import ch.admin.bag.covidcertificate.api.exception.CacheNotFoundException;
 import ch.admin.bag.covidcertificate.api.exception.ConvertCertificateException;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
@@ -62,11 +61,6 @@ public class ResponseStatusExceptionHandler {
     @ExceptionHandler(value = {RevocationException.class})
     protected ResponseEntity<Object> handleRevocationException(RevocationException ex) {
         return new ResponseEntity<>(ex.getError(), ex.getError().getHttpStatus());
-    }
-
-    @ExceptionHandler(value = {BiDataException.class})
-    protected ResponseEntity<Object> handleBiDataException(BiDataException ex) {
-        return new ResponseEntity<>(ex.getBiDataError(), ex.getBiDataError().getHttpStatus());
     }
 
     @ExceptionHandler(value = {AccessDeniedException.class, SecurityException.class})

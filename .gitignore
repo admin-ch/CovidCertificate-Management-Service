@@ -32,3 +32,5 @@ build/
 
 *.log
 /log.log*
+
+/scripts/concated-versions.sql

@@ -1,11 +1,13 @@
 package ch.admin.bag.covidcertificate.domain;
 
 import ch.admin.bag.covidcertificate.domain.enums.Issuable;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Entity;
@@ -21,9 +23,10 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@ToString
 @Table(name = "vaccines_covid_19_names")
 public class Vaccine {
 

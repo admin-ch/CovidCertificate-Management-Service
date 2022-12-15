@@ -76,12 +76,13 @@ public class FixtureCustomization {
 
     public static void customizeVaccine(JFixture fixture) {
         fixture.customise().lazyInstance(Vaccine.class, () -> {
-            var vaccine = new Vaccine();
-            ReflectionTestUtils.setField(vaccine, "code", fixture.create(String.class));
-            ReflectionTestUtils.setField(vaccine, "display", fixture.create(String.class));
-            ReflectionTestUtils.setField(vaccine, "active", fixture.create(Boolean.class));
-            ReflectionTestUtils.setField(vaccine, "modifiedAt", fixture.create(LocalDateTime.class));
-            ReflectionTestUtils.setField(vaccine, "createdAt", fixture.create(LocalDateTime.class));
+            var vaccine = Vaccine.builder()
+                    .code(fixture.create(String.class))
+                    .display(fixture.create(String.class))
+                    .active(fixture.create(Boolean.class))
+                    .createdAt(fixture.create(LocalDateTime.class))
+                    .modifiedAt(fixture.create(LocalDateTime.class))
+                    .build();
             return vaccine;
         });
     }
