@@ -142,7 +142,7 @@ public class ValueSetsService {
     public List<CountryCode> getCountryCodesForLanguage(String language) {
         log.info("Loading country codes for language");
         var countryCodes = countryCodesLoader.getCountryCodes();
-        List<CountryCode> result = switch (language.toLowerCase()) {
+        return switch (language.toLowerCase()) {
             case DE -> countryCodes.getDe();
             case IT -> countryCodes.getIt();
             case FR -> countryCodes.getFr();
@@ -150,7 +150,6 @@ public class ValueSetsService {
             case EN -> countryCodes.getEn();
             default -> throw new ValueSetException(UNSUPPORTED_LANGUAGE);
         };
-        return result;
     }
 
     @Cacheable(RAPID_TEST_CACHE_NAME)
