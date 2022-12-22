@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
 import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
@@ -41,7 +40,7 @@ public class TestCertificateQrCodeMapper {
     ) {
         return testCertificateDataDtoList.stream().map(testCertificateDataDto ->
                 toTestCertificateData(testCertificateDataDto, issuableTestDto)
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     private static TestCertificateData toTestCertificateData(

@@ -6,6 +6,7 @@ import ch.admin.bag.covidcertificate.domain.enums.Issuable;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,9 +14,11 @@ import lombok.ToString;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class IssuableVaccineDto {
+
     @Schema(type = "string")
     private String productCode;
     @Schema(type = "string")

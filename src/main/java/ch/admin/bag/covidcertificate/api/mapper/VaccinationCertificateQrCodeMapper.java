@@ -13,7 +13,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
 import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
@@ -56,11 +55,11 @@ public class VaccinationCertificateQrCodeMapper {
             IssuableVaccineDto issuableVaccineDto
     ) {
         return vaccinationCertificateDataDtoList.stream().map(vaccinationCertificateDataDto ->
-                                                                      toVaccinationCertificateData(
-                                                                              vaccinationCertificateDataDto,
-                                                                              issuableVaccineDto
-                                                                      )
-        ).collect(Collectors.toList());
+                toVaccinationCertificateData(
+                        vaccinationCertificateDataDto,
+                        issuableVaccineDto
+                )
+        ).toList();
     }
 
     private static List<VaccinationCertificateData> toVaccinationCertificateDataListForConversion(
@@ -72,7 +71,7 @@ public class VaccinationCertificateQrCodeMapper {
                 .stream().map(vaccinationCertificateHcertDecodedDataDto -> toVaccinationCertificateData(
                         vaccinationCertificateHcertDecodedDataDto,
                         issuableVaccineDto))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static VaccinationCertificateData toVaccinationCertificateData(

@@ -14,6 +14,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class ConvertedCertificateResponseEnvelope {
+
     private ConvertedCertificateResponseDto responseDto;
     private String usedKeyIdentifier;
 }

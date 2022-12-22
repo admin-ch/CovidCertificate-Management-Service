@@ -3,16 +3,25 @@ package ch.admin.bag.covidcertificate.api.request;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.util.DateDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ANTIBODY_SAMPLE_DATE_TIME;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TIME;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TEST_CENTER;
+import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class AntibodyCertificateDataDto {
@@ -35,9 +44,7 @@ public class AntibodyCertificateDataDto {
         }
 
         switch (systemSource) {
-            case WebUI:
-            case CsvUpload:
-            case ApiGateway: {
+            case WebUI, CsvUpload, ApiGateway: {
                 break;
             }
             case ApiPlatform: {

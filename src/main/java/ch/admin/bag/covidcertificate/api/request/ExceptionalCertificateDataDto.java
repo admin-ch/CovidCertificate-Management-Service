@@ -1,27 +1,25 @@
 package ch.admin.bag.covidcertificate.api.request;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.validator.LocalDateValidator;
-import ch.admin.bag.covidcertificate.api.request.validator.TextValidator;
 import ch.admin.bag.covidcertificate.util.DateDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TEST_CENTER;
 import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
-import static ch.admin.bag.covidcertificate.api.request.validator.LocalDateValidator.*;
-import static ch.admin.bag.covidcertificate.api.request.validator.TextValidator.*;
+import static ch.admin.bag.covidcertificate.api.request.validator.LocalDateValidator.validateDateIsNotBeforeLimitDate;
+import static ch.admin.bag.covidcertificate.api.request.validator.LocalDateValidator.validateDateIsNotInTheFuture;
+import static ch.admin.bag.covidcertificate.api.request.validator.TextValidator.validateTextIsNotBlankAndLengthIsNotBiggerThanMaxLength;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ExceptionalCertificateDataDto {
@@ -37,12 +35,10 @@ public class ExceptionalCertificateDataDto {
         validateTextIsNotBlankAndLengthIsNotBiggerThanMaxLength(attestationIssuer,"attestationIssuer",MAX_STRING_LENGTH);
 
         switch (systemSource) {
-            case WebUI:
-            case CsvUpload: {
+            case WebUI, CsvUpload: {
                 break;
             }
-            case ApiGateway:
-            case ApiPlatform: {
+            case ApiGateway, ApiPlatform: {
                 throw new AccessDeniedException("Exceptional certificates can't be generated through the ApiPlatform or the ApitGateway.");
             }
             default:

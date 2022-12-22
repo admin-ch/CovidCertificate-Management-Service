@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IssuableVaccineMapper {
@@ -36,6 +35,6 @@ public class IssuableVaccineMapper {
         if(issuableVaccines == null) {
             return Collections.emptyList();
         }
-        return issuableVaccines.stream().map(IssuableVaccineMapper::fromVaccine).collect(Collectors.toList());
+        return issuableVaccines.stream().map(IssuableVaccineMapper::fromVaccine).toList();
     }
 }

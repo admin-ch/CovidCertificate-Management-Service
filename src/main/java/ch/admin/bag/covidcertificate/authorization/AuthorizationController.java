@@ -21,13 +21,16 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthorizationController {
+
+    public static final String FOUND = "found: ";
+
     private final AuthorizationService authorizationService;
 
     @GetMapping("/current/{service}")
     public Set<String> getCurrent(@PathVariable String service, @RequestParam List<String> roles) {
         log.info("Get current authorization: {} {}", kv("service", service), kv("roles", roles));
         Set<String> result = authorizationService.getCurrent(service, roles);
-        log.info("found: " + result);
+        log.info(FOUND + result);
         return result;
     }
 
@@ -35,7 +38,7 @@ public class AuthorizationController {
     public ServiceData getDefinition(@PathVariable String service) {
         log.info("authorization service={}", service);
         ServiceData result = authorizationService.getDefinition(service);
-        log.info("found: " + result);
+        log.info(FOUND + result);
         return result;
     }
 
@@ -43,7 +46,7 @@ public class AuthorizationController {
     public List<RoleData> getRoleMapping() {
         log.info("authorization role-mapping");
         List<RoleData> result = authorizationService.getRoleMapping();
-        log.info("found: " + result);
+        log.info(FOUND + result);
         return result;
     }
 }

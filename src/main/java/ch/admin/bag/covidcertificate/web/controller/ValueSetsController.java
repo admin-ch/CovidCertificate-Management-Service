@@ -60,16 +60,12 @@ public class ValueSetsController {
     public List<IssuableVaccineDto> getIssuableVaccines(@PathVariable String systemSource) {
         SystemSource localSystemSource = SystemSource.valueOf(systemSource);
         log.info("Call of getIssuableVaccines for value sets with systemSource {}", localSystemSource);
-        switch (localSystemSource) {
-            case WebUI:
-                return valueSetsService.getWebUiIssuableVaccines();
-            case CsvUpload:
-            case ApiGateway:
-                return valueSetsService.getApiGatewayIssuableVaccines();
-            case ApiPlatform:
-                return valueSetsService.getApiPlatformIssuableVaccines();
-        }
-        return valueSetsService.getApiGatewayIssuableVaccines();
+        return switch (localSystemSource) {
+            case WebUI -> valueSetsService.getWebUiIssuableVaccines();
+            case CsvUpload, ApiGateway -> valueSetsService.getApiGatewayIssuableVaccines();
+            case ApiPlatform -> valueSetsService.getApiPlatformIssuableVaccines();
+            default -> valueSetsService.getApiGatewayIssuableVaccines();
+        };
     }
 
     @GetMapping("/countries")

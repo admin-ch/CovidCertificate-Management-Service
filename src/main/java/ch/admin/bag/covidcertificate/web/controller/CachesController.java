@@ -59,49 +59,20 @@ public class CachesController {
 
     private void cleanCacheFor(Cache cache) {
         switch (cache) {
-            case KEYIDENTIFIER:
-                defaultSigningClient.cleanKeyIdentifierCache();
-                break;
-            case SIGNINGINFORMATION:
-                signingInformationCacheService.cleanSigningInformationCache();
-                break;
-            case RAPIDTESTS:
-                valueSetsService.cleanRapidTestsCache();
-                break;
-            case ISSUABLERAPIDTESTS:
-                valueSetsService.cleanIssuableRapidTestsCache();
-                break;
-            case VACCINES:
-                valueSetsService.cleanVaccinesCache();
-                break;
-            case ISSUABLEVACCINES:
-                valueSetsService.cleanIssuableVaccinesCache();
-                break;
-            case APIISSUABLEVACCINES:
-                valueSetsService.cleanApiIssuableVaccinesCache();
-                break;
-            case WEBISSUABLEVACCINES:
-                valueSetsService.cleanWebIssuableVaccinesCache();
-                break;
-            case VALUESETS:
-                valueSetsService.cleanValueSetsCache();
-                break;
-            case EXTENDEDVALUESETS:
-                valueSetsService.cleanExtendedValueSetsCache();
-                break;
-            case ISSUABLEVACCINEDTO:
-                valueSetsService.cleanIssuableVaccineDtoCache();
-                break;
-            case ISSUABLETESTDTO:
-                valueSetsService.cleanIssuableTestDtoCache();
-                break;
-            case COUNTRYCODES:
-                valueSetsService.cleanCountryCodesCache();
-                break;
-            case COUNTRYCODEBYLANGUAGE:
-                valueSetsService.cleanCountryCodeByLanguageCache();
-                break;
-
+            case KEYIDENTIFIER -> defaultSigningClient.cleanKeyIdentifierCache();
+            case SIGNINGINFORMATION -> signingInformationCacheService.cleanSigningInformationCache();
+            case RAPIDTESTS -> valueSetsService.cleanRapidTestsCache();
+            case ISSUABLERAPIDTESTS -> valueSetsService.cleanIssuableRapidTestsCache();
+            case VACCINES -> valueSetsService.cleanVaccinesCache();
+            case ISSUABLEVACCINES -> valueSetsService.cleanIssuableVaccinesCache();
+            case APIISSUABLEVACCINES -> valueSetsService.cleanApiIssuableVaccinesCache();
+            case WEBISSUABLEVACCINES -> valueSetsService.cleanWebIssuableVaccinesCache();
+            case VALUESETS -> valueSetsService.cleanValueSetsCache();
+            case EXTENDEDVALUESETS -> valueSetsService.cleanExtendedValueSetsCache();
+            case ISSUABLEVACCINEDTO -> valueSetsService.cleanIssuableVaccineDtoCache();
+            case ISSUABLETESTDTO -> valueSetsService.cleanIssuableTestDtoCache();
+            case COUNTRYCODES -> valueSetsService.cleanCountryCodesCache();
+            case COUNTRYCODEBYLANGUAGE -> valueSetsService.cleanCountryCodeByLanguageCache();
         }
     }
 
