@@ -799,13 +799,6 @@ services:
         one-of: ${roles.id.app.manager}
         uri: "/api/v1/caches/clear"
 
-      bi-data-access:
-        identifier: "bi-data-access"
-        from: 2022-01-01T00:00:00
-        until: 2099-12-31T23:59:59
-        one-of: ${roles.id.bi.data-access}
-        uri: "/api/v1/bi-data/{fromDate}/{toDate}"
-
   ##   R E P O R T   ##############################################################################
 
   report:
@@ -918,6 +911,13 @@ services:
         until: 2099-12-31T23:59:59
         one-of: ${roles.id.report.detail}
         uri: "/api/v2/report/fraud/a12/for_transfer_codes"
+
+      bi-data-access:
+        identifier: "bi-data-access"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.bi.data-access}
+        uri: "/api/v1/bi-data/{fromDate}/{toDate}"
 
   ##   N O T I F I C A T I O N S   ##############################################################################
 
