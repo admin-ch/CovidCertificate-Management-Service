@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -120,4 +121,19 @@ public class JeapAuthenticationToken extends JwtAuthenticationToken {
                 collect(Collectors.joining(", "));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JeapAuthenticationToken that = (JeapAuthenticationToken) o;
+        return getName() == that.getName() &&
+                Objects.equals(getClientId(), that.getClientId()) &&
+                Objects.equals(authoritiesToString(), that.authoritiesToString()) &&
+                Objects.equals(userRolesToString(), that.authoritiesToString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getClientId(), authoritiesToString(), userRolesToString());
+    }
 }
