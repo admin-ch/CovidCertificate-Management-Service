@@ -15,6 +15,8 @@ roles:
       recovery: "RECOVERY_CERT_CREATOR"
       rat: "RECOVERY_RAT_CERT_CREATOR"
       exception: "EXCEPTION_CERT_CREATOR"
+      light: "LIGHT_CERT_CREATOR"
+      print: "CERT_PRINT_USER"
     app:
       manager: "COVID_APP_MANAGER"
     report:
@@ -203,6 +205,12 @@ roles:
     - intern: ${roles.id.bi.data-access}
       eiam: "9500.GGG-Covidcertificate.BI_DATA_ACCESS"
       claim: "bag-cc-bi-data-access"
+    - intern: ${roles.id.cert.light}
+      eiam: "9500.GGG-Covidcertificate.LIGHT_CERT_CREATOR"
+      claim: "bag-cc-light-cert-creator"
+    - intern: ${roles.id.cert.print}
+      eiam: "9500.GGG-Covidcertificate.CERT_PRINT_USER"
+      claim: "bag-cc-print-cert"
 
 # 1st level:  SERVICE
 #   2nd level:  FUNCTION
