@@ -38,12 +38,12 @@ class JeapAuthenticationTokenTest {
 
     @Test
     void testEquals_true() {
-        assertThat(this.testEe).isNotNull();
-        assertThat(this.testEe.equals(this.testEe)).isTrue();
+        assertThat(this.testEe).isNotNull().isEqualTo(this.testEe);
     }
 
     @Test
     void testEquals_false() {
+        assertThat(this.testEe).isNotNull();
         Set<String> roles = Set.of("four", "five", "six");
         JeapAuthenticationToken otherTestEe = new JeapAuthenticationToken(token, roles);
         assertThat(this.testEe.equals(otherTestEe)).isFalse();
@@ -52,7 +52,8 @@ class JeapAuthenticationTokenTest {
     @Test
     void testHashCode_hasToBeDifferent() {
         assertThat(this.testEe).isNotNull();
-        assertThat(this.testEe.hashCode()).isNotNull();
-        assertThat(this.testEe.hashCode()).isEqualTo(this.testEe.hashCode());
+        Set<String> roles = Set.of("four", "five", "six");
+        JeapAuthenticationToken otherTestEe = new JeapAuthenticationToken(token, roles);
+        assertThat(this.testEe.hashCode()).isNotEqualTo(otherTestEe.hashCode());
     }
 }
