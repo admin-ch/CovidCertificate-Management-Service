@@ -106,7 +106,7 @@ public class CsvRevocationService {
                     }
                     return null;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private File writeCsv(List<RevocationCsvBean> certificateCsvBeans, Charset charset) throws IOException {

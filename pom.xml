@@ -24,7 +24,7 @@
         <dgc-java.version>1.0.2</dgc-java.version>
         <google-zxing.version>3.5.1</google-zxing.version>
         <guava.version>31.1-jre</guava.version>
-        <httpclient.version>4.5.13</httpclient.version>
+        <httpclient.version>4.5.14</httpclient.version>
         <jackson-core.version>2.14.1</jackson-core.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <janino.version>3.1.9</janino.version>
@@ -37,12 +37,12 @@
         <opencsv.version>5.7.1</opencsv.version>
         <openpdf.version>1.3.30</openpdf.version>
         <org.jsoup.jsoup.version>1.15.3</org.jsoup.jsoup.version>
-        <org.thymeleaf.thymeleaf.version>3.1.0.RELEASE</org.thymeleaf.thymeleaf.version>
-        <shedlock.version>4.35.0</shedlock.version>
+        <org.thymeleaf.thymeleaf.version>3.1.1.RELEASE</org.thymeleaf.thymeleaf.version>
+        <shedlock.version>4.42.0</shedlock.version>
         <snakeyaml.version>1.32</snakeyaml.version>
         <spring-cloud-starter-sleuth.version>3.1.5</spring-cloud-starter-sleuth.version>
         <spring-cloud.version>2021.0.4</spring-cloud.version>
-        <springdoc.version>1.6.13</springdoc.version>
+        <springdoc.version>1.6.14</springdoc.version>
         <woodstox-core.version>6.4.0</woodstox-core.version>
 
         <maven.javadoc.skip>true</maven.javadoc.skip>

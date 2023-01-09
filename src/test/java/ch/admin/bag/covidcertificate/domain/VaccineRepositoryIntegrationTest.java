@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -607,8 +606,8 @@ class VaccineRepositoryIntegrationTest {
         );
         // when
         List<Vaccine> result = vaccineRepository.findAllWebUiActive();
-        List<Integer> uiOrder = result.stream().map(Vaccine::getVaccineOrder).collect(Collectors.toList());
-        boolean isSortedAsc = uiOrder.stream().sorted().collect(Collectors.toList()).equals(uiOrder);
+        List<Integer> uiOrder = result.stream().map(Vaccine::getVaccineOrder).toList();
+        boolean isSortedAsc = uiOrder.stream().sorted().toList().equals(uiOrder);
 
         // then
         assertThat(result).isNotNull().isNotEmpty().hasSize(3);

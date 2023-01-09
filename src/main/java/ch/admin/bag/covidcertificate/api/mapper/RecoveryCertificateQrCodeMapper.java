@@ -11,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
 import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
@@ -31,7 +30,7 @@ public class RecoveryCertificateQrCodeMapper {
     private static List<RecoveryCertificateData> toRecoveryCertificateDataList(List<RecoveryCertificateDataDto> recoveryCertificateDataDtoList) {
         return recoveryCertificateDataDtoList.stream().map(
                 RecoveryCertificateQrCodeMapper::toRecoveryCertificateData
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     private static RecoveryCertificateData toRecoveryCertificateData(RecoveryCertificateDataDto recoveryCertificateDataDto) {

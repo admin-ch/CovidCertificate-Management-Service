@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.config;
 
-import ch.admin.bag.covidcertificate.service.SwissDGCSigner;
 import ch.admin.bag.covidcertificate.service.COSEService;
+import ch.admin.bag.covidcertificate.service.SwissDGCSigner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

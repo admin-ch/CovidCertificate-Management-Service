@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class RevocationResponseDto {
+
     private RevocationStatus status;
     private LocalDateTime revocationDateTime;
 

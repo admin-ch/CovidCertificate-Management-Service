@@ -71,15 +71,11 @@ public class PdfHtmlRenderer {
     }
 
     private Locale getLocale(String language) {
-        switch (language) {
-            case "fr":
-                return Locale.FRENCH;
-            case "it":
-                return Locale.ITALIAN;
-            case "rm":
-                return Locale.forLanguageTag("rm");
-            default:
-                return Locale.GERMAN;
-        }
+        return switch (language) {
+            case "fr" -> Locale.FRENCH;
+            case "it" -> Locale.ITALIAN;
+            case "rm" -> Locale.forLanguageTag("rm");
+            default -> Locale.GERMAN;
+        };
     }
 }

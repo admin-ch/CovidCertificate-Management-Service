@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -143,27 +142,14 @@ public class ValueSetsService {
     public List<CountryCode> getCountryCodesForLanguage(String language) {
         log.info("Loading country codes for language");
         var countryCodes = countryCodesLoader.getCountryCodes();
-        List<CountryCode> result = Collections.emptyList();
-        switch (language.toLowerCase()) {
-            case DE:
-                result = countryCodes.getDe();
-                break;
-            case IT:
-                result = countryCodes.getIt();
-                break;
-            case FR:
-                result = countryCodes.getFr();
-                break;
-            case RM:
-                result = countryCodes.getRm();
-                break;
-            case EN:
-                result = countryCodes.getEn();
-                break;
-            default:
-                throw new ValueSetException(UNSUPPORTED_LANGUAGE);
-        }
-        return result;
+        return switch (language.toLowerCase()) {
+            case DE -> countryCodes.getDe();
+            case IT -> countryCodes.getIt();
+            case FR -> countryCodes.getFr();
+            case RM -> countryCodes.getRm();
+            case EN -> countryCodes.getEn();
+            default -> throw new ValueSetException(UNSUPPORTED_LANGUAGE);
+        };
     }
 
     @Cacheable(RAPID_TEST_CACHE_NAME)

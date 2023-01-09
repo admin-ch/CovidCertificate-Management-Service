@@ -7,6 +7,7 @@ import ch.admin.bag.covidcertificate.util.DateHelper;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -24,6 +25,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class CertificateCreateDto {
     @JsonUnwrapped

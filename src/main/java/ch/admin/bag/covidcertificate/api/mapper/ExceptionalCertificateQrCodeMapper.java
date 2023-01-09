@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
 import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
@@ -34,7 +33,7 @@ public class ExceptionalCertificateQrCodeMapper {
     private static List<ExceptionalCertificateData> toExceptionalCertificateDataList(List<ExceptionalCertificateDataDto> exceptionalCertificateDataDtoList) {
         return exceptionalCertificateDataDtoList.stream().map(
                 ExceptionalCertificateQrCodeMapper::toExceptionalCertificateData
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     private static ExceptionalCertificateData toExceptionalCertificateData(ExceptionalCertificateDataDto exceptionalCertificateDataDto) {

@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.api.request.pdfgeneration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -10,8 +11,10 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecoveryCertificatePdfGenerateMetadataDto extends CertificatePdfGenerateMetadataDto {
+
     @JsonProperty("df")
     private LocalDate validFrom;
     @JsonProperty("du")

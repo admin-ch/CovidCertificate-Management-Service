@@ -38,7 +38,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_CERTIFICATE_TYPE;
@@ -98,7 +97,7 @@ class CsvCovidCertificateGenerationServiceTest {
         List<Path> result;
         try (Stream<Path> walk = Files.walk(Paths.get(folderPath))) {
             result = walk.filter(Files::isRegularFile)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         return result;
     }

@@ -67,15 +67,19 @@ public class KpiDataService {
         logRepository.save(kpiLog);
     }
 
+    private void privateSaveKpiData(KpiData kpiLog) {
+        logRepository.save(kpiLog);
+    }
+
     public void logTestCertificateGenerationKpi(
             TestCertificateCreateDto createDto,
             String uvci,
             String usedKeyIdentifier) {
         var typeCode = TestType.findByTypeCode(createDto.getTestInfo().get(0).getTypeCode());
         logCertificateGenerationKpi(KPI_TYPE_TEST,
-                                    uvci,
-                                    createDto.getSystemSource(),
-                                    createDto.getUserExtId(),
+                uvci,
+                createDto.getSystemSource(),
+                createDto.getUserExtId(),
                                     getDetailsForTestCertificate(typeCode),
                                     createDto.getTestInfo().get(0).getMemberStateOfTest(),
                                     usedKeyIdentifier);
@@ -321,23 +325,25 @@ public class KpiDataService {
                  kpiUsedKeyIdentifierKVPair);
     }
 
+    @Transactional
     public void logRevocationKpi(
             String systemKey, String kpiType, String uvci, SystemSource systemSource, String userExtId) {
         Jwt token = jeapAuthorization.getJeapAuthenticationToken().getToken();
         String relevantUserExtId = UserExtIdHelper.extractUserExtId(token, userExtId, systemSource);
         LocalDateTime kpiTimestamp = LocalDateTime.now();
         log.info("kpi: {} {} {} {}",
-                 kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
-                 kv(KPI_TYPE_KEY, kpiType),
-                 kv(KPI_UUID_KEY, relevantUserExtId),
-                 kv(systemKey, systemSource.category));
-        saveKpiData(
+                kv(KPI_TIMESTAMP_KEY, kpiTimestamp.format(LOG_FORMAT)),
+                kv(KPI_TYPE_KEY, kpiType),
+                kv(KPI_UUID_KEY, relevantUserExtId),
+                kv(systemKey, systemSource.category));
+        privateSaveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, relevantUserExtId, systemSource.category)
                         .withUvci(uvci)
                         .build()
         );
     }
 
+    @Transactional
     public void logRevocationListReductionKpiWithoutSecurityContext(
             String systemKey, String kpiType, String uvci, SystemSource systemSource, String userExtId) {
         LocalDateTime kpiTimestamp = LocalDateTime.now();
@@ -346,7 +352,7 @@ public class KpiDataService {
                 kv(KPI_TYPE_KEY, kpiType),
                 kv(KPI_UUID_KEY, userExtId),
                 kv(systemKey, systemSource.category));
-        saveKpiData(
+        privateSaveKpiData(
                 new KpiData.KpiDataBuilder(kpiTimestamp, kpiType, userExtId, systemSource.category)
                         .withUvci(uvci)
                         .build()

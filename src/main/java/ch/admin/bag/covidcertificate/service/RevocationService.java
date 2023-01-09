@@ -121,7 +121,7 @@ public class RevocationService {
     public Map<String, String> getUvcisWithErrorMessage(List<UvciForRevocationDto> uvciForRevocationDtos) {
         List<String> uvcis = uvciForRevocationDtos.stream()
                 .map(UvciForRevocationDto::getUvci)
-                .collect(Collectors.toList());
+                .toList();
 
         return Stream.of(
                         // get all possible errors for uvcis

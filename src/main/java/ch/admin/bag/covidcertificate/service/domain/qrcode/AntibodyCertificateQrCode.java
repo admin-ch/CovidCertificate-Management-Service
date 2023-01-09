@@ -3,7 +3,11 @@ package ch.admin.bag.covidcertificate.service.domain.qrcode;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificatePerson;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 

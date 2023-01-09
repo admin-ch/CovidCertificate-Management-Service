@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VaccineMapper {
@@ -34,7 +33,7 @@ public class VaccineMapper {
         if (vaccines == null) {
             return Collections.emptyList();
         }
-        return vaccines.stream().map(VaccineMapper::fromVaccine).collect(Collectors.toList());
+        return vaccines.stream().map(VaccineMapper::fromVaccine).toList();
     }
 
     public static List<VaccineDto> uniqueVaccines(List<Vaccine> vaccines) {

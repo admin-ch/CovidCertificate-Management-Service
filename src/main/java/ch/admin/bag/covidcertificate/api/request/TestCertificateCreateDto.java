@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_TEST_DATA;
 
 @Getter
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TestCertificateCreateDto extends CertificateCreateDto {
 

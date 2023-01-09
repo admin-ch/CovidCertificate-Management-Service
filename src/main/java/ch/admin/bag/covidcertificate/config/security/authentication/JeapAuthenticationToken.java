@@ -119,5 +119,4 @@ public class JeapAuthenticationToken extends JwtAuthenticationToken {
                 map(r -> "'" + r + "'").
                 collect(Collectors.joining(", "));
     }
-
 }

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
 import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
@@ -33,7 +32,7 @@ public class RecoveryRatCertificateQrCodeMapper {
     private static List<RecoveryCertificateData> toRecoveryCertificateDataList(List<RecoveryRatCertificateDataDto> recoveryRatCertificateDataDtoList) {
         return recoveryRatCertificateDataDtoList.stream().map(
                 RecoveryRatCertificateQrCodeMapper::toRecoveryCertificateData
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     private static RecoveryCertificateData toRecoveryCertificateData(RecoveryRatCertificateDataDto recoveryRatCertificateDataDtoList) {

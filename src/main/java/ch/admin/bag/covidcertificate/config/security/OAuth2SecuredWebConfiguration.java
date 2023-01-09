@@ -1,9 +1,9 @@
 package ch.admin.bag.covidcertificate.config.security;
 
-import ch.admin.bag.covidcertificate.config.security.validation.AudienceJwtValidator;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationContext;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationConverter;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
+import ch.admin.bag.covidcertificate.config.security.validation.AudienceJwtValidator;
 import ch.admin.bag.covidcertificate.config.security.validation.ContextIssuerJwtValidator;
 import ch.admin.bag.covidcertificate.config.security.validation.JeapJwtDecoderFactory;
 import lombok.RequiredArgsConstructor;

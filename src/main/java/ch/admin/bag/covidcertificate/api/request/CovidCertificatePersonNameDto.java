@@ -1,7 +1,12 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.util.StringUtils;
@@ -9,10 +14,13 @@ import org.springframework.util.StringUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_FAMILY_NAME;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_GIVEN_NAME;
+import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CovidCertificatePersonNameDto {

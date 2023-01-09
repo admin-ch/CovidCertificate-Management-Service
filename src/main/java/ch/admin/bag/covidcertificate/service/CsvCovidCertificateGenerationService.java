@@ -5,8 +5,8 @@ import ch.admin.bag.covidcertificate.api.exception.CsvErrorWithResponse;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCsvBean;
-import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCsvBean;
@@ -48,7 +48,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -120,23 +119,23 @@ public class CsvCovidCertificateGenerationService {
             List<CertificateCreateDto> createDtos, Class<?> csvBeanClass) throws JsonProcessingException {
         if (csvBeanClass == RecoveryCertificateCsvBean.class) {
             return createRecoveryCertificates(
-                    createDtos.stream().map(RecoveryCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(RecoveryCertificateCreateDto.class::cast).toList());
         } else if (csvBeanClass == RecoveryRatCertificateCsvBean.class) {
             return createRecoveryRatCertificates(
-                    createDtos.stream().map(RecoveryRatCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(RecoveryRatCertificateCreateDto.class::cast).toList());
         } else if (csvBeanClass == TestCertificateCsvBean.class) {
             return createTestCertificates(
-                    createDtos.stream().map(TestCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(TestCertificateCreateDto.class::cast).toList());
         } else if (csvBeanClass == VaccinationCertificateCsvBean.class) {
             return createVaccinationCertificates(
-                    createDtos.stream().map(VaccinationCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(VaccinationCertificateCreateDto.class::cast).toList());
         } else if (csvBeanClass == VaccinationTouristCertificateCsvBean.class) {
             return createVaccinationTouristCertificates(createDtos.stream()
                     .map(VaccinationTouristCertificateCreateDto.class::cast)
-                    .collect(Collectors.toList()));
+                    .toList());
         } else if (csvBeanClass == AntibodyCertificateCsvBean.class) {
             return createAntibodyCertificates(
-                    createDtos.stream().map(AntibodyCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(AntibodyCertificateCreateDto.class::cast).toList());
         } else {
             throw new CreateCertificateException(INVALID_CSV);
         }
@@ -300,7 +299,7 @@ public class CsvCovidCertificateGenerationService {
                     }
                     return null;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private boolean areCreateCertificateRequestsValid(
