@@ -14,7 +14,9 @@ import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeTestValueSet;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
+import static ch.admin.bag.covidcertificate.api.Constants.VERSION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

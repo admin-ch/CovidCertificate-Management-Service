@@ -5,15 +5,16 @@ import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_FAMILY_NAME;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_GIVEN_NAME;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("CovidCertificatePersonNameDtoTest")
 @DisplayName("Tests for the CovidCertificatePersonNameDto")

@@ -1,9 +1,7 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
-import ch.admin.bag.covidcertificate.api.response.CsvCertificateGenerationResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CsvRevocationResponseDto;
-import ch.admin.bag.covidcertificate.service.CsvCovidCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.CsvRevocationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

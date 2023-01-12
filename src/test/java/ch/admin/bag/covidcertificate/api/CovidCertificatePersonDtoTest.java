@@ -9,8 +9,15 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_BIRTH;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_BIRTH_IN_FUTURE;
+import static ch.admin.bag.covidcertificate.api.Constants.LOCAL_DATE_FORMAT;
+import static ch.admin.bag.covidcertificate.api.Constants.MAX_DATE_OF_BIRTH;
+import static ch.admin.bag.covidcertificate.api.Constants.MIN_DATE_OF_BIRTH;
+import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class CovidCertificatePersonDtoTest {

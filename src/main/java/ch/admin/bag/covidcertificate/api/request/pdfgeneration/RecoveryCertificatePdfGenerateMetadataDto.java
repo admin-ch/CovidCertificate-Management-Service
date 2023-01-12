@@ -10,8 +10,8 @@ import lombok.ToString;
 import java.time.LocalDate;
 
 @Getter
-@ToString
-@EqualsAndHashCode
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecoveryCertificatePdfGenerateMetadataDto extends CertificatePdfGenerateMetadataDto {
 

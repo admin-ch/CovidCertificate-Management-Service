@@ -10,8 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
