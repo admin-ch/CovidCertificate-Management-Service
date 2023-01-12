@@ -269,6 +269,11 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         one-of: ${roles.id.app.manager}
+      main-cache-management:
+        identifier: main-cache-management
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.app.manager}
 
       # create/revoke certificates
       create-certificate-web:
