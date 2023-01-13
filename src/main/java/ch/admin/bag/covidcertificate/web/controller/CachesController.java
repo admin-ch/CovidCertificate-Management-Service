@@ -7,8 +7,8 @@ import ch.admin.bag.covidcertificate.service.ValueSetsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class CachesController {
      * @param only OPTIONAL list or single String seperated by "," of caches
      */
     @PostMapping("/clear")
-    public void clear(@RequestParam(required = false) Optional<List<String>> only) {
+    public void clear(@RequestBody(required = false) Optional<List<String>> only) {
         log.info("Call of clear all caches.");
 
         try {
@@ -91,6 +91,5 @@ public class CachesController {
         ISSUABLETESTDTO,
         COUNTRYCODES,
         COUNTRYCODEBYLANGUAGE
-
     }
 }
