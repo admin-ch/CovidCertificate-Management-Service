@@ -193,7 +193,7 @@ public class CovidCertificateGenerationService {
                             uvci,
                             createDto);
             printQueueClient.sendPrintJob(printRequestDto);
-            if (printRequestDto.getIsBillable()) {
+            if (Boolean.TRUE.equals(printRequestDto.getIsBillable())) {
                 delivery = Delivery.PRINT_BILLABLE;
             } else {
                 delivery = Delivery.PRINT_NON_BILLABLE;
