@@ -409,6 +409,12 @@ services:
         until: 2099-12-31T23:59:59
         one-of: ${roles.id.report.detail}
         dataroom: ${roles.groups.data-room}
+      report-a13:
+        identifier: "report-a13"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.report.detail}
+        dataroom: ${roles.groups.data-room}
 
   ##   A P I - G A T E W A Y   ##############################################################################
 
@@ -911,6 +917,13 @@ services:
         until: 2099-12-31T23:59:59
         one-of: ${roles.id.report.detail}
         uri: "/api/v2/report/fraud/a12/for_transfer_codes"
+
+      report-a13:
+        identifier: "report-a13"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.report.detail}
+        uri: "/api/v2/report/fraud/a13/for_timerange_by_canton"
 
       bi-data-access:
         identifier: "bi-data-access"
