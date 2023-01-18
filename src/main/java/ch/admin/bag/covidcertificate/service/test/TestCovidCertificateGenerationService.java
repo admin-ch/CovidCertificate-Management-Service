@@ -19,7 +19,6 @@ import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryR
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
 import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequestDto;
 import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
-import ch.admin.bag.covidcertificate.domain.enums.Delivery;
 import ch.admin.bag.covidcertificate.service.BarcodeService;
 import ch.admin.bag.covidcertificate.service.COSETime;
 import ch.admin.bag.covidcertificate.service.CovidCertificateDtoMapperService;
@@ -168,7 +167,6 @@ public class TestCovidCertificateGenerationService {
 
         var responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         responseDto.validate();
-        Delivery delivery = Delivery.OTHER;
         if (createDto.sendToPrint()) {
             CertificatePrintRequestDto printRequestDto =
                     certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(
@@ -176,13 +174,7 @@ public class TestCovidCertificateGenerationService {
                             uvci,
                             createDto);
             printQueueClient.sendPrintJob(printRequestDto);
-            if (Boolean.TRUE.equals(printRequestDto.getIsBillable())) {
-                delivery = Delivery.PRINT_BILLABLE;
-            } else {
-                delivery = Delivery.PRINT_NON_BILLABLE;
-            }
         } else if (createDto.sendToApp()) {
-            delivery = Delivery.APP;
             var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getAppCode(), code.getPayload(),
                     Base64.getEncoder().encodeToString(pdf));
             var createError = this.inAppDeliveryClient.deliverToApp(
