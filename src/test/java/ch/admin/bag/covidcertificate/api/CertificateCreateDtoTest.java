@@ -8,8 +8,13 @@ import ch.admin.bag.covidcertificate.api.request.SystemSource;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static ch.admin.bag.covidcertificate.api.Constants.DUPLICATE_DELIVERY_METHOD;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_APP_CODE;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_LANGUAGE;
+import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class CertificateCreateDtoTest {

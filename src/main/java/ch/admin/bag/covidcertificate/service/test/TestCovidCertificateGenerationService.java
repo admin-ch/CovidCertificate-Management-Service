@@ -17,6 +17,7 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponse
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
+import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequestDto;
 import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.service.BarcodeService;
 import ch.admin.bag.covidcertificate.service.COSETime;
@@ -91,7 +92,7 @@ public class TestCovidCertificateGenerationService {
         var pdfData = covidCertificateDtoMapperService.toAntibodyCertificatePdf(createDto, qrCodeData);
         var signingInformation = signingInformationService.getAntibodySigningInformation(validAt);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getAntibodyInfo().get(0).getIdentifier(),
-                                        createDto, signingInformation);
+                createDto, signingInformation);
     }
 
     public CovidCertificateCreateResponseDto generateCovidCertificate(
@@ -100,7 +101,7 @@ public class TestCovidCertificateGenerationService {
         var pdfData = covidCertificateDtoMapperService.toExceptionalCertificatePdf(createDto, qrCodeData);
         var signingInformation = signingInformationService.getExceptionalSigningInformation(validAt);
         return generateCovidCertificate(qrCodeData, pdfData, qrCodeData.getExceptionalInfo().get(0).getIdentifier(),
-                                        createDto, signingInformation);
+                createDto, signingInformation);
     }
 
     private CovidCertificateCreateResponseDto generateCovidCertificate(
@@ -111,7 +112,7 @@ public class TestCovidCertificateGenerationService {
             SigningInformationDto signingInformation) throws JsonProcessingException {
         var expiration24Months = coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS);
         return this.generateCovidCertificate(qrCodeData, pdfData, uvci, createDto, signingInformation,
-                                             expiration24Months);
+                expiration24Months);
     }
 
     public ConvertedCertificateResponseEnvelope convertFromExistingCovidCertificate(
@@ -159,17 +160,23 @@ public class TestCovidCertificateGenerationService {
         log.trace("Create barcode");
         var code = barcodeService.createBarcode(contents, signingInformation, expiration);
         log.trace("Create certificate pdf");
-        var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(pdfData, code.getPayload(),
-                                                                                LocalDateTime.now());
+        var pdf = covidPdfCertificateGenerationService.generateCovidCertificate(
+                pdfData,
+                code.getPayload(),
+                LocalDateTime.now());
 
         var responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         responseDto.validate();
         if (createDto.sendToPrint()) {
-            printQueueClient.sendPrintJob(
-                    certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(pdf, uvci, createDto));
+            CertificatePrintRequestDto printRequestDto =
+                    certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(
+                            pdf,
+                            uvci,
+                            createDto);
+            printQueueClient.sendPrintJob(printRequestDto);
         } else if (createDto.sendToApp()) {
             var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getAppCode(), code.getPayload(),
-                                                               Base64.getEncoder().encodeToString(pdf));
+                    Base64.getEncoder().encodeToString(pdf));
             var createError = this.inAppDeliveryClient.deliverToApp(
                     uvci, createDto.getSystemSource(), createDto.getUserExtId(), inAppDeliveryDto); // null if no error
             responseDto.setAppDeliveryError(createError);

@@ -50,7 +50,8 @@ public class CovidCertificateGenerationController {
         kpiLogService.logVaccinationCertificateGenerationKpi(
                 createDto,
                 responseDto.getUvci(),
-                responseEnvelope.getUsedKeyIdentifier());
+                responseEnvelope.getUsedKeyIdentifier(),
+                responseEnvelope.getDeliveryForKpi());
         return responseDto;
     }
 
@@ -70,7 +71,8 @@ public class CovidCertificateGenerationController {
         kpiLogService.logVaccinationTouristCertificateGenerationKpi(
                 createDto,
                 responseDto.getUvci(),
-                responseEnvelope.getUsedKeyIdentifier());
+                responseEnvelope.getUsedKeyIdentifier(),
+                responseEnvelope.getDeliveryForKpi());
         return responseDto;
     }
 
@@ -89,7 +91,8 @@ public class CovidCertificateGenerationController {
         kpiLogService.logTestCertificateGenerationKpi(
                 createDto,
                 responseDto.getUvci(),
-                responseEnvelope.getUsedKeyIdentifier());
+                responseEnvelope.getUsedKeyIdentifier(),
+                responseEnvelope.getDeliveryForKpi());
         return responseDto;
     }
 
@@ -108,7 +111,8 @@ public class CovidCertificateGenerationController {
         kpiLogService.logRecoveryCertificateGenerationKpi(
                 createDto,
                 responseDto.getUvci(),
-                responseEnvelope.getUsedKeyIdentifier());
+                responseEnvelope.getUsedKeyIdentifier(),
+                responseEnvelope.getDeliveryForKpi());
         return responseDto;
     }
 
@@ -127,7 +131,8 @@ public class CovidCertificateGenerationController {
         kpiLogService.logRecoveryRatCertificateGenerationKpi(
                 createDto,
                 responseDto.getUvci(),
-                responseEnvelope.getUsedKeyIdentifier());
+                responseEnvelope.getUsedKeyIdentifier(),
+                responseEnvelope.getDeliveryForKpi());
         return responseDto;
     }
 
@@ -146,7 +151,8 @@ public class CovidCertificateGenerationController {
         kpiLogService.logAntibodyCertificateGenerationKpi(
                 createDto,
                 responseDto.getUvci(),
-                responseEnvelope.getUsedKeyIdentifier());
+                responseEnvelope.getUsedKeyIdentifier(),
+                responseEnvelope.getDeliveryForKpi());
         return responseDto;
     }
 
@@ -165,7 +171,8 @@ public class CovidCertificateGenerationController {
         kpiLogService.logExceptionalCertificateGenerationKpi(
                 createDto,
                 responseDto.getUvci(),
-                responseEnvelope.getUsedKeyIdentifier());
+                responseEnvelope.getUsedKeyIdentifier(),
+                responseEnvelope.getDeliveryForKpi());
         return responseDto;
     }
 }

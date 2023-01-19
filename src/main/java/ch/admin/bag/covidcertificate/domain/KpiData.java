@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.domain.enums.Delivery;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,7 +31,7 @@ public class KpiData {
     String country;
     String systemSource;
     String apiGatewayId;
-
+    Delivery delivery;
     @Column(name = "in_app_delivery_code")
     String inAppDeliveryCode;
 
@@ -54,7 +55,8 @@ public class KpiData {
             String inAppDeliveryCode,
             String keyIdentifier,
             String originUvci,
-            String conversionReason) {
+            String conversionReason,
+            Delivery delivery) {
 
         this.timestamp = timestamp;
         this.type = type;
@@ -67,6 +69,7 @@ public class KpiData {
         this.keyIdentifier = keyIdentifier;
         this.originUvci = originUvci;
         this.conversionReason = conversionReason;
+        this.delivery = delivery;
     }
 
     public static class KpiDataBuilder {
@@ -77,6 +80,7 @@ public class KpiData {
         String uvci;
         String details;
         String country;
+        Delivery delivery;
         String inAppDeliveryCode;
         String keyIdentifier;
         String originUvci;
@@ -101,6 +105,11 @@ public class KpiData {
 
         public KpiDataBuilder withCountry(String country) {
             this.country = country;
+            return this;
+        }
+
+        public KpiDataBuilder withDelivery(Delivery delivery) {
+            this.delivery = delivery;
             return this;
         }
 
@@ -136,7 +145,8 @@ public class KpiData {
                     inAppDeliveryCode,
                     keyIdentifier,
                     originUvci,
-                    conversionReason);
+                    conversionReason,
+                    delivery);
         }
     }
 }

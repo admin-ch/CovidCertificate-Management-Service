@@ -12,6 +12,7 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponse
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
+import ch.admin.bag.covidcertificate.domain.enums.Delivery;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGeneratePdfFromExistingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -78,7 +79,7 @@ class CovidCertificatePdfGenerationControllerTest {
             var pdfGenerateRequestDto = fixture
                     .create(VaccinationCertificatePdfGenerateRequestDto.class);
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                     any(VaccinationCertificatePdfGenerateRequestDto.class))).thenReturn(responseEnvelope);
 
@@ -122,7 +123,7 @@ class CovidCertificatePdfGenerationControllerTest {
             var pdfGenerateRequestDto = fixture
                     .create(VaccinationTouristCertificatePdfGenerateRequestDto.class);
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                     any(VaccinationTouristCertificatePdfGenerateRequestDto.class))).thenReturn(responseEnvelope);
 
@@ -166,7 +167,7 @@ class CovidCertificatePdfGenerationControllerTest {
             var pdfGenerateRequestDto = fixture
                     .create(TestCertificatePdfGenerateRequestDto.class);
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                     any(TestCertificatePdfGenerateRequestDto.class))).thenReturn(responseEnvelope);
 

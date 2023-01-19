@@ -11,7 +11,9 @@ import org.junit.Test;
 import java.util.List;
 
 import static ch.admin.bag.covidcertificate.api.Constants.NO_VACCINATION_DATA;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class VaccinationCertificateCreateDtoTest {

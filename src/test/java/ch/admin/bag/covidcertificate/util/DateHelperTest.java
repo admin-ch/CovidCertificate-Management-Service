@@ -2,14 +2,16 @@ package ch.admin.bag.covidcertificate.util;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import com.flextrade.jfixture.JFixture;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.DAYS_UNTIL_RECOVERY_VALID;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_BIRTH;
+import static ch.admin.bag.covidcertificate.api.Constants.RECOVERY_CERTIFICATE_VALIDITY_IN_DAYS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

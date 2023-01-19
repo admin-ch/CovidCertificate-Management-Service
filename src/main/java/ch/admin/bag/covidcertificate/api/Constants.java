@@ -72,6 +72,7 @@ public class Constants {
     public static final String KPI_DETAILS = "details";
     public static final String KPI_COUNTRY = "country";
     public static final String KPI_USED_KEY_IDENTIFIER = "usedKID";
+    public static final String KPI_DELIVERY_INFO = "delivery";
     public static final String KPI_SYSTEM_UI = "ui";
 
     // Time, date and relevant formatting

@@ -23,9 +23,16 @@ import java.io.IOException;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.createUVCI;
 import static ch.admin.bag.covidcertificate.api.Constants.APP_DELIVERY_FAILED;
 import static ch.admin.bag.covidcertificate.api.Constants.UNKNOWN_APP_CODE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class DefaultInAppDeliveryClientTest {
 
