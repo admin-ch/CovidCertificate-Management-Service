@@ -49,7 +49,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             throw new AuthorizationException(Constants.ACCESS_DENIED_FOR_HIN_WITH_CH_LOGIN);
         }
 
-        List<ServiceData.Function> functions = authorizationService.identifyFunction(uri, request.getMethod());
+        List<ServiceData.Function> functions = authorizationService.identifyFunction(
+                AuthorizationService.SERVICE_MANAGEMENT, uri, request.getMethod());
 
         if (functions.isEmpty()) {
             throw new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri);
