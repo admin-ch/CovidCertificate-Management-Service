@@ -18,6 +18,7 @@
         <java.version>17</java.version>
 
         <cc-backend-logging.version>1.0.5</cc-backend-logging.version>
+        <cc-backend-authorization.version>1.0.0-SNAPSHOT</cc-backend-authorization.version>
         <com.github.tomakehurst.version>2.27.2</com.github.tomakehurst.version>
         <com.openhtmltopdf.version>1.0.10</com.openhtmltopdf.version>
         <com.squareup.okhttp3.version>4.10.0</com.squareup.okhttp3.version>
@@ -189,6 +190,11 @@
             <groupId>ch.admin.bag.covidcertificate</groupId>
             <artifactId>cc-backend-logging</artifactId>
             <version>${cc-backend-logging.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.admin.bag.covidcertificate</groupId>
+            <artifactId>cc-backend-authorization</artifactId>
+            <version>${cc-backend-authorization.version}</version>
         </dependency>
 
         <dependency>

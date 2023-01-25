@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="CCManagementServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <option name="ACTIVE_PROFILES" value="local,mock-printing-service,mock-inapp-delivery-service,mock-value-sets-service,mock-signing-service,mock-vaccine-value-sets-service" />
-    <module name="CovidCertificate-Management-Service"/>
+    <module name="cc-management-service" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="ch.admin.bag.covidcertificate.CCManagementServiceApplication" />
     <option name="VM_PARAMETERS" value="-Dhttp.proxyHost=proxy-bvcol.admin.ch -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxy-bvcol.admin.ch -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.0.0.1|*.admin.ch|172.17.0.* -Dhttps.protocols=&quot;TLSv1.2&quot;" />
     <extension name="coverage">
