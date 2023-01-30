@@ -5,8 +5,8 @@ import ch.admin.bag.covidcertificate.api.exception.CsvErrorWithResponse;
 import ch.admin.bag.covidcertificate.api.exception.CsvException;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCsvBean;
-import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateCreateCsvBean;
+import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.CertificateType;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCsvBean;
@@ -48,7 +48,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -83,22 +82,20 @@ public class CsvCovidCertificateGenerationService {
         } catch (IllegalArgumentException e) {
             throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
         }
-        switch (validCertificateType) {
-            case RECOVERY:
-                return new CsvCertificateGenerationResponseDto(handleCsvRequest(file, RecoveryCertificateCsvBean.class));
-            case RECOVERY_RAT:
-                return new CsvCertificateGenerationResponseDto(handleCsvRequest(file, RecoveryRatCertificateCsvBean.class));
-            case TEST:
-                return new CsvCertificateGenerationResponseDto(handleCsvRequest(file, TestCertificateCsvBean.class));
-            case VACCINATION:
-                return new CsvCertificateGenerationResponseDto(handleCsvRequest(file, VaccinationCertificateCsvBean.class));
-            case VACCINATION_TOURIST:
-                return new CsvCertificateGenerationResponseDto(handleCsvRequest(file, VaccinationTouristCertificateCsvBean.class));
-            case ANTIBODY:
-                return new CsvCertificateGenerationResponseDto(handleCsvRequest(file, AntibodyCertificateCsvBean.class));
-            default:
-                throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
-        }
+        return switch (validCertificateType) {
+            case RECOVERY ->
+                    new CsvCertificateGenerationResponseDto(handleCsvRequest(file, RecoveryCertificateCsvBean.class));
+            case RECOVERY_RAT ->
+                    new CsvCertificateGenerationResponseDto(handleCsvRequest(file, RecoveryRatCertificateCsvBean.class));
+            case TEST -> new CsvCertificateGenerationResponseDto(handleCsvRequest(file, TestCertificateCsvBean.class));
+            case VACCINATION ->
+                    new CsvCertificateGenerationResponseDto(handleCsvRequest(file, VaccinationCertificateCsvBean.class));
+            case VACCINATION_TOURIST ->
+                    new CsvCertificateGenerationResponseDto(handleCsvRequest(file, VaccinationTouristCertificateCsvBean.class));
+            case ANTIBODY ->
+                    new CsvCertificateGenerationResponseDto(handleCsvRequest(file, AntibodyCertificateCsvBean.class));
+            default -> throw new CreateCertificateException(INVALID_CERTIFICATE_TYPE);
+        };
     }
 
     private byte[] handleCsvRequest(MultipartFile file, Class<? extends CertificateCreateCsvBean> csvBeanClass)
@@ -120,23 +117,23 @@ public class CsvCovidCertificateGenerationService {
             List<CertificateCreateDto> createDtos, Class<?> csvBeanClass) throws JsonProcessingException {
         if (csvBeanClass == RecoveryCertificateCsvBean.class) {
             return createRecoveryCertificates(
-                    createDtos.stream().map(RecoveryCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(RecoveryCertificateCreateDto.class::cast).toList());
         } else if (csvBeanClass == RecoveryRatCertificateCsvBean.class) {
             return createRecoveryRatCertificates(
-                    createDtos.stream().map(RecoveryRatCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(RecoveryRatCertificateCreateDto.class::cast).toList());
         } else if (csvBeanClass == TestCertificateCsvBean.class) {
             return createTestCertificates(
-                    createDtos.stream().map(TestCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(TestCertificateCreateDto.class::cast).toList());
         } else if (csvBeanClass == VaccinationCertificateCsvBean.class) {
             return createVaccinationCertificates(
-                    createDtos.stream().map(VaccinationCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(VaccinationCertificateCreateDto.class::cast).toList());
         } else if (csvBeanClass == VaccinationTouristCertificateCsvBean.class) {
             return createVaccinationTouristCertificates(createDtos.stream()
                     .map(VaccinationTouristCertificateCreateDto.class::cast)
-                    .collect(Collectors.toList()));
+                    .toList());
         } else if (csvBeanClass == AntibodyCertificateCsvBean.class) {
             return createAntibodyCertificates(
-                    createDtos.stream().map(AntibodyCertificateCreateDto.class::cast).collect(Collectors.toList()));
+                    createDtos.stream().map(AntibodyCertificateCreateDto.class::cast).toList());
         } else {
             throw new CreateCertificateException(INVALID_CSV);
         }
@@ -164,7 +161,8 @@ public class CsvCovidCertificateGenerationService {
             kpiLogService.logRecoveryCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKeyIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier(),
+                    responseEnvelope.getDeliveryForKpi());
         }
         return responseDtos;
     }
@@ -183,7 +181,8 @@ public class CsvCovidCertificateGenerationService {
             logUvci(responseDto.getUvci());
             kpiLogService.logRecoveryRatCertificateGenerationKpi(
                     createDto, responseDto.getUvci(),
-                    responseEnvelope.getUsedKeyIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier(),
+                    responseEnvelope.getDeliveryForKpi());
         }
         return responseDtos;
     }
@@ -202,7 +201,8 @@ public class CsvCovidCertificateGenerationService {
             kpiLogService.logTestCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKeyIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier(),
+                    responseEnvelope.getDeliveryForKpi());
         }
         return responseDtos;
     }
@@ -222,7 +222,8 @@ public class CsvCovidCertificateGenerationService {
             kpiLogService.logVaccinationCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKeyIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier(),
+                    responseEnvelope.getDeliveryForKpi());
         }
         return responseDtos;
     }
@@ -242,7 +243,8 @@ public class CsvCovidCertificateGenerationService {
             kpiLogService.logVaccinationTouristCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKeyIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier(),
+                    responseEnvelope.getDeliveryForKpi());
         }
         return responseDtos;
     }
@@ -262,7 +264,8 @@ public class CsvCovidCertificateGenerationService {
             kpiLogService.logAntibodyCertificateGenerationKpi(
                     createDto,
                     responseDto.getUvci(),
-                    responseEnvelope.getUsedKeyIdentifier());
+                    responseEnvelope.getUsedKeyIdentifier(),
+                    responseEnvelope.getDeliveryForKpi());
         }
         return responseDtos;
     }
@@ -300,7 +303,7 @@ public class CsvCovidCertificateGenerationService {
                     }
                     return null;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private boolean areCreateCertificateRequestsValid(

@@ -30,7 +30,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.digg.dgc.encoding.Barcode;
@@ -40,10 +44,26 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
-import static ch.admin.bag.covidcertificate.TestModelProvider.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getAntibodyCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getExceptionalCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getRecoveryRatCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
+import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateCreateDto;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -122,6 +142,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toVaccinationCertificateQrCode(createDto);
@@ -134,6 +156,8 @@ class CovidCertificateGenerationServiceTest {
             when(covidCertificateDtoMapperService.toVaccinationCertificateQrCode(createDto)).thenReturn(qrCodeData);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toVaccinationCertificatePdf(createDto, qrCodeData);
@@ -144,6 +168,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(signingInformationService).getVaccinationSigningInformation(createDto);
@@ -184,6 +210,8 @@ class CovidCertificateGenerationServiceTest {
             when(objectWriter.writeValueAsString(qrCodeData)).thenReturn(contents);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -195,6 +223,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -211,13 +241,15 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
                 service.generateCovidCertificate(createDto);
 
                 verify(pdfCertificateGenerationService).generateCovidCertificate(vaccinationPdf, barcode.getPayload(),
-                                                                                 now);
+                        now);
             }
         }
 
@@ -228,6 +260,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -241,6 +275,8 @@ class CovidCertificateGenerationServiceTest {
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -252,6 +288,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getVaccinationCertificateCreateDto("EU/1/20/1507", "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -338,6 +376,8 @@ class CovidCertificateGenerationServiceTest {
                     "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verifyNoInteractions(inAppDeliveryClient);
@@ -354,11 +394,13 @@ class CovidCertificateGenerationServiceTest {
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationSigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verify(certificatePrintRequestDtoMapper, times(1))
                     .toCertificatePrintRequestDto(pdf, qrCodeData.getVaccinationInfo().get(0).getIdentifier(),
-                                                  createDto);
+                            createDto);
         }
 
         @Test
@@ -398,6 +440,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getVaccinationTouristCertificateCreateDto("EU/1/20/1507", "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toVaccinationTouristCertificateQrCode(createDto);
@@ -411,6 +455,8 @@ class CovidCertificateGenerationServiceTest {
                     qrCodeData);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toVaccinationTouristCertificatePdf(createDto, qrCodeData);
@@ -421,6 +467,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getVaccinationTouristCertificateCreateDto("EU/1/20/1507", "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(signingInformationService).getVaccinationTouristSigningInformation();
@@ -462,6 +510,8 @@ class CovidCertificateGenerationServiceTest {
             when(objectWriter.writeValueAsString(qrCodeData)).thenReturn(contents);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -473,6 +523,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getVaccinationTouristCertificateCreateDto("EU/1/20/1507", "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -490,13 +542,15 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
                 service.generateCovidCertificate(createDto);
 
                 verify(pdfCertificateGenerationService).generateCovidCertificate(vaccinationPdf, barcode.getPayload(),
-                                                                                 now);
+                        now);
             }
         }
 
@@ -507,6 +561,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -520,6 +576,8 @@ class CovidCertificateGenerationServiceTest {
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -531,6 +589,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getVaccinationTouristCertificateCreateDto("EU/1/20/1507", "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -617,6 +677,8 @@ class CovidCertificateGenerationServiceTest {
                     "de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verifyNoInteractions(inAppDeliveryClient);
@@ -633,11 +695,13 @@ class CovidCertificateGenerationServiceTest {
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getVaccinationTouristSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verify(certificatePrintRequestDtoMapper, times(1))
                     .toCertificatePrintRequestDto(pdf, qrCodeData.getVaccinationTouristInfo().get(0).getIdentifier(),
-                                                  createDto);
+                            createDto);
         }
 
         @Test
@@ -952,6 +1016,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toRecoveryCertificateQrCode(createDto);
@@ -964,6 +1030,8 @@ class CovidCertificateGenerationServiceTest {
             when(covidCertificateDtoMapperService.toRecoveryCertificateQrCode(createDto)).thenReturn(qrCodeData);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toRecoveryCertificatePdf(createDto, qrCodeData);
@@ -974,6 +1042,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(signingInformationService).getRecoverySigningInformation(createDto);
@@ -1014,6 +1084,8 @@ class CovidCertificateGenerationServiceTest {
             when(objectWriter.writeValueAsString(qrCodeData)).thenReturn(contents);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -1025,6 +1097,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -1041,6 +1115,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -1048,7 +1124,7 @@ class CovidCertificateGenerationServiceTest {
                 service.generateCovidCertificate(createDto);
 
                 verify(pdfCertificateGenerationService).generateCovidCertificate(RecoveryPdf, barcode.getPayload(),
-                                                                                 now);
+                        now);
             }
         }
 
@@ -1059,6 +1135,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1071,6 +1149,8 @@ class CovidCertificateGenerationServiceTest {
             var pdf = fixture.create(byte[].class);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
 
             var actual = service.generateCovidCertificate(createDto);
@@ -1083,6 +1163,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1172,6 +1254,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verifyNoInteractions(inAppDeliveryClient);
@@ -1186,6 +1270,8 @@ class CovidCertificateGenerationServiceTest {
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoverySigningInformation(any())).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verify(certificatePrintRequestDtoMapper, times(1))
@@ -1226,6 +1312,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryRatCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toRecoveryRatCertificateQrCode(createDto);
@@ -1238,6 +1326,8 @@ class CovidCertificateGenerationServiceTest {
             when(covidCertificateDtoMapperService.toRecoveryRatCertificateQrCode(createDto)).thenReturn(qrCodeData);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toRecoveryRatCertificatePdf(createDto, qrCodeData);
@@ -1248,6 +1338,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryRatCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(signingInformationService).getRecoveryRatSigningInformation();
@@ -1288,6 +1380,8 @@ class CovidCertificateGenerationServiceTest {
             when(objectWriter.writeValueAsString(qrCodeData)).thenReturn(contents);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -1299,6 +1393,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryRatCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -1315,6 +1411,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -1322,7 +1420,7 @@ class CovidCertificateGenerationServiceTest {
                 service.generateCovidCertificate(createDto);
 
                 verify(pdfCertificateGenerationService).generateCovidCertificate(RecoveryPdf, barcode.getPayload(),
-                                                                                 now);
+                        now);
             }
         }
 
@@ -1333,6 +1431,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1345,6 +1445,8 @@ class CovidCertificateGenerationServiceTest {
             var pdf = fixture.create(byte[].class);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
 
             var actual = service.generateCovidCertificate(createDto);
@@ -1357,6 +1459,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryRatCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1446,6 +1550,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getRecoveryRatCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verifyNoInteractions(inAppDeliveryClient);
@@ -1460,6 +1566,8 @@ class CovidCertificateGenerationServiceTest {
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getRecoveryRatSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verify(certificatePrintRequestDtoMapper, times(1))
@@ -1500,6 +1608,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getAntibodyCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toAntibodyCertificateQrCode(createDto);
@@ -1512,6 +1622,8 @@ class CovidCertificateGenerationServiceTest {
             when(covidCertificateDtoMapperService.toAntibodyCertificateQrCode(createDto)).thenReturn(qrCodeData);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toAntibodyCertificatePdf(createDto, qrCodeData);
@@ -1522,6 +1634,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getAntibodyCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(signingInformationService).getAntibodySigningInformation();
@@ -1562,6 +1676,8 @@ class CovidCertificateGenerationServiceTest {
             when(objectWriter.writeValueAsString(qrCodeData)).thenReturn(contents);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -1573,6 +1689,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getAntibodyCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -1589,6 +1707,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -1596,7 +1716,7 @@ class CovidCertificateGenerationServiceTest {
                 service.generateCovidCertificate(createDto);
 
                 verify(pdfCertificateGenerationService).generateCovidCertificate(AntibodyPdf, barcode.getPayload(),
-                                                                                 now);
+                        now);
             }
         }
 
@@ -1607,6 +1727,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1620,6 +1742,8 @@ class CovidCertificateGenerationServiceTest {
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1631,6 +1755,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getAntibodyCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1714,6 +1840,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getAntibodyCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verifyNoInteractions(inAppDeliveryClient);
@@ -1728,6 +1856,8 @@ class CovidCertificateGenerationServiceTest {
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getAntibodySigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verify(certificatePrintRequestDtoMapper, times(1))
@@ -1766,6 +1896,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getExceptionalCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toExceptionalCertificateQrCode(createDto);
@@ -1778,6 +1910,8 @@ class CovidCertificateGenerationServiceTest {
             when(covidCertificateDtoMapperService.toExceptionalCertificateQrCode(createDto)).thenReturn(qrCodeData);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(covidCertificateDtoMapperService).toExceptionalCertificatePdf(createDto, qrCodeData);
@@ -1788,6 +1922,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getExceptionalCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
             verify(signingInformationService).getExceptionalSigningInformation();
@@ -1828,6 +1964,8 @@ class CovidCertificateGenerationServiceTest {
             when(objectWriter.writeValueAsString(qrCodeData)).thenReturn(contents);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -1839,6 +1977,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getExceptionalCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             service.generateCovidCertificate(createDto);
 
@@ -1855,6 +1995,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             try (MockedStatic<LocalDateTime> localDateTimeMock = Mockito.mockStatic(LocalDateTime.class)) {
                 localDateTimeMock.when(LocalDateTime::now).thenReturn(now);
@@ -1862,7 +2004,7 @@ class CovidCertificateGenerationServiceTest {
                 service.generateCovidCertificate(createDto);
 
                 verify(pdfCertificateGenerationService).generateCovidCertificate(ExceptionalPdf, barcode.getPayload(),
-                                                                                 now);
+                        now);
             }
         }
 
@@ -1873,6 +2015,8 @@ class CovidCertificateGenerationServiceTest {
             when(barcodeService.createBarcode(any(), any(), any())).thenReturn(barcode);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1886,6 +2030,8 @@ class CovidCertificateGenerationServiceTest {
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1897,6 +2043,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getExceptionalCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             var actual = service.generateCovidCertificate(createDto);
 
@@ -1980,6 +2128,8 @@ class CovidCertificateGenerationServiceTest {
             var createDto = getExceptionalCertificateCreateDto("de");
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verifyNoInteractions(inAppDeliveryClient);
@@ -1994,11 +2144,13 @@ class CovidCertificateGenerationServiceTest {
             when(pdfCertificateGenerationService.generateCovidCertificate(any(), any(), any())).thenReturn(pdf);
             var signingInformation = fixture.create(SigningInformationDto.class);
             when(signingInformationService.getExceptionalSigningInformation()).thenReturn(signingInformation);
+            var printRequestDto = fixture.create(CertificatePrintRequestDto.class);
+            when(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(any(), anyString(), any())).thenReturn(printRequestDto);
 
             assertDoesNotThrow(() -> service.generateCovidCertificate(createDto));
             verify(certificatePrintRequestDtoMapper, times(1))
                     .toCertificatePrintRequestDto(pdf, qrCodeData.getExceptionalInfo().get(0).getIdentifier(),
-                                                  createDto);
+                            createDto);
         }
 
         @Test

@@ -8,8 +8,13 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_OF_TEST;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TIME;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TEST_CENTER;
+import static ch.admin.bag.covidcertificate.api.Constants.SWISS_TIMEZONE;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestCertificateDataDtoTest {
 

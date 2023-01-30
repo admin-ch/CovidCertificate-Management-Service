@@ -2,14 +2,24 @@ package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.util.DateHelper;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_BIRTH;
+import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_BIRTH_IN_FUTURE;
+import static ch.admin.bag.covidcertificate.api.Constants.MAX_DATE_OF_BIRTH;
+import static ch.admin.bag.covidcertificate.api.Constants.MIN_DATE_OF_BIRTH;
+import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CovidCertificatePersonDto {

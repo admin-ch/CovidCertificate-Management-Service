@@ -1,8 +1,8 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
-import com.flextrade.jfixture.JFixture;
 import ch.admin.bag.covidcertificate.api.request.validator.UvciValidator;
+import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

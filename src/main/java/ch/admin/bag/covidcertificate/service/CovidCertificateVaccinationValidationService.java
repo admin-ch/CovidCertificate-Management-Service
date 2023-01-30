@@ -33,8 +33,7 @@ public class CovidCertificateVaccinationValidationService {
                 throwExceptionIfIssuableIsViolated(isCountryCH, issuableVaccine.getIssuable());
                 break;
             }
-            case ApiGateway:
-            case CsvUpload: {
+            case ApiGateway, CsvUpload: {
                 var issuableVaccine = retrieveProduct(productCode, valueSetsService.getApiGatewayIssuableVaccines());
                 throwExceptionIfIssuableIsViolated(isCountryCH, issuableVaccine.getIssuable());
                 break;

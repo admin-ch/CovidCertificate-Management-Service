@@ -15,7 +15,9 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelo
 import ch.admin.bag.covidcertificate.client.inapp_delivery.InAppDeliveryClient;
 import ch.admin.bag.covidcertificate.client.inapp_delivery.domain.InAppDeliveryRequestDto;
 import ch.admin.bag.covidcertificate.client.printing.PrintQueueClient;
+import ch.admin.bag.covidcertificate.client.printing.domain.CertificatePrintRequestDto;
 import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
+import ch.admin.bag.covidcertificate.domain.enums.Delivery;
 import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.pdf.AbstractCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.qrcode.AbstractCertificateQrCode;
@@ -155,7 +157,7 @@ public class CovidCertificateGenerationService {
             throws JsonProcessingException {
 
         var expiration24Months = coseTime.calculateExpirationInstantPlusMonths(Constants.EXPIRATION_PERIOD_24_MONTHS);
-        return this.generateCovidCertificate(
+        return generateCovidCertificate(
                 qrCodeData,
                 pdfData,
                 uvci,
@@ -183,19 +185,30 @@ public class CovidCertificateGenerationService {
 
         var responseDto = new CovidCertificateCreateResponseDto(pdf, code.getImage(), uvci);
         responseDto.validate();
+        Delivery delivery = Delivery.OTHER;
         if (createDto.sendToPrint()) {
-            printQueueClient.sendPrintJob(certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(
-                    pdf,
-                    uvci,
-                    createDto));
+            CertificatePrintRequestDto printRequestDto =
+                    certificatePrintRequestDtoMapper.toCertificatePrintRequestDto(
+                            pdf,
+                            uvci,
+                            createDto);
+            printQueueClient.sendPrintJob(printRequestDto);
+            if (Boolean.TRUE.equals(printRequestDto.getIsBillable())) {
+                delivery = Delivery.PRINT_BILLABLE;
+            } else {
+                delivery = Delivery.PRINT_NON_BILLABLE;
+            }
         } else if (createDto.sendToApp()) {
+            delivery = Delivery.APP;
             var inAppDeliveryDto = new InAppDeliveryRequestDto(createDto.getAppCode(), code.getPayload(),
-                                                               Base64.getEncoder().encodeToString(pdf));
+                    Base64.getEncoder().encodeToString(pdf));
             var createError = this.inAppDeliveryClient.deliverToApp(
                     uvci, createDto.getSystemSource(), createDto.getUserExtId(), inAppDeliveryDto); // null if no error
             responseDto.setAppDeliveryError(createError);
         }
-        return new CovidCertificateResponseEnvelope(responseDto,
-                                                    signingInformation.getCalculatedKeyIdentifier());
+        return new CovidCertificateResponseEnvelope(
+                responseDto,
+                signingInformation.getCalculatedKeyIdentifier(),
+                delivery);
     }
 }

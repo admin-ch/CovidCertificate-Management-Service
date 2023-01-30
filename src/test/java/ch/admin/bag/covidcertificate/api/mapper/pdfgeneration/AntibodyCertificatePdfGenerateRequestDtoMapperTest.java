@@ -1,8 +1,8 @@
 package ch.admin.bag.covidcertificate.api.mapper.pdfgeneration;
 
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.AntibodyCertificatePdfGenerateRequestDto;
-import ch.admin.bag.covidcertificate.service.domain.pdf.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
+import ch.admin.bag.covidcertificate.service.domain.pdf.AntibodyCertificatePdf;
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
 

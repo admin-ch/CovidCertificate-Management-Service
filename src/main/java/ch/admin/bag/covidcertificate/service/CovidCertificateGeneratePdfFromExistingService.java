@@ -10,6 +10,7 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertif
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationTouristCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponseDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
+import ch.admin.bag.covidcertificate.domain.enums.Delivery;
 import ch.admin.bag.covidcertificate.service.document.PdfCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.domain.pdf.AbstractCertificatePdf;
 import lombok.RequiredArgsConstructor;
@@ -137,7 +138,7 @@ public class CovidCertificateGeneratePdfFromExistingService {
             var barcode = new DefaultBarcodeCreator().create(hcert, StandardCharsets.US_ASCII);
             var pdf = pdfCertificateGenerationService.generateCovidCertificate(pdfData, hcert, issuedAt);
             var responseDto = new CovidCertificateCreateResponseDto(pdf, barcode.getImage(), uvci);
-            return new CovidCertificateResponseEnvelope(responseDto, null);
+            return new CovidCertificateResponseEnvelope(responseDto, null, Delivery.OTHER);
         } catch (BarcodeException e) {
             throw new CreateCertificateException(CREATE_BARCODE_FAILED);
         }

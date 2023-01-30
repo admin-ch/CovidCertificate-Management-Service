@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IssuableRapidTestMapper {
@@ -21,6 +20,6 @@ public class IssuableRapidTestMapper {
         if(rapidTests == null) {
             return Collections.emptyList();
         }
-        return rapidTests.stream().map(IssuableRapidTestMapper::fromRapidTest).collect(Collectors.toList());
+        return rapidTests.stream().map(IssuableRapidTestMapper::fromRapidTest).toList();
     }
 }

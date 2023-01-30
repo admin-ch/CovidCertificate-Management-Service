@@ -269,6 +269,11 @@ services:
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         one-of: ${roles.id.app.manager}
+      main-cache-management:
+        identifier: main-cache-management
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.app.manager}
 
       # create/revoke certificates
       create-certificate-web:
@@ -405,6 +410,12 @@ services:
         dataroom: ${roles.groups.data-room}
       report-a12:
         identifier: "report-a12"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.report.detail}
+        dataroom: ${roles.groups.data-room}
+      report-a13:
+        identifier: "report-a13"
         from: 2022-01-01T00:00:00
         until: 2099-12-31T23:59:59
         one-of: ${roles.id.report.detail}
@@ -799,13 +810,6 @@ services:
         one-of: ${roles.id.app.manager}
         uri: "/api/v1/caches/clear"
 
-      bi-data-access:
-        identifier: "bi-data-access"
-        from: 2022-01-01T00:00:00
-        until: 2099-12-31T23:59:59
-        one-of: ${roles.id.bi.data-access}
-        uri: "/api/v1/bi-data/{fromDate}/{toDate}"
-
   ##   R E P O R T   ##############################################################################
 
   report:
@@ -918,6 +922,20 @@ services:
         until: 2099-12-31T23:59:59
         one-of: ${roles.id.report.detail}
         uri: "/api/v2/report/fraud/a12/for_transfer_codes"
+
+      report-a13:
+        identifier: "report-a13"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.report.detail}
+        uri: "/api/v2/report/fraud/a13/for_timerange_by_canton"
+
+      bi-data-access:
+        identifier: "bi-data-access"
+        from: 2022-01-01T00:00:00
+        until: 2099-12-31T23:59:59
+        one-of: ${roles.id.bi.data-access}
+        uri: "/api/v1/bi-data/{fromDate}/{toDate}"
 
   ##   N O T I F I C A T I O N S   ##############################################################################
 

@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -64,7 +63,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 .filter(f -> f.matchesUri(uri))
                 .filter(f -> f.matchesHttpMethod(request.getMethod()))
                 .filter(f -> f.isBetween(LocalDateTime.now()))
-                .collect(Collectors.toList());
+                .toList();
 
         if (functions.isEmpty()) {
             throw new AuthorizationException(Constants.NO_FUNCTION_CONFIGURED, uri);
@@ -90,5 +89,4 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
         return true;
     }
-
 }

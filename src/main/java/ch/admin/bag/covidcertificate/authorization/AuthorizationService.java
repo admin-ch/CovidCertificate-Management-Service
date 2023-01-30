@@ -135,7 +135,7 @@ public class AuthorizationService {
             result = functions.stream()
                     .parallel()
                     .filter(function -> function.isBetween(pointInTime))
-                    .collect(Collectors.toList());
+                    .toList();
         }
         return result;
     }

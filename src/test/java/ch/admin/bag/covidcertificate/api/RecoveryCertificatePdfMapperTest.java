@@ -7,7 +7,9 @@ import ch.admin.bag.covidcertificate.service.domain.qrcode.RecoveryCertificateQr
 import com.flextrade.jfixture.JFixture;
 import org.junit.Test;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import static ch.admin.bag.covidcertificate.api.Constants.DAYS_UNTIL_RECOVERY_VALID;
+import static ch.admin.bag.covidcertificate.api.Constants.ISSUER;
+import static ch.admin.bag.covidcertificate.api.Constants.RECOVERY_CERTIFICATE_VALIDITY_IN_DAYS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RecoveryCertificatePdfMapperTest {

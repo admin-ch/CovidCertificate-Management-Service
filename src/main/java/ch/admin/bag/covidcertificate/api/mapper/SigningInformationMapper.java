@@ -4,9 +4,12 @@ import ch.admin.bag.covidcertificate.client.signing.SigningInformationDto;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SigningInformationMapper {
+
+    private SigningInformationMapper() {
+        throw new IllegalStateException("SigningInformationMapper is a utility class");
+    }
 
     public static SigningInformationDto fromEntity(SigningInformation signingInformation) {
         return SigningInformationDto.builder()
@@ -21,6 +24,6 @@ public class SigningInformationMapper {
     }
 
     public static List<SigningInformationDto> fromEntityList(List<SigningInformation> signingInformationList) {
-        return signingInformationList.stream().map(SigningInformationMapper::fromEntity).collect(Collectors.toList());
+        return signingInformationList.stream().map(SigningInformationMapper::fromEntity).toList();
     }
 }

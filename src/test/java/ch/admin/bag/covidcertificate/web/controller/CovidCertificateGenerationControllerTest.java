@@ -12,6 +12,7 @@ import ch.admin.bag.covidcertificate.api.response.CovidCertificateCreateResponse
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
+import ch.admin.bag.covidcertificate.domain.enums.Delivery;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
@@ -134,7 +135,7 @@ class CovidCertificateGenerationControllerTest {
                     "EU/1/20/1507",
                     "de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             when(covidCertificateGenerationService.generateCovidCertificate(
                     any(VaccinationCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
@@ -209,7 +210,7 @@ class CovidCertificateGenerationControllerTest {
                     "EU/1/20/1507",
                     "de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             when(covidCertificateGenerationService.generateCovidCertificate(
                     any(VaccinationTouristCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
@@ -354,7 +355,7 @@ class CovidCertificateGenerationControllerTest {
                     "1833",
                     "de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             lenient().when(covidCertificateGenerationService.generateCovidCertificate(
                     any(TestCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
@@ -429,7 +430,7 @@ class CovidCertificateGenerationControllerTest {
         void returnsCertificateWithOkStatus() throws Exception {
             var createDto = getRecoveryCertificateCreateDto("de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             when(covidCertificateGenerationService.generateCovidCertificate(
                     any(RecoveryCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
@@ -502,7 +503,7 @@ class CovidCertificateGenerationControllerTest {
         void returnsCertificateWithOkStatus() throws Exception {
             var createDto = getRecoveryRatCertificateCreateDto("de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             when(covidCertificateGenerationService.generateCovidCertificate(
                     any(RecoveryRatCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
@@ -574,7 +575,7 @@ class CovidCertificateGenerationControllerTest {
         void returnsCertificateWithOkStatus() throws Exception {
             var createDto = getAntibodyCertificateCreateDto("de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             when(covidCertificateGenerationService.generateCovidCertificate(
                     any(AntibodyCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
@@ -647,7 +648,7 @@ class CovidCertificateGenerationControllerTest {
         void returnsCertificateWithOkStatus() throws Exception {
             var createDto = getExceptionalCertificateCreateDto("de");
             var responseDto = fixture.create(CovidCertificateCreateResponseDto.class);
-            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier");
+            var responseEnvelope = new CovidCertificateResponseEnvelope(responseDto, "someIdentifier", Delivery.OTHER);
             when(covidCertificateGenerationService.generateCovidCertificate(
                     any(ExceptionalCertificateCreateDto.class))).thenReturn(responseEnvelope);
 
