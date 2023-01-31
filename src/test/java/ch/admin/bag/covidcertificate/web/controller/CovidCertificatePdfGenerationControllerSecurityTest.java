@@ -6,7 +6,7 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertif
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
-import ch.admin.bag.covidcertificate.authorization.config.AuthorizationConfig;
+import ch.admin.bag.covidcertificate.authorization.AuthorizationConfig;
 import ch.admin.bag.covidcertificate.authorization.config.LocalDateTimeConverter;
 import ch.admin.bag.covidcertificate.authorization.config.RoleConfig;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;

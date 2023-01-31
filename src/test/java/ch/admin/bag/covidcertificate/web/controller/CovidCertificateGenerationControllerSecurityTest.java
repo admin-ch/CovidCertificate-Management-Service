@@ -8,11 +8,10 @@ import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
+import ch.admin.bag.covidcertificate.authorization.AuthorizationConfig;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
-import ch.admin.bag.covidcertificate.authorization.config.AuthorizationConfig;
-import ch.admin.bag.covidcertificate.authorization.config.LocalDateTimeConverter;
-import ch.admin.bag.covidcertificate.authorization.config.RoleConfig;
+import ch.admin.bag.covidcertificate.authorization.ProfileRegistry;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
@@ -50,9 +49,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = {CovidCertificateGenerationController.class, OAuth2SecuredWebConfiguration.class,
-        AuthorizationInterceptor.class, AuthorizationService.class, AuthorizationConfig.class, RoleConfig.class,
-        LocalDateTimeConverter.class})
-@ActiveProfiles({"test", "authorization"})
+        AuthorizationInterceptor.class, AuthorizationService.class, AuthorizationConfig.class})
+@ActiveProfiles({"test", ProfileRegistry.AUTHORIZATION_MOCK})
 class CovidCertificateGenerationControllerSecurityTest extends AbstractSecurityTest {
 
     private static final String BASE_URL = "/api/v1/covidcertificate/";

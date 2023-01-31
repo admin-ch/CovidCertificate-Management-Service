@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.api.mapper.SigningInformationMapper;
+import ch.admin.bag.covidcertificate.authorization.ProfileRegistry;
 import ch.admin.bag.covidcertificate.domain.SigningInformation;
 import ch.admin.bag.covidcertificate.domain.SigningInformationRepository;
 import com.flextrade.jfixture.JFixture;
@@ -41,7 +42,7 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
         "spring.datasource.password=sa",
         "spring.flyway.clean-on-validation-error=true"
 })
-@ActiveProfiles({"local", "h2"})
+@ActiveProfiles({"local", "h2", ProfileRegistry.AUTHORIZATION_MOCK})
 @MockBean(InMemoryClientRegistrationRepository.class)
 class SigningInformationCacheServiceIntegrationTest {
     @Autowired

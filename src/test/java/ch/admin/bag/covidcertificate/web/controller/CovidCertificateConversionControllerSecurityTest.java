@@ -3,11 +3,10 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.TestModelProvider;
 import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
 import ch.admin.bag.covidcertificate.api.response.ConvertedCertificateResponseEnvelope;
+import ch.admin.bag.covidcertificate.authorization.AuthorizationConfig;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
-import ch.admin.bag.covidcertificate.authorization.config.AuthorizationConfig;
-import ch.admin.bag.covidcertificate.authorization.config.LocalDateTimeConverter;
-import ch.admin.bag.covidcertificate.authorization.config.RoleConfig;
+import ch.admin.bag.covidcertificate.authorization.ProfileRegistry;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;
 import ch.admin.bag.covidcertificate.service.CovidCertificateConversionService;
 import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
@@ -35,10 +34,12 @@ import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+//@WebMvcTest(value = {CovidCertificateConversionController.class, OAuth2SecuredWebConfiguration.class,
+//        AuthorizationInterceptor.class, AuthorizationService.class, AuthorizationServiceImpl.class, AuthorizationConfig.class,
+//        RoleConfig.class, LocalDateTimeConverter.class})
 @WebMvcTest(value = {CovidCertificateConversionController.class, OAuth2SecuredWebConfiguration.class,
-        AuthorizationInterceptor.class, AuthorizationService.class, AuthorizationConfig.class, RoleConfig.class,
-        LocalDateTimeConverter.class})
-@ActiveProfiles({"test", "authorization"})
+        AuthorizationInterceptor.class, AuthorizationService.class, AuthorizationConfig.class})
+@ActiveProfiles({"test", ProfileRegistry.AUTHORIZATION_MOCK})
 class CovidCertificateConversionControllerSecurityTest extends AbstractSecurityTest {
 
     private static final String BASE_URL = "/api/v1/covidcertificate/conversion/";

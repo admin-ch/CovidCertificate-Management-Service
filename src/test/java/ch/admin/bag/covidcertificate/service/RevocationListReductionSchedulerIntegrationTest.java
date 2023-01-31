@@ -2,6 +2,7 @@ package ch.admin.bag.covidcertificate.service;
 
 import ch.admin.bag.covidcertificate.FixtureCustomization;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
+import ch.admin.bag.covidcertificate.authorization.ProfileRegistry;
 import ch.admin.bag.covidcertificate.domain.KpiData;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +30,7 @@ import java.util.List;
         "spring.flyway.clean-on-validation-error=true"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service"})
+@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service", ProfileRegistry.AUTHORIZATION_MOCK})
 @MockBean(InMemoryClientRegistrationRepository.class)
 public class RevocationListReductionSchedulerIntegrationTest {
 

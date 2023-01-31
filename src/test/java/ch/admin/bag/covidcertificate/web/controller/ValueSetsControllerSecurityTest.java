@@ -3,7 +3,7 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.api.valueset.ValueSetsDto;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
-import ch.admin.bag.covidcertificate.authorization.config.AuthorizationConfig;
+import ch.admin.bag.covidcertificate.authorization.AuthorizationConfig;
 import ch.admin.bag.covidcertificate.authorization.config.LocalDateTimeConverter;
 import ch.admin.bag.covidcertificate.authorization.config.RoleConfig;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;

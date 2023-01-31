@@ -3,7 +3,6 @@ package ch.admin.bag.covidcertificate.authorization;
 import ch.admin.bag.covidcertificate.api.Constants;
 import ch.admin.bag.covidcertificate.api.exception.AuthorizationError;
 import ch.admin.bag.covidcertificate.api.exception.AuthorizationException;
-import ch.admin.bag.covidcertificate.authorization.config.AuthorizationConfig;
 import ch.admin.bag.covidcertificate.authorization.config.LocalDateTimeConverter;
 import ch.admin.bag.covidcertificate.authorization.config.RoleConfig;
 import ch.admin.bag.covidcertificate.testutil.JeapAuthenticationTestTokenBuilder;
@@ -28,8 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {AuthorizationInterceptor.class, AuthorizationService.class, AuthorizationConfig.class, RoleConfig.class, LocalDateTimeConverter.class})
-@ActiveProfiles(profiles = {"test", "auth-test"})
+@SpringBootTest(classes = {AuthorizationInterceptor.class, AuthorizationConfig.class})
+@ActiveProfiles(profiles = {"test", "auth-test", ProfileRegistry.AUTHORIZATION})
 @EnableConfigurationProperties
 public class AuthorizationInterceptorTest {
     private final Object handler = new Object();
