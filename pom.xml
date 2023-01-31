@@ -134,6 +134,11 @@
             <artifactId>java-cfenv-boot</artifactId>
             <version>${java-cfenv-boot.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ch.admin.bag.covidcertificate</groupId>
+            <artifactId>cc-backend-authorization</artifactId>
+            <version>${cc-backend-authorization.version}</version>
+        </dependency>
 
         <!-- jsoup HTML parser library @ https://jsoup.org/ -->
         <dependency>
@@ -190,11 +195,6 @@
             <groupId>ch.admin.bag.covidcertificate</groupId>
             <artifactId>cc-backend-logging</artifactId>
             <version>${cc-backend-logging.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.admin.bag.covidcertificate</groupId>
-            <artifactId>cc-backend-authorization</artifactId>
-            <version>${cc-backend-authorization.version}</version>
         </dependency>
 
         <dependency>
