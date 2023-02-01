@@ -63,7 +63,6 @@ public class AuthorizationInterceptorTest {
     @BeforeEach
     void setupMocks() {
         Mockito.reset(authorizationService);
-//        when(authorizationService.isUserPermitted(Mockito.anyCollection())).thenReturn(true);
     }
 
     @Test
@@ -75,13 +74,8 @@ public class AuthorizationInterceptorTest {
     @Test
     public void testNoFunctionConfigured() {
         MockHttpServletRequest request = mockRequest("/uriToNowhere");
+
         when(authorizationService.isUserPermitted(Mockito.anyCollection())).thenReturn(true);
-//        ServiceData.Function function = createFunction("function", "WEB_UI_USER",
-//                request.getRequestURI(), HttpMethod.resolve(request.getMethod()));
-//        when(authorizationService.identifyFunction(
-//                eq(AuthorizationService.SERVICE_MANAGEMENT),
-//                startsWith(request.getRequestURI()), eq(HttpMethod.GET.name()))).thenReturn(List.of(function));
-//        when(authorizationService.isGranted(Set.of(""), valuesets)).thenReturn(true);
 
         assertError(request, Constants.NO_FUNCTION_CONFIGURED);
     }
@@ -113,7 +107,6 @@ public class AuthorizationInterceptorTest {
         when(authorizationService.identifyFunction(
                 eq(AuthorizationService.SERVICE_MANAGEMENT),
                 startsWith(request.getRequestURI()), eq(request.getMethod()))).thenReturn(List.of(function));
-//        when(authorizationService.isGranted(anySet(),any())).thenReturn(false);
 
         assertError(request, Constants.FORBIDDEN);
     }
