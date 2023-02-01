@@ -4,11 +4,8 @@ import ch.admin.bag.covidcertificate.api.request.pdfgeneration.RecoveryCertifica
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.TestCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.VaccinationCertificatePdfGenerateRequestDto;
 import ch.admin.bag.covidcertificate.api.response.CovidCertificateResponseEnvelope;
-import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
-import ch.admin.bag.covidcertificate.authorization.AuthorizationConfig;
-import ch.admin.bag.covidcertificate.authorization.config.LocalDateTimeConverter;
-import ch.admin.bag.covidcertificate.authorization.config.RoleConfig;
+import ch.admin.bag.covidcertificate.authorization.config.ServiceData;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;
 import ch.admin.bag.covidcertificate.service.CovidCertificateGeneratePdfFromExistingService;
 import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
@@ -20,23 +17,27 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = {CovidCertificateGeneratePdfFromExistingController.class, OAuth2SecuredWebConfiguration.class,
-        AuthorizationInterceptor.class, AuthorizationService.class, AuthorizationConfig.class, RoleConfig.class,
-        LocalDateTimeConverter.class})
-@ActiveProfiles({"test", "authorization"})
+@WebMvcTest(value = {CovidCertificateGeneratePdfFromExistingController.class, OAuth2SecuredWebConfiguration.class})
+@ActiveProfiles({"test"})
 class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecurityTest {
 
     private static final String BASE_URL = "/api/v1/covidcertificate/";
@@ -50,6 +51,9 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
     @MockBean
     private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
 
+    @MockBean
+    private AuthorizationService authorizationService;
+
     @BeforeEach
     void setupMocks() {
         lenient().when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
@@ -61,6 +65,7 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
         lenient().when(covidCertificateGeneratePdfFromExistingService.generateFromExistingCovidCertificate(
                 any(RecoveryCertificatePdfGenerateRequestDto.class))).thenReturn(
                 fixture.create(CovidCertificateResponseEnvelope.class));
+        when(authorizationService.isUserPermitted(Mockito.anyCollection())).thenReturn(true);
     }
 
     private void callCreateCertificateWithToken(
@@ -94,9 +99,14 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
 
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
+            ServiceData.Function fromexisting = createFunction("fromexisting", "WEB_UI_USER", List.of(HttpMethod.GET));
+            when(authorizationService.identifyFunction(
+                    eq(AuthorizationService.SERVICE_MANAGEMENT),
+                    startsWith(URL), eq(HttpMethod.POST.name()))).thenReturn(List.of(fromexisting));
+            when(authorizationService.isGranted(Set.of(VALID_USER_ROLE), fromexisting)).thenReturn(true);
+
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(2))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(1))
                    .generateFromExistingCovidCertificate(any(VaccinationCertificatePdfGenerateRequestDto.class));
         }
 
@@ -128,9 +138,14 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
 
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
+            ServiceData.Function fromexisting = createFunction("fromexisting", "WEB_UI_USER", List.of(HttpMethod.GET));
+            when(authorizationService.identifyFunction(
+                    eq(AuthorizationService.SERVICE_MANAGEMENT),
+                    startsWith(URL), eq(HttpMethod.POST.name()))).thenReturn(List.of(fromexisting));
+            when(authorizationService.isGranted(Set.of(VALID_USER_ROLE), fromexisting)).thenReturn(true);
+
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(2))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(1))
                    .generateFromExistingCovidCertificate(any(TestCertificatePdfGenerateRequestDto.class));
         }
 
@@ -162,9 +177,14 @@ class CovidCertificatePdfGenerationControllerSecurityTest extends AbstractSecuri
 
         @Test
         void returnsOKIfAuthorizationTokenValid() throws Exception {
+            ServiceData.Function fromexisting = createFunction("fromexisting", "WEB_UI_USER", List.of(HttpMethod.GET));
+            when(authorizationService.identifyFunction(
+                    eq(AuthorizationService.SERVICE_MANAGEMENT),
+                    startsWith(URL), eq(HttpMethod.POST.name()))).thenReturn(List.of(fromexisting));
+            when(authorizationService.isGranted(Set.of(VALID_USER_ROLE), fromexisting)).thenReturn(true);
+
             callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
-            callCreateVaccinationCertificateWithToken(EXPIRED_IN_FUTURE, VALID_SUPERUSER_ROLE, HttpStatus.OK);
-            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(2))
+            Mockito.verify(covidCertificateGeneratePdfFromExistingService, times(1))
                    .generateFromExistingCovidCertificate(any(RecoveryCertificatePdfGenerateRequestDto.class));
         }
 

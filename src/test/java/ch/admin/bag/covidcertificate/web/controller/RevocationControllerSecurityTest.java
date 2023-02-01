@@ -3,9 +3,7 @@ package ch.admin.bag.covidcertificate.web.controller;
 import ch.admin.bag.covidcertificate.api.request.RevocationDto;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationInterceptor;
 import ch.admin.bag.covidcertificate.authorization.AuthorizationService;
-import ch.admin.bag.covidcertificate.authorization.AuthorizationConfig;
-import ch.admin.bag.covidcertificate.authorization.config.LocalDateTimeConverter;
-import ch.admin.bag.covidcertificate.authorization.config.RoleConfig;
+import ch.admin.bag.covidcertificate.authorization.config.ServiceData;
 import ch.admin.bag.covidcertificate.config.security.OAuth2SecuredWebConfiguration;
 import ch.admin.bag.covidcertificate.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapAuthorization;
@@ -20,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -28,9 +27,12 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeRevocationDto;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -39,9 +41,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = {RevocationController.class, OAuth2SecuredWebConfiguration.class, AuthorizationInterceptor.class,
-        AuthorizationService.class, AuthorizationConfig.class, RoleConfig.class, LocalDateTimeConverter.class})
-@ActiveProfiles({"test", "authorization"})
+@WebMvcTest(value = {RevocationController.class, OAuth2SecuredWebConfiguration.class, AuthorizationInterceptor.class})
+@ActiveProfiles({"test"})
 class RevocationControllerSecurityTest extends AbstractSecurityTest {
     private static final String URL = "/api/v1/revocation";
     @MockBean
@@ -50,6 +51,9 @@ class RevocationControllerSecurityTest extends AbstractSecurityTest {
     private KpiDataService kpiDataService;
     @MockBean
     private ServletJeapAuthorization jeapAuthorization;
+    @MockBean
+    private AuthorizationService authorizationService;
+
 
     @BeforeAll
     private static void setup() {
@@ -63,9 +67,10 @@ class RevocationControllerSecurityTest extends AbstractSecurityTest {
         lenient().doNothing().when(revocationService).createRevocation(anyString(), anyBoolean());
         lenient().when(jeapAuthorization.getJeapAuthenticationToken())
                 .thenReturn(fixture.create(JeapAuthenticationToken.class));
+        when(authorizationService.isUserPermitted(Mockito.anyCollection())).thenReturn(true);
     }
 
-    private void callGetValueSetsWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
+    private void callRevocationWithToken(LocalDateTime tokenExpiration, String userRole, HttpStatus status) throws Exception {
         var createDto = fixture.create(RevocationDto.class);
         String token = JwtTestUtil.getJwtTestToken(PRIVATE_KEY, tokenExpiration, userRole);
         mockMvc.perform(post(URL)
@@ -100,19 +105,37 @@ class RevocationControllerSecurityTest extends AbstractSecurityTest {
             JeapAuthenticationToken jeapAuthenticationToken = JeapAuthenticationTestTokenBuilder.createWithJwt(jwt).build();
             when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(jeapAuthenticationToken);
 
-            callGetValueSetsWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
+            ServiceData.Function revocation = createFunction("revocation", "WEB_UI_USER", List.of(HttpMethod.POST));
+            when(authorizationService.identifyFunction(
+                    eq(AuthorizationService.SERVICE_MANAGEMENT),
+                    startsWith(URL), eq(HttpMethod.POST.name()))).thenReturn(List.of(revocation));
+            when(authorizationService.isGranted(Set.of(VALID_USER_ROLE), revocation)).thenReturn(true);
+
+            callRevocationWithToken(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
             Mockito.verify(revocationService, times(1)).createRevocation(anyString(), anyBoolean());
         }
 
         @Test
         void returnsForbiddenIfAuthorizationTokenWithInvalidUserRole() throws Exception {
-            callGetValueSetsWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
+            ServiceData.Function revocation = createFunction("revocation", "WEB_UI_USER", List.of(HttpMethod.POST));
+            when(authorizationService.identifyFunction(
+                    eq(AuthorizationService.SERVICE_MANAGEMENT),
+                    startsWith(URL), eq(HttpMethod.POST.name()))).thenReturn(List.of(revocation));
+            when(authorizationService.isGranted(Set.of(VALID_USER_ROLE), revocation)).thenReturn(false);
+
+            callRevocationWithToken(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
             Mockito.verify(revocationService, times(0)).createRevocation(anyString(), anyBoolean());
         }
 
         @Test
         void returnsUnauthorizedIfAuthorizationTokenExpired() throws Exception {
-            callGetValueSetsWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
+            ServiceData.Function revocation = createFunction("revocation", "WEB_UI_USER", List.of(HttpMethod.POST));
+            when(authorizationService.identifyFunction(
+                    eq(AuthorizationService.SERVICE_MANAGEMENT),
+                    startsWith(URL), eq(HttpMethod.POST.name()))).thenReturn(List.of(revocation));
+            when(authorizationService.isGranted(Set.of(VALID_USER_ROLE), revocation)).thenReturn(false);
+
+            callRevocationWithToken(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
             Mockito.verify(revocationService, times(0)).createRevocation(anyString(), anyBoolean());
         }
     }

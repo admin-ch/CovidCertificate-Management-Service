@@ -138,6 +138,12 @@
             <groupId>ch.admin.bag.covidcertificate</groupId>
             <artifactId>cc-backend-authorization</artifactId>
             <version>${cc-backend-authorization.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- jsoup HTML parser library @ https://jsoup.org/ -->
