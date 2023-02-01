@@ -1,66 +1,46 @@
 package ch.admin.bag.covidcertificate.api.request;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
-import org.springframework.util.StringUtils;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_FAMILY_NAME;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_GIVEN_NAME;
 import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
 
 @Getter
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class CovidCertificatePersonNameDto {
 
-    private static final Pattern invalidCharactersRegex = Pattern.compile("[!@#\\r\\n$%¶*\\\\()_:/+=|<>?{}\\[\\]~]");
+    private static final String INVALID_CHARACTERS_REGEX = "^[A-Za-z ]+$";
 
+    @NotNull(message = "Family name must not be null")
+    @Pattern(regexp = INVALID_CHARACTERS_REGEX, message = "Invalid family name! Must not contain any invalid chars")
+    @Size(max = MAX_STRING_LENGTH, message = "Invalid family name! Must not exceed " + MAX_STRING_LENGTH + " chars")
     private String familyName;
 
+    @NotNull(message = "Given name must not be null")
+    @Pattern(regexp = INVALID_CHARACTERS_REGEX, message = "Invalid given name! Must not contain any invalid chars")
+    @Size(max = MAX_STRING_LENGTH, message = "Invalid given name! Must not exceed " + MAX_STRING_LENGTH + " chars")
     private String givenName;
 
-    public void validate() {
-        if (familyName == null) {
-            throw new CreateCertificateException(INVALID_FAMILY_NAME);
+    public CovidCertificatePersonNameDto(String familyName, String givenName) {
+        if (familyName != null) {
+            familyName = familyName.replaceAll("\\h", " ").trim();
+            this.familyName = Jsoup.clean(familyName, Safelist.none());
         }
-
-        if (givenName == null) {
-            throw new CreateCertificateException(INVALID_GIVEN_NAME);
+        if (givenName != null) {
+            givenName = givenName.replaceAll("\\h", " ").trim();
+            this.givenName = Jsoup.clean(givenName, Safelist.none());
         }
-
-        Matcher givenNameMatcher = invalidCharactersRegex.matcher(givenName);
-        if(givenNameMatcher.find()) {
-            throw new CreateCertificateException(INVALID_GIVEN_NAME);
-        }
-
-        Matcher familyNameMatcher = invalidCharactersRegex.matcher(familyName);
-        if(familyNameMatcher.find()) {
-            throw new CreateCertificateException(INVALID_FAMILY_NAME);
-        }
-
-        familyName = familyName.replaceAll("\\h", " ").trim();
-        givenName = givenName.replaceAll("\\h", " ").trim();
-
-        if (!StringUtils.hasText(givenName) || givenName.length() > MAX_STRING_LENGTH) {
-            throw new CreateCertificateException(INVALID_GIVEN_NAME);
-        }
-        if (!StringUtils.hasText(familyName) || familyName.length() > MAX_STRING_LENGTH) {
-            throw new CreateCertificateException(INVALID_FAMILY_NAME);
-        }
-
-        familyName = Jsoup.clean(familyName, Safelist.none());
-        givenName = Jsoup.clean(givenName, Safelist.none());
     }
 }

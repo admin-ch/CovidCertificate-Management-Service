@@ -1,12 +1,7 @@
 package ch.admin.bag.covidcertificate.util;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.*;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -23,7 +18,7 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_VACCINATION_DA
 
 public class DateDeserializer extends JsonDeserializer<LocalDate> {
 
-    static final String VACCINATION_TOURIST_CERTIFICATE = VaccinationTouristCertificateDataDto.class.getSimpleName();
+    static final String VACCINATION_TOURIST_CERTIFICATE = VaccinationCertificateDataDto.class.getSimpleName();
     static final String VACCINATION_CERTIFICATE = VaccinationCertificateDataDto.class.getSimpleName();
     static final String RECOVERY_CERTIFICATE = RecoveryCertificateDataDto.class.getSimpleName();
     static final String ANTIBODY_CERTIFICATE = AntibodyCertificateDataDto.class.getSimpleName();

@@ -34,6 +34,9 @@ import org.mozilla.universalchardet.UniversalDetector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -325,7 +328,13 @@ public class CsvCovidCertificateGenerationService {
     }
 
     private void validate(CertificateCreateDto createDto) {
-        createDto.validate();
+        var validatorFactory = Validation.buildDefaultValidatorFactory();
+        var validator = validatorFactory.getValidator();
+
+        if (!validator.validate(createDto).isEmpty()) {
+            throw new CreateCertificateException(INVALID_CREATE_REQUESTS);
+        }
+
         if (createDto instanceof RecoveryCertificateCreateDto) {
             var dataDto = ((RecoveryCertificateCreateDto) createDto).getRecoveryInfo().get(0);
             var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfTest(), createDto.getLanguage());
@@ -346,7 +355,7 @@ public class CsvCovidCertificateGenerationService {
             }
             valueSetsService.validateAndGetIssuableTestDto(dataDto.getTypeCode(), dataDto.getManufacturerCode());
         } else if (createDto instanceof VaccinationCertificateCreateDto) {
-            var dataDto = ((VaccinationCertificateCreateDto) createDto).getVaccinationInfo().get(0);
+            var dataDto = ((VaccinationCertificateCreateDto) createDto).getCertificateData().get(0);
             var countryCode = valueSetsService.getCountryCode(dataDto.getCountryOfVaccination(),
                     createDto.getLanguage());
             if (countryCode == null) {

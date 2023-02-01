@@ -1,23 +1,6 @@
 package ch.admin.bag.covidcertificate;
 
-import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
-import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
-import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
-import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.SystemSource;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.request.conversion.ConversionReason;
 import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.CertificatePersonDto;
@@ -152,7 +135,7 @@ public class TestModelProvider {
                 covidCertificatePersonNameDto,
                 birthDate.toString());
 
-        VaccinationTouristCertificateDataDto vaccinationTouristCertificateDataDto = new VaccinationTouristCertificateDataDto(
+        VaccinationCertificateDataDto vaccinationTouristCertificateDataDto = new VaccinationCertificateDataDto(
                 medicalProductCode,
                 numberOfDoses,
                 totalNumberOfDoses,
@@ -401,9 +384,9 @@ public class TestModelProvider {
         );
     }
 
-    public static VaccinationTouristCertificateDataDto getVaccinationTouristCertificateDataDto(
+    public static VaccinationCertificateDataDto getVaccinationTouristCertificateDataDto(
             String medicalProductCode) {
-        return new VaccinationTouristCertificateDataDto(
+        return new VaccinationCertificateDataDto(
                 medicalProductCode,
                 2,
                 2,

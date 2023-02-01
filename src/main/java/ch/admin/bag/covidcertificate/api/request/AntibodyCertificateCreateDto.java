@@ -32,9 +32,9 @@ public class AntibodyCertificateCreateDto extends CertificateCreateDto {
         this.antibodyInfo = antibodyInfo;
     }
 
-    @Override
+//    @Override
     public void validate() {
-        super.validate();
+//        super.validate();
         if (antibodyInfo == null || antibodyInfo.isEmpty()) {
             throw new CreateCertificateException(NO_ANTIBODY_DATA);
         } else {

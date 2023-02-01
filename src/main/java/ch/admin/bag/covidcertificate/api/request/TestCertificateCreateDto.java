@@ -33,9 +33,9 @@ public class TestCertificateCreateDto extends CertificateCreateDto {
         this.testInfo = testInfo;
     }
 
-    @Override
+//    @Override
     public void validate() {
-        super.validate();
+//        super.validate();
         if (testInfo == null || testInfo.isEmpty()) {
             throw new CreateCertificateException(NO_TEST_DATA);
         } else {

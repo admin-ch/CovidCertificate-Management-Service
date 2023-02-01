@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.config.security.authentication.ServletJeapA
 import ch.admin.bag.covidcertificate.service.CovidCertificateGenerationService;
 import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidationService;
 import ch.admin.bag.covidcertificate.service.KpiDataService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flextrade.jfixture.JFixture;
@@ -23,6 +24,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -31,6 +34,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.validation.Validator;
 
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeAntibodyCertificateCreateDto;
 import static ch.admin.bag.covidcertificate.FixtureCustomization.customizeCovidCertificateAddressDto;
@@ -58,7 +62,6 @@ import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificate
 import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDtoJSONWithInvalidBirthdateSampleDate;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getTestCertificateCreateDtoJSONWithInvalidSampleDateTime;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateCreateDto;
-import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateJSONWithInvalidBirthdateSampleDate;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationCertificateJSONWithInvalidVaccinationDate;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateCreateDtoWithoutAddress;
 import static ch.admin.bag.covidcertificate.TestModelProvider.getVaccinationTouristCertificateJSONWithInvalidBirthdateSampleDate;
@@ -70,11 +73,9 @@ import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TI
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_VACCINATION_DATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @ExtendWith(MockitoExtension.class)
@@ -94,6 +95,9 @@ class CovidCertificateGenerationControllerTest {
 
     @Mock
     private CovidCertificateVaccinationValidationService covidCertificateVaccinationValidationService;
+
+    @Mock
+    private Validator validator;
 
     private MockMvc mockMvc;
 
@@ -119,7 +123,7 @@ class CovidCertificateGenerationControllerTest {
 
     @BeforeEach
     void setupMocks() {
-        this.mockMvc = standaloneSetup(controller, new ResponseStatusExceptionHandler()).build();
+        this.mockMvc = standaloneSetup(controller, new ResponseStatusExceptionHandler()).setValidator(validator).build();
         lenient().when(jeapAuthorization.getJeapAuthenticationToken())
                 .thenReturn(fixture.create(JeapAuthenticationToken.class));
     }
@@ -168,14 +172,13 @@ class CovidCertificateGenerationControllerTest {
                                     .content(mapper.writeValueAsString(createDto)))
                     .andExpect(status().is(exception.getError().getHttpStatus().value()));
         }
-
         @Test
         void returns465StatusCode_ifVaccinationDateIsInvalid() throws Exception {
             var JSON = getVaccinationCertificateJSONWithInvalidVaccinationDate();
 
             var errorCode = new CreateCertificateException(INVALID_VACCINATION_DATE).getError().getErrorCode();
 
-            mockMvc.perform(
+            var res = mockMvc.perform(
                             post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
                                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                                     .header("Authorization", fixture.create(String.class))
@@ -184,19 +187,7 @@ class CovidCertificateGenerationControllerTest {
                     .andExpect(jsonPath("$.errorCode").value(errorCode));
         }
 
-        @Test
-        void returns453StatusCode_ifBirthdateAfterSampleDate() throws Exception {
-            var JSON = getVaccinationCertificateJSONWithInvalidBirthdateSampleDate();
-            var errorCode = new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE).getError().getErrorCode();
 
-            mockMvc.perform(
-                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                    .header("Authorization", fixture.create(String.class))
-                                    .content(JSON))
-                    .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                    .andExpect(jsonPath("$.errorCode").value(errorCode));
-        }
     }
 
     @Nested
@@ -271,75 +262,6 @@ class CovidCertificateGenerationControllerTest {
                                     .content(JSON))
                     .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                     .andExpect(jsonPath("$.errorCode").value(errorCode));
-        }
-    }
-
-    @Nested
-    class CertificateCreateAddress {
-        private static final String URL = BASE_URL + "vaccination";
-
-        @Test
-        void returns400StatusCode_ifInvalidZipCode() throws Exception {
-            var createDto = getVaccinationCertificateCreateDto(
-                    "EU/1/20/1507",
-                    "de");
-            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 0);
-
-            mockMvc.perform(
-                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                    .header("Authorization", fixture.create(String.class))
-                                    .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().isBadRequest())
-                    .andReturn();
-
-            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 999);
-
-            mockMvc.perform(
-                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                    .header("Authorization", fixture.create(String.class))
-                                    .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().isBadRequest())
-                    .andReturn();
-
-            customizeCovidCertificateAddressDto(fixture, createDto, "zipCode", 10000);
-
-            mockMvc.perform(
-                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                    .header("Authorization", fixture.create(String.class))
-                                    .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().isBadRequest())
-                    .andReturn();
-        }
-
-        @Test
-        void returns400StatusCode_ifInvalidCity() throws Exception {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
-            customizeCovidCertificateAddressDto(fixture, createDto, "city", null);
-
-            mockMvc.perform(
-                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                    .header("Authorization", fixture.create(String.class))
-                                    .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().isBadRequest())
-                    .andReturn();
-        }
-
-        @Test
-        void returns400StatusCode_ifInvalidLine1() throws Exception {
-            var createDto = fixture.create(VaccinationCertificateCreateDto.class);
-            customizeCovidCertificateAddressDto(fixture, createDto, "streetAndNr", null);
-
-            mockMvc.perform(
-                            post(URL).accept(MediaType.APPLICATION_JSON_VALUE)
-                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                    .header("Authorization", fixture.create(String.class))
-                                    .content(mapper.writeValueAsString(createDto)))
-                    .andExpect(status().isBadRequest())
-                    .andReturn();
         }
     }
 
@@ -709,6 +631,41 @@ class CovidCertificateGenerationControllerTest {
                                     .content(JSON))
                     .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                     .andExpect(jsonPath("$.errorCode").value(errorCode));
+        }
+    }
+
+    @Nested
+    class ValidationsTest {
+        @BeforeEach
+        void setupMocks() {
+            mockMvc = standaloneSetup(controller, new ResponseStatusExceptionHandler()).build();
+        }
+
+        @Nested
+        class CreateVaccinationCertificate extends ValidatorTestBase {
+            private static final String URL = BASE_URL + "vaccination";
+
+            @BeforeEach()
+            void setupValidatorTestBase() throws JsonProcessingException {
+                super.setUrl(URL);
+                super.setMockMvc(mockMvc);
+                super.setFixture(fixture);
+                lenient().doNothing().when(covidCertificateVaccinationValidationService).validateProductAndCountry(any());
+                lenient().when(covidCertificateGenerationService.generateCovidCertificate(any(VaccinationCertificateCreateDto.class))).thenReturn(fixture.create(CovidCertificateResponseEnvelope.class));
+
+            }
+
+            @ParameterizedTest
+            @CsvFileSource(resources = "/csv/validation/certificate_generation/vaccination/valid_requests.csv", delimiter = 'þ', lineSeparator = "¬")
+            void validRequestBodyTest(String dto) throws Exception {
+                this.performPositiveTest(dto);
+            }
+
+            @ParameterizedTest
+            @CsvFileSource(resources = "/csv/validation/certificate_generation/vaccination/invalid_requests.csv", delimiter = 'þ', lineSeparator = "¬")
+            void invalidRequestBodyTest(String dto, String expectedErrMsg) throws Exception {
+                this.performNegativeTest(dto, expectedErrMsg);
+            }
         }
     }
 }

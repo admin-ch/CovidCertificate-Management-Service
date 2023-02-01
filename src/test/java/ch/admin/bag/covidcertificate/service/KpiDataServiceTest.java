@@ -223,7 +223,7 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithMedicinalProductAsDetails() {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
-            var medicinalProduct = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
+            var medicinalProduct = createDto.getCertificateData().get(0).getMedicinalProductCode();
             service.logVaccinationCertificateGenerationKpi(
                     createDto, fixture.create(String.class), fixture.create(String.class));
 
@@ -233,7 +233,7 @@ class KpiDataServiceTest {
         @Test
         void savesKpiDataWithCountryOfVaccination() {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
-            var countryOfVaccination = createDto.getVaccinationInfo().get(0).getCountryOfVaccination();
+            var countryOfVaccination = createDto.getCertificateData().get(0).getCountryOfVaccination();
             service.logVaccinationCertificateGenerationKpi(
                     createDto, fixture.create(String.class), fixture.create(String.class));
 

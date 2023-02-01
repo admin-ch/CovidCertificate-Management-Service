@@ -117,8 +117,8 @@ public class KpiDataService {
         logCertificateGenerationKpi(KPI_TYPE_VACCINATION, uvci,
                                     createDto.getSystemSource(),
                                     createDto.getUserExtId(),
-                                    createDto.getVaccinationInfo().get(0).getMedicinalProductCode(),
-                                    createDto.getVaccinationInfo().get(0).getCountryOfVaccination(),
+                                    createDto.getCertificateData().get(0).getMedicinalProductCode(),
+                                    createDto.getCertificateData().get(0).getCountryOfVaccination(),
                                     usedKeyIdentifier);
     }
 

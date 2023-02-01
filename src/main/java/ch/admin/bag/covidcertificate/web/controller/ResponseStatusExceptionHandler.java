@@ -9,12 +9,20 @@ import ch.admin.bag.covidcertificate.api.exception.FeatureToggleException;
 import ch.admin.bag.covidcertificate.api.exception.RevocationException;
 import ch.admin.bag.covidcertificate.api.exception.ValueSetException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.validation.ConstraintViolationException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Slf4j
@@ -105,5 +113,13 @@ public class ResponseStatusExceptionHandler {
     protected ResponseEntity<Object> handleException(Exception e) {
         log.error("Exception", e);
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, List<String>>> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException ex) {
+        List<String> errors = ex.getBindingResult().getAllErrors().stream().map(objectError -> Optional.ofNullable(objectError.getDefaultMessage()).orElse("")).toList();
+        log.warn(ex.getMessage());
+        return new ResponseEntity<>(Map.of("errors", errors), HttpStatus.BAD_REQUEST);
     }
 }

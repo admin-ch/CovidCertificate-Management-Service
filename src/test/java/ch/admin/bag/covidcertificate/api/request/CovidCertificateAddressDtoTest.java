@@ -1,20 +1,21 @@
 package ch.admin.bag.covidcertificate.api.request;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.AfterClass;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.http.HttpStatus;
+import org.junit.platform.commons.util.ReflectionUtils;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ADDRESS;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("CovidCertificateAddressDtoTest")
 @DisplayName("Tests for the CovidCertificateAddressDto")
@@ -25,19 +26,42 @@ class CovidCertificateAddressDtoTest {
     private final int MIN_ZIPCODE_VALUE = 1000;
     private final int MAX_ZIPCODE_VALUE = 9999;
 
-    private void assertInvalidAddressError(CovidCertificateAddressDto covidCertificateAddressDto) {
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, covidCertificateAddressDto::validate);
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getError().getHttpStatus());
-        assertEquals(474, exception.getError().getErrorCode());
-        assertEquals("Paper-based delivery requires a valid address.", exception.getError().getErrorMessage());
-        assertEquals(INVALID_ADDRESS, exception.getError());
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    @BeforeEach
+    public void createValidator() {
+        if (validatorFactory == null) {
+            validatorFactory = Validation.buildDefaultValidatorFactory();
+            validator = validatorFactory.getValidator();
+        }
+    }
+
+    @AfterClass
+    public static void close() {
+        validatorFactory.close();
+        validatorFactory = null;
     }
 
     @Test
     @DisplayName("Given all the parameters for CovidCertificateAddressDto are valid, when validated, it should not throw an exception.")
     void CovidCertificateAddressDtoTest1() {
-        var covidCertificateAddressDto = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, "city", "BE");
-        assertDoesNotThrow(covidCertificateAddressDto::validate);
+        var testee = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, "city", "BE");
+        Set<ConstraintViolation<CovidCertificateAddressDto>> violations = validator.validateProperty(testee, "streetAndNr");
+        assertTrue(violations.isEmpty());
+        violations = validator.validateProperty(testee, "city");
+        assertTrue(violations.isEmpty());
+
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isZipCodeInRange").orElseThrow();
+
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isZipCodeInRange());
+        assertTrue(violations.isEmpty());
+
+        methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isAllowedSender").orElseThrow();
+
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isAllowedSender());
+        assertTrue(violations.isEmpty());
+
     }
 
     @Nested
@@ -49,8 +73,10 @@ class CovidCertificateAddressDtoTest {
         @ValueSource(strings = {"AG", "AI", "AR", "BE", "BL", "BS", "FR", "GE", "GL", "GR", "JU", "LU", "NE", "NW", "OW", "SG", "SH", "SO", "SZ", "TG", "TI", "UR", "VD", "VS", "ZG", "ZH", "MI"})
         @DisplayName("Given 'cantonCodeSender' is within the value set, when validated, it should not throw an exception.")
         void cantonCodeSenderTest1(String cantonCodeSender) {
-            var covidCertificateAddressDto = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, "city", cantonCodeSender);
-            assertDoesNotThrow(covidCertificateAddressDto::validate);
+            var testee = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, "city", cantonCodeSender);
+            var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isAllowedSender").orElseThrow();
+            var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isAllowedSender());
+            assertTrue(violations.isEmpty());
         }
 
         @ParameterizedTest
@@ -58,8 +84,11 @@ class CovidCertificateAddressDtoTest {
         @ValueSource(strings = {" ", "ZZ"})
         @DisplayName("Given 'cantonCodeSender' is blank or not in the value set, when validated, it should throw an INVALID_ADDRESS error (CreateCertificateException).")
         void cantonCodeSenderTest2(String cantonCodeSender) {
-            var covidCertificateAddressDto = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, "city", cantonCodeSender);
-            assertInvalidAddressError(covidCertificateAddressDto);
+            var testee = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, "city", cantonCodeSender);
+            var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isAllowedSender").orElseThrow();
+            var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isAllowedSender());
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Paper-based delivery requires a valid address.")));
+
         }
     }
 
@@ -73,8 +102,9 @@ class CovidCertificateAddressDtoTest {
         @ValueSource(strings = {" "})
         @DisplayName("Given 'streetAndNr' is blank, when validated, it should throw an INVALID_ADDRESS error (CreateCertificateException).")
         void streetAndNumberTest1(String streetAndNr) {
-            var covidCertificateAddressDto = new CovidCertificateAddressDto(streetAndNr, MIN_ZIPCODE_VALUE, "city", "BE");
-            assertInvalidAddressError(covidCertificateAddressDto);
+            var testee = new CovidCertificateAddressDto(streetAndNr, MIN_ZIPCODE_VALUE, "city", "BE");
+            var violations = validator.validateProperty(testee, "streetAndNr");
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Paper-based delivery requires a valid address.")));
         }
 
         @ParameterizedTest
@@ -82,16 +112,18 @@ class CovidCertificateAddressDtoTest {
         @DisplayName("Given 'streetAndNr' length <= " + MAX_STREETANDNR_CHARS_LENGTH + ", when validated, it should not throw an exception.")
         void streetAndNumberTest2(int streetAndNrLength) {
             String streetAndNumber = RandomStringUtils.random(streetAndNrLength, true, true);
-            var covidCertificateAddressDto = new CovidCertificateAddressDto(streetAndNumber, MIN_ZIPCODE_VALUE, "city", "BE");
-            assertDoesNotThrow(covidCertificateAddressDto::validate);
+            var testee = new CovidCertificateAddressDto(streetAndNumber, MIN_ZIPCODE_VALUE, "city", "BE");
+            var violations = validator.validateProperty(testee, "streetAndNr");
+            assertTrue(violations.isEmpty());
         }
 
         @Test
         @DisplayName("Given 'streetAndNr' length > " + MAX_STREETANDNR_CHARS_LENGTH + " characters, when validated, it should throw an INVALID_ADDRESS error (CreateCertificateException).")
         void streetAndNumberTest3() {
             String streetAndNumber = RandomStringUtils.random(MAX_STREETANDNR_CHARS_LENGTH + 1, true, true);
-            var covidCertificateAddressDto = new CovidCertificateAddressDto(streetAndNumber, MIN_ZIPCODE_VALUE, "city", "BE");
-            assertInvalidAddressError(covidCertificateAddressDto);
+            var testee = new CovidCertificateAddressDto(streetAndNumber, MIN_ZIPCODE_VALUE, "city", "BE");
+            var violations = validator.validateProperty(testee, "streetAndNr");
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Paper-based delivery requires a valid address.")));
         }
     }
 
@@ -104,24 +136,30 @@ class CovidCertificateAddressDtoTest {
         @ValueSource(ints = {MIN_ZIPCODE_VALUE - 1, MAX_ZIPCODE_VALUE + 1})
         @DisplayName("Given 'zipCode' is outside of the [" + MIN_ZIPCODE_VALUE + ", " + MAX_ZIPCODE_VALUE + "] interval, when validated, it should throw an INVALID_ADDRESS error (CreateCertificateException).")
         void zipCodeTest1(int zipCode) {
-            var covidCertificateAddressDto = new CovidCertificateAddressDto("streetAndNr", zipCode, "city", "BE");
-            assertInvalidAddressError(covidCertificateAddressDto);
+            var testee = new CovidCertificateAddressDto("streetAndNr", zipCode, "city", "BE");
+            var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isZipCodeInRange").orElseThrow();
+            var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isZipCodeInRange());
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Paper-based delivery requires a valid address.")));
         }
 
         @ParameterizedTest
         @ValueSource(ints = {MIN_ZIPCODE_VALUE, MAX_ZIPCODE_VALUE})
         @DisplayName("Given 'zipCode' is equal to the [" + MIN_ZIPCODE_VALUE + ", " + MAX_ZIPCODE_VALUE + "] interval limits, when validated, it should not throw an exception.")
         void zipCodeTest2(int zipCode) {
-            var covidCertificateAddressDto = new CovidCertificateAddressDto("streetAndNr", zipCode, "city", "BE");
-            assertDoesNotThrow(covidCertificateAddressDto::validate);
+            var testee = new CovidCertificateAddressDto("streetAndNr", zipCode, "city", "BE");
+            var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isZipCodeInRange").orElseThrow();
+            var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isZipCodeInRange());
+            assertTrue(violations.isEmpty());
         }
 
         @ParameterizedTest
         @ValueSource(ints = {MIN_ZIPCODE_VALUE + 1, MAX_ZIPCODE_VALUE - 1})
         @DisplayName("Given 'zipCode' is contained in the [" + MIN_ZIPCODE_VALUE + ", " + MAX_ZIPCODE_VALUE + "] interval, when validated, it should not throw an exception.")
         void zipCodeTest3(int zipCode) {
-            var covidCertificateAddressDto = new CovidCertificateAddressDto("streetAndNr", zipCode, "city", "BE");
-            assertDoesNotThrow(covidCertificateAddressDto::validate);
+            var testee = new CovidCertificateAddressDto("streetAndNr", zipCode, "city", "BE");
+            var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isZipCodeInRange").orElseThrow();
+            var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isZipCodeInRange());
+            assertTrue(violations.isEmpty());
         }
     }
 
@@ -135,8 +173,9 @@ class CovidCertificateAddressDtoTest {
         @ValueSource(strings = {" "})
         @DisplayName("Given 'city' is blank, when validated, it should throw an INVALID_ADDRESS error (CreateCertificateException).")
         void cityTest1(String city) {
-            var covidCertificateAddressDto = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, city, "BE");
-            assertInvalidAddressError(covidCertificateAddressDto);
+            var testee = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, city, "BE");
+            var violations = validator.validateProperty(testee, "city");
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Paper-based delivery requires a valid address.")));
         }
 
         @ParameterizedTest
@@ -144,16 +183,18 @@ class CovidCertificateAddressDtoTest {
         @DisplayName("Given 'city' length <= " + MAX_CITY_CHARS_LENGTH + " characters, when validated, it should not throw an exception.")
         void cityTest2(int cityLength) {
             String city = RandomStringUtils.random(cityLength, true, true);
-            var covidCertificateAddressDto = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, city, "BE");
-            assertDoesNotThrow(covidCertificateAddressDto::validate);
+            var testee = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, city, "BE");
+            var violations = validator.validateProperty(testee, "city");
+            assertTrue(violations.isEmpty());
         }
 
         @Test
         @DisplayName("Given 'city' length > " + MAX_STREETANDNR_CHARS_LENGTH + " characters, when validated, it should throw an INVALID_ADDRESS error (CreateCertificateException).")
         void cityTest3() {
             String city = RandomStringUtils.random(MAX_STREETANDNR_CHARS_LENGTH + 1, true, true);
-            var covidCertificateAddressDto = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, city, "BE");
-            assertInvalidAddressError(covidCertificateAddressDto);
+            var testee = new CovidCertificateAddressDto("streetAndNr", MIN_ZIPCODE_VALUE, city, "BE");
+            var violations = validator.validateProperty(testee, "city");
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Paper-based delivery requires a valid address.")));
         }
     }
 }

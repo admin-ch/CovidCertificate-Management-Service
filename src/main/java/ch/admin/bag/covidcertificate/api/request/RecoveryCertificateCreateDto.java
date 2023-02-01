@@ -32,9 +32,9 @@ public class RecoveryCertificateCreateDto extends CertificateCreateDto {
         this.recoveryInfo = recoveryInfo;
     }
 
-    @Override
+//    @Override
     public void validate() {
-        super.validate();
+//        super.validate();
         if (recoveryInfo == null || recoveryInfo.isEmpty()) {
             throw new CreateCertificateException(NO_RECOVERY_DATA);
         } else {

@@ -117,7 +117,7 @@ class PdfCertificateGenerationServiceIntegrationTest {
 
     private void generateDocument_partialVaccination(String language, String familyName, String givenName) throws Exception {
         VaccinationCertificateCreateDto createDto = getVaccinationCertificateCreateDto("1119349007", language);
-        ReflectionTestUtils.setField(createDto.getVaccinationInfo().get(0), "numberOfDoses", 1);
+        ReflectionTestUtils.setField(createDto.getCertificateData().get(0), "numberOfDoses", 1);
         this.generateDocument_vaccine(createDto, language, familyName, givenName, "partial-vaccine");
     }
 

@@ -32,9 +32,9 @@ public class ExceptionalCertificateCreateDto extends CertificateCreateDto {
         this.exceptionalInfo = exceptionalInfo;
     }
 
-    @Override
+//    @Override
     public void validate() {
-        super.validate();
+//        super.validate();
         if (exceptionalInfo == null || exceptionalInfo.isEmpty()) {
             throw new CreateCertificateException(NO_EXCEPTIONAL_INFO);
         } else {

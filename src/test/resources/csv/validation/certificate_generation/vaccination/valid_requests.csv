@@ -1,0 +1,150 @@
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": null,
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "vaccinationInfo": [
+    {
+      "medicinalProductCode": "string",
+      "numberOfDoses": 1,
+      "totalNumberOfDoses": 1,
+      "vaccinationDate": "2023-01-19",
+      "countryOfVaccination": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "string",
+    "zipCode": 3000,
+    "city": "Bern",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "vaccinationInfo": [
+    {
+      "medicinalProductCode": "string",
+      "numberOfDoses": 1,
+      "totalNumberOfDoses": 1,
+      "vaccinationDate": "2023-01-19",
+      "countryOfVaccination": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "string",
+    "zipCode": 3000,
+    "city": "Bern",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "vaccinationInfo": [
+    {
+      "medicinalProductCode": "string",
+      "numberOfDoses": 3,
+      "totalNumberOfDoses": 1,
+      "vaccinationDate": "2023-01-19",
+      "countryOfVaccination": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "string",
+    "zipCode": 3000,
+    "city": "Bern",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "vaccinationInfo": [
+    {
+      "medicinalProductCode": "string",
+      "numberOfDoses": 3,
+      "totalNumberOfDoses": 4,
+      "vaccinationDate": "2023-01-19",
+      "countryOfVaccination": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abcd",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "vaccinationInfo": [
+    {
+      "medicinalProductCode": "string",
+      "numberOfDoses": 3,
+      "totalNumberOfDoses": 4,
+      "vaccinationDate": "2023-01-19",
+      "countryOfVaccination": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abcd",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "vaccinationInfo": [
+    {
+      "medicinalProductCode": "string",
+      "numberOfDoses": 3,
+      "totalNumberOfDoses": 4,
+      "vaccinationDate": "2023-01-19",
+      "countryOfVaccination": "CH"
+    }
+  ]
+}
+

@@ -105,7 +105,7 @@ public class TestController {
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody VaccinationCertificateCreateDto createDto) throws IOException {
 
-        createDto.validate();
+//        createDto.validate();
         return testCovidCertificateGenerationService.generateCovidCertificate(createDto, validAt);
     }
 
@@ -168,7 +168,7 @@ public class TestController {
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validAt,
             @Valid @RequestBody VaccinationCertificateConversionRequestDto conversionRequestDto) throws IOException {
 
-        conversionRequestDto.validate();
+//        conversionRequestDto.validate();
         ConvertedCertificateResponseEnvelope convertedCertificateResponseEnvelope =
                 testCovidCertificateGenerationService.convertFromExistingCovidCertificate(
                         conversionRequestDto,

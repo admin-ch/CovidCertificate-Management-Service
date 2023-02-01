@@ -9,7 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_BIRTH;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_BIRTH_IN_FUTURE;
@@ -24,26 +28,35 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_PERSON_DATA;
 @AllArgsConstructor
 public class CovidCertificatePersonDto {
 
+    @NotNull(message = "No person data was specified")
+    @Valid
     private CovidCertificatePersonNameDto name;
 
+    @NotNull(message = "Date of birth must not be null")
     private String dateOfBirth;
 
-    public void validate() {
-        if (name == null) {
-            throw new CreateCertificateException(NO_PERSON_DATA);
-        } else {
-            name.validate();
+    @AssertTrue(message = "Invalid dateOfBirth! Must be younger than 1900-01-01")
+    public boolean isValidDateOfBirth() {
+        LocalDate parsedDateOfBirth;
+        if (Objects.isNull(dateOfBirth)) return true;
+
+        try {
+            parsedDateOfBirth = DateHelper.parseDateOfBirth(dateOfBirth);
+        } catch(CreateCertificateException e) {
+            return false;
         }
-        validateDateOfBirth(dateOfBirth);
+        return !parsedDateOfBirth.isBefore(MIN_DATE_OF_BIRTH) && !parsedDateOfBirth.isAfter(MAX_DATE_OF_BIRTH);
     }
 
-    private void validateDateOfBirth(String dateOfBirth) {
-        var parsedDateOfBirth = DateHelper.parseDateOfBirth(dateOfBirth);
-        if (parsedDateOfBirth.isBefore(MIN_DATE_OF_BIRTH) || parsedDateOfBirth.isAfter(MAX_DATE_OF_BIRTH)) {
-            throw new CreateCertificateException(INVALID_DATE_OF_BIRTH);
+    @AssertTrue(message = "Invalid dateOfBirth! Date cannot be in the future")
+    public boolean isValidDateOfBirthInFuture() {
+        LocalDate parsedDateOfBirth;
+        if (Objects.isNull(dateOfBirth)) return true;
+        try {
+            parsedDateOfBirth = DateHelper.parseDateOfBirth(dateOfBirth);
+        } catch(CreateCertificateException e) {
+            return false;
         }
-        if (parsedDateOfBirth.isAfter(LocalDate.now())) {
-            throw new CreateCertificateException(INVALID_DATE_OF_BIRTH_IN_FUTURE);
-        }
+        return !parsedDateOfBirth.isAfter(LocalDate.now());
     }
 }

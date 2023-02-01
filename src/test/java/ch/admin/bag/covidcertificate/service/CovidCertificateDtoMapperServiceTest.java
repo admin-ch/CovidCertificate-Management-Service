@@ -78,7 +78,7 @@ class CovidCertificateDtoMapperServiceTest {
         void shouldLoadVaccinationValueSet() {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
             service.toVaccinationCertificateQrCode(createDto);
-            verify(valueSetsService).getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
+            verify(valueSetsService).getVaccinationValueSet(createDto.getCertificateData().get(0).getMedicinalProductCode());
         }
 
         @Test
@@ -147,7 +147,7 @@ class CovidCertificateDtoMapperServiceTest {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
             var qrCodeData = fixture.create(VaccinationCertificateQrCode.class);
             service.toVaccinationCertificatePdf(createDto, qrCodeData);
-            verify(valueSetsService).getVaccinationValueSet(createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
+            verify(valueSetsService).getVaccinationValueSet(createDto.getCertificateData().get(0).getMedicinalProductCode());
         }
 
         @Test
@@ -155,7 +155,7 @@ class CovidCertificateDtoMapperServiceTest {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
             var qrCodeData = fixture.create(VaccinationCertificateQrCode.class);
             service.toVaccinationCertificatePdf(createDto, qrCodeData);
-            verify(valueSetsService).getCountryCode(createDto.getVaccinationInfo().get(0).getCountryOfVaccination(), createDto.getLanguage());
+            verify(valueSetsService).getCountryCode(createDto.getCertificateData().get(0).getCountryOfVaccination(), createDto.getLanguage());
         }
 
         @Test
@@ -163,7 +163,7 @@ class CovidCertificateDtoMapperServiceTest {
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
             var qrCodeData = fixture.create(VaccinationCertificateQrCode.class);
             service.toVaccinationCertificatePdf(createDto, qrCodeData);
-            verify(valueSetsService).getCountryCodeEn(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
+            verify(valueSetsService).getCountryCodeEn(createDto.getCertificateData().get(0).getCountryOfVaccination());
         }
 
         @Test

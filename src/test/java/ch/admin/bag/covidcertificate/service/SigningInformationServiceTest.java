@@ -62,7 +62,7 @@ class SigningInformationServiceTest {
         @Test
         void shouldLoadSigningInformationFromCacheWithCorrectVaccinationCode(){
             var createDto = fixture.create(VaccinationCertificateCreateDto.class);
-            var vaccinationCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
+            var vaccinationCode = createDto.getCertificateData().get(0).getMedicinalProductCode();
 
             signingInformationService.getVaccinationSigningInformation(createDto);
             verify(signingInformationCacheService).findSigningInformation(any(), eq(vaccinationCode), any());
