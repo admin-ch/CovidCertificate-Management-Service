@@ -8,7 +8,6 @@ import lombok.ToString;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -21,15 +20,15 @@ import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CovidCertificatePersonNameDto {
 
-    private static final String INVALID_CHARACTERS_REGEX = "^[A-Za-z ]+$";
+    private static final String VALID_CHARACTERS_REGEX = "^[^!@#\\r\\n$%¶*\\\\()_:/+=|<>?{}\\[\\]~]+$";
 
     @NotNull(message = "Family name must not be null")
-    @Pattern(regexp = INVALID_CHARACTERS_REGEX, message = "Invalid family name! Must not contain any invalid chars")
+    @Pattern(regexp = VALID_CHARACTERS_REGEX, message = "Invalid family name! Must not contain any invalid chars")
     @Size(max = MAX_STRING_LENGTH, message = "Invalid family name! Must not exceed " + MAX_STRING_LENGTH + " chars")
     private String familyName;
 
     @NotNull(message = "Given name must not be null")
-    @Pattern(regexp = INVALID_CHARACTERS_REGEX, message = "Invalid given name! Must not contain any invalid chars")
+    @Pattern(regexp = VALID_CHARACTERS_REGEX, message = "Invalid given name! Must not contain any invalid chars")
     @Size(max = MAX_STRING_LENGTH, message = "Invalid given name! Must not exceed " + MAX_STRING_LENGTH + " chars")
     private String givenName;
 
