@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.client.signing.internal;
 
+import ch.admin.bag.covidcertificate.authorization.ProfileRegistry;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -42,7 +43,7 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
         "spring.datasource.password=sa",
         "spring.flyway.clean-on-validation-error=true"
 })
-@ActiveProfiles({"local", "h2"})
+@ActiveProfiles({"local", "h2", ProfileRegistry.AUTHORIZATION_MOCK})
 @MockBean(InMemoryClientRegistrationRepository.class)
 class DefaultSigningClientCacheIntegrationTest {
     @Autowired

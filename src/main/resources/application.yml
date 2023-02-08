@@ -51,8 +51,6 @@ server:
   servlet:
     context-path: /
 spring:
-  config:
-    import: application-authorization.yml
   application:
     name: cc-management-service
   datasource:

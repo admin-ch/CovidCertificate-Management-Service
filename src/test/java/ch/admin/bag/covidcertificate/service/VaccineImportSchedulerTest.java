@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.service;
 
+import ch.admin.bag.covidcertificate.authorization.ProfileRegistry;
 import ch.admin.bag.covidcertificate.domain.AuthHolder;
 import ch.admin.bag.covidcertificate.domain.AuthHolderRepository;
 import ch.admin.bag.covidcertificate.domain.Prophylaxis;
@@ -41,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 // mock-vaccine-value-sets-service as we don't test the real web request to GitHub here
-@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service", "mock-vaccine-value-sets-service"})
+@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service", "mock-vaccine-value-sets-service", ProfileRegistry.AUTHORIZATION_MOCK})
 @MockBean(InMemoryClientRegistrationRepository.class)
 @Slf4j
 class VaccineImportSchedulerTest {

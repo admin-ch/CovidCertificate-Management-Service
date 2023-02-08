@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.web.controller;
 
+import ch.admin.bag.covidcertificate.authorization.config.ServiceData;
 import ch.admin.bag.covidcertificate.testutil.KeyPairTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -9,12 +10,14 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -27,8 +30,8 @@ public abstract class AbstractSecurityTest {
     static final String PRIVATE_KEY = KEY_PAIR_TEST_UTIL.getPrivateKey();
     static final LocalDateTime EXPIRED_IN_FUTURE = LocalDateTime.now().plusDays(1);
     static final LocalDateTime EXPIRED_IN_PAST = LocalDateTime.now().minusDays(1);
-    static final String VALID_USER_ROLE = "bag-cc-certificatecreator";
-    static final String VALID_SUPERUSER_ROLE = "bag-cc-superuser";
+    static final String VALID_USER_ROLE = "bag-cc-web_ui_user";
+    static final String VALID_SUPERUSER_ROLE = "bag-cc-covid_app_manager";
     static final String INVALID_USER_ROLE = "invalid-role";
     // Avoid port 8180, which is likely used by the local KeyCloak:
     private static final int MOCK_SERVER_PORT = 8182;
@@ -157,5 +160,14 @@ public abstract class AbstractSecurityTest {
         wireMockServer.stop();
     }
 
-
+    protected ServiceData.Function createFunction(String identifier, String role, List<HttpMethod> methods) {
+        ServiceData.Function function = new ServiceData.Function();
+        function.setIdentifier(identifier);
+        function.setFrom(LocalDateTime.MIN);
+        function.setUntil(LocalDateTime.MAX);
+        function.setOneOf(List.of(role));
+        function.setUri("/api/v1/notifications");
+        function.setHttp(methods);
+        return function;
+    }
 }

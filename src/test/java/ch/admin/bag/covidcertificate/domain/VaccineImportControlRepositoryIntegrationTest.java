@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.authorization.ProfileRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         "spring.flyway.clean-on-validation-error=true"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service"})
+@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service", ProfileRegistry.AUTHORIZATION_MOCK})
 @MockBean(InMemoryClientRegistrationRepository.class)
 class VaccineImportControlRepositoryIntegrationTest {
     @Autowired

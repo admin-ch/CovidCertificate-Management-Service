@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcertificate.domain;
 
+import ch.admin.bag.covidcertificate.authorization.ProfileRegistry;
 import com.flextrade.jfixture.JFixture;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         "spring.flyway.clean-on-validation-error=true"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service"})
+@ActiveProfiles({"local", "h2", "mock-signing-service", "mock-printing-service", ProfileRegistry.AUTHORIZATION_MOCK})
 @MockBean(InMemoryClientRegistrationRepository.class)
 class SigningInformationRepositoryTest {
     @Autowired
