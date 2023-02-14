@@ -14,12 +14,14 @@ import ch.admin.bag.covidcertificate.service.CovidCertificateVaccinationValidati
 import ch.admin.bag.covidcertificate.service.KpiDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 @RestController
@@ -41,7 +43,6 @@ public class CovidCertificateGenerationController {
 
         log.info("Call of create for vaccination certificate");
 
-        createDto.validate();
         covidCertificateVaccinationValidationService.validateProductAndCountry(createDto);
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateCovidCertificate(createDto);
@@ -61,7 +62,6 @@ public class CovidCertificateGenerationController {
 
         log.info("Call of create for vaccination tourist certificate");
 
-        createDto.validate();
         covidCertificateVaccinationValidationService.validateProductAndCountryForVaccinationTourist(createDto);
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateCovidCertificate(createDto);
@@ -81,7 +81,6 @@ public class CovidCertificateGenerationController {
 
         log.info("Call of create for test certificate");
 
-        createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateCovidCertificate(createDto);
         CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
@@ -100,7 +99,6 @@ public class CovidCertificateGenerationController {
 
         log.info("Call of create for recovery certificate");
 
-        createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateCovidCertificate(createDto);
         CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
@@ -119,7 +117,6 @@ public class CovidCertificateGenerationController {
 
         log.info("Call of create for recovery-rat certificate");
 
-        createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateCovidCertificate(createDto);
         CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
@@ -138,7 +135,6 @@ public class CovidCertificateGenerationController {
 
         log.info("Call of create for antibody certificate");
 
-        createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateCovidCertificate(createDto);
         CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();
@@ -157,7 +153,6 @@ public class CovidCertificateGenerationController {
 
         log.info("Call of create for exceptional certificate");
 
-        createDto.validate();
         CovidCertificateResponseEnvelope responseEnvelope = covidCertificateGenerationService
                 .generateCovidCertificate(createDto);
         CovidCertificateCreateResponseDto responseDto = responseEnvelope.getResponseDto();

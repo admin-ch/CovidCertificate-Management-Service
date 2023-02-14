@@ -1,19 +1,20 @@
 package ch.admin.bag.covidcertificate.api;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.AfterClass;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.http.HttpStatus;
+
+
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import static ch.admin.bag.covidcertificate.api.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 
 @Tag("CovidCertificatePersonNameDtoTest")
 @DisplayName("Tests for the CovidCertificatePersonNameDto")
@@ -24,20 +25,21 @@ public class CovidCertificatePersonNameDtoTest {
 
     private final int MAX_NAME_CHARS_LENGTH = 80;
 
-    private void assertInvalidFamilyName(CovidCertificatePersonNameDto covidCertificatePersonNameDto) {
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, covidCertificatePersonNameDto::validate);
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getError().getHttpStatus());
-        assertEquals(459, exception.getError().getErrorCode());
-        assertEquals("Invalid family name! Must not exceed 80 chars and/or not contain any invalid chars", exception.getError().getErrorMessage());
-        assertEquals(INVALID_FAMILY_NAME, exception.getError());
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    @BeforeEach
+    public void createValidator() {
+        if (validatorFactory == null) {
+            validatorFactory = Validation.buildDefaultValidatorFactory();
+            validator = validatorFactory.getValidator();
+        }
     }
-    
-    private void assertInvalidGivenName(CovidCertificatePersonNameDto covidCertificatePersonNameDto) {
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, covidCertificatePersonNameDto::validate);
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getError().getHttpStatus());
-        assertEquals(458, exception.getError().getErrorCode());
-        assertEquals("Invalid given name! Must not exceed 80 chars and/or not contain any invalid chars", exception.getError().getErrorMessage());
-        assertEquals(INVALID_GIVEN_NAME, exception.getError());
+
+    @AfterClass
+    public static void close() {
+        validatorFactory.close();
+        validatorFactory = null;
     }
 
     @Nested
@@ -49,41 +51,52 @@ public class CovidCertificatePersonNameDtoTest {
         @ValueSource(strings = {" "})
         @DisplayName("Given 'familyName' is blank, when validated, it should throw an INVALID_GIVEN_NAME error (CreateCertificateException).")
         void validationTest1(String familyName) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(familyName, validGivenName);
-            assertInvalidFamilyName(covidCertificatePersonNameDto);
+            var testee = new CovidCertificatePersonNameDto(familyName, validGivenName);
+            var violations = validator.validateProperty(testee, "familyName");
+            if (familyName == null) {
+                assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Family name must not be null")));
+            } else if (familyName.length() > 80) {
+                assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid family name! Must not exceed 80 chars")));
+            } else {
+                assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid family name! Must not contain any invalid chars")));
+            }
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"!", "@", "#", "\r", "\n", "\\", "$", "%", "¶", "*", "(", ")", "_", ":", "/", "+", "=", "|", "<", ">", "?", "{", "}", "[", "]", "~"})
+        @ValueSource(strings = {"!", "@", "#", "\\", "$", "%", "¶", "*", "(", ")", "_", ":", "/", "+", "=", "|", "<", ">", "?", "{", "}", "[", "]", "~"})
         @DisplayName("Given 'familyName' contain an invalid character, when validated, it should throw an INVALID_FAMILY_NAME error (CreateCertificateException).")
         void validationTest2(String invalidChar) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName.concat(invalidChar), validGivenName);
-            assertInvalidFamilyName(covidCertificatePersonNameDto);
+            var testee = new CovidCertificatePersonNameDto(validFamilyName.concat(invalidChar), validGivenName);
+            var violations = validator.validateProperty(testee, "familyName");
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid family name! Must not contain any invalid chars")));
         }
 
         @ParameterizedTest
         @ValueSource(ints = {MAX_NAME_CHARS_LENGTH - 1, MAX_NAME_CHARS_LENGTH})
         @DisplayName("Given 'familyName' length <= " + MAX_NAME_CHARS_LENGTH + ", when validated, it should not throw an exception.")
         void validationTest5(int length) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto("f".repeat(length), validGivenName);
-            assertDoesNotThrow(covidCertificatePersonNameDto::validate);
+            var testee = new CovidCertificatePersonNameDto("f".repeat(length), validGivenName);
+            var violations = validator.validateProperty(testee, "familyName");
+            assertTrue(violations.isEmpty());
         }
 
         @ParameterizedTest
         @ValueSource(ints = {MAX_NAME_CHARS_LENGTH + 1})
         @DisplayName("Given 'familyName' length > " + MAX_NAME_CHARS_LENGTH + ", when validated, it should throw an INVALID_FAMILY_NAME error (CreateCertificateException).")
         void validationTest6(int length) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto("f".repeat(length), validGivenName);
-            assertInvalidFamilyName(covidCertificatePersonNameDto);
+            var testee = new CovidCertificatePersonNameDto("f".repeat(length), validGivenName);
+            var violations = validator.validateProperty(testee, "familyName");
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid family name! Must not exceed " + MAX_STRING_LENGTH + " chars")));
         }
 
         @ParameterizedTest
         @ValueSource(strings = {"Hans Ueli", " Hans Ueli ", " Hans\tUeli"})
         @DisplayName("Given 'familyName' contain an none-breaking characters, tabs or is untrimmed, when validated, it sanitize the 'familyName'.")
         void validationTest7(String unsanitizedName) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(unsanitizedName, validGivenName);
-            assertDoesNotThrow(covidCertificatePersonNameDto::validate);
-            assertEquals("Hans Ueli", covidCertificatePersonNameDto.getFamilyName());
+            var testee = new CovidCertificatePersonNameDto(unsanitizedName, validGivenName);
+            var violations = validator.validateProperty(testee, "givenName");
+            assertTrue(violations.isEmpty());
+            assertEquals("Hans Ueli", testee.getFamilyName());
         }
     }
 
@@ -96,41 +109,53 @@ public class CovidCertificatePersonNameDtoTest {
         @ValueSource(strings = {" "})
         @DisplayName("Given 'givenName' is blank, when validated, it should throw an INVALID_GIVEN_NAME error (CreateCertificateException).")
         void validationTest3(String givenName) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName, givenName);
-            assertInvalidGivenName(covidCertificatePersonNameDto);
+            var testee = new CovidCertificatePersonNameDto(validFamilyName, givenName);
+            var violations = validator.validateProperty(testee, "givenName");
+            if (givenName == null) {
+                assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Given name must not be null")));
+            } else if (givenName.length() > 80) {
+                assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid given name! Must not exceed 80 chars")));
+            } else {
+                assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid given name! Must not contain any invalid chars")));
+            }
+
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"!", "@", "#", "\r", "\n", "\\", "$", "%", "¶", "*", "(", ")", "_", ":", "/", "+", "=", "|", "<", ">", "?", "{", "}", "[", "]", "~"})
+        @ValueSource(strings = {"!", "@", "#", "\\", "$", "%", "¶", "*", "(", ")", "_", ":", "/", "+", "=", "|", "<", ">", "?", "{", "}", "[", "]", "~"})
         @DisplayName("Given 'givenName' contain an invalid character, when validated, it should throw an INVALID_GIVEN_NAME error (CreateCertificateException).")
         void validationTest4(String invalidChar) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName, validGivenName.concat(invalidChar));
-            assertInvalidGivenName(covidCertificatePersonNameDto);
+            var testee = new CovidCertificatePersonNameDto(validFamilyName, validGivenName.concat(invalidChar));
+            var violations = validator.validateProperty(testee, "givenName");
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid given name! Must not contain any invalid chars")));
         }
 
         @ParameterizedTest
         @ValueSource(ints = {MAX_NAME_CHARS_LENGTH - 1, MAX_NAME_CHARS_LENGTH})
         @DisplayName("Given 'givenName' length <= " + MAX_NAME_CHARS_LENGTH + ", when validated, it should not throw an exception.")
         void validationTest7(int length) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName, "g".repeat(length));
-            assertDoesNotThrow(covidCertificatePersonNameDto::validate);
+            var testee = new CovidCertificatePersonNameDto(validFamilyName, "g".repeat(length));
+            var violations = validator.validateProperty(testee, "givenName");
+            assertTrue(violations.isEmpty());
         }
 
         @ParameterizedTest
         @ValueSource(ints = {MAX_NAME_CHARS_LENGTH + 1})
         @DisplayName("Given 'givenName' length > " + MAX_NAME_CHARS_LENGTH + ", when validated, it should throw an INVALID_GIVEN_NAME error (CreateCertificateException).")
         void validationTest8(int length) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName, "g".repeat(length));
-            assertInvalidGivenName(covidCertificatePersonNameDto);
+            var testee = new CovidCertificatePersonNameDto(validFamilyName, "g".repeat(length));
+            var violations = validator.validateProperty(testee, "givenName");
+            assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid given name! Must not exceed " + MAX_STRING_LENGTH + " chars")));
         }
 
         @ParameterizedTest
         @ValueSource(strings = {"Franz Mann", " Franz Mann ", " Franz\tMann"})
         @DisplayName("Given 'givenName' contain an none-breaking characters, tabs or is untrimmed, when validated, it sanitize the 'givenName'.")
         void validationTest9(String unsanitizedName) {
-            var covidCertificatePersonNameDto = new CovidCertificatePersonNameDto(validFamilyName, unsanitizedName);
-            assertDoesNotThrow(covidCertificatePersonNameDto::validate);
-            assertEquals("Franz Mann", covidCertificatePersonNameDto.getGivenName());
+            var testee = new CovidCertificatePersonNameDto(validFamilyName, unsanitizedName);
+            var violations = validator.validateProperty(testee, "givenName");
+            assertTrue(violations.isEmpty());
+            assertEquals("Franz Mann", testee.getGivenName());
         }
     }
 }

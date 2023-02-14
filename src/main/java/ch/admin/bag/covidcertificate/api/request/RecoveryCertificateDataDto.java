@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
@@ -26,36 +28,11 @@ public class RecoveryCertificateDataDto {
     @JsonDeserialize(using = DateDeserializer.class)
     private LocalDate dateOfFirstPositiveTestResult;
 
+    @NotNull(message = "Invalid country of test")
     private String countryOfTest;
 
-    public void validate(SystemSource systemSource) {
-        if (dateOfFirstPositiveTestResult == null || dateOfFirstPositiveTestResult.isAfter(LocalDate.now())) {
-            throw new CreateCertificateException(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT);
-        }
-        if (countryOfTest == null) {
-            throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
-        }
-        final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(countryOfTest);
-        switch (systemSource) {
-            case WebUI: {
-                break;
-            }
-            case CsvUpload, ApiGateway: {
-                // the source requires switzerland
-                if (!isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
-                }
-                break;
-            }
-            case ApiPlatform: {
-                // this source requires foreign countries
-                if (isCountryCH) {
-                    throw new CreateCertificateException(INVALID_COUNTRY_OF_TEST);
-                }
-                break;
-            }
-            default:
-                throw new IllegalStateException("Attribute systemSource is invalid. Check Request implementation and/or Dto Validation.");
-        }
+    @AssertFalse(message = "Invalid date of first positive test result")
+    public boolean isValidDteOfFirstPositiveTestResult() {
+        return dateOfFirstPositiveTestResult == null || dateOfFirstPositiveTestResult.isAfter(LocalDate.now());
     }
 }

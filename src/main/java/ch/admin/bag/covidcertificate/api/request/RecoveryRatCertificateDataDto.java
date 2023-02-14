@@ -10,40 +10,39 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_MEMBER_STATE_OF_TEST;
 import static ch.admin.bag.covidcertificate.api.Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND;
 import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
-import static ch.admin.bag.covidcertificate.api.request.validator.LocalDateValidator.validateDateIsNotBeforeLimitDate;
-import static ch.admin.bag.covidcertificate.api.request.validator.LocalDateValidator.validateDateIsNotInTheFuture;
+import static ch.admin.bag.covidcertificate.api.request.validator.LocalDateValidator.*;
 import static ch.admin.bag.covidcertificate.api.request.validator.TextValidator.validateTextLengthIsNotBiggerThanMaxLength;
 
 @Getter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class RecoveryRatCertificateDataDto {
+public class RecoveryRatCertificateDataDto extends BaseTestCertificateDataDto {
 
+    // if this needs to be changed, change assertion message in isDateNotBeforeLimitDate accordingly.
     private static final LocalDate LIMIT_MIN_DATE = LocalDate.of(2021, 10, 1);
 
-    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-    private ZonedDateTime sampleDateTime;
+    @AssertTrue(message = "Sample date may not be before 2021-10-1")
+    public boolean isDateNotBeforeLimitDate() {
 
-    private String testingCentreOrFacility;
+        if (getSampleDateTime() == null) return true;
+        return isDateNotBeforeTheLimitDate(getSampleDateTime().toLocalDate(), LIMIT_MIN_DATE);
+    }
 
-    private String memberStateOfTest;
+    @AssertTrue(message =  "Invalid member state of test")
+    public boolean isMemberStateOfTestValid() {
+        return ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equals(getMemberStateOfTest());
+    }
 
-    public void validate() {
-        LocalDate sampleDate = sampleDateTime.toLocalDate();
-        validateDateIsNotInTheFuture(sampleDate, "sampleDateTime");
-        validateDateIsNotBeforeLimitDate(sampleDate, "sampleDateTime", LIMIT_MIN_DATE);
-        validateTextLengthIsNotBiggerThanMaxLength(testingCentreOrFacility, "testingCentreOrFacility", MAX_STRING_LENGTH);
-
-        if (!ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equals(memberStateOfTest)) {
-            throw new CreateCertificateException(INVALID_MEMBER_STATE_OF_TEST);
-        }
+    public RecoveryRatCertificateDataDto(ZonedDateTime sampleDateTime, String testingCentreOrFacility, String memberStateOfTest) {
+        super(sampleDateTime, testingCentreOrFacility, memberStateOfTest);
     }
 }

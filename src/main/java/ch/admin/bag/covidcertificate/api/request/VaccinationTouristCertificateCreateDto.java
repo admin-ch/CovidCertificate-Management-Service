@@ -1,16 +1,19 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
-
-import static ch.admin.bag.covidcertificate.api.Constants.DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE;
-import static ch.admin.bag.covidcertificate.api.Constants.NO_VACCINATION_DATA;
+import java.util.Objects;
 
 @Getter
 @ToString(callSuper = true)
@@ -18,11 +21,23 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_VACCINATION_DATA;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VaccinationTouristCertificateCreateDto extends CertificateCreateDto {
 
-    private List<VaccinationTouristCertificateDataDto> vaccinationTouristInfo;
+    @NotNull(message = "No vaccination data was specified")
+    @Size(min = 1, message = "No vaccination data was specified")
+    private List<@Valid VaccinationCertificateDataDto> vaccinationTouristInfo;
+
+    @AssertFalse(message = "Invalid dateOfBirth! Must be before the certificate date")
+    public boolean isBirthdateAfterValidation() {
+        if (Objects.isNull(getPersonData().getDateOfBirth()) || Objects.isNull(vaccinationTouristInfo)) return false;
+        try {
+            return vaccinationTouristInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getVaccinationDate()));
+        } catch (CreateCertificateException e) {
+            return true;
+        }
+    }
 
     public VaccinationTouristCertificateCreateDto(
             CovidCertificatePersonDto personData,
-            List<VaccinationTouristCertificateDataDto> vaccinationTouristInfo,
+            List<VaccinationCertificateDataDto> vaccinationTouristInfo,
             String language,
             CovidCertificateAddressDto address,
             String inAppDeliveryCode,
@@ -30,20 +45,6 @@ public class VaccinationTouristCertificateCreateDto extends CertificateCreateDto
     ) {
         super(personData, language, address, inAppDeliveryCode, systemSource);
         this.vaccinationTouristInfo = vaccinationTouristInfo;
-    }
-
-    @Override
-    public void validate() {
-        super.validate();
-        if (vaccinationTouristInfo == null || vaccinationTouristInfo.isEmpty()) {
-            throw new CreateCertificateException(NO_VACCINATION_DATA);
-        } else {
-            vaccinationTouristInfo.forEach(VaccinationTouristCertificateDataDto::validate);
-        }
-
-        if (vaccinationTouristInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getVaccinationDate()))) {
-            throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
-        }
     }
 
     @Override

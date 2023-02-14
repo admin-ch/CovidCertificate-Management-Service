@@ -1,36 +1,23 @@
 package ch.admin.bag.covidcertificate.api.request.validator;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-
-import static ch.admin.bag.covidcertificate.api.Constants.MISSING_PROPERTY;
-import static ch.admin.bag.covidcertificate.api.Constants.TEXT_INVALID_LENGTH;
-
 public class TextValidator {
 
     private TextValidator() {
     }
 
-    public static void validateTextIsNotNullAndNotEmpty(String text, String propertyName) {
-        if (text == null || text.isEmpty()) {
-            throw new CreateCertificateException(MISSING_PROPERTY, propertyName);
-        }
+    public static boolean validateTextIsNotNullAndNotEmpty(String text) {
+        return text != null && !text.isEmpty();
     }
 
-    public static void validateTextIsNotBlank(String text, String propertyName) {
-        validateTextIsNotNullAndNotEmpty(text, propertyName);
-        if (text.isBlank()) {
-            throw new CreateCertificateException(MISSING_PROPERTY, propertyName);
-        }
+    public static boolean validateTextIsNotBlank(String text) {
+        return validateTextIsNotNullAndNotEmpty(text) && !text.isBlank();
     }
 
-    public static void validateTextIsNotBlankAndLengthIsNotBiggerThanMaxLength(String text, String propertyName, int maxLength) {
-        validateTextIsNotBlank(text, propertyName);
-        validateTextLengthIsNotBiggerThanMaxLength(text, propertyName, maxLength);
+    public static boolean validateTextIsNotBlankAndLengthIsNotBiggerThanMaxLength(String text, int maxLength) {
+        return validateTextIsNotBlank(text) && validateTextLengthIsNotBiggerThanMaxLength(text, maxLength);
     }
 
-    public static void validateTextLengthIsNotBiggerThanMaxLength(String text, String propertyName, int maxLength) {
-        if (text != null && text.length() > maxLength) {
-            throw new CreateCertificateException(TEXT_INVALID_LENGTH, propertyName, maxLength);
-        }
+    public static boolean validateTextLengthIsNotBiggerThanMaxLength(String text, int maxLength) {
+        return text == null || text.length() <= maxLength;
     }
 }

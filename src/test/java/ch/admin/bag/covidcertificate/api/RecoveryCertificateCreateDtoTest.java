@@ -6,8 +6,14 @@ import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.platform.commons.util.ReflectionUtils;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.List;
 
 import static ch.admin.bag.covidcertificate.api.Constants.NO_RECOVERY_DATA;
@@ -18,6 +24,21 @@ public class RecoveryCertificateCreateDtoTest {
 
     private final CovidCertificatePersonDto personDto = mock(CovidCertificatePersonDto.class);
     private final RecoveryCertificateDataDto dataDto = mock(RecoveryCertificateDataDto.class);
+
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    @BeforeClass
+    public static void createValidator() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+
+    @AfterClass
+    public static void close() {
+        validatorFactory.close();
+    }
+
 
     @Test
     public void testNoRecoveryData() {
@@ -30,8 +51,10 @@ public class RecoveryCertificateCreateDtoTest {
                 null,
                 SystemSource.WebUI
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(NO_RECOVERY_DATA, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isRecoveryDataValid").orElseThrow();
+        var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isRecoveryDataValid());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("No recovery data specified")));
+
 
         testee = new RecoveryCertificateCreateDto(
                 personDto,
@@ -41,8 +64,9 @@ public class RecoveryCertificateCreateDtoTest {
                 null,
                 SystemSource.WebUI
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(NO_RECOVERY_DATA, exception.getError());
+        methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isRecoveryDataValid").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isRecoveryDataValid());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("No recovery data specified")));
 
         testee = new RecoveryCertificateCreateDto(
                 personDto,
@@ -52,6 +76,9 @@ public class RecoveryCertificateCreateDtoTest {
                 null,
                 SystemSource.WebUI
         );
-        assertDoesNotThrow(testee::validate);
+        methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isRecoveryDataValid").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isRecoveryDataValid());
+        assertTrue(violations.isEmpty());
+
     }
 }

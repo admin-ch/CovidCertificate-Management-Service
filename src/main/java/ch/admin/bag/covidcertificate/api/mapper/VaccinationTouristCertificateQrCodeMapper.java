@@ -1,8 +1,8 @@
 package ch.admin.bag.covidcertificate.api.mapper;
 
 import ch.admin.bag.covidcertificate.api.Constants;
+import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.valueset.IssuableVaccineDto;
 import ch.admin.bag.covidcertificate.service.domain.CovidCertificateDiseaseOrAgentTargeted;
 import ch.admin.bag.covidcertificate.service.domain.qrcode.VaccinationTouristCertificateData;
@@ -34,7 +34,7 @@ public class VaccinationTouristCertificateQrCodeMapper {
     }
 
     private static List<VaccinationTouristCertificateData> toVaccinationTouristCertificateDataList(
-            List<VaccinationTouristCertificateDataDto> vaccinationTouristCertificateDataDtoList,
+            List<VaccinationCertificateDataDto> vaccinationTouristCertificateDataDtoList,
             IssuableVaccineDto issuableVaccineDto
     ) {
         return vaccinationTouristCertificateDataDtoList.stream().map(vaccinationTouristCertificateDataDto ->
@@ -46,7 +46,7 @@ public class VaccinationTouristCertificateQrCodeMapper {
     }
 
     private static VaccinationTouristCertificateData toVaccinationTouristCertificateData(
-            VaccinationTouristCertificateDataDto vaccinationTouristCertificateDataDto,
+            VaccinationCertificateDataDto vaccinationTouristCertificateDataDto,
             IssuableVaccineDto issuableVaccineDto
     ) {
         return new VaccinationTouristCertificateData(

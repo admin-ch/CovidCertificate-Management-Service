@@ -6,8 +6,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.access.AccessDeniedException;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Objects;
 
 import static ch.admin.bag.covidcertificate.api.Constants.DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE;
 import static ch.admin.bag.covidcertificate.api.Constants.NO_EXCEPTIONAL_INFO;
@@ -18,7 +25,9 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_EXCEPTIONAL_INFO;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExceptionalCertificateCreateDto extends CertificateCreateDto {
 
-    private List<ExceptionalCertificateDataDto> exceptionalInfo;
+    @NotNull(message = "No exceptional data specified")
+    @Size(min = 1, message = "No exceptional data specified")
+    private List<@Valid ExceptionalCertificateDataDto> exceptionalInfo;
 
     public ExceptionalCertificateCreateDto(
             CovidCertificatePersonDto personData,
@@ -32,18 +41,31 @@ public class ExceptionalCertificateCreateDto extends CertificateCreateDto {
         this.exceptionalInfo = exceptionalInfo;
     }
 
-    @Override
-    public void validate() {
-        super.validate();
-        if (exceptionalInfo == null || exceptionalInfo.isEmpty()) {
-            throw new CreateCertificateException(NO_EXCEPTIONAL_INFO);
-        } else {
-            exceptionalInfo.forEach(
-                    ExceptionalCertificateDataDto -> ExceptionalCertificateDataDto.validate(this.getSystemSource()));
-        }
-
-        if (exceptionalInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getValidFrom()))) {
-            throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
+    @AssertFalse(message = "Invalid dateOfBirth! Must be before the certificate date")
+    public boolean isBirthdateAfterValidation() {
+        if (Objects.isNull(getPersonData().getDateOfBirth()) || Objects.isNull(exceptionalInfo)) return false;
+        try {
+            return exceptionalInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getValidFrom()));
+        } catch (CreateCertificateException e) {
+            return true;
         }
     }
+
+
+    @AssertTrue()
+    public boolean isValidSystemSource() {
+        if (getSystemSource() == null) return true;
+        switch (getSystemSource()) {
+            case WebUI, CsvUpload: {
+                break;
+            }
+            case ApiGateway, ApiPlatform: {
+                throw new AccessDeniedException("Exceptional certificates can't be generated through the ApiPlatform or the ApitGateway.");
+            }
+            default:
+                throw new IllegalStateException("Attribute systemSource is invalid. Check Request implementation and/or Dto Validation.");
+        }
+        return true;
+    }
+
 }

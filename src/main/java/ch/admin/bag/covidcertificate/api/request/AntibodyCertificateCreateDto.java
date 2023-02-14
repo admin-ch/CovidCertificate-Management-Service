@@ -1,16 +1,19 @@
 package ch.admin.bag.covidcertificate.api.request;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.access.AccessDeniedException;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
-
-import static ch.admin.bag.covidcertificate.api.Constants.DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE;
-import static ch.admin.bag.covidcertificate.api.Constants.NO_ANTIBODY_DATA;
+import java.util.stream.Stream;
 
 @Getter
 @ToString(callSuper = true)
@@ -18,7 +21,9 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_ANTIBODY_DATA;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AntibodyCertificateCreateDto extends CertificateCreateDto {
 
-    private List<AntibodyCertificateDataDto> antibodyInfo;
+    @NotNull(message = "No antibody data specified")
+    @Size(min = 1, message = "No antibody data specified")
+    private List<@Valid AntibodyCertificateDataDto> antibodyInfo;
 
     public AntibodyCertificateCreateDto(
             CovidCertificatePersonDto personData,
@@ -32,18 +37,24 @@ public class AntibodyCertificateCreateDto extends CertificateCreateDto {
         this.antibodyInfo = antibodyInfo;
     }
 
-    @Override
-    public void validate() {
-        super.validate();
-        if (antibodyInfo == null || antibodyInfo.isEmpty()) {
-            throw new CreateCertificateException(NO_ANTIBODY_DATA);
-        } else {
-            antibodyInfo.forEach(
-                    antibodyCertificateDataDto -> antibodyCertificateDataDto.validate(this.getSystemSource()));
+    @AssertTrue()
+    public boolean isValidSystemSource() {
+        if (getSystemSource() == null) return true;
+        switch (getSystemSource()) {
+            case WebUI, CsvUpload, ApiGateway: {
+                break;
+            }
+            case ApiPlatform: {
+                throw new AccessDeniedException("Antibody certificates can't be generated through the ApiPlatform.");
+            }
+            default:
+                throw new IllegalStateException("Attribute systemSource is invalid. Check Request implementation and/or Dto Validation.");
         }
+        return true;
+    }
 
-        if (antibodyInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getSampleDate()))) {
-            throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
-        }
+    @AssertFalse(message = "Invalid dateOfBirth! Must be before the certificate date")
+    public boolean isValidDateOfBirth() {
+        return Stream.ofNullable(antibodyInfo).findFirst().orElse(List.of()).stream().anyMatch(dto -> isBirthdateAfter(dto.getSampleDate()));
     }
 }

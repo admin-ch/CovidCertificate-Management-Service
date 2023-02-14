@@ -1,9 +1,14 @@
 package ch.admin.bag.covidcertificate.api;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.platform.commons.util.ReflectionUtils;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
@@ -19,6 +24,20 @@ public class TestCertificateDataDtoTest {
     private final String testingCentreOrFacility = "testCenter";
     private final String memberStateOfTest = "CH";
 
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    @BeforeClass
+    public static void createValidator() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+
+    @AfterClass
+    public static void close() {
+        validatorFactory.close();
+    }
+
     @Test
     public void testInvalidSampleOrResultDateTime() {
         TestCertificateDataDto testee = new TestCertificateDataDto(
@@ -28,8 +47,9 @@ public class TestCertificateDataDtoTest {
                 testingCentreOrFacility,
                 memberStateOfTest
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_SAMPLE_DATE_TIME, exception.getError());
+        var violations = validator.validateProperty(testee, "sampleDateTime");
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid sample date time! Sample date must be before current date time")));
+
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
@@ -38,8 +58,9 @@ public class TestCertificateDataDtoTest {
                 testingCentreOrFacility,
                 memberStateOfTest
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_SAMPLE_DATE_TIME, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isSampleDateTimeValid").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isSampleDateTimeValid());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid sample date time! Sample date must be before current date time")));
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
@@ -48,7 +69,11 @@ public class TestCertificateDataDtoTest {
                 testingCentreOrFacility,
                 memberStateOfTest
         );
-        assertDoesNotThrow(testee::validate);
+        violations = validator.validateProperty(testee, "sampleDateTime");
+        assertTrue(violations.isEmpty());
+        methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isSampleDateTimeValid").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isSampleDateTimeValid());
+        assertTrue(violations.isEmpty());
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
@@ -57,7 +82,11 @@ public class TestCertificateDataDtoTest {
                 testingCentreOrFacility,
                 memberStateOfTest
         );
-        assertDoesNotThrow(testee::validate);
+        violations = validator.validateProperty(testee, "sampleDateTime");
+        assertTrue(violations.isEmpty());
+        methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isSampleDateTimeValid").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isSampleDateTimeValid());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -69,8 +98,9 @@ public class TestCertificateDataDtoTest {
                 null,
                 memberStateOfTest
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_TEST_CENTER, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isTestCenterValid").orElseThrow();
+        var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isTestCenterValid());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid testing center or facility")));
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
@@ -79,8 +109,9 @@ public class TestCertificateDataDtoTest {
                 "",
                 memberStateOfTest
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_TEST_CENTER, exception.getError());
+        methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isTestCenterValid").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isTestCenterValid());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid testing center or facility")));
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
@@ -89,8 +120,9 @@ public class TestCertificateDataDtoTest {
                 "lslksiueiufhflsleifhgoskeiusfdsafdrfhffdsafdsafdsafdsafvasfdsafgdsagfdadsafdsafdsa",
                 memberStateOfTest
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_TEST_CENTER, exception.getError());
+        methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isTestCenterValid").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isTestCenterValid());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid testing center or facility")));
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
@@ -99,7 +131,9 @@ public class TestCertificateDataDtoTest {
                 testingCentreOrFacility,
                 memberStateOfTest
         );
-        assertDoesNotThrow(testee::validate);
+        methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isTestCenterValid").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isTestCenterValid());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -111,8 +145,8 @@ public class TestCertificateDataDtoTest {
                 testingCentreOrFacility,
                 null
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_MEMBER_STATE_OF_TEST, exception.getError());
+        var violations = validator.validateProperty(testee, "memberStateOfTest");
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid member state of test")));
 
         testee = new TestCertificateDataDto(
                 manufacturerCode,
@@ -121,6 +155,7 @@ public class TestCertificateDataDtoTest {
                 testingCentreOrFacility,
                 memberStateOfTest
         );
-        assertDoesNotThrow(testee::validate);
+        violations = validator.validateProperty(testee, "memberStateOfTest");
+        assertTrue(violations.isEmpty());
     }
 }

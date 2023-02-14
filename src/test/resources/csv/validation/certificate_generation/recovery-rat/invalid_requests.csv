@@ -1,0 +1,708 @@
+{
+  "name": null,
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þNo person data was specified¬
+
+{
+  "name": {
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þFamily name must not be null¬
+
+{
+  "name": {
+    "familyName": "Tester_",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid family name! Must not contain any invalid chars¬
+
+
+{
+  "name": {
+    "familyName": "TesterTesterTesterTesterTesterTesterTesterTesterTesterTesterTesterTesterTesterTes",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid family name! Must not exceed 80 chars¬
+
+{
+  "name": {
+    "familyName": "Tester"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þGiven name must not be null¬
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans_"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid given name! Must not contain any invalid chars¬
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "HansHansHansHansHansHansHansHansHansHansHansHansHansHansHansHansHansHansHansHanss"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid given name! Must not exceed 80 chars¬
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þDate of birth must not be null¬
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "1899-12-31",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid dateOfBirth! Must be younger than 1900-01-01¬
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2099-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid dateOfBirth! Date cannot be in the future¬
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þThe given language does not match any of the supported languages: de, it, fr, rm!¬
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þThe given language does not match any of the supported languages: de, it, fr, rm!¬
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "en",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þThe given language does not match any of the supported languages: de, it, fr, rm!¬
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "string",
+    "zipCode": 3000,
+    "city": "Bern",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "abcdefg",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þDelivery method can either be InApp or print, but not both.¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc_defg",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þApp code is in an invalid format.¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "StreetStreet 99StreetStreet 99StreetStreet 99StreetStreet 99StreetStreet 99StreetStreet 99StreetStreet 99 99StreetStreet 99999999",
+    "zipCode": 3000,
+    "city": "Bern",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þPaper-based delivery requires a valid address.¬
+
+
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "",
+    "zipCode": 3000,
+    "city": "Bern",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þPaper-based delivery requires a valid address.¬
+
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "string",
+    "zipCode": 3000,
+    "city": "StreetStreet 99StreetStreet 99StreetStreet 99StreetStreet 99StreetStreet 99StreetStreet 99StreetStreet 99 99StreetStreet 99999999",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þPaper-based delivery requires a valid address.¬
+
+
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "street",
+    "zipCode": 3000,
+    "city": "",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þPaper-based delivery requires a valid address.¬
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "street",
+    "zipCode": 3000,
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þPaper-based delivery requires a valid address.¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "string",
+    "zipCode": 999,
+    "city": "Bern",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þPaper-based delivery requires a valid address.¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": {
+    "streetAndNr": "string",
+    "zipCode": 10000,
+    "city": "Bern",
+    "cantonCodeSender": "BE"
+  },
+  "appCode": "",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þPaper-based delivery requires a valid address.¬
+
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þsystemSource must not be null¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid sample date time! Sample date must be before current date time¬
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2099-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid sample date time! Sample date must be before current date time¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid testing center or facility¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid testing center or facility¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid member state of test¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "DE"
+
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid member state of test¬
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "deliverablePerPost": false
+}þNo test data was specified¬
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "recoveryInfo": [
+  ],
+  "deliverablePerPost": false
+}þNo test data was specified¬
+
+
+
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2023-02-10",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "sampleDateTime": "2023-02-09T11:24:28.997Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "CH"
+    }
+  ],
+  "deliverablePerPost": false
+}þInvalid dateOfBirth! Must be before the certificate date

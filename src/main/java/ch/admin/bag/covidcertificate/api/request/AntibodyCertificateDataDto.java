@@ -1,6 +1,5 @@
 package ch.admin.bag.covidcertificate.api.request;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.util.DateDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
@@ -9,14 +8,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_ANTIBODY_SAMPLE_DATE_TIME;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_SAMPLE_DATE_TIME;
-import static ch.admin.bag.covidcertificate.api.Constants.INVALID_TEST_CENTER;
 import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
 
 @Getter
@@ -27,31 +24,24 @@ import static ch.admin.bag.covidcertificate.api.Constants.MAX_STRING_LENGTH;
 public class AntibodyCertificateDataDto {
 
     @JsonDeserialize(using = DateDeserializer.class)
+    @NotNull(message = "Invalid sample date time! Sample date must be before current date time")
     private LocalDate sampleDate;
     private String testingCenterOrFacility;
 
     private static final LocalDate ANTIBODY_MIN_DATE = LocalDate.of(2021, 11, 16);
 
-    public void validate(SystemSource systemSource) {
-        if (sampleDate == null || sampleDate.isAfter(LocalDate.now())) {
-            throw new CreateCertificateException(INVALID_SAMPLE_DATE_TIME);
-        }
-        if (sampleDate.isBefore(ANTIBODY_MIN_DATE)) {
-            throw new CreateCertificateException(INVALID_ANTIBODY_SAMPLE_DATE_TIME);
-        }
-        if (!StringUtils.hasText(testingCenterOrFacility) || testingCenterOrFacility.length() > MAX_STRING_LENGTH) {
-            throw new CreateCertificateException(INVALID_TEST_CENTER);
-        }
+    @AssertFalse(message =  "Invalid testing center or facility")
+    public boolean isTestCenterValid() {
+        return !StringUtils.hasText(testingCenterOrFacility) || testingCenterOrFacility.length() > MAX_STRING_LENGTH;
+    }
 
-        switch (systemSource) {
-            case WebUI, CsvUpload, ApiGateway: {
-                break;
-            }
-            case ApiPlatform: {
-                throw new AccessDeniedException("Antibody certificates can't be generated through the ApiPlatform.");
-            }
-            default:
-                throw new IllegalStateException("Attribute systemSource is invalid. Check Request implementation and/or Dto Validation.");
-        }
+    @AssertFalse(message = "Invalid sample date time! Sample date must be before current date time")
+    public boolean isSampleDateValid() {
+        return sampleDate != null && sampleDate.isAfter(LocalDate.now());
+    }
+
+    @AssertFalse(message = "Date of sample collection must not be before 16.11.2021")
+    public boolean isSampleDateBeforeDateValid() {
+        return sampleDate != null && sampleDate.isBefore(ANTIBODY_MIN_DATE);
     }
 }

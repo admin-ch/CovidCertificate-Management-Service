@@ -3,70 +3,92 @@ package ch.admin.bag.covidcertificate.api;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
 import ch.admin.bag.covidcertificate.api.request.SystemSource;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.platform.commons.util.ReflectionUtils;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.time.Month;
 
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_COUNTRY_OF_TEST;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RecoveryCertificateDataDtoTest {
 
     private final LocalDate dateOfFirstPositiveTestResult = LocalDate.of(2021, Month.MAY, 2);
     private final String countryOfTest = "CH";
 
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    @BeforeClass
+    public static void createValidator() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+
+    @AfterClass
+    public static void close() {
+        validatorFactory.close();
+    }
+
     @Test
     public void validationSucceeds_ifDateOfFirstPositiveTestResult_isInThePast() {
-        final RecoveryCertificateDataDto testDto = new RecoveryCertificateDataDto(
+        final var testee = new RecoveryCertificateDataDto(
                 dateOfFirstPositiveTestResult,
                 countryOfTest
         );
-        assertDoesNotThrow(() -> testDto.validate(SystemSource.WebUI));
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidDteOfFirstPositiveTestResult").orElseThrow();
+        var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDteOfFirstPositiveTestResult());
+        assertTrue(violations.isEmpty());
+
     }
 
     @Test
     public void validationThrowsCreateCertificateException_ifDateOfFirstPositiveTestResult_isNull() {
-        final RecoveryCertificateDataDto testDto = new RecoveryCertificateDataDto(
+        final var testee = new RecoveryCertificateDataDto(
                 null,
                 countryOfTest
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, () -> testDto.validate(
-                SystemSource.WebUI));
-        assertEquals(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidDteOfFirstPositiveTestResult").orElseThrow();
+        var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDteOfFirstPositiveTestResult());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid date of first positive test result")));
+
     }
 
     @Test
     public void validationThrowsCreateCertificateException_ifDateOfFirstPositiveTestResult_isInTheFuture() {
-        final RecoveryCertificateDataDto testDto = new RecoveryCertificateDataDto(
+        final var testee = new RecoveryCertificateDataDto(
                 LocalDate.now().plusDays(1),
                 countryOfTest
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, () -> testDto.validate(
-                SystemSource.WebUI));
-        assertEquals(INVALID_DATE_OF_FIRST_POSITIVE_TEST_RESULT, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidDteOfFirstPositiveTestResult").orElseThrow();
+        var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDteOfFirstPositiveTestResult());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid date of first positive test result")));
     }
 
     @Test
     public void validationThrowsCreateCertificateException_ifCountryOfTest_isNull() {
-        final RecoveryCertificateDataDto testDto = new RecoveryCertificateDataDto(
+        final var testee = new RecoveryCertificateDataDto(
                 dateOfFirstPositiveTestResult,
                 null
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class,
-                                                            () -> testDto.validate(SystemSource.WebUI));
-        assertEquals(INVALID_COUNTRY_OF_TEST, exception.getError());
+        var violations = validator.validateProperty(testee, "countryOfTest");
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid country of test")));
     }
 
     @Test
     public void validationSucceeds_ifCountryOfTest_isNotNull() {
-        final RecoveryCertificateDataDto testDto = new RecoveryCertificateDataDto(
+        final var testee = new RecoveryCertificateDataDto(
                 dateOfFirstPositiveTestResult,
                 countryOfTest
         );
-        assertDoesNotThrow(() -> testDto.validate(SystemSource.WebUI));
+        var violations = validator.validateProperty(testee, "countryOfTest");
+        assertTrue(violations.isEmpty());
     }
 }

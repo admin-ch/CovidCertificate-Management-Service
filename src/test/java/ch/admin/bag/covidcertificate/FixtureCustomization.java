@@ -2,21 +2,7 @@ package ch.admin.bag.covidcertificate;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateError;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
-import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RevocationDto;
-import ch.admin.bag.covidcertificate.api.request.RevocationListDto;
-import ch.admin.bag.covidcertificate.api.request.SystemSource;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.UvciForRevocationDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.CertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.pdfgeneration.CertificatePersonNameDto;
@@ -168,10 +154,10 @@ public class FixtureCustomization {
     }
 
     private static void customizeVaccinationTouristCertificateDataDto(JFixture fixture) {
-        fixture.customise().lazyInstance(VaccinationTouristCertificateDataDto.class, () -> {
+        fixture.customise().lazyInstance(VaccinationCertificateDataDto.class, () -> {
             var numberOfDoses = fixture.create(Integer.class) % 9 + 1;
             var totalNumberOfDoses = numberOfDoses + (int) Math.ceil(Math.random() * (9 - numberOfDoses));
-            var vaccinationTouristCertificateCreateDto = new JFixture().create(VaccinationTouristCertificateDataDto.class);
+            var vaccinationTouristCertificateCreateDto = new JFixture().create(VaccinationCertificateDataDto.class);
             ReflectionTestUtils.setField(vaccinationTouristCertificateCreateDto, "numberOfDoses", numberOfDoses);
             ReflectionTestUtils.setField(vaccinationTouristCertificateCreateDto, "totalNumberOfDoses", totalNumberOfDoses);
             return vaccinationTouristCertificateCreateDto;

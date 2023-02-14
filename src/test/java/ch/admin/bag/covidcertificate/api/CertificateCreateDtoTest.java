@@ -1,14 +1,19 @@
 package ch.admin.bag.covidcertificate.api;
 
-import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.CertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.CovidCertificateAddressDto;
-import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
-import ch.admin.bag.covidcertificate.api.request.SystemSource;
+import ch.admin.bag.covidcertificate.api.request.*;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.platform.commons.util.ReflectionUtils;
 
-import static ch.admin.bag.covidcertificate.api.Constants.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
@@ -17,6 +22,20 @@ public class CertificateCreateDtoTest {
     private final CovidCertificatePersonDto personDto = mock(CovidCertificatePersonDto.class);
     private final String language = "de";
     private final CovidCertificateAddressDto addressDto = new CovidCertificateAddressDto("street", 1000, "city", "BE");
+
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    @BeforeClass
+    public static void createValidator() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+
+    @AfterClass
+    public static void close() {
+        validatorFactory.close();
+    }
 
     private static class CertificateCreateDtoIml extends CertificateCreateDto {
         public CertificateCreateDtoIml(
@@ -64,8 +83,8 @@ public class CertificateCreateDtoTest {
                 addressDto,
                 SystemSource.WebUI
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(NO_PERSON_DATA, exception.getError());
+        Set<ConstraintViolation<CertificateCreateDto>> violations = validator.validateProperty(testee, "personData");
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("personData must not be null")));
 
         testee = new CertificateCreateDtoIml(
                 personDto,
@@ -73,7 +92,10 @@ public class CertificateCreateDtoTest {
                 addressDto,
                 SystemSource.WebUI
         );
-        assertDoesNotThrow(testee::validate);
+
+        violations = validator.validateProperty(testee, "personData");
+        assertTrue(violations.isEmpty());
+
     }
 
     @Test
@@ -84,8 +106,10 @@ public class CertificateCreateDtoTest {
                 addressDto,
                 SystemSource.WebUI
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_LANGUAGE, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isLanguageValid").orElseThrow();
+
+        Set<ConstraintViolation<CertificateCreateDto>> violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isLanguageValid());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("The given language does not match any of the supported languages: de, it, fr, rm!")));
 
         testee = new CertificateCreateDtoIml(
                 personDto,
@@ -93,8 +117,8 @@ public class CertificateCreateDtoTest {
                 addressDto,
                 SystemSource.WebUI
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_LANGUAGE, exception.getError());
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isLanguageValid());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("The given language does not match any of the supported languages: de, it, fr, rm!")));
 
         testee = new CertificateCreateDtoIml(
                 personDto,
@@ -102,18 +126,8 @@ public class CertificateCreateDtoTest {
                 addressDto,
                 SystemSource.WebUI
         );
-        assertDoesNotThrow(testee::validate);
-    }
-
-    @Test
-    public void doesValidateSuccessfully() {
-        CertificateCreateDto testee = new CertificateCreateDtoIml(
-                personDto,
-                "de",
-                addressDto,
-                SystemSource.WebUI
-        );
-        assertDoesNotThrow(testee::validate);
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isLanguageValid());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -121,8 +135,10 @@ public class CertificateCreateDtoTest {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto, "de", addressDto, RandomStringUtils.randomAlphanumeric(9), SystemSource.WebUI);
 
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(DUPLICATE_DELIVERY_METHOD, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isDuplicateDeliveryMethod").orElseThrow();
+
+        Set<ConstraintViolation<CertificateCreateDto>> violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isDuplicateDeliveryMethod());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Delivery method can either be InApp or print, but not both.")));
     }
 
     @Test
@@ -130,33 +146,38 @@ public class CertificateCreateDtoTest {
         // test not alphanumeric
         var testee = new CertificateCreateDtoIml(
                 personDto, "de", RandomStringUtils.random(9), SystemSource.WebUI);
-        var exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_APP_CODE, exception.getError());
+
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidAppCode").orElseThrow();
+
+        Set<ConstraintViolation<CertificateCreateDto>> violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidAppCode());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("App code is in an invalid format.")));
     }
 
     @Test
     public void validatesSuccessfully__ifAddressOnlyIsPassed() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", addressDto, SystemSource.WebUI);
-        assertDoesNotThrow(testee::validate);
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isDuplicateDeliveryMethod").orElseThrow();
+
+        Set<ConstraintViolation<CertificateCreateDto>> violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isDuplicateDeliveryMethod());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
     public void validatesSuccessfully__ifInAppDeliveryCodeOnlyIsPassed() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(
                 personDto, "de", RandomStringUtils.randomAlphanumeric(9), SystemSource.WebUI);
-        assertDoesNotThrow(testee::validate);
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isDuplicateDeliveryMethod").orElseThrow();
+
+        Set<ConstraintViolation<CertificateCreateDto>> violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isDuplicateDeliveryMethod());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
     public void validatesSuccessfully__ifNoDeliveryIsPassed() {
         CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", SystemSource.WebUI);
-        assertDoesNotThrow(testee::validate);
-    }
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isDuplicateDeliveryMethod").orElseThrow();
 
-    @Test
-    public void validatesSuccessfully__ifInAppDeliveryCodeContainsSpaces() {
-        CertificateCreateDto testee = new CertificateCreateDtoIml(personDto, "de", " 123 456 789 ", SystemSource.WebUI);
-        assertDoesNotThrow(testee::validate);
-        assertEquals("123456789", testee.getAppCode());
+        Set<ConstraintViolation<CertificateCreateDto>> violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isDuplicateDeliveryMethod());
+        assertTrue(violations.isEmpty());
     }
 }

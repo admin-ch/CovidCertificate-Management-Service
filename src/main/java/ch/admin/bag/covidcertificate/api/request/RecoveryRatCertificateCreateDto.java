@@ -7,7 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Objects;
 
 import static ch.admin.bag.covidcertificate.api.Constants.DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE;
 import static ch.admin.bag.covidcertificate.api.Constants.NO_TEST_DATA;
@@ -18,7 +23,9 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_TEST_DATA;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecoveryRatCertificateCreateDto extends CertificateCreateDto {
 
-    private List<RecoveryRatCertificateDataDto> testInfo;
+    @NotNull(message = "No test data was specified")
+    @Size(min = 1, message = "No test data was specified")
+    private List<@Valid RecoveryRatCertificateDataDto> testInfo;
 
     public RecoveryRatCertificateCreateDto(
             CovidCertificatePersonDto personData,
@@ -33,17 +40,13 @@ public class RecoveryRatCertificateCreateDto extends CertificateCreateDto {
         this.testInfo = testInfo;
     }
 
-    @Override
-    public void validate() {
-        super.validate();
-        if (testInfo == null || testInfo.isEmpty()) {
-            throw new CreateCertificateException(NO_TEST_DATA);
-        } else {
-            testInfo.forEach(RecoveryRatCertificateDataDto::validate);
-        }
-
-        if (testInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getSampleDateTime()))) {
-            throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
+    @AssertFalse(message = "Invalid dateOfBirth! Must be before the certificate date")
+    public boolean isBirthdateAfterValidation() {
+        if (Objects.isNull(getPersonData().getDateOfBirth()) || Objects.isNull(testInfo)) return false;
+        try {
+            return testInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getSampleDateTime()));
+        } catch (CreateCertificateException e) {
+            return true;
         }
     }
 }

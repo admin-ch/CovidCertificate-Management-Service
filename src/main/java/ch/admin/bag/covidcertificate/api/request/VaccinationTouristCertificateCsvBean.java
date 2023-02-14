@@ -31,7 +31,7 @@ public class VaccinationTouristCertificateCsvBean extends CertificateCreateCsvBe
     private String countryOfVaccination;
 
     @Override
-    public VaccinationTouristCertificateCreateDto mapToCreateDto() {
+    public VaccinationCertificateCreateDto mapToCreateDto() {
         int nbOfDoses;
         int totalNbOfDoses;
         try {
@@ -40,7 +40,7 @@ public class VaccinationTouristCertificateCsvBean extends CertificateCreateCsvBe
         } catch (NumberFormatException e) {
             throw new CreateCertificateException(INVALID_DOSES);
         }
-        var dataDto = new VaccinationTouristCertificateDataDto(
+        var dataDto = new VaccinationCertificateDataDto(
                 medicinalProductCode != null ? medicinalProductCode.trim().toUpperCase() : null,
                 nbOfDoses,
                 totalNbOfDoses,

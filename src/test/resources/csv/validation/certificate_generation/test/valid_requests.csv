@@ -1,0 +1,127 @@
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "address": null,
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "manufacturerCode": "string",
+      "typeCode": "string",
+      "sampleDateTime": "2023-02-02T12:46:42.012Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "string"
+    }
+  ],  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "manufacturerCode": "string",
+      "typeCode": "string",
+      "sampleDateTime": "2023-02-02T12:46:42.012Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "string"
+    }
+  ],  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "manufacturerCode": "string",
+      "typeCode": "string",
+      "sampleDateTime": "2023-02-02T12:46:42.012Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "string"
+    }
+  ],  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abc",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "manufacturerCode": "string",
+      "typeCode": "string",
+      "sampleDateTime": "2023-02-02T12:46:42.012Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "string"
+    }
+  ],  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abcd",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "manufacturerCode": "string",
+      "typeCode": "string",
+      "sampleDateTime": "2023-02-02T12:46:42.012Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "string"
+    }
+  ],  "deliverablePerPost": false
+}
+¬
+{
+  "name": {
+    "familyName": "Tester",
+    "givenName": "Hans"
+  },
+  "dateOfBirth": "2000-01-01",
+  "language": "de",
+  "appCode": "abcd",
+  "systemSource": "WebUI",
+  "userExtId": "123",
+  "testInfo": [
+    {
+      "manufacturerCode": "string",
+      "typeCode": "string",
+      "sampleDateTime": "2023-02-02T12:46:42.012Z",
+      "testingCentreOrFacility": "string",
+      "memberStateOfTest": "string"
+    }
+  ]
+}
+

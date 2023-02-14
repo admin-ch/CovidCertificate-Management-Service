@@ -32,7 +32,6 @@ public class CovidCertificateConversionController {
             throws IOException {
 
         log.info("Call of conversion for existing vaccination certificate");
-        conversionRequestDto.validate();
         ConvertedCertificateResponseEnvelope responseEnvelope = covidCertificateConversionService
                 .convertFromExistingCovidCertificate(conversionRequestDto);
         ConvertedCertificateResponseDto responseDto = responseEnvelope.getResponseDto();

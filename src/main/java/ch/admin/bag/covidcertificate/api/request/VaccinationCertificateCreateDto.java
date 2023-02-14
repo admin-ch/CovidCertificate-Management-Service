@@ -1,16 +1,15 @@
 package ch.admin.bag.covidcertificate.api.request;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
-
-import static ch.admin.bag.covidcertificate.api.Constants.DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE;
-import static ch.admin.bag.covidcertificate.api.Constants.NO_VACCINATION_DATA;
+import java.util.Objects;
 
 @Getter
 @ToString(callSuper = true)
@@ -18,7 +17,20 @@ import static ch.admin.bag.covidcertificate.api.Constants.NO_VACCINATION_DATA;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VaccinationCertificateCreateDto extends CertificateCreateDto {
 
-    private List<VaccinationCertificateDataDto> vaccinationInfo;
+
+    @NotNull(message = "No vaccination data was specified")
+    @Size(min = 1, message = "No vaccination data was specified")
+    private List<@Valid VaccinationCertificateDataDto> vaccinationInfo;
+
+    @AssertFalse(message = "Invalid dateOfBirth! Must be before the certificate date")
+    public boolean isBirthdateAfterValidation() {
+        if (Objects.isNull(getPersonData().getDateOfBirth()) || Objects.isNull(vaccinationInfo)) return false;
+        try {
+            return vaccinationInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getVaccinationDate()));
+        } catch (CreateCertificateException e) {
+            return true;
+        }
+    }
 
     public VaccinationCertificateCreateDto(
             CovidCertificatePersonDto personData,
@@ -30,19 +42,5 @@ public class VaccinationCertificateCreateDto extends CertificateCreateDto {
     ) {
         super(personData, language, address, inAppDeliveryCode, systemSource);
         this.vaccinationInfo = vaccinationInfo;
-    }
-
-    @Override
-    public void validate() {
-        super.validate();
-        if (vaccinationInfo == null || vaccinationInfo.isEmpty()) {
-            throw new CreateCertificateException(NO_VACCINATION_DATA);
-        } else {
-            vaccinationInfo.forEach(VaccinationCertificateDataDto::validate);
-        }
-
-        if (vaccinationInfo.stream().anyMatch(dto -> isBirthdateAfter(dto.getVaccinationDate()))) {
-            throw new CreateCertificateException(DATE_OF_BIRTH_AFTER_CERTIFICATE_DATE);
-        }
     }
 }

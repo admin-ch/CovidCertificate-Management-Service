@@ -3,8 +3,14 @@ package ch.admin.bag.covidcertificate.api;
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
 import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonNameDto;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.platform.commons.util.ReflectionUtils;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -18,20 +24,35 @@ public class CovidCertificatePersonDtoTest {
     private final CovidCertificatePersonNameDto personNameDto = mock(CovidCertificatePersonNameDto.class);
     private final LocalDate dateOfBirth = LocalDate.of(1989, Month.JANUARY, 17);
 
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    @BeforeClass
+    public static void createValidator() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+
+    @AfterClass
+    public static void close() {
+        validatorFactory.close();
+    }
+
     @Test
     public void testNoPersonData() {
         CovidCertificatePersonDto testee = new CovidCertificatePersonDto(
                 null,
                 dateOfBirth.format(LOCAL_DATE_FORMAT)
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(NO_PERSON_DATA, exception.getError());
+        var violations = validator.validateProperty(testee, "name");
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("No person data was specified")));
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
                 dateOfBirth.format(LOCAL_DATE_FORMAT)
         );
-        assertDoesNotThrow(testee::validate);
+        violations = validator.validateProperty(testee, "name");
+        assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -40,28 +61,30 @@ public class CovidCertificatePersonDtoTest {
                 personNameDto,
                 null
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_DATE_OF_BIRTH, exception.getError());
+        var violations = validator.validateProperty(testee, "dateOfBirth");
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Date of birth must not be null")));
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
                 MIN_DATE_OF_BIRTH.minusDays(1).format(LOCAL_DATE_FORMAT)
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_DATE_OF_BIRTH, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidDateOfBirth").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDateOfBirth());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid dateOfBirth! Must be younger than 1900-01-01")));
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
                 MAX_DATE_OF_BIRTH.plusDays(1).format(LOCAL_DATE_FORMAT)
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_DATE_OF_BIRTH, exception.getError());
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDateOfBirth());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid dateOfBirth! Must be younger than 1900-01-01")));
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
                 dateOfBirth.format(LOCAL_DATE_FORMAT)
         );
-        assertDoesNotThrow(testee::validate);
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDateOfBirth());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -70,14 +93,16 @@ public class CovidCertificatePersonDtoTest {
                 personNameDto,
                 LocalDate.now().plusDays(1).format(LOCAL_DATE_FORMAT)
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_DATE_OF_BIRTH_IN_FUTURE, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidDateOfBirthInFuture").orElseThrow();
+        var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDateOfBirthInFuture());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid dateOfBirth! Date cannot be in the future")));
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
                 LocalDate.now().format(LOCAL_DATE_FORMAT)
         );
-        assertDoesNotThrow(testee::validate);
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDateOfBirthInFuture());
+        assertTrue(violations.isEmpty());
 
     }
 
@@ -87,14 +112,16 @@ public class CovidCertificatePersonDtoTest {
                 personNameDto,
                 LocalDate.now().plusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM"))
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_DATE_OF_BIRTH_IN_FUTURE, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidDateOfBirthInFuture").orElseThrow();
+        var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDateOfBirthInFuture());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid dateOfBirth! Date cannot be in the future")));
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))
         );
-        assertDoesNotThrow(testee::validate);
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDateOfBirthInFuture());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -103,14 +130,16 @@ public class CovidCertificatePersonDtoTest {
                 personNameDto,
                 LocalDate.now().plusYears(1).format(DateTimeFormatter.ofPattern("yyyy"))
         );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_DATE_OF_BIRTH_IN_FUTURE, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidDateOfBirthInFuture").orElseThrow();
+        var violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDateOfBirthInFuture());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Invalid dateOfBirth! Date cannot be in the future")));
 
         testee = new CovidCertificatePersonDto(
                 personNameDto,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"))
         );
-        assertDoesNotThrow(testee::validate);
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidDateOfBirthInFuture());
+        assertTrue(violations.isEmpty());
     }
 
 }

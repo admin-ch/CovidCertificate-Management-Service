@@ -16,18 +16,7 @@ import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationCertificateQrCodeMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificatePdfMapper;
 import ch.admin.bag.covidcertificate.api.mapper.VaccinationTouristCertificateQrCodeMapper;
-import ch.admin.bag.covidcertificate.api.request.AntibodyCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.ExceptionalCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.RecoveryRatCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationCertificateDataDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.VaccinationTouristCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.*;
 import ch.admin.bag.covidcertificate.api.request.conversion.VaccinationCertificateConversionRequestDto;
 import ch.admin.bag.covidcertificate.service.domain.pdf.AntibodyCertificatePdf;
 import ch.admin.bag.covidcertificate.service.domain.pdf.ExceptionalCertificatePdf;
@@ -93,7 +82,7 @@ public class CovidCertificateDtoMapperService {
     }
 
     public VaccinationTouristCertificatePdf toVaccinationTouristCertificatePdf(VaccinationTouristCertificateCreateDto createDto, VaccinationTouristCertificateQrCode qrCodeData) {
-        VaccinationTouristCertificateDataDto vaccinationTouristCertificateDataDto = createDto.getVaccinationTouristInfo().get(0);
+        VaccinationCertificateDataDto vaccinationTouristCertificateDataDto = createDto.getVaccinationTouristInfo().get(0);
         var vaccinationValueSet = valueSetsService.getVaccinationValueSet(vaccinationTouristCertificateDataDto.getMedicinalProductCode());
         var countryCode = valueSetsService.getCountryCode(vaccinationTouristCertificateDataDto.getCountryOfVaccination(), createDto.getLanguage());
         var countryCodeEn = valueSetsService.getCountryCodeEn(vaccinationTouristCertificateDataDto.getCountryOfVaccination());

@@ -1,13 +1,19 @@
 package ch.admin.bag.covidcertificate.api;
 
 import ch.admin.bag.covidcertificate.api.exception.CreateCertificateException;
-import ch.admin.bag.covidcertificate.api.request.CovidCertificatePersonDto;
-import ch.admin.bag.covidcertificate.api.request.SystemSource;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateCreateDto;
-import ch.admin.bag.covidcertificate.api.request.TestCertificateDataDto;
+import ch.admin.bag.covidcertificate.api.request.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.platform.commons.util.ReflectionUtils;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.List;
+import java.util.Set;
 
 import static ch.admin.bag.covidcertificate.TestModelProvider.getCovidCertificateAddressDto;
 import static ch.admin.bag.covidcertificate.api.Constants.INVALID_PRINT_FOR_TEST;
@@ -20,6 +26,20 @@ public class TestCertificateCreateDtoTest {
     private final CovidCertificatePersonDto personDto = mock(CovidCertificatePersonDto.class);
     private final TestCertificateDataDto dataDto = mock(TestCertificateDataDto.class);
 
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    @BeforeClass
+    public static void createValidator() {
+            validatorFactory = Validation.buildDefaultValidatorFactory();
+            validator = validatorFactory.getValidator();
+    }
+
+    @AfterClass
+    public static void close() {
+        validatorFactory.close();
+    }
+
     @Test
     public void testNoTestData() {
         String language = "de";
@@ -31,8 +51,8 @@ public class TestCertificateCreateDtoTest {
                 null,
                 SystemSource.WebUI
        );
-        CreateCertificateException exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(NO_TEST_DATA, exception.getError());
+        var violations = validator.validateProperty(testee, "testInfo");
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("No test data was specified")));
 
         testee = new TestCertificateCreateDto(
                 personDto,
@@ -42,8 +62,9 @@ public class TestCertificateCreateDtoTest {
                 null,
                 SystemSource.WebUI
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(NO_TEST_DATA, exception.getError());
+        violations = validator.validateProperty(testee, "testInfo");
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("No test data was specified")));
+
 
         testee = new TestCertificateCreateDto(
                 personDto,
@@ -53,8 +74,10 @@ public class TestCertificateCreateDtoTest {
                 null,
                 SystemSource.WebUI
         );
-        exception = assertThrows(CreateCertificateException.class, testee::validate);
-        assertEquals(INVALID_PRINT_FOR_TEST, exception.getError());
+        var methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidPrint").orElseThrow();
+
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidPrint());
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Print is not available for test certificates")));
 
         testee = new TestCertificateCreateDto(
                 personDto,
@@ -64,6 +87,12 @@ public class TestCertificateCreateDtoTest {
                 null,
                 SystemSource.WebUI
         );
-        assertDoesNotThrow(testee::validate);
+
+        violations = validator.validateProperty(testee, "testInfo");
+        assertTrue(violations.isEmpty());
+        methodToTest = ReflectionUtils.findMethod(testee.getClass(), "isValidPrint").orElseThrow();
+        violations = validator.forExecutables().validateReturnValue(testee, methodToTest, testee.isValidPrint());
+        assertTrue(violations.isEmpty());
+
     }
 }
