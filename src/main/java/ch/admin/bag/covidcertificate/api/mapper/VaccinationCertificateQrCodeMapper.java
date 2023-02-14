@@ -29,7 +29,7 @@ public class VaccinationCertificateQrCodeMapper {
                 PersonMapper.toCovidCertificatePerson(vaccinationCertificateCreateDto.getPersonData()),
                 VaccinationCertificateQrCodeMapper
                         .toVaccinationCertificateDataList(
-                                vaccinationCertificateCreateDto.getVaccinationInfo(),
+                                vaccinationCertificateCreateDto.getCertificateData(),
                                 issuableVaccineDto
                         )
         );

@@ -57,25 +57,25 @@ public class VaccinationCertificateQrCodeMapperTest {
     @Test
     public void mapsNumberOfDoses() {
         VaccinationCertificateQrCode actual = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(incoming, vaccinationValueSet);
-        assertEquals(incoming.getVaccinationInfo().get(0).getNumberOfDoses(), actual.getVaccinationInfo().get(0).getNumberOfDoses());
+        assertEquals(incoming.getCertificateData().get(0).getNumberOfDoses(), actual.getVaccinationInfo().get(0).getNumberOfDoses());
     }
 
     @Test
     public void mapsTotalNumberOfDoses() {
         VaccinationCertificateQrCode actual = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(incoming, vaccinationValueSet);
-        assertEquals(incoming.getVaccinationInfo().get(0).getTotalNumberOfDoses(), actual.getVaccinationInfo().get(0).getTotalNumberOfDoses());
+        assertEquals(incoming.getCertificateData().get(0).getTotalNumberOfDoses(), actual.getVaccinationInfo().get(0).getTotalNumberOfDoses());
     }
 
     @Test
     public void mapsVaccinationDate() {
         VaccinationCertificateQrCode actual = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(incoming, vaccinationValueSet);
-        assertEquals(incoming.getVaccinationInfo().get(0).getVaccinationDate(), actual.getVaccinationInfo().get(0).getVaccinationDate());
+        assertEquals(incoming.getCertificateData().get(0).getVaccinationDate(), actual.getVaccinationInfo().get(0).getVaccinationDate());
     }
 
     @Test
     public void mapsCountryOfVaccination() {
         VaccinationCertificateQrCode actual = VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(incoming, vaccinationValueSet);
-        assertEquals(incoming.getVaccinationInfo().get(0).getCountryOfVaccination(), actual.getVaccinationInfo().get(0).getCountryOfVaccination());
+        assertEquals(incoming.getCertificateData().get(0).getCountryOfVaccination(), actual.getVaccinationInfo().get(0).getCountryOfVaccination());
     }
 
     @Test

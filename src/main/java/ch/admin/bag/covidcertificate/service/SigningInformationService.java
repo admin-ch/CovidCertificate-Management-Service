@@ -28,7 +28,7 @@ public class SigningInformationService {
 
     public SigningInformationDto getVaccinationSigningInformation(
             VaccinationCertificateCreateDto createDto, LocalDate validAt) {
-        var medicinalProductCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
+        var medicinalProductCode = createDto.getCertificateData().get(0).getMedicinalProductCode();
         var signingInformation = signingInformationCacheService.findSigningInformation(
                 SigningCertificateCategory.VACCINATION.value, medicinalProductCode, validAt);
 

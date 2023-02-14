@@ -28,7 +28,7 @@ public class CertificatePrintRequestDtoMapper {
     }
 
     private boolean isBillable(CertificateCreateDto createDto){
-        var vaccinationDate = createDto instanceof VaccinationCertificateCreateDto creationDto ? creationDto.getVaccinationInfo().get(0).getVaccinationDate() : null;
+        var vaccinationDate = createDto instanceof VaccinationCertificateCreateDto creationDto ? creationDto.getCertificateData().get(0).getVaccinationDate() : null;
         return vaccinationDate != null &&
                 vaccinationDate.compareTo(sinceVaccinationDate) >= 0;
     }

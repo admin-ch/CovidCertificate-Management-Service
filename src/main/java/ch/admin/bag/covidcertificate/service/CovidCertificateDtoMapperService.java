@@ -48,7 +48,7 @@ public class CovidCertificateDtoMapperService {
 
     public VaccinationCertificateQrCode toVaccinationCertificateQrCode(VaccinationCertificateCreateDto createDto) {
         var vaccinationValueSet = valueSetsService.getVaccinationValueSet(
-                createDto.getVaccinationInfo().get(0).getMedicinalProductCode());
+                createDto.getCertificateData().get(0).getMedicinalProductCode());
         return VaccinationCertificateQrCodeMapper.toVaccinationCertificateQrCode(createDto, vaccinationValueSet);
     }
 
@@ -62,7 +62,7 @@ public class CovidCertificateDtoMapperService {
 
     public VaccinationCertificatePdf toVaccinationCertificatePdf(
             VaccinationCertificateCreateDto createDto, VaccinationCertificateQrCode qrCodeData) {
-        VaccinationCertificateDataDto vaccinationCertificateDataDto = createDto.getVaccinationInfo().get(0);
+        VaccinationCertificateDataDto vaccinationCertificateDataDto = createDto.getCertificateData().get(0);
         var vaccinationValueSet = valueSetsService.getVaccinationValueSet(
                 vaccinationCertificateDataDto.getMedicinalProductCode());
         var countryCode = valueSetsService.getCountryCode(vaccinationCertificateDataDto.getCountryOfVaccination(),

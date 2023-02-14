@@ -59,19 +59,19 @@ public class VaccinationCertificatePdfMapperTest {
     @Test
     public void mapsNumberOfDoses() {
         VaccinationCertificatePdf actual = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(incoming, vaccinationValueSet, qrCode, countryOfVaccination, countryOfVaccinationEn);
-        assertEquals(incoming.getVaccinationInfo().get(0).getNumberOfDoses(), actual.getNumberOfDoses());
+        assertEquals(incoming.getCertificateData().get(0).getNumberOfDoses(), actual.getNumberOfDoses());
     }
 
     @Test
     public void mapsTotalNumberOfDoses() {
         VaccinationCertificatePdf actual = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(incoming, vaccinationValueSet, qrCode, countryOfVaccination, countryOfVaccinationEn);
-        assertEquals(incoming.getVaccinationInfo().get(0).getTotalNumberOfDoses(), actual.getTotalNumberOfDoses());
+        assertEquals(incoming.getCertificateData().get(0).getTotalNumberOfDoses(), actual.getTotalNumberOfDoses());
     }
 
     @Test
     public void mapsVaccinationDate() {
         VaccinationCertificatePdf actual = VaccinationCertificatePdfMapper.toVaccinationCertificatePdf(incoming, vaccinationValueSet, qrCode, countryOfVaccination, countryOfVaccinationEn);
-        assertEquals(incoming.getVaccinationInfo().get(0).getVaccinationDate(), actual.getVaccinationDate());
+        assertEquals(incoming.getCertificateData().get(0).getVaccinationDate(), actual.getVaccinationDate());
     }
 
     @Test

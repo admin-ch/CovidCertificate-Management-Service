@@ -24,8 +24,8 @@ public class CovidCertificateVaccinationValidationService {
     private final ValueSetsService valueSetsService;
 
     public void validateProductAndCountry(VaccinationCertificateCreateDto createDto) {
-        final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(createDto.getVaccinationInfo().get(0).getCountryOfVaccination());
-        final String productCode = createDto.getVaccinationInfo().get(0).getMedicinalProductCode();
+        final boolean isCountryCH = Constants.ISO_3166_1_ALPHA_2_CODE_SWITZERLAND.equalsIgnoreCase(createDto.getCertificateData().get(0).getCountryOfVaccination());
+        final String productCode = createDto.getCertificateData().get(0).getMedicinalProductCode();
 
         switch (createDto.getSystemSource()) {
             case WebUI: {
