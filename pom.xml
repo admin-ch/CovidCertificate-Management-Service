@@ -10,7 +10,7 @@
     </parent>
     <groupId>ch.admin.bag.covidcertificate</groupId>
     <artifactId>cc-management-service</artifactId>
-    <version>4.11.1</version>
+    <version>4.11.2</version>
     <name>cc-management-service</name>
     <description>Service for generating Covid Certificates</description>
 
@@ -18,7 +18,7 @@
         <java.version>17</java.version>
 
         <cc-backend-logging.version>1.0.6</cc-backend-logging.version>
-        <cc-backend-authorization.version>1.0.1</cc-backend-authorization.version>
+        <cc-backend-authorization.version>1.0.3</cc-backend-authorization.version>
         <com.github.tomakehurst.version>2.27.2</com.github.tomakehurst.version>
         <com.openhtmltopdf.version>1.0.10</com.openhtmltopdf.version>
         <com.squareup.okhttp3.version>4.10.0</com.squareup.okhttp3.version>
