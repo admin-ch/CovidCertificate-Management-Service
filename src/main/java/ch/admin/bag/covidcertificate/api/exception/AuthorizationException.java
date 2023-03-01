@@ -5,8 +5,7 @@ import org.springframework.core.NestedRuntimeException;
 
 /**
  * Falls eine Funktion nicht konfiguriert ist, muss diese im
- * {@link ch.admin.bag.covidcertificate.authorization.config.ServiceData}
- * bzw. im application-authorization.yml konfiguriert werden.
+ * Projekt <code>cc-backend-authorization</code> konfiguriert werden.
  */
 @Getter
 public class AuthorizationException extends NestedRuntimeException {
