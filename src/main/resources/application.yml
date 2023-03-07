@@ -9,8 +9,8 @@ logging:
     ch:
       admin:
         bit:
-          jeap: DEBUG
-        bag: DEBUG
+          jeap: INFO
+        bag: INFO
     io:
       swagger:
         models:
@@ -34,6 +34,7 @@ logging:
               ResourceHttpRequestHandler: INFO
           filter:
             CommonsRequestLoggingFilter: INFO
+      thymeleaf: ERROR
     springfox:
       documentation:
         spring:
