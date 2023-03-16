@@ -4,6 +4,7 @@ import ch.admin.bag.covidcertificate.authorization.ProfileRegistry;
 import ch.admin.bag.covidcertificate.config.cleanup.Cleanup;
 import ch.admin.bag.covidcertificate.config.cleanup.CleanupConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +95,8 @@ class CleanupConfigIntegrationTest {
     void expectFourSpots() {
         Map<String, Cleanup> spots = cleanupConfig.getSpots();
         assertEquals(4, spots.size());
-        List<String> names = List.copyOf(spots.keySet());
+        List<String> names = new ArrayList<>(4);
+        CollectionUtils.addAll(names, spots.keySet());
         Collections.sort(names);
         assertEquals("[api-gateway-db, lightcer-generation-db, management-db, printing-db]", names.toString());
     }
