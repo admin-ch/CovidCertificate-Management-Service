@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -91,9 +92,10 @@ class CleanupConfigIntegrationTest {
     @Test
     void expectFourSpots() {
         Map<String, Cleanup> spots = cleanupConfig.getSpots();
-
         assertEquals(4, spots.size());
-        assertEquals("[management-db, api-gateway-db, lightcer-generation-db, printing-db]", List.copyOf(spots.keySet()).toString());
+        List<String> names = List.copyOf(spots.keySet());
+        Collections.sort(names);
+        assertEquals("[api-gateway-db, lightcer-generation-db, management-db, printing-db]", names.toString());
     }
 
     @Test
