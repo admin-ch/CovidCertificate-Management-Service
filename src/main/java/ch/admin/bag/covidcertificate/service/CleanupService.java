@@ -35,9 +35,9 @@ public class CleanupService {
         long count = -1L;
         if (effort != null) {
             if (asBatch) {
-                count = effort.jdbcTemplate.update(effort.deleteBatchQuery, new Object[] { date, effort.deleteBatchSize });
+                count = effort.jdbcTemplate.update(effort.deleteUntilBatchQuery, new Object[] { date, effort.deleteUntilBatchSize});
             } else {
-                count = effort.jdbcTemplate.update(effort.deleteAllQuery, new Object[] { date });
+                count = effort.jdbcTemplate.update(effort.deleteUntilQuery, new Object[] { date });
             }
         }
         return count;
@@ -77,10 +77,10 @@ public class CleanupService {
             log.debug("CLEANING | Init {} - query config for '{}' missing", databaseName, databaseName);
         } else {
             sqlQueryValid = StringUtils.isNoneBlank(
-                    query.getCount(), query.getDeleteAll(), query.getDeleteBatch()) && query.getDeleteBatchSize()>-1;
+                    query.getCount(), query.getDeleteUntil(), query.getDeleteUntilBatch()) && query.getDeleteUntilBatchSize()>-1;
             if (!sqlQueryValid) {
                 log.debug("CLEANING | Init {} - query config invalid:\n count='{}'\n deleteAll='{}'\n deleteBatch='{}'\ndeleteBatchSize={}", databaseName,
-                        query.getCount(), query.getDeleteAll(), query.getDeleteBatch(), query.getDeleteBatchSize());
+                        query.getCount(), query.getDeleteUntil(), query.getDeleteUntilBatch(), query.getDeleteUntilBatchSize());
             }
         }
 
@@ -89,8 +89,8 @@ public class CleanupService {
             try {
                 hikariDataSource = createHikariDataSource(databaseName, db.getUrl(), db.getUsername(), db.getPassword());
                 JdbcTemplate jdbcTemplate = createJdbcTemplate(hikariDataSource);
-                effort = new CleaningEffort(databaseName,
-                        query.getCount(), query.getDeleteAll(), query.getDeleteBatch(), query.getDeleteBatchSize(), hikariDataSource, jdbcTemplate);
+                effort = new CleaningEffort(databaseName, query.getCount(), query.getDeleteUntil(),
+                        query.getDeleteUntilBatch(), query.getDeleteUntilBatchSize(), hikariDataSource, jdbcTemplate);
             } catch (Exception e) {
                 log.debug("CLEANING | Init {} - error: '{}'", databaseName, e.getMessage());
                 if (hikariDataSource != null) {
@@ -144,9 +144,9 @@ public class CleanupService {
 
         private final String name;
         private final String countQuery;
-        private final String deleteAllQuery;
-        private final String deleteBatchQuery;
-        private final int deleteBatchSize;
+        private final String deleteUntilQuery;
+        private final String deleteUntilBatchQuery;
+        private final int deleteUntilBatchSize;
         private HikariDataSource dataSource;
         private JdbcTemplate jdbcTemplate;
     }

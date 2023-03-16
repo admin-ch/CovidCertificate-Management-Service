@@ -156,32 +156,32 @@ cc-management-service:
     spots:
       management-db:
         sql-query:
-          count:    "select count(*) from kpi where timestamp < ?"
-          delete-all:    "delete from kpi where timestamp < ?"
-          delete-batch:   "delete from kpi where timestamp < (
-                              select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
-          delete-batch-size: 100000
+          count:              "select count(*) from kpi where timestamp < ?"
+          delete-until:       "delete from kpi where timestamp < ?"
+          delete-until-batch: "delete from kpi where timestamp < (
+                                  select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
+          delete-until-batch-size: 100000
       api-gateway-db:
         sql-query:
-          count:    "select count(*) from kpi where timestamp < ?"
-          delete-all:    "delete from kpi where timestamp < ?"
-          delete-batch:   "delete from kpi where timestamp < (
-                              select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
-          delete-batch-size: 100000
+          count:              "select count(*) from kpi where timestamp < ?"
+          delete-until:       "delete from kpi where timestamp < ?"
+          delete-until-batch: "delete from kpi where timestamp < (
+                                  select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
+          delete-until-batch-size: 100000
       lightcer-generation-db:
         sql-query:
-          count:    "select count(*) from kpi where timestamp < ?"
-          delete-all:    "delete from kpi where timestamp < ?"
-          delete-batch:   "delete from kpi where timestamp < (
-                              select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
-          delete-batch-size: 10000
+          count:              "select count(*) from kpi where timestamp < ?"
+          delete-until:       "delete from kpi where timestamp < ?"
+          delete-until-batch: "delete from kpi where timestamp < (
+                                  select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
+          delete-until-batch-size: 10000
       printing-db:
         sql-query:
-          count:    "select count(*) from billing_kpi where processed_at < ?"
-          delete-all:    "delete from billing_kpi where processed_at < ?"
-          delete-batch:   "delete from billing_kpi where processed_at < (
-                              select processed_at from billing_kpi where processed_at < ? order by processed_at asc limit 1 offset ?)"
-          delete-batch-size: 10000
+          count:              "select count(*) from billing_kpi where processed_at < ?"
+          delete-until:       "delete from billing_kpi where processed_at < ?"
+          delete-until-batch: "delete from billing_kpi where processed_at < (
+                                  select processed_at from billing_kpi where processed_at < ? order by processed_at asc limit 1 offset ?)"
+          delete-until-batch-size: 10000
 
 cc-printing-service:
   billing:
