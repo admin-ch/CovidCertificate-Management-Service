@@ -155,6 +155,8 @@ cc-management-service:
     cron: "-" ## deactivate
     spots:
       management-db:
+        database:
+          driver-class-name:  "org.postgresql.Driver"
         sql-query:
           count:              "select count(*) from kpi where timestamp < ?"
           delete-until:       "delete from kpi where timestamp < ?"
@@ -162,6 +164,8 @@ cc-management-service:
                                   select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
           delete-until-batch-size: 100000
       api-gateway-db:
+        database:
+          driver-class-name:  "org.postgresql.Driver"
         sql-query:
           count:              "select count(*) from kpi where timestamp < ?"
           delete-until:       "delete from kpi where timestamp < ?"
@@ -169,6 +173,8 @@ cc-management-service:
                                   select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
           delete-until-batch-size: 100000
       lightcer-generation-db:
+        database:
+          driver-class-name:  "org.postgresql.Driver"
         sql-query:
           count:              "select count(*) from kpi where timestamp < ?"
           delete-until:       "delete from kpi where timestamp < ?"
@@ -176,6 +182,8 @@ cc-management-service:
                                   select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
           delete-until-batch-size: 10000
       printing-db:
+        database:
+          driver-class-name:  "org.postgresql.Driver"
         sql-query:
           count:              "select count(*) from billing_kpi where processed_at < ?"
           delete-until:       "delete from billing_kpi where processed_at < ?"

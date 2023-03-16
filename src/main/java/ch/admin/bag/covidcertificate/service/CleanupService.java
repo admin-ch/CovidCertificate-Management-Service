@@ -65,9 +65,10 @@ public class CleanupService {
         if (db == null) {
             log.debug("CLEANING | Init {} - database config for '{}' missing", databaseName, databaseName);
         } else {
-            databaseValid = StringUtils.isNoneBlank(db.getUrl(), db.getUsername(), db.getPassword());
+            databaseValid = StringUtils.isNoneBlank(db.getDriverClassName(), db.getUrl(), db.getUsername(), db.getPassword());
             if (!databaseValid) {
-                log.debug("CLEANING | Init {} - database config invalid:\n url='{}'\n username='{}'\n password='***", databaseName, db.getUrl(), db.getUsername());
+                log.debug("CLEANING | Init {} - database config invalid:\n driverClassName='{}'\n url='{}'\n username='{}'\n password='***",
+                        databaseName, db.getDriverClassName(), db.getUrl(), db.getUsername());
             }
         }
 
@@ -87,7 +88,7 @@ public class CleanupService {
         if (nameValid && databaseValid && sqlQueryValid) {
             HikariDataSource hikariDataSource = null;
             try {
-                hikariDataSource = createHikariDataSource(databaseName, db.getUrl(), db.getUsername(), db.getPassword());
+                hikariDataSource = createHikariDataSource(databaseName, db.getDriverClassName(), db.getUrl(), db.getUsername(), db.getPassword());
                 JdbcTemplate jdbcTemplate = createJdbcTemplate(hikariDataSource);
                 effort = new CleaningEffort(databaseName, query.getCount(), query.getDeleteUntil(),
                         query.getDeleteUntilBatch(), query.getDeleteUntilBatchSize(), hikariDataSource, jdbcTemplate);
@@ -120,9 +121,9 @@ public class CleanupService {
         }
     }
 
-    private HikariDataSource createHikariDataSource(String databaseName, String url, String username, String password) {
+    private HikariDataSource createHikariDataSource(String databaseName, String driverClassName, String url, String username, String password) {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setDriverClassName(driverClassName);
         dataSource.setJdbcUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
