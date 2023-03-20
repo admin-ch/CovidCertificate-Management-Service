@@ -37,7 +37,7 @@ cc-management-service:
   cache-duration: 300000
   cleanup:
     # <seconds> <minutes> <hours> <day-of-month> <month> <day-of-week>
-    cron: "0 */1 * * * *" ## every 2 min
+    # cron: "0 */15 * * * *" ## every 15 min
     spots:
       management-db:
         database:

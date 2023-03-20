@@ -47,8 +47,7 @@ cc-management-service:
     cron: "0 0 */1 * * ?" ## Every hour
   cleanup:
     # <seconds> <minutes> <hours> <day-of-month> <month> <day-of-week>
-#    cron: "0 00 0 * * *" ## At 00:00 AM
-    cron: "00 00 */1 * * *" ## every 2 min
+    cron: "0 00 0 * * *" ## At 00:00 AM
     spots:
       management-db:
         database:
