@@ -35,9 +35,9 @@ public class CleanupService {
         long count = -1L;
         if (effort != null) {
             if (asBatch) {
-                count = effort.jdbcTemplate.update(effort.deleteUntilBatchQuery, new Object[] { date, effort.deleteUntilBatchSize});
+                count = effort.jdbcTemplate.update(effort.deleteUntilBatchQuery, date, effort.deleteUntilBatchSize);
             } else {
-                count = effort.jdbcTemplate.update(effort.deleteUntilQuery, new Object[] { date });
+                count = effort.jdbcTemplate.update(effort.deleteUntilQuery, date);
             }
         }
         return count;
@@ -46,7 +46,7 @@ public class CleanupService {
     public long getCount(CleaningEffort effort, LocalDate date) {
         long count = -1L;
         if (effort != null) {
-            count = effort.jdbcTemplate.queryForObject(effort.countQuery, Long.class, new Object[] { date } );
+            count = effort.jdbcTemplate.queryForObject(effort.countQuery, Long.class, date);
         }
         return count;
     }
@@ -111,7 +111,9 @@ public class CleanupService {
         JdbcTemplate jdbcTemplate = effort.getJdbcTemplate();
         effort.setJdbcTemplate(null);
 
-        jdbcTemplate.setDataSource(null);
+        if (jdbcTemplate != null) {
+            jdbcTemplate.setDataSource(null);
+        }
 
         HikariDataSource hikariDataSource = effort.getDataSource();
         effort.setDataSource(null);
@@ -141,7 +143,7 @@ public class CleanupService {
 
     @Data
     @AllArgsConstructor
-    class CleaningEffort {
+    static class CleaningEffort {
 
         private final String name;
         private final String countQuery;
