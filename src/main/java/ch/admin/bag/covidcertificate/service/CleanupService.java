@@ -67,7 +67,7 @@ public class CleanupService {
         } else {
             databaseValid = StringUtils.isNoneBlank(db.getDriverClassName(), db.getUrl(), db.getUsername(), db.getPassword());
             if (!databaseValid) {
-                log.debug("CLEANING | Init {} - database config invalid:\n driverClassName='{}'\n url='{}'\n username='{}'\n password='***",
+                log.debug("CLEANING | Init {} - database config invalid:\n driverClassName='{}'\n url='{}'\n username='{}'",
                         databaseName, db.getDriverClassName(), db.getUrl(), db.getUsername());
             }
         }
