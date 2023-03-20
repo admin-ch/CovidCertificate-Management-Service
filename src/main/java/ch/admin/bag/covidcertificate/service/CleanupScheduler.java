@@ -27,8 +27,7 @@ public class CleanupScheduler {
 
     private final CleanupService cleanupService;
     private final CleanupConfig cleanupConfig;
-    private List<CleaningEffort> efforts = null;
-    private final int MAX_RETRIES = 3;
+    private static final int MAX_RETRIES = 3;
 
 
     public CleanupScheduler(CleanupService cleanupService, CleanupConfig cleanupConfig) {
@@ -66,7 +65,8 @@ public class CleanupScheduler {
             } else {
                 log.debug("CLEANUP | {} - cleaning {} records", effort.getName(), count);
                 stopWatch.start();
-                long allDeleted = 0L, deleted = -1L;
+                long allDeleted = 0L;
+                long deleted = -1L;
                 while (deleted != 0) {
                     try {
                         deleted = cleanupService.delete(effort, toDeleteBeforeDate, true);
