@@ -6,6 +6,7 @@ info:
     version: '@project.version@'
 logging:
   level:
+#    root: DEBUG
     ch:
       admin:
         bit:
@@ -55,10 +56,6 @@ spring:
   application:
     name: cc-management-service
   datasource:
-    url: jdbc:postgresql://localhost:3120/cc-management
-    # Only for local development
-    username: cc-management
-    password: secret
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -154,7 +151,45 @@ cc-management-service:
           - covidcertificate/exceptional
         start: 2020-01-01T00:00:00.000Z
         end: 2022-02-16T00:00:00.000Z
-
+  cleanup:
+    cron: "-" ## deactivate
+    spots:
+      management-db:
+        database:
+          driver-class-name:  "org.postgresql.Driver"
+        sql-query:
+          count:              "select count(*) from kpi where timestamp < ?"
+          delete-until:       "delete from kpi where timestamp < ?"
+          delete-until-batch: "delete from kpi where timestamp < (
+                                  select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
+          delete-until-batch-size: 100000
+      api-gateway-db:
+        database:
+          driver-class-name:  "org.postgresql.Driver"
+        sql-query:
+          count:              "select count(*) from kpi where timestamp < ?"
+          delete-until:       "delete from kpi where timestamp < ?"
+          delete-until-batch: "delete from kpi where timestamp < (
+                                  select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
+          delete-until-batch-size: 100000
+      lightcer-generation-db:
+        database:
+          driver-class-name:  "org.postgresql.Driver"
+        sql-query:
+          count:              "select count(*) from kpi where timestamp < ?"
+          delete-until:       "delete from kpi where timestamp < ?"
+          delete-until-batch: "delete from kpi where timestamp < (
+                                  select timestamp from kpi where timestamp < ? order by timestamp asc limit 1 offset ?)"
+          delete-until-batch-size: 10000
+      printing-db:
+        database:
+          driver-class-name:  "org.postgresql.Driver"
+        sql-query:
+          count:              "select count(*) from billing_kpi where processed_at < ?"
+          delete-until:       "delete from billing_kpi where processed_at < ?"
+          delete-until-batch: "delete from billing_kpi where processed_at < (
+                                  select processed_at from billing_kpi where processed_at < ? order by processed_at asc limit 1 offset ?)"
+          delete-until-batch-size: 10000
 
 cc-printing-service:
   billing:

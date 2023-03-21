@@ -12,6 +12,10 @@ spring:
         provider:
           default-provider:
             issuer-uri: "https://identity-r.bit.admin.ch/realms/BAG-CovidCertificate"
+  datasource:
+    url: jdbc:postgresql://${vcap.services.cc_management_db_dev.credentials.hostname}:${vcap.services.cc_management_db_dev.credentials.port}/${vcap.services.cc_management_db_dev.credentials.name}
+    username: ${vcap.services.cc_management_db_dev.credentials.username}
+    password: ${vcap.services.cc_management_db_dev.credentials.password}
 
 jeap:
   security:
@@ -41,6 +45,30 @@ cc-management-service:
     cron: "0 0 */1 * * ?" ## Every hour
   vaccine-value-set-import:
     cron: "0 0 */1 * * ?" ## Every hour
+  cleanup:
+    # <seconds> <minutes> <hours> <day-of-month> <month> <day-of-week>
+    cron: "0 00 0 * * *" ## At 00:00 AM
+    spots:
+      management-db:
+        database:
+          url: jdbc:postgresql://${vcap.services.cc_management_db_dev.credentials.hostname}:${vcap.services.cc_management_db_dev.credentials.port}/${vcap.services.cc_management_db_dev.credentials.name}
+          username: ${vcap.services.cc_management_db_dev.credentials.username}
+          password: ${vcap.services.cc_management_db_dev.credentials.password}
+      api-gateway-db:
+        database:
+          url: jdbc:postgresql://${vcap.services.cc_apigateway_db_dev.credentials.hostname}:${vcap.services.cc_apigateway_db_dev.credentials.port}/${vcap.services.cc_apigateway_db_dev.credentials.name}
+          username: ${vcap.services.cc_apigateway_db_dev.credentials.username}
+          password: ${vcap.services.cc_apigateway_db_dev.credentials.password}
+      lightcer-generation-db:
+        database:
+          url: jdbc:postgresql://${vcap.services.cc_lightcer_generation_db_dev.credentials.hostname}:${vcap.services.cc_lightcer_generation_db_dev.credentials.port}/${vcap.services.cc_lightcer_generation_db_dev.credentials.name}
+          username: ${vcap.services.cc_lightcer_generation_db_dev.credentials.username}
+          password: ${vcap.services.cc_lightcer_generation_db_dev.credentials.password}
+      printing-db:
+        database:
+          url: jdbc:postgresql://${vcap.services.cc_printing_db_dev.credentials.hostname}:${vcap.services.cc_printing_db_dev.credentials.port}/${vcap.services.cc_printing_db_dev.credentials.name}
+          username: ${vcap.services.cc_printing_db_dev.credentials.username}
+          password: ${vcap.services.cc_printing_db_dev.credentials.password}
 
   truststore:
     password: ${vcap.services.cc_trust_store.credentials.password}

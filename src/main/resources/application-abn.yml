@@ -12,6 +12,10 @@ spring:
         provider:
           default-provider:
             issuer-uri: "https://identity-a.bit.admin.ch/realms/BAG-CovidCertificate"
+  datasource:
+    url: jdbc:postgresql://${vcap.services.cc_management_db_abn.credentials.hostname}:${vcap.services.cc_management_db_abn.credentials.port}/${vcap.services.cc_management_db_abn.credentials.name}
+    username: ${vcap.services.cc_management_db_abn.credentials.username}
+    password: ${vcap.services.cc_management_db_abn.credentials.password}
 
 jeap:
   security:
@@ -37,6 +41,31 @@ cc-management-service:
 
   truststore:
     password: ${vcap.services.cc_trust_store.credentials.password}
+
+  cleanup:
+    # <seconds> <minutes> <hours> <day-of-month> <month> <day-of-week>
+    cron: "0 00 0 * * *" ## At 00:00 AM
+    spots:
+      management-db:
+        database:
+          url: jdbc:postgresql://${vcap.services.cc_management_db_abn.credentials.hostname}:${vcap.services.cc_management_db_abn.credentials.port}/${vcap.services.cc_management_db_abn.credentials.name}
+          username: ${vcap.services.cc_management_db_abn.credentials.username}
+          password: ${vcap.services.cc_management_db_abn.credentials.password}
+      api-gateway-db:
+        database:
+          url: jdbc:postgresql://${vcap.services.cc_apigateway_db_abn.credentials.hostname}:${vcap.services.cc_apigateway_db_abn.credentials.port}/${vcap.services.cc_apigateway_db_abn.credentials.name}
+          username: ${vcap.services.cc_apigateway_db_abn.credentials.username}
+          password: ${vcap.services.cc_apigateway_db_abn.credentials.password}
+      lightcer-generation-db:
+        database:
+          url: jdbc:postgresql://${vcap.services.cc_lightcer_generation_db_abn.credentials.hostname}:${vcap.services.cc_lightcer_generation_db_abn.credentials.port}/${vcap.services.cc_lightcer_generation_db_abn.credentials.name}
+          username: ${vcap.services.cc_lightcer_generation_db_abn.credentials.username}
+          password: ${vcap.services.cc_lightcer_generation_db_abn.credentials.password}
+      printing-db:
+        database:
+          url: jdbc:postgresql://${vcap.services.cc_printing_db_abn.credentials.hostname}:${vcap.services.cc_printing_db_abn.credentials.port}/${vcap.services.cc_printing_db_abn.credentials.name}
+          username: ${vcap.services.cc_printing_db_abn.credentials.username}
+          password: ${vcap.services.cc_printing_db_abn.credentials.password}
 
 cc-signing-service:
   url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/sign"
