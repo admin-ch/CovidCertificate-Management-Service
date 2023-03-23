@@ -79,13 +79,19 @@ cc-management-service:
 
 cc-signing-service:
   #When started as spring boot application
-#  url: "https://localhost:9090/sign"
-#  verify-url: "https://localhost:9090/sign/verify"
-#  kid-url: "https://localhost:9090/sign/configuration/kid"
+  url: "https://localhost:9090/sign"
+  verify-url: "https://localhost:9090/sign/verify"
+  kid-url: "https://localhost:9090/sign/configuration/kid"
+  ping-url: "https://localhost:9090/ping"
+  health-url: "https://localhost:9090/actuator/health"
+  info-url: "https://localhost:9090/actuator/info"
   #When started with tomcat
-  url: "https://localhost:8443/cc-signing/sign"
-  verify-url: "https://localhost:8443/cc-signing/sign/verify"
-  kid-url: "https://localhost:8443/cc-signing/sign/configuration/kid"
+#  url: "https://localhost:8443/cc-signing/sign"
+#  verify-url: "https://localhost:8443/cc-signing/sign/verify"
+#  kid-url: "https://localhost:8443/cc-signing/sign/configuration/kid"
+#  ping-url: "https://localhost:8443/cc-signing/ping"
+#  health-url: "https://localhost:8443/cc-signing/actuator/health"
+#  info-url: "https://localhost:8443/cc-signing/actuator/info"
 
 cc-printing-service:
   url: "http://localhost:8124/api/v1/print"

@@ -71,6 +71,9 @@ cc-signing-service:
   url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/sign"
   verify-url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/sign/verify"
   kid-url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/sign/configuration/kid"
+  ping-url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/ping"
+  health-url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/actuator/health"
+  info-url: "https://covidcertificate-signing-a.bag.admin.ch/bag-vaccinecer-webapp/actuator/info"
 
 cc-printing-service:
   url: "https://cc-printing-service.abn.app.cfap02.atlantica.admin.ch/api/v1/print"

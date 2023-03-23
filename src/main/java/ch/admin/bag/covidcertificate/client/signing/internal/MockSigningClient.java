@@ -30,7 +30,7 @@ public class MockSigningClient implements SigningClient {
     }
 
     @SneakyThrows
-    public String getKeyIdentifier(Integer slotNumber, String certificateAlias){
+    public String getKeyIdentifier(Integer slotNumber, String certificateAlias) {
         var outputStream = new ByteArrayOutputStream();
         new HexEncoder().encode(UUID.randomUUID().toString().getBytes(), 0, 8, outputStream);
         return outputStream.toString();
@@ -39,5 +39,20 @@ public class MockSigningClient implements SigningClient {
     @Override
     public void cleanKeyIdentifierCache() {
         log.info("Mocking Cache Cleanup");
+    }
+
+    @Override
+    public String callPing() {
+        return "mocked answer of ping";
+    }
+
+    @Override
+    public String callHealth() {
+        return "mocked answer of health";
+    }
+
+    @Override
+    public String callInfo() {
+        return "mocked answer of info";
     }
 }
