@@ -43,6 +43,15 @@ public class DefaultSigningClient implements SigningClient {
     @Value("${cc-signing-service.kid-url}")
     private String kidUrl;
 
+    @Value("${cc-signing-service.ping-url}")
+    private String pingUrl;
+
+    @Value("${cc-signing-service.health-url}")
+    private String healthUrl;
+
+    @Value("${cc-signing-service.info-url}")
+    private String infoUrl;
+
     public DefaultSigningClient(@Qualifier("signingServiceRestTemplate") RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -130,5 +139,40 @@ public class DefaultSigningClient implements SigningClient {
                 .uriString(url)
                 .pathSegment(slotNumber.toString(), kid)
                 .build().toString();
+    }
+
+    public String callPing() {
+        return this.sendGetRequestWithUrl(pingUrl);
+    }
+
+    public String callHealth() {
+        return this.sendGetRequestWithUrl(healthUrl);
+    }
+
+    public String callInfo() {
+        return this.sendGetRequestWithUrl(infoUrl);
+    }
+
+    private String sendGetRequestWithUrl(String url) {
+        long start = System.currentTimeMillis();
+        log.info("Call signing service with url {}", url);
+
+        try {
+            ResponseEntity<String> result = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    new HttpEntity<>(new HttpHeaders()),
+                    String.class
+            );
+            long end = System.currentTimeMillis();
+            log.info("Call of signing service url {} finished with result {} within {} ms.",
+                    url,
+                    result.getStatusCode(),
+                    end - start);
+            return result.getBody();
+        } catch (RestClientException e) {
+            log.error("Connection with signing service {} could not be established.", url, e);
+            throw e;
+        }
     }
 }

@@ -10,4 +10,9 @@ public interface SigningClient {
 
     void cleanKeyIdentifierCache();
 
+    String callPing();
+
+    String callHealth();
+
+    String callInfo();
 }

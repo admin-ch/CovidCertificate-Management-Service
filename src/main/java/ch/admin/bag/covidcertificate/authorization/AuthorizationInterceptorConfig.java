@@ -17,7 +17,10 @@ public class AuthorizationInterceptorConfig implements WebMvcConfigurer {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/api/v1/revocation-list",
-            "/api/v1/ping");
+            "/api/v1/ping",
+            "/api/v1/signing/ping",
+            "/api/v1/signing/health",
+            "/api/v1/signing/info");
 
     private final AuthorizationInterceptor interceptor;
 
