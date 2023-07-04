@@ -75,6 +75,8 @@ public class CleanupScheduler {
                         log.error("CLEANUP | {} - cleaning failed, retry #{}/{}; throwed '{}'", effort.getName(), ++retry, MAX_RETRIES, e);
                         if (retry < MAX_RETRIES) {
                             deleted = -1;
+                        } else {
+                            break;
                         }
                     }
                 }
